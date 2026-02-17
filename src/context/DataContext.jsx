@@ -21,13 +21,14 @@ export const DataProvider = ({ children }) => {
     const fetchData = async () => {
         try {
             // Fetch generated JSONs
+            const baseUrl = import.meta.env.BASE_URL;
             const [playersRes, historyRes, bankRes, trophiesRes, deadweightRes, kvkRes] = await Promise.all([
-                fetch('/data/players.json'),
-                fetch('/data/kingdom_history.json'),
-                fetch('/data/bank.json'),
-                fetch('/data/trophies.json'),
-                fetch('/data/deadweight.json'),
-                fetch('/data/kvk_stats.json')
+                fetch(`${baseUrl}data/players.json`),
+                fetch(`${baseUrl}data/kingdom_history.json`),
+                fetch(`${baseUrl}data/bank.json`),
+                fetch(`${baseUrl}data/trophies.json`),
+                fetch(`${baseUrl}data/deadweight.json`),
+                fetch(`${baseUrl}data/kvk_stats.json`)
             ]);
 
             if (!playersRes.ok) throw new Error("Failed to load players data");

@@ -23,7 +23,12 @@ const Sidebar = ({ isOpen, activePage, onNavigate }) => {
     <aside className={`fixed left-0 top-0 h-full bg-slate-900/95 backdrop-blur-xl border-r border-white/10 transition-all duration-300 z-50 ${isOpen ? 'w-64' : 'w-20'}`}>
       <div className="p-6 flex items-center gap-3 mb-8">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex-shrink-0" />
-        {isOpen && <h1 className="font-bold text-lg tracking-tight">Kingdom Manager</h1>}
+        {isOpen && (
+          <div>
+            <h1 className="font-bold text-lg tracking-tight leading-none">Kingdom Manager</h1>
+            <span className="text-[10px] text-slate-500 font-mono">v0.1.0</span>
+          </div>
+        )}
       </div>
       <nav className="px-3 space-y-2">
         {menuItems.map((item) => (
