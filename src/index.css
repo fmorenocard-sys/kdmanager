@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-slate-900 text-slate-50 antialiased;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.05), transparent 25%);
+  }
+}
+
+@layer components {
+
+  /* Glassmorphism Card Utility */
+  .card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-xl transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply bg-white/10 border-white/20 shadow-2xl;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 active:scale-95;
+  }
+
+  .btn-primary {
+    @apply bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20;
+  }
+
+  .btn-secondary {
+    @apply bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/20;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-white/5 text-slate-400 hover:text-slate-50;
+  }
+
+  .btn-outline {
+    @apply border border-white/20 hover:bg-white/5 text-slate-50;
+  }
+
+  /* Typography */
+  .heading-xl {
+    @apply text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400;
+  }
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-500 rounded-full hover:bg-slate-400 transition-colors;
+}

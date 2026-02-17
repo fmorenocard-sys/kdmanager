@@ -1,0 +1,137 @@
+.center-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.week-selector {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    background: var(--bg-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+}
+
+.week-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 200px;
+}
+
+.trophy-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.legendary-section {
+    display: flex;
+    justify-content: center;
+}
+
+.trophy-card.legendary {
+    min-width: 350px;
+    border: 2px solid rgba(234, 179, 8, 0.5);
+    box-shadow: 0 0 60px rgba(234, 179, 8, 0.3), inset 0 0 20px rgba(234, 179, 8, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.trophy-card.legendary::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%);
+    animation: rotate-glow 10s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rotate-glow {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.trophy-card.legendary .winner-name {
+    font-size: 2.5rem;
+    background: linear-gradient(to right, #facc15, #fbbf24, #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.trophy-card.legendary .trophy-icon {
+    transform: scale(1.5);
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.8));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: scale(1.5) translateY(0);
+    }
+
+    50% {
+        transform: scale(1.5) translateY(-10px);
+    }
+}
+
+.trophy-icon {
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px currentColor);
+}
+
+.winners-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.winner-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.other-tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.trophy-group-card {
+    padding: 1.5rem;
+    border-width: 1px;
+    border-style: solid;
+    background: var(--glass-bg);
+}
+
+.group-winner-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
