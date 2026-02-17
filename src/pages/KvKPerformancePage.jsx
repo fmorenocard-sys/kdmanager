@@ -227,8 +227,10 @@ const KvKPerformancePage = () => {
                                             <div className="w-6 h-6 rounded-full bg-slate-800 overflow-hidden flex-shrink-0 border border-slate-700">
                                                 {avatarMapping[row.id] ? (
                                                     <img
-                                                        src={avatarMapping[row.id]}
+                                                        src={`${import.meta.env.BASE_URL}${avatarMapping[row.id]?.replace(/^\//, '')}`}
                                                         alt={row.name}
+                                                        width="24"
+                                                        height="24"
                                                         className="w-full h-full object-cover"
                                                         onError={(e) => { e.target.style.display = 'none'; }}
                                                     />

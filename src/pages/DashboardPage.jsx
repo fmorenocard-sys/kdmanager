@@ -172,8 +172,10 @@ const DashboardPage = () => {
                                                         <div className="w-8 h-8 rounded-full bg-slate-800 overflow-hidden flex-shrink-0 border border-slate-700">
                                                             {avatarMapping[player.id] ? (
                                                                 <img
-                                                                    src={avatarMapping[player.id]}
+                                                                    src={`${import.meta.env.BASE_URL}${avatarMapping[player.id]?.replace(/^\//, '')}`}
                                                                     alt={player.name}
+                                                                    width="32"
+                                                                    height="32"
                                                                     className="w-full h-full object-cover"
                                                                     onError={(e) => { e.target.style.display = 'none'; }}
                                                                 />
