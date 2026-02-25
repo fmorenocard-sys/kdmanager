@@ -188,11 +188,11 @@ const KvKConfigForm = () => {
                     </div>
 
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-6 gap-4">
-                        <span className={`text-sm ${message.includes('Error') ? 'text-red-400' : 'text-green-400'}`}>
+                        <span className={`text-sm w-full text-center md:text-left ${message.includes('Error') ? 'text-red-400' : 'text-green-400'}`}>
                             {message}
                         </span>
-                        <Button type="submit" disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 whitespace-nowrap">
-                            <Save size={18} className="mr-2" />
+                        <Button type="submit" disabled={loading} className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 whitespace-nowrap text-center justify-center">
+                            <Save size={18} className="mr-2 hidden md:inline-block" />
                             Set as Active Campaign
                         </Button>
                     </div>
@@ -249,7 +249,7 @@ const KvKConfigForm = () => {
                                 <button
                                     onClick={deleteCampaign}
                                     disabled={deleting || deleteConfirmation !== availableCampaigns.find(c => c.id === selectedDeleteKvkId)?.name}
-                                    className="bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md font-bold whitespace-nowrap h-[42px] transition-all"
+                                    className="w-full md:w-auto bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md font-bold whitespace-nowrap h-[42px] transition-all text-center"
                                 >
                                     {deleting ? 'Deleting...' : 'Delete Campaign'}
                                 </button>

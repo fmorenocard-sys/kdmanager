@@ -176,12 +176,12 @@ const WarDashboard = () => {
                     <Shield className="text-blue-500" /> {t('war.dashboard_title')}
                 </h2>
 
-                <div className="flex items-center gap-2">
-                    <span className="text-slate-400 text-sm font-medium">Campaign:</span>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full md:w-auto">
+                    <span className="text-slate-400 text-sm font-medium whitespace-nowrap">Campaign:</span>
                     <select
                         value={selectedKvkId}
                         onChange={(e) => setSelectedKvkId(e.target.value)}
-                        className="bg-indigo-900/40 border border-indigo-500/50 text-indigo-200 px-4 py-2 rounded-lg font-bold appearance-none cursor-pointer hover:bg-indigo-800/60 transition-colors shadow-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full md:w-auto truncate bg-indigo-900/40 border border-indigo-500/50 text-indigo-200 px-4 py-2 rounded-lg font-bold appearance-none cursor-pointer hover:bg-indigo-800/60 transition-colors shadow-sm outline-none focus:ring-2 focus:ring-indigo-500"
                     >
                         {availableCampaigns.map(c => (
                             <option key={c.id} value={c.id} className="bg-slate-800 text-white">
@@ -193,7 +193,7 @@ const WarDashboard = () => {
             </div>
 
             {isKing && unmigratedDeclarations.length > 0 && kvkConfig && (
-                <div className="bg-yellow-900/20 border border-yellow-500/50 p-4 rounded-lg flex justify-between items-center">
+                <div className="bg-yellow-900/20 border border-yellow-500/50 p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h4 className="text-yellow-400 font-bold flex items-center gap-2">
                             ⚠️ Legacy Declarations Found
@@ -205,7 +205,7 @@ const WarDashboard = () => {
                     <button
                         onClick={migrateLegacyData}
                         disabled={migrating}
-                        className="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded text-sm font-bold disabled:opacity-50"
+                        className="w-full md:w-auto text-center bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded text-sm font-bold disabled:opacity-50 whitespace-nowrap"
                     >
                         {migrating ? 'Migrating...' : 'Migrate Legacy Data'}
                     </button>
@@ -252,8 +252,8 @@ const WarDashboard = () => {
                                         <span className="text-[10px] text-slate-500">{d.governorId}</span>
                                     </div>
                                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${d.availability === 'Available' ? 'text-green-400 bg-green-400/10 border border-green-400/20' :
-                                            d.availability === 'Partial' ? 'text-yellow-400 bg-yellow-400/10 border border-yellow-400/20' :
-                                                'text-red-400 bg-red-400/10 border border-red-400/20'
+                                        d.availability === 'Partial' ? 'text-yellow-400 bg-yellow-400/10 border border-yellow-400/20' :
+                                            'text-red-400 bg-red-400/10 border border-red-400/20'
                                         }`}>
                                         {d.availability}
                                     </span>
