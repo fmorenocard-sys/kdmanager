@@ -237,48 +237,104 @@ const WarDashboard = () => {
             {/* Detailed List */}
             <Card className="overflow-hidden border border-slate-700/50 bg-slate-900/40">
                 <h3 className="p-4 text-lg font-bold text-white border-b border-slate-800">{t('war.declarations')} ({declarations.length})</h3>
-                <div className="overflow-x-auto max-h-[600px]">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>{t('dashboard.name')}</TableHead>
-                                <TableHead>{t('war.status')}</TableHead>
-                                <TableHead>{t('war.time_utc')}</TableHead>
-                                <TableHead>{t('war.tech')}</TableHead>
-                                <TableHead>{t('war.marches')}</TableHead>
-                                <TableHead>{t('war.total_rss')}</TableHead>
-                                <TableHead>{t('war.total_speedups')}</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {declarations.map((d) => (
-                                <TableRow key={d.id} className="hover:bg-white/5">
-                                    <TableCell className="font-medium text-white">
-                                        {d.governorName} <span className="text-xs text-slate-500">({d.governorId})</span>
-                                        {d.userId === 'guest' && <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-slate-600 text-slate-300">Guest</span>}
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className={`px-2 py-0.5 rounded text-xs ${d.availability === 'Available' ? 'text-green-400 bg-green-900/30' :
-                                            d.availability === 'Partial' ? 'text-yellow-400 bg-yellow-900/30' : 'text-red-400 bg-red-900/30'
-                                            }`}>
-                                            {d.availability}
+                <div className="overflow-x-auto max-h-[600px] custom-scrollbar">
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden flex flex-col gap-3 p-4">
+                        {declarations.map((d) => (
+                            <div key={d.id} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
+                                <div className="flex justify-between items-center border-b border-slate-700/50 pb-2">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-white text-sm truncate max-w-[140px]">{d.governorName}</span>
+                                            {d.userId === 'guest' && <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-600 text-slate-300">Guest</span>}
+                                        </div>
+                                        <span className="text-[10px] text-slate-500">{d.governorId}</span>
+                                    </div>
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${d.availability === 'Available' ? 'text-green-400 bg-green-400/10 border border-green-400/20' :
+                                            d.availability === 'Partial' ? 'text-yellow-400 bg-yellow-400/10 border border-yellow-400/20' :
+                                                'text-red-400 bg-red-400/10 border border-red-400/20'
+                                        }`}>
+                                        {d.availability}
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                    <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                        <span className="text-slate-500">{t('war.time_utc')}</span>
+                                        <span className="font-mono text-slate-300">{d.timeRange || '-'}</span>
+                                    </div>
+                                    <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                        <span className="text-slate-500">{t('war.tech')}</span>
+                                        <span className="font-mono text-slate-300">{d.crystalTech}</span>
+                                    </div>
+                                    <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                        <span className="text-slate-500">{t('war.marches')}</span>
+                                        <span className="font-mono text-slate-300">
+                                            {d.marches?.length || 0} <span className="text-slate-500 text-[10px]">({d.marches?.map(m => m.type.substr(0, 1)).join(',')})</span>
                                         </span>
-                                    </TableCell>
-                                    <TableCell className="text-slate-300 text-xs">{d.timeRange || '-'}</TableCell>
-                                    <TableCell className="text-slate-300 text-xs">{d.crystalTech}</TableCell>
-                                    <TableCell className="text-slate-300 text-xs">
-                                        {d.marches?.length || 0} <span className="text-slate-500">({d.marches?.map(m => m.type.substr(0, 1)).join(',')})</span>
-                                    </TableCell>
-                                    <TableCell className="text-amber-400 text-xs font-mono">
-                                        {formatBillions((d.resources?.food || 0) + (d.resources?.wood || 0) + (d.resources?.stone || 0) + (d.resources?.gold || 0))}
-                                    </TableCell>
-                                    <TableCell className="text-purple-400 text-xs font-mono">
-                                        {((d.speedups?.total ?? ((d.speedups?.universal || 0) + (d.speedups?.healing || 0)))).toFixed(1)}d
-                                    </TableCell>
+                                    </div>
+                                    <div className="col-span-2 flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                        <span className="text-slate-500">RSS / SpdU</span>
+                                        <span className="font-mono text-amber-400">
+                                            {formatBillions((d.resources?.food || 0) + (d.resources?.wood || 0) + (d.resources?.stone || 0) + (d.resources?.gold || 0))}
+                                            <span className="text-slate-600 mx-2">|</span>
+                                            <span className="text-purple-400">{((d.speedups?.total ?? ((d.speedups?.universal || 0) + (d.speedups?.healing || 0)))).toFixed(1)}d</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        {declarations.length === 0 && (
+                            <div className="text-center py-8 text-slate-500 text-sm">
+                                {t('common.no_results')}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block w-full min-w-[800px]">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>{t('dashboard.name')}</TableHead>
+                                    <TableHead>{t('war.status')}</TableHead>
+                                    <TableHead>{t('war.time_utc')}</TableHead>
+                                    <TableHead>{t('war.tech')}</TableHead>
+                                    <TableHead>{t('war.marches')}</TableHead>
+                                    <TableHead>{t('war.total_rss')}</TableHead>
+                                    <TableHead>{t('war.total_speedups')}</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {declarations.map((d) => (
+                                    <TableRow key={d.id} className="hover:bg-white/5">
+                                        <TableCell className="font-medium text-white">
+                                            {d.governorName} <span className="text-xs text-slate-500">({d.governorId})</span>
+                                            {d.userId === 'guest' && <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-slate-600 text-slate-300">Guest</span>}
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className={`px-2 py-0.5 rounded text-xs ${d.availability === 'Available' ? 'text-green-400 bg-green-900/30' :
+                                                d.availability === 'Partial' ? 'text-yellow-400 bg-yellow-900/30' : 'text-red-400 bg-red-900/30'
+                                                }`}>
+                                                {d.availability}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="text-slate-300 text-xs">{d.timeRange || '-'}</TableCell>
+                                        <TableCell className="text-slate-300 text-xs">{d.crystalTech}</TableCell>
+                                        <TableCell className="text-slate-300 text-xs">
+                                            {d.marches?.length || 0} <span className="text-slate-500">({d.marches?.map(m => m.type.substr(0, 1)).join(',')})</span>
+                                        </TableCell>
+                                        <TableCell className="text-amber-400 text-xs font-mono">
+                                            {formatBillions((d.resources?.food || 0) + (d.resources?.wood || 0) + (d.resources?.stone || 0) + (d.resources?.gold || 0))}
+                                        </TableCell>
+                                        <TableCell className="text-purple-400 text-xs font-mono">
+                                            {((d.speedups?.total ?? ((d.speedups?.universal || 0) + (d.speedups?.healing || 0)))).toFixed(1)}d
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
             </Card>
         </div>
