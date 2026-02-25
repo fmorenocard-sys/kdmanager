@@ -28,6 +28,11 @@ export const AuthProvider = ({ children }) => {
         window.location.href = '/api/discordLogin';
     };
 
+    const linkWithDiscord = () => {
+        // Lance le flux OAuth en mode "link"
+        window.location.href = '/api/discordLogin?action=link';
+    };
+
     const logout = () => {
         setGovernorId(null);
         return signOut(auth);
@@ -48,11 +53,22 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        // Intercepter le custom token retourné par notre webhook Discord
-        const hash = window.location.hash;
-        if (hash.includes('token=')) {
-            const tokenParams = new URLSearchParams(hash.replace('#', '?'));
+        // Intercepter le custom token ou le linkToken retourné par notre webhook Discord
+        // Avec HashRouter, l'URL peut ressembler à /#/profile?linkToken=... ou #token=...
+        const urlStr = window.location.href;
+        if (urlStr.includes('token=') || urlStr.includes('linkToken=')) {
+            // Extraction robuste des paramètres depuis l'URL complète
+            let queryString = '';
+            if (urlStr.includes('?')) {
+                queryString = urlStr.substring(urlStr.indexOf('?'));
+            } else if (urlStr.includes('#token=')) {
+                queryString = urlStr.substring(urlStr.indexOf('#')).replace('#', '?');
+            }
+
+            const tokenParams = new URLSearchParams(queryString);
             const customToken = tokenParams.get('token');
+            const linkToken = tokenParams.get('linkToken');
+
             if (customToken) {
                 setLoading(true);
                 signInWithCustomToken(auth, customToken)
@@ -61,7 +77,26 @@ export const AuthProvider = ({ children }) => {
                     })
                     .catch(err => {
                         console.error('Failed to sign in with custom token from Discord:', err);
+                        setLoading(false);
                     });
+            } else if (linkToken) {
+                // Appel la Cloud Function pour confirmer le linking avec le jeton sécurisé
+                import('firebase/functions').then(({ httpsCallable }) => {
+                    import('../config/firebase').then(({ functions }) => {
+                        const confirmDiscordLinkCall = httpsCallable(functions, 'confirmDiscordLink');
+                        confirmDiscordLinkCall({ linkToken })
+                            .then(() => {
+                                console.log("Discord lié avec succès !");
+                                window.history.replaceState(null, '', window.location.href.split('?')[0]); // preserve the hash route but clear query params
+                                // Refresh page or auth state to reflect new identity
+                                window.location.reload();
+                            })
+                            .catch(err => {
+                                console.error('Erreur lors du linking Discord:', err);
+                                alert("Erreur lors de la liaison du compte Discord: " + err.message);
+                            });
+                    });
+                });
             }
         }
     }, [auth]);
@@ -90,6 +125,7 @@ export const AuthProvider = ({ children }) => {
         unlinkGovernor,
         loginWithGoogle,
         loginWithDiscord,
+        linkWithDiscord,
         logout,
         loading
     };

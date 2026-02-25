@@ -192,7 +192,7 @@
         "title": "Профіль користувача",
         "governor_id": "ID губернатора",
         "display_name": "Відображуване ім'я",
-        "linked_account": "Прив'язаний акаунт",
+        "linked_account": "Пов'язаний акаунт",
         "linked_governor": "Прив'язаний губернатор",
         "no_governor_linked": "Губернатор не прив'язаний. Знайдіть себе!",
         "claim": "Зайняти",
@@ -204,7 +204,15 @@
         "link_error": "Прив'язка не вдалася",
         "role_king": "Король",
         "role_officer": "Офіцер",
-        "role_warrior": "Воїн"
+        "role_warrior": "Воїн",
+        "linked_accounts": "Пов'язані акаунти",
+        "connected_via_discord": "Підключено через Discord SSO",
+        "main_account": "Основний акаунт",
+        "sync_roles_desc": "Примусово оновити дозволи з сервера Discord",
+        "sync_roles": "Синхронізувати ролі",
+        "discord_linked": "Discord Пов'язано",
+        "link_discord_desc": "Пов'яжіть свій акаунт Discord, щоб синхронізувати свої ролі в додатку.",
+        "link_discord_account": "Пов'язати мій акаунт Discord"
     },
     "datarefresh": {
         "title": "Синхронізація даних",

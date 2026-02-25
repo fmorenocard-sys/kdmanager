@@ -204,7 +204,15 @@
         "link_error": "Połączenie nieudane",
         "role_king": "Król",
         "role_officer": "Oficer",
-        "role_warrior": "Wojownik"
+        "role_warrior": "Wojownik",
+        "linked_accounts": "Połączone konta",
+        "connected_via_discord": "Połączono przez Discord SSO",
+        "main_account": "Konto główne",
+        "sync_roles_desc": "Wymuś aktualizację uprawnień z serwera Discord",
+        "sync_roles": "Synchronizuj role",
+        "discord_linked": "Discord Połączony",
+        "link_discord_desc": "Połącz swoje konto Discord, aby zsynchronizować role w aplikacji.",
+        "link_discord_account": "Połącz moje konto Discord"
     },
     "datarefresh": {
         "title": "Synchronizacja danych",

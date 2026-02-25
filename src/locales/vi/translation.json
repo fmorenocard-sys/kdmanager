@@ -192,7 +192,7 @@
         "title": "Hồ sơ người dùng",
         "governor_id": "ID Thống đốc",
         "display_name": "Tên hiển thị",
-        "linked_account": "Tài khoản liên kết",
+        "linked_account": "Tài khoản Đã liên kết",
         "linked_governor": "Thống đốc đã liên kết",
         "no_governor_linked": "Chưa liên kết thống đốc. Hãy tìm bản thân để nhận thống kê!",
         "claim": "Nhận",
@@ -204,7 +204,15 @@
         "link_error": "Liên kết ID thất bại",
         "role_king": "Vua",
         "role_officer": "Sĩ quan",
-        "role_warrior": "Chiến binh"
+        "role_warrior": "Chiến binh",
+        "linked_accounts": "Tài khoản Đã liên kết",
+        "connected_via_discord": "Đã kết nối qua Discord SSO",
+        "main_account": "Tài khoản Chính",
+        "sync_roles_desc": "Buộc cập nhật quyền của bạn từ máy chủ Discord",
+        "sync_roles": "Đồng bộ Vai trò",
+        "discord_linked": "Discord Đã liên kết",
+        "link_discord_desc": "Liên kết tài khoản Discord của bạn để đồng bộ vai trò trong ứng dụng.",
+        "link_discord_account": "Liên kết tài khoản Discord của tôi"
     },
     "datarefresh": {
         "title": "Đồng bộ dữ liệu",

@@ -16,11 +16,19 @@ const firebaseConfig = {
 };
 
 import { getFirestore } from "firebase/firestore";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app); // Initialize Analytics
 export const auth = getAuth(app);
 export const db = getFirestore(app, "kdmanagerdb");
+export const functions = getFunctions(app);
+
+// Use emulator for local dev
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+}
+
 export const googleProvider = new GoogleAuthProvider();
 export const githubProvider = new GithubAuthProvider(); // Added GitHub as alternative

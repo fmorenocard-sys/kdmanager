@@ -5,6 +5,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import fs from "fs";
 import { DATA_CONFIG } from "./data-mapping.js";
 
+// eslint-disable-next-line no-undef
 if (process.env.FUNCTIONS_EMULATOR) {
     try {
         const serviceAccountPath = new URL('./serviceAccountKey.json', import.meta.url);
@@ -457,4 +458,4 @@ export const syncData = onRequest(async (req, res) => {
 });
 
 // Export Discord Auth Cloud Functions
-export { discordLogin, discordCallback } from "./discordAuth.js";
+export { discordLogin, discordCallback, confirmDiscordLink, forceRoleSync } from "./discordAuth.js";

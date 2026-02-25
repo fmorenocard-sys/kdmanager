@@ -132,7 +132,7 @@ const KvKPerformancePage = () => {
 
     // Helper for Sort Icon
     const SortIcon = ({ columnKey }) => {
-        if (sortConfig.key !== columnKey) return <div className="w-4 h-4 opacity-0 group-hover:opacity-50 transition-opacity ml-1"><ChevronDown size={14} /></div>;
+        if (sortConfig.key !== columnKey) return <div className="w-4 h-4 opacity-40 xl:opacity-0 group-hover:opacity-60 transition-opacity ml-1"><ChevronDown size={14} /></div>;
         return sortConfig.direction === 'asc'
             ? <ChevronUp size={14} className="text-primary ml-1" />
             : <ChevronDown size={14} className="text-primary ml-1" />;
@@ -247,6 +247,7 @@ const KvKPerformancePage = () => {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="w-full max-w-md">
                         <Input
+                            aria-label={t('performance.search_placeholder')}
                             placeholder={t('performance.search_placeholder')}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -281,69 +282,113 @@ const KvKPerformancePage = () => {
 
             {/* Table */}
             <Card className="overflow-hidden border border-slate-700/50 bg-slate-900/40 backdrop-blur-md">
-                <div className="overflow-x-auto max-h-[800px]">
-                    <Table>
-                        <TableHeader className="bg-slate-900/80 sticky top-0 z-10 backdrop-blur-sm">
-                            <TableRow>
-                                <TableHead className="w-12 text-center text-slate-500 text-xs font-mono select-none">#</TableHead>
-                                {columns.map(({ k, L }) => (
-                                    <TableHead
-                                        key={k}
-                                        onClick={() => handleSort(k)}
-                                        className="cursor-pointer hover:text-white transition-colors group select-none text-left whitespace-nowrap text-xs py-2 px-2"
-                                    >
-                                        <div className="flex items-center gap-1">
-                                            {L}
-                                            <SortIcon columnKey={k} />
+                <div className="overflow-auto custom-scrollbar relative max-h-[800px]">
+                    {/* Mobile Card View */}
+                    <div className="md:hidden flex flex-col gap-3 p-4">
+                        {filteredAndSortedData.map((row, index) => (
+                            <div key={`${row.id || 'unknown'}-${index}`} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
+                                <div className="flex justify-between items-center border-b border-slate-700/50 pb-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded">#{index + 1}</span>
+                                        <Avatar id={row.id} name={row.name} size="sm" className="border border-slate-700 bg-slate-800" />
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-white text-sm truncate max-w-[140px]">{row.name}</span>
+                                            <span className="text-[10px] text-slate-500">{row.id}</span>
                                         </div>
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filteredAndSortedData.map((row, index) => (
-                                <TableRow key={`${row.id || 'unknown'}-${index}`} className="hover:bg-white/5 transition-colors border-b border-white/5">
-                                    <TableCell className="w-8 text-center text-slate-500 text-xs border-r border-white/5 font-mono select-none py-1 px-2">{index + 1}</TableCell>
-                                    <TableCell className="font-mono text-xs text-gray-500 text-left py-1 px-2">{row.id}</TableCell>
-                                    <TableCell className="font-medium text-white text-left text-xs py-1 px-2 truncate max-w-[150px]" title={row.name}>
-                                        <div className="flex items-center gap-2">
-                                            <Avatar
-                                                id={row.id}
-                                                name={row.name}
-                                                size="xs"
-                                                className="border border-slate-700"
-                                            />
-                                            <span className="truncate">{row.name}</span>
+                                    </div>
+                                    {activeTab === 'main' && row.rate && (
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
+                                            {row.rate}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                    {columns.filter(c => !['id', 'name', 'rate'].includes(c.k)).map(({ k, L }) => (
+                                        <div key={k} className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                            <span className="text-slate-500">{L}</span>
+                                            <span className="font-mono text-white text-right">
+                                                {k === 'goalPercent' ? (
+                                                    <span className={`${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400' : (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400' : 'text-red-400'}`}>
+                                                        {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}
+                                                    </span>
+                                                ) : k.toLowerCase().includes('dead') ? (
+                                                    <span className="text-red-400">{formatNumber(row[k])}</span>
+                                                ) : k.toLowerCase().includes('gained') ? (
+                                                    <span className="text-emerald-400">+{formatNumber(row[k])}</span>
+                                                ) : formatNumber(row[k])}
+                                            </span>
                                         </div>
-                                    </TableCell>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
-                                    {/* Generic Cell Rendering based on columns */}
-                                    {columns.slice(2).map(({ k }) => (
-                                        <TableCell key={k} className="text-left text-xs py-1 px-2 tabular-nums">
-                                            {k === 'goalPercent' ? (
-                                                <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400 bg-green-400/10' :
-                                                    (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400 bg-yellow-400/10' :
-                                                        'text-red-400 bg-red-400/10'
-                                                    }`}>
-                                                    {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}
-                                                </span>
-                                            ) : k === 'rate' ? (
-                                                <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
-                                                    {row.rate}
-                                                </span>
-                                            ) : k.toLowerCase().includes('dead') ? (
-                                                <span className="text-red-400 font-bold">{formatNumber(row[k])}</span>
-                                            ) : k.toLowerCase().includes('gained') ? (
-                                                <span className="text-emerald-400 font-bold">+{formatNumber(row[k])}</span>
-                                            ) : (
-                                                <span className="text-gray-300">{formatNumber(row[k])}</span>
-                                            )}
-                                        </TableCell>
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block w-full min-w-[800px]">
+                        <Table>
+                            <TableHeader className="bg-slate-900/80 sticky top-0 z-10 backdrop-blur-sm">
+                                <TableRow>
+                                    <TableHead className="w-12 text-center text-slate-500 text-xs font-mono select-none">#</TableHead>
+                                    {columns.map(({ k, L }) => (
+                                        <TableHead
+                                            key={k}
+                                            onClick={() => handleSort(k)}
+                                            className="cursor-pointer hover:text-white transition-colors group select-none text-left whitespace-nowrap text-xs py-2 px-2"
+                                        >
+                                            <div className="flex items-center gap-1">
+                                                {L}
+                                                <SortIcon columnKey={k} />
+                                            </div>
+                                        </TableHead>
                                     ))}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredAndSortedData.map((row, index) => (
+                                    <TableRow key={`${row.id || 'unknown'}-${index}`} className="hover:bg-white/5 transition-colors border-b border-white/5">
+                                        <TableCell className="w-8 text-center text-slate-500 text-xs border-r border-white/5 font-mono select-none py-1 px-2">{index + 1}</TableCell>
+                                        <TableCell className="font-mono text-xs text-gray-500 text-left py-1 px-2">{row.id}</TableCell>
+                                        <TableCell className="font-medium text-white text-left text-xs py-1 px-2 truncate max-w-[150px]" title={row.name}>
+                                            <div className="flex items-center gap-2">
+                                                <Avatar
+                                                    id={row.id}
+                                                    name={row.name}
+                                                    size="xs"
+                                                    className="border border-slate-700"
+                                                />
+                                                <span className="truncate">{row.name}</span>
+                                            </div>
+                                        </TableCell>
+
+                                        {/* Generic Cell Rendering based on columns */}
+                                        {columns.slice(2).map(({ k }) => (
+                                            <TableCell key={k} className="text-left text-xs py-1 px-2 tabular-nums">
+                                                {k === 'goalPercent' ? (
+                                                    <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400 bg-green-400/10' :
+                                                        (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400 bg-yellow-400/10' :
+                                                            'text-red-400 bg-red-400/10'
+                                                        }`}>
+                                                        {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}
+                                                    </span>
+                                                ) : k === 'rate' ? (
+                                                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
+                                                        {row.rate}
+                                                    </span>
+                                                ) : k.toLowerCase().includes('dead') ? (
+                                                    <span className="text-red-400 font-bold">{formatNumber(row[k])}</span>
+                                                ) : k.toLowerCase().includes('gained') ? (
+                                                    <span className="text-emerald-400 font-bold">+{formatNumber(row[k])}</span>
+                                                ) : (
+                                                    <span className="text-gray-300">{formatNumber(row[k])}</span>
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
             </Card>
         </div>

@@ -192,7 +192,7 @@
         "title": "ملف المستخدم",
         "governor_id": "معرف الحاكم",
         "display_name": "الاسم المعروض",
-        "linked_account": "الحساب المرتبط",
+        "linked_account": "حساب مرتبط",
         "linked_governor": "الحاكم المرتبط",
         "no_governor_linked": "لم يتم ربط حاكم. ابحث عن نفسك!",
         "claim": "امتلاك",
@@ -204,7 +204,15 @@
         "link_error": "فشل الربط",
         "role_king": "ملك",
         "role_officer": "ضابط",
-        "role_warrior": "محارب"
+        "role_warrior": "محارب",
+        "linked_accounts": "الحسابات المرتبطة",
+        "connected_via_discord": "متصل عبر Discord SSO",
+        "main_account": "الحساب الرئيسي",
+        "sync_roles_desc": "فرض تحديث الصلاحيات من سيرفر ديسكورد",
+        "sync_roles": "مزامنة الأدوار",
+        "discord_linked": "تم ربط Discord",
+        "link_discord_desc": "اربط حساب Discord الخاص بك لمزامنة أدوارك في التطبيق.",
+        "link_discord_account": "ربط حساب Discord الخاص بي"
     },
     "datarefresh": {
         "title": "مزامنة البيانات",

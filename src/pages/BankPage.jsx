@@ -121,48 +121,89 @@ const BankPage = () => {
                 </CardHeader>
                 <CardContent className="flex-1 overflow-hidden p-0">
                     {sortedWeeklyData?.length > 0 ? (
-                        <div className="h-full overflow-auto overflow-x-auto custom-scrollbar">
-                            <Table>
-                                <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
-                                    <TableRow>
-                                        <TableHead className="w-[60px] text-xs text-center">{t('dashboard.rank')}</TableHead>
-                                        <TableHead className="text-xs">{t('war.governor')}</TableHead>
-                                        <TableHead className="text-right text-amber-500/80 text-xs">Food</TableHead>
-                                        <TableHead className="text-right text-emerald-500/80 text-xs">Wood</TableHead>
-                                        <TableHead className="text-right text-stone-500/80 text-xs">Stone</TableHead>
-                                        <TableHead className="text-right text-yellow-500/80 text-xs">Gold</TableHead>
-                                        <TableHead className="text-right font-bold text-white text-xs">{t('bank.week_total')}</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {sortedWeeklyData.map((row, idx) => (
-                                        <TableRow key={row.id || idx} className="hover:bg-white/5 transition-colors group">
-                                            <TableCell className="text-center font-medium text-slate-500 group-hover:text-slate-300">
-                                                #{idx + 1}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-3">
-                                                    <Avatar
-                                                        id={row.id}
-                                                        name={row.name}
-                                                        size="sm"
-                                                        className="bg-slate-800 border border-slate-700"
-                                                    />
-                                                    <div className="flex flex-col">
-                                                        <span className="font-medium text-slate-200 group-hover:text-white transition-colors">{row.name}</span>
-                                                        <span className="text-[10px] text-slate-500 font-mono">{row.id}</span>
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.food)}</TableCell>
-                                            <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.wood)}</TableCell>
-                                            <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.stone)}</TableCell>
-                                            <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.gold)}</TableCell>
-                                            <TableCell className="text-right font-mono font-bold text-white">{formatNumber(row.weekTotal)}</TableCell>
+                        <div className="h-full overflow-auto custom-scrollbar relative">
+                            {/* Mobile Card View */}
+                            <div className="md:hidden flex flex-col gap-3 p-4">
+                                {sortedWeeklyData.map((row, idx) => (
+                                    <div key={row.id || idx} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
+                                        <div className="flex items-center gap-3 border-b border-slate-700/50 pb-2">
+                                            <span className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded">#{idx + 1}</span>
+                                            <Avatar id={row.id} name={row.name} size="sm" className="border border-slate-700 bg-slate-800" />
+                                            <div className="flex flex-col">
+                                                <span className="font-bold text-white text-sm truncate max-w-[140px]">{row.name}</span>
+                                                <span className="text-[10px] text-slate-500">{row.id}</span>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2 text-xs">
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                                <span className="text-amber-500/80">Food</span>
+                                                <span className="font-mono text-slate-300">{formatNumber(row.food)}</span>
+                                            </div>
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                                <span className="text-emerald-500/80">Wood</span>
+                                                <span className="font-mono text-slate-300">{formatNumber(row.wood)}</span>
+                                            </div>
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                                <span className="text-stone-500/80">Stone</span>
+                                                <span className="font-mono text-slate-300">{formatNumber(row.stone)}</span>
+                                            </div>
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                                <span className="text-yellow-500/80">Gold</span>
+                                                <span className="font-mono text-slate-300">{formatNumber(row.gold)}</span>
+                                            </div>
+                                            <div className="col-span-2 flex justify-between bg-white/5 border border-white/10 p-2 rounded">
+                                                <span className="text-white font-bold">{t('bank.week_total')}</span>
+                                                <span className="font-mono font-bold text-amber-400">{formatNumber(row.weekTotal)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Desktop Table */}
+                            <div className="hidden md:block w-full min-w-[700px]">
+                                <Table>
+                                    <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
+                                        <TableRow>
+                                            <TableHead className="w-[60px] text-xs text-center">{t('dashboard.rank')}</TableHead>
+                                            <TableHead className="text-xs">{t('war.governor')}</TableHead>
+                                            <TableHead className="text-right text-amber-500/80 text-xs">Food</TableHead>
+                                            <TableHead className="text-right text-emerald-500/80 text-xs">Wood</TableHead>
+                                            <TableHead className="text-right text-stone-500/80 text-xs">Stone</TableHead>
+                                            <TableHead className="text-right text-yellow-500/80 text-xs">Gold</TableHead>
+                                            <TableHead className="text-right font-bold text-white text-xs">{t('bank.week_total')}</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {sortedWeeklyData.map((row, idx) => (
+                                            <TableRow key={row.id || idx} className="hover:bg-white/5 transition-colors group">
+                                                <TableCell className="text-center font-medium text-slate-500 group-hover:text-slate-300">
+                                                    #{idx + 1}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <Avatar
+                                                            id={row.id}
+                                                            name={row.name}
+                                                            size="sm"
+                                                            className="bg-slate-800 border border-slate-700"
+                                                        />
+                                                        <div className="flex flex-col">
+                                                            <span className="font-medium text-slate-200 group-hover:text-white transition-colors">{row.name}</span>
+                                                            <span className="text-[10px] text-slate-500 font-mono">{row.id}</span>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.food)}</TableCell>
+                                                <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.wood)}</TableCell>
+                                                <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.stone)}</TableCell>
+                                                <TableCell className="text-right font-mono text-slate-400">{formatNumber(row.gold)}</TableCell>
+                                                <TableCell className="text-right font-mono font-bold text-white">{formatNumber(row.weekTotal)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-4">

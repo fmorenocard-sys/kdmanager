@@ -29,13 +29,14 @@ const WarTrackerPage = () => {
             </header>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b border-slate-700 mb-6 overflow-x-auto">
+            <div className="flex border-b border-slate-700 mb-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
+                        type="button"
                         onClick={() => setActiveTab(tab.id)}
                         className={`
-                            flex items-center gap-2 px-4 md:px-6 py-3 text-sm font-medium transition-colors relative whitespace-nowrap
+                            snap-start flex-shrink-0 flex items-center gap-2 px-4 md:px-6 py-3 text-sm font-medium transition-colors relative whitespace-nowrap
                             ${activeTab === tab.id ? 'text-indigo-400' : 'text-slate-400 hover:text-slate-200'}
                         `}
                     >

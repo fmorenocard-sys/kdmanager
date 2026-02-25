@@ -156,6 +156,7 @@ const DeadweightPage = () => {
                         <CardTitle className="whitespace-nowrap">{t('deadweight.title')}</CardTitle>
                         <div className="w-full md:w-64">
                             <Input
+                                aria-label={t('common.search')}
                                 placeholder={t('common.search_placeholder')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}

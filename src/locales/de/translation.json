@@ -204,7 +204,15 @@
         "link_error": "Verknüpfung fehlgeschlagen",
         "role_king": "König",
         "role_officer": "Offizier",
-        "role_warrior": "Krieger"
+        "role_warrior": "Krieger",
+        "linked_accounts": "Verknüpfte Konten",
+        "connected_via_discord": "Verbunden über Discord SSO",
+        "main_account": "Hauptkonto",
+        "sync_roles_desc": "Aktualisierung der Berechtigungen vom Discord-Server erzwingen",
+        "sync_roles": "Rollen synchronisieren",
+        "discord_linked": "Discord Verknüpft",
+        "link_discord_desc": "Verknüpfe dein Discord-Konto, um deine In-App-Rollen zu synchronisieren.",
+        "link_discord_account": "Mein Discord-Konto verknüpfen"
     },
     "datarefresh": {
         "title": "Datensync",

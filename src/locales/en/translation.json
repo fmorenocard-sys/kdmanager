@@ -204,7 +204,15 @@
         "link_error": "Failed to link ID",
         "role_king": "King",
         "role_officer": "Officer",
-        "role_warrior": "Warrior"
+        "role_warrior": "Warrior",
+        "linked_accounts": "Linked Accounts",
+        "connected_via_discord": "Connected via Discord SSO",
+        "main_account": "Main Account",
+        "sync_roles_desc": "Force update your permissions from the Discord server",
+        "sync_roles": "Sync Roles",
+        "discord_linked": "Discord Linked",
+        "link_discord_desc": "Link your Discord account to synchronize your in-app roles.",
+        "link_discord_account": "Link my Discord account"
     },
     "datarefresh": {
         "title": "Data Sync",

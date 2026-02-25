@@ -204,7 +204,15 @@
         "link_error": "Bağlama başarısız",
         "role_king": "Kral",
         "role_officer": "Subay",
-        "role_warrior": "Savaşçı"
+        "role_warrior": "Savaşçı",
+        "linked_accounts": "Bağlı Hesaplar",
+        "connected_via_discord": "Discord SSO ile Bağlanıldı",
+        "main_account": "Ana Hesap",
+        "sync_roles_desc": "İzinleri Discord sunucusundan zorla güncelle",
+        "sync_roles": "Rolleri Senkronize Et",
+        "discord_linked": "Discord Bağlı",
+        "link_discord_desc": "Uygulama içi rollerinizi senkronize etmek için Discord hesabınızı bağlayın.",
+        "link_discord_account": "Discord hesabımı bağla"
     },
     "datarefresh": {
         "title": "Veri Senkronizasyonu",

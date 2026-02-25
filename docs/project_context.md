@@ -1,17 +1,20 @@
-# Documentation & Analyse de l'Existant - Refonte Application Royaume 2997
-
-Ce document synthétise le contexte, l'architecture et les besoins de l'application existante en vue de sa refonte (V2).
+# Documentation & Analyse de l'Existant - Rétrodocumentation KD 2997
 
 ## 1. Vue d’ensemble du produit
 
 ### 1.1 Finalité supposée de l’application
-*   **Objectif métier** : Fournir un tableau de bord de gestion et d’analyse pour le leadership d’un Royaume (KD 2997) dans le jeu Rise of Kingdoms.
-*   **Problème utilisateur adressé** : Centraliser et visualiser les données dispersées (fichiers Excel multiples) concernant la puissance des joueurs, les contributions (banques), et les performances (trophées/kills), afin de faciliter la prise de décision (migrations, tracking de "poids mort").
-*   **Cible utilisateur identifiée** : Officiers et Leadership du Royaume 2997.
+*   **Objectif métier** : Fournir une plateforme centralisée de gestion communautaire pour le leadership d’un Royaume (KD 2997) dans le jeu Rise of Kingdoms.
+*   **Problème utilisateur adressé** : Faciliter la gestion des présences en guerre (War Tracker), le suivi des performances lors des KVK (Kills, Deads), la gestion des contributions bancaires, et authentifier facilement les joueurs de l'alliance.
+*   **Cible utilisateur identifiée** : 
+    * Leadership (Roi) : Configuration Globale
+    * Officiers : Mise à jour des datas, suivi des présences
+    * Joueurs (Warriors) : Déclaration des disponibilités pour les guerres, consultation de leurs statistiques.
 
 ### 1.2 Positionnement fonctionnel
-*   **Type d’application** : Outil interne de gestion communautaire (Dashboard analytique).
-*   **Complexité globale** : Moyenne. L’application agrège plusieurs sources de données (Excel) et propose des visualisations interactives (graphiques, tables triables) mais ne possède pas (encore) de backend complexe ou de base de données relationnelle persistante (reposant sur du local storage et des fichiers statiques).
+*   **Type d’application** : Dashboard analytique et outil interne (SaaS-like pour une guilde/royaume).
+*   **Complexité globale** : Moyenne à Morte. Intègre de la Data Visualization riche, de l'authentification tierce (Auth Google + SSO Discord), une synchronisation de rôles via Discord, des bases de données temps réel (Firestore) et des Cloud Functions pour l'ingestion de données et la sécurité.
+
+---
 
 ## 2. Cartographie fonctionnelle
 
@@ -19,88 +22,94 @@ Ce document synthétise le contexte, l'architecture et les besoins de l'applicat
 
 | Fonctionnalité | Description | Pages concernées | État |
 | :--- | :--- | :--- | :--- |
-| **Dashboard** | General KD stats (Power, Kill Points, RSS). | `DashboardPage.jsx` | 🟢 Live |
-| **Performance** | KvK Player analysis (Kills, Dead, Goals). | `KvKPerformancePage.jsx` | 🟢 Live |
-| **Trophies** | Weekly wins & event history. | `KingdomTrophiesPage.jsx` | 🟢 Live |
-| **Deadweight** | Tracking inactive/non-compliant players. | `DeadweightPage.jsx` | 🟢 Live |
-| **Bank** | Resource tracking & weekly deposits. | `BankPage.jsx` | 🟢 Live |
-| **War Tracker** | Readiness, tech budget, marched list. | `WarTrackerPage.jsx` | 🟢 Live |
-| **Profile** | User settings (Google Auth), linking ID. | `ProfilePage.jsx` | 🟢 Live |
-| **Data Sync** | Officer-only XLSX upload trigger. | `DataRefreshControl.jsx` | 🟢 Live |
+| **Authentification** | Login via Google, ou directement via le SSO Discord (OAuth2 complet). | `App.jsx`, `ProfilePage` | 🟢 Fonctionnelle |
+| **Synchronisation des Rôles** | Synchronisation automatique des rôles sur l'app (King/Officer/Warrior) selon le grade de l'utilisateur sur le serveur Discord de la guilde. | `ProfilePage.jsx` | 🟢 Fonctionnelle |
+| **Dashboard** | Vue agrégée des données du Royaume (Top 300, Trésorerie globale). | `DashboardPage.jsx` | 🟢 Fonctionnelle |
+| **Tableaux de Performance** | Analyse des joueurs pour le KvK en cours (Objectifs, KP, Deads). | `KvKPerformancePage.jsx` | 🟢 Fonctionnelle |
+| **Trophées** | Historique événementiel du royaume hebdomadaire. | `KingdomTrophiesPage.jsx` | 🟢 Fonctionnelle |
+| **Deadweight (Poids Mort)** | Suivi des joueurs inactifs ou non performants. | `DeadweightPage.jsx` | 🟢 Fonctionnelle |
+| **Banque** | Tracking des dons (Ressources) par joueur par semaine. | `BankPage.jsx` | 🟢 Fonctionnelle |
+| **War Tracker** | Formulaire de déclaration de présence pour les guerres de garnison/ralliement (incluant engins de siège) et Dashboard Officiers pour suivre les présences globales. | `WarTrackerPage.jsx` | 🟢 Fonctionnelle |
+| **Upload de Données** | Composant pour uploader les fichiers Excel (Top 300, etc) qui synchronise automatiquement vers la DB. | `DataRefreshControl.jsx` | 🟢 Fonctionnelle |
+| **Multi-Langues (i18n)** | Traduction complète de l'application en 8 langues. | `LanguageSwitcher.jsx` | 🟢 Fonctionnelle |
 
 ### 2.2 Mapping des User Flows
 
-#### Flow : Mise à jour des données
-*   **Entrée** : Bouton "Update" sur n'importe quelle page (Dashboard, Bank, etc.).
-*   **Action** : L'utilisateur sélectionne/glisse un fichier Excel local.
-*   **Traitement** : Le composant `DataRefreshControl` parse le fichier via `xlsx`.
-*   **Résultat** : Les graphiques et tableaux se mettent à jour instantanément (état local ou persisté si implémenté).
+*   **Connexion / SSO Flow**
+    *   *Point d’entrée* : N'importe quelle page bloquée.
+    *   *Action* : Clic sur Connexion Discord. L'utilisateur est redirigé vers l'OAuth2 Discord.
+    *   *Résultat attendu* : Assignation automatique des rôles via Cloud Function et connexion de l'utilisateur.
 
-#### Flow : Analyse de Contribution (Banque)
-*   **Entrée** : Page "Kingdom Bank".
-*   **Visualisation** : Graphiques des entrées RSS par semaine.
-*   **Détail** : Tableau croisé dynamique des contributions par semaine.
+*   **Flow War Tracker (Joueur)**
+    *   *Point d’entrée* : Rubrique "War Tracker".
+    *   *Action* : Remplissage des types de marches disponibles (Infanterie, Cavalerie, Archers, Siège) et nombre pour une campagne KvK active.
+    *   *Résultat attendu* : Envoi instantané vers Firestore et visibilité pour les officiers.
+
+*   **Flow Ingestion des données (Officier/King)**
+    *   *Point d’entrée* : Dashboard Admin ou composant DataRefresh.
+    *   *Action* : Dépôt d'un fichier .xlsx (issu du jeu/scanner).
+    *   *Résultat attendu* : Le code parse le fichier via SheetJS (`xlsx`), formate en JSON et envoie un blob chiffré aux Cloud Functions pour persister dans Firestore.
+
+---
 
 ## 3. Architecture technique observée
 
 ### 3.1 Structure des pages
-*   `App.jsx` : Routeur principal (gestion d'état `activePage`). Layout avec `Sidebar`.
-*   `DashboardPage.jsx` : Page d'accueil. Agrège Top 300 et Bank Ledger pour une vue synthétique.
-*   `DeadweightPage.jsx` : Focus sur l'optimisation du matchmaking (puissance vs performance).
-*   `BankPage.jsx` : Focus sur la trésorerie.
-*   `KingdomTrophiesPage.jsx` : Focus sur l'historique événementiel.
+*   Routeur : Basé sur `react-router-dom` (HashRouter).
+*   **Pages** : Sécurisées par un HOC de protection (`RoleGuard.jsx` ou contexte conditionnel).
+    *   `/` : Dashboard
+    *   `/war-tracker` : Guerre (Formulaires + Tableaux de bord officiers + Configs Roi).
+    *   `/kvk` : Stats de guerre individuelles.
+    *   `/profile` : Paramétrages persos et link des profils.
 
 ### 3.2 Structure des données
-Les données proviennent exclusivement de fichiers Excel statiques situés dans `/public/data/` ou uploadés par l'utilisateur.
 
-**Fichiers Sources :**
-1.  **`Top 300 [Date].xlsx`** (ex: `Top 300 14_2_2026.xlsx`) :
-    *   Onglet `[Date]` : Données joueurs (ID, Nom, Puissance, KP, etc.).
-    *   Onglet `Dashboard` : Historique d'évolution (Date, Puissance Totale, KP Totaux).
-2.  **`KD 97 Bank Ledger.xlsx`** :
-    *   Onglet `Weekly Contribution` : Matrice Joueurs x Semaines (RSS donnés).
-    *   Onglet `Dashboard` : État actuel de la trésorerie (Food, Wood, Stone, Gold).
-3.  **`KD 97 Deadweight.xlsx`** :
-    *   Fichier spécifique pour le tracking des poids morts (structure similaire au Top 300).
-4.  **`Offseason_KingTrophies_[Year].xlsx`** :
-    *   Format vertical par semaine. Liste des gagnants par catégorie (Zenith, MGE, etc.).
+Modèle de données principal (basé sur Cloud Firestore) :
 
-Tous les fichiers sont centralisés dans `/public/data/`.
+| Collection Firestore | Rôle / Description |
+| :--- | :--- |
+| `kvk_config` | Contient un document `current` gérant la campagne active du royaume. |
+| `war_availabilities` | Stocke les déclarations de présence aux guerres des joueurs, liées par un `kvkId`. |
+| `user_profiles` | Données de l’utilisateur authentifié (ID Discord, grade assigné). |
+| `player_data` / `bank_data` | Collections (ou blobs JSON gérés en interne par functions) de la data Ingame parsée depuis les Excel. |
 
 ### 3.3 Logique métier
-*   **Parsing Excel** : Utilisation intensive de la librairie `xlsx`.
-*   **Logique de Détection** :
-    *   **Headers Dynamiques** : `BankPage` scanne les premières lignes pour trouver la ligne des "Semaines".
-    *   **Fusion de Données** : `DashboardPage` croise les données de deux fichiers Excel différents pour afficher à la fois les stats joueurs et la trésorerie.
-*   **Persistance** : Utilisation partielle de `localStorage` pour sauvegarder les URLs de Google Sheets (feature existante dans le code mais moins mise en avant récemment au profit des fichiers locaux).
+*   **Parsing Excel Client-side** : Exécution sur le thread principal front avec structuration via un mapping externe `data-mapping.js`.
+*   **Sécurité API** : Les appels à Firestore en modification sont validés via Security Rules et limités (seuls King/Officers écrivent la DB de stats). Le système Discord utilise un JWT Token Minté par des Cloud Functions (Firebase Admin SDK).
+*   **RBAC (Role Based Access Control)** : Hiérarchie stricte via Context (`RoleContext.jsx`). Accès : Guest < Warrior < Officer < King.
+
+---
 
 ## 4. Analyse UX / UI
 
 ### 4.1 Cohérence interface
-*   **Thème** : "Glassmorphism" sombre/premium cohérent (fonds translucides, bordures fines, dégradés de texte).
-*   **Navigation** : Sidebar latérale persistante.
-*   **Feedback** : Loaders pendant le chargement des fichiers. Alertes lors des mises à jour réussies.
+*   **Thème** : "Glassmorphism" sombre/premium (Slate-900). Modèles visuels constants.
+*   **Design System** : Utilisation intensive de Tailwind CSS (et non un framework composants lourd). Les icônes `lucide-react` et des animations simples (`framer-motion` et CSS transitions) donnent une vraie vitalité à la SPA.
+*   **Responsive** : Barre de navigation latérale dynamique, devenant Sidebar/BottomNav sur mobile. Tableaux scrollables horizontalement.
+*   **Palette** : Primary (Indigo/Purple), Success (Emerald), Warnings (Amber). Contraste et accessibilité (WCAG) généralement respectés.
 
 ### 4.2 Expérience utilisateur
-*   **Points forts** : Interface très réactive (SPA), visuels impactants (Recharts, Lucide icons).
-*   **Frictions potentielles** :
-    *   La dépendance aux noms de fichiers/onglets exacts dans les Excel peut être source d'erreurs (fragilité du parsing).
-    *   Pas de backend : Les données ne sont mises à jour que si l'utilisateur a le fichier ou si le déploiement est mis à jour avec de nouveaux fichiers dans `/public/data/`.
+*   **Points de friction résiduels** : L'ingestion des Excel pourrait planter de façon opaque si le format du fichier change inopinément, ce qui produit un message d'erreur dur à interpréter pour un utilisateur lambda.
+
+---
 
 ## 5. Dette technique et risques
 
-| Problème | Sévérité | Description |
+| Type de Dette | Évaluation | Commentaire |
 | :--- | :--- | :--- |
-| **Dépendance structure Excel** | 🔴 Critique | Le code attend des formats très spécifiques (noms d'onglets, positions de colonnes). Un changement mineur dans l'Excel casse l'app. (Atténué partiellement par la recherche dynamique de headers récente). |
-| **Pas de Backend** | 🟠 Important | Les données sont "statiques" pour chaque utilisateur à moins d'upload manuel. Pas de "source de vérité" partagée en temps réel sans redéploiement. |
-| **Performance Parsing** | 🟢 Améliorable | Parser des gros fichiers Excel (Top 300 complet) côté client à chaque chargement pourrait devenir lent sur mobile. |
-| **Hardcoded Paths** | 🟢 Améliorable | Les noms de fichiers (14_2_2026) sont en dur dans le code. À chaque scan, il faut changer le code ou renommer le fichier. |
+| **Structure des données Excel** | 🔴 Critique | Le système est extrêmement couplé au format exact d'un `.xlsx` exporté de ROK. Les headers et tab-names évoluent et requièrent une maintenance du `data-mapping.js`. |
+| **Coût Firestore (Reads)** | 🟠 Important | L'affichage du leaderboard demande de charger tout le `player_data`. Il est important de maintenir le batching et la compression côté Cloud Functions. |
+| **Complexité OAuth2 (React Router)** | 🟢 Améliorable | Le hack pour parse le token (gestion du `#` dans HashRouter via Redirect) fonctionne mais méritrait peut-être une lib Auth0 ou refactoring si la complexité augmente. |
+
+---
 
 ## 6. Hypothèses et zones d’ombre
-*   **Google Sheets** : Le code contient des traces d'intégration Google Sheets (`fetchCsv`, `localStorage`), mais l'usage actuel semble pivoter vers des fichiers Excel locaux/statiques. La stratégie finale d'alimentation des données est floue.
-*   **Authentification** : Aucune gestion utilisateur/rôle n'est visible. L'app est accessible à tous ceux qui ont le lien (ok pour un dashboard lecture seule, risqué si fonctionnalités d'écriture ajoutées).
+*   **Bot d’Alerte Discord** : Il est mentionné dans le backlog ("Bot de notifications") mais n'est pas encore programmé (Phase 3). L'infrastructure est cependant prête puisqu'on a le Token Bot Discord et l'intent de serveur installés dans Google Cloud Secrets.
+*   **Gestion des logs de Sync** : Actuellement, aucune trace de l'historique d'import n'est facilement lisible par le Roi sur l'interface si un upload foire côté backend Cloud Function.
 
-## 7. Recommandations pour un rebuild propre (v2)
-*   **Fichier de Configuration** : Externaliser les noms de fichiers cibles et les mappings de colonnes dans un `config.js` ou `constants.js` pour éviter de toucher aux composants React lors des changements de format Excel.
-*   **Middleware d'Ingestion** : Idéalement, créer un script (Node.js/Python) qui transforme les Excels bruts en JSON standardisé (`players.json`, `history.json`) lors du build ou via une API simple. L'app frontend ne consommerait que ce JSON propre, découplant la logique d'affichage de la complexité du parsing Excel.
-*   **Mode "Live" vs "Archive"** : Pour les trophées et l'historique, gérer explicitement les années/saisons via une structure de dossiers `/data/2026/`, `/data/2025/` pour la scalabilité.
+---
+
+## 7. Recommandations pour un rebuild propre
+Bien que l'application actuelle soit fonctionnelle en l'état V2:
+1. **Abstraction de la data source** : Isoler totalement le parsing Excel en Backend via Node (`Busboy`/`Multer`). Alléger le client lourd frontend et ajouter des Logs Cloud.
+2. **Utiliser des Aggregations Firestore** : Éviter de fetch 300 docs de la DB juste pour compter le nombre de points d'une alliance, utiliser `count()` de Firebase 9+.

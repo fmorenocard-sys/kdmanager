@@ -204,7 +204,15 @@
         "link_error": "Vinculación fallida",
         "role_king": "Rey",
         "role_officer": "Oficial",
-        "role_warrior": "Guerrero"
+        "role_warrior": "Guerrero",
+        "linked_accounts": "Cuentas vinculadas",
+        "connected_via_discord": "Conectado vía Discord SSO",
+        "main_account": "Cuenta principal",
+        "sync_roles_desc": "Forzar la actualización de permisos desde el servidor de Discord",
+        "sync_roles": "Sincronizar roles",
+        "discord_linked": "Discord Vinculado",
+        "link_discord_desc": "Vincula tu cuenta de Discord para sincronizar tus roles en la aplicación.",
+        "link_discord_account": "Vincular mi cuenta de Discord"
     },
     "datarefresh": {
         "title": "Sincronización de datos",

@@ -1,67 +1,59 @@
-# Structured Source of Truth (SSOT) - v1.0
+# Structured Source of Truth (SSOT) - v2.0
 
 ## 1. Features (F)
 
 | ID | Name | Description | Actors |
 | :--- | :--- | :--- | :--- |
-| **F-001** | **Global Dashboard** | Display kingdom overview statistics (Power, Kills, Evolution). Aggregates data from Top 300 and Bank. Includes historical trends for Power and KP. | Leadership |
-| **F-002** | **Deadweight Tracking** | Identify and track inactive players. Metrics for "Reducible Power" (excluding justified inactivity). Filters for Status/ID. | Leadership |
-| **F-003** | **Bank Treasury Monitoring** | Monitor current resource stocks (Food, Wood, Stone, Gold) and weekly contributions. | Bank Managers |
+| **F-001** | **Global Dashboard** | Display kingdom overview statistics (Power, Kills, Evolution). Aggregates data from Top 300 and Bank. Includes historical trends for Power and KP. | Leadership, Officers, Warriors |
+| **F-002** | **Deadweight Tracking** | Identify and track inactive players. Metrics for "Reducible Power" (excluding justified inactivity). Filters for Status/ID. | Leadership, Officers |
+| **F-003** | **Bank Treasury Monitoring** | Monitor current resource stocks (Food, Wood, Stone, Gold) and weekly contributions. | Bank Managers, Officers |
 | **F-004** | **Kingdom Trophies** | View historical winners of kingdom events (MGE, Zenith). | All Users |
-| **F-005** | **Data Ingestion** | Upload/Drag-and-drop local Excel files to update the dashboard view in real-time. | Officers |
-| **F-006** | **Player Detail View** | View detailed statistics for a specific player via a side panel (Combat, Economy, Notes). | Leadership |
+| **F-005** | **Data Ingestion (Cloud Sync)** | Upload Excel files via the UI to update the Firestore database via serverless Cloud Functions logic. | Officers, King |
+| **F-006** | **Player Detail View** | View detailed statistics for a specific player via a side panel (Combat, Economy, Notes). | Leadership, Officers |
 | **F-007** | **Advanced Filtering** | Search players by Name/ID and filter by Alliance on the dashboard. | All Users |
-| **F-008** | **KvK Performance Tracking** | Track player performance during KvK (Power diff, KP gained, Dead, Goals). Sortable table with visual indicators. | Leadership |
+| **F-008** | **KvK Performance Tracking** | Track player performance during KvK (Power diff, KP gained, Dead, Goals). Sortable table with visual indicators. | Leadership, Officers |
+| **F-009** | **Authentication (OAuth2)** | Authentication via Google or directly via Discord SSO. Link multiple providers to a single account profile. | All Users |
+| **F-010** | **RBAC & Role Synchronization** | Role Based Access Control (King, Officer, Warrior, Guest). Auto-synchronization of roles by querying the Discord Guild API using stored IDs. | Admin (King), Backend |
+| **F-011** | **War Tracker (Availability)** | Allow players to declare their presence for KvK marches (Garrison, Rally, Siege) across specific time slots. | Warriors |
+| **F-012** | **War Dashboard** | Aggregate view for Officers of all declared availabilities, tech levels, and troops for the active campaign. | Leadership, Officers |
+| **F-013** | **KvK Configuration** | Define the Active Campaign (name, start/end dates). Archiving previous campaigns. | Leadership (King) |
+| **F-014** | **Multi-Language (i18n)** | UI localized in 8 languages (EN, FR, ES, DE, PL, TR, UK, VI). | All Users |
 
 ## 2. Business Rules (BR)
 
 | ID | Rule | Description |
 | :--- | :--- | :--- |
-| **BR-001** | **Excel Data Source** | Data is read from Excel files located in `/public/data/` or uploaded by the user. |
-| **BR-002** | **Fuzzy Sheet Matching** | Sheets are identified by partial name matching (e.g., "14_2" matches "14_2_2026"). |
-| **BR-003** | **Bank Columns** | Bank Dashboard data is expected in specific rows (Food=1, Wood=2, etc.) at Column D (Index 3). |
-| **BR-004** | **Top 300 Aggregation** | "Top 300" files contain both individual player data (Sheet 1) and historical trends (Dashboard Sheet). |
-| **BR-005** | **Client-Side Processing** | All parsing (xlsx) happens in the browser. No server-side persistence of uploaded files. |
-| **BR-006** | **Deadweight Exclusion** | "Reducible Power/KP" excludes players with Status: *Confirmed, Migrated, King Pardon, Vacation permit* or Account Available: *Disappeared*. |
+| **BR-001** | **Firestore Source of Truth** | Data is read primarily from Firestore, populated either manually by officers or synchronized via Cloud Functions. |
+| **BR-002** | **Role Hierarchy** | Actions are restricted by RoleContext. Guest (View basic) < Warrior (Post availabilities) < Officer (Sync Data, see War Dashboard) < King (Configure KvK). |
+| **BR-003** | **Discord Role Priority** | Sync gives Priority: King > Officer > Warrior. If a user is not in the discord server or has no matching role, they default to Guest. |
+| **BR-004** | **KvK Campaign Isolation** | War Tracker forms strictly post to the campaign matching `kvk_config/current`. Historic campaign data is saved but only accessible via Dashboard filtering. |
+| **BR-005** | **Cloud Function Extraction** | The `syncData` Cloud Function expects specific `.xlsx` structures and names (Bank Ledger, Deadweight, Top 300) sent as base64 buffers. |
 
 ## 3. Pages / Screens (P)
 
 | ID | Name | Route | Components |
 | :--- | :--- | :--- | :--- |
-| **P-001** | **Dashboard** | `/` | `DashboardPage.jsx`, `PlayerSidePanel.jsx` |
-| **P-002** | **Deadweight** | `/deadweight` | `DeadweightPage.jsx` |
-| **P-003** | **Bank** | `/bank` | `BankPage.jsx` |
+| **P-001** | **Dashboard** | `/` | `DashboardPage.jsx`, `PlayerDetailPanel.jsx` |
+| **P-002** | **War Tracker** | `/war-tracker` | `WarTrackerPage.jsx`, `AvailabilityForm`, `WarDashboard`, `KvKConfigForm` |
+| **P-003** | **KvK Performance** | `/kvk` | `KvKPerformancePage.jsx` |
 | **P-004** | **Trophies** | `/trophies` | `KingdomTrophiesPage.jsx` |
-| **P-005** | **KvK Performance** | `/kvk` | `KvKPerformancePage.jsx` |
+| **P-005** | **Deadweight** | `/deadweight` | `DeadweightPage.jsx` |
+| **P-006** | **Bank** | `/bank` | `BankPage.jsx` |
+| **P-007** | **User Profile** | `/profile` | `ProfilePage.jsx` |
 
-## 4. Data Structures (D)
+## 4. Roles (R)
 
-### D-001: Player Record (Top 300)
-Columns mapping based on configuration:
-- 0: ID
-- 1: Name
-- 2: Power
-- 4: Kill Points (KP)
-- 5: Dead Troops
-- 13: Alliance
+| ID | Role | Description |
+| :--- | :--- | :--- |
+| **R-001** | **Guest** | Can read public metrics (if explicitly allowed, mostly zeroed right now due to rules). |
+| **R-002** | **Warrior** | Can read dashboards, access War Tracker to submit availability. |
+| **R-003** | **Officer** | Can trigger Data Syncs, view War Dashboard results. |
+| **R-004** | **King** | Can configure Active KvK campaigns, delete campaigns. |
 
-### D-002: Bank Ledger
-- **Dashboard Sheet**: Resource stocks.
-- **Weekly Contribution Sheet**: Matrix of [Player] x [Week Date].
+## 5. Errors & Fallbacks (E)
 
-### D-003: Trophies (trophies.json)
-- **Structure**: Array of Week objects.
-- **Week Object**:
-  - `title`: String (e.g., "Week 1").
-  - `groups`: Object (Keys = Trophy Type, Values = Array of Players).
-- **Player Object**: `id`, `name`, `score`.
-
-### D-004: Deadweight List (deadweight.json)
-- **Structure**: List of objects.
-- **Fields**: `id` (min 5 chars), `name`, `power`, `kp`, `status`, `accountAvailable`, `note`.
-- **Validation**: Rows without valid ID/Name are skipped.
-
-### D-005: KvK Performance (KvK Stats.xlsx)
-- **Source**: Excel file with specific columns for Initial/Final snapshots.
-- **Fields**: ID, Name, Initial Power, Final Power, Initial KP, Final KP, Dead, Goal %.
-- **Calculated**: Power Diff, KP Gained, Rate (Excellent/Good/etc.).
+| ID | Rule | Description |
+| :--- | :--- | :--- |
+| **E-001** | **Discord Missing Form** | If user logs in via Discord native SSO, they won't have a Google Profile. Role sync must parse the raw Firebase UID to get the Discord ID. |
+| **E-002** | **Form Missing Campaign** | If no Active KvK Campaign exists in DB, War Tracker hides the declaration form to prevent orphaned data. |
+| **E-003** | **Ingestion Size Limits** | Cloud Function payload limit is 10MB. Files must be chunked or kept reasonably sized. |

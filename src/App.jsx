@@ -82,6 +82,7 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
 const UserProfile = () => {
   const { currentUser, loginWithGoogle, loginWithDiscord, logout } = useAuth();
   const { t } = useTranslation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   if (!currentUser) {
     return (
@@ -113,28 +114,50 @@ const UserProfile = () => {
         <div className="text-sm font-bold text-white">{currentUser.displayName}</div>
         <div className="text-xs text-slate-400">{currentUser.email}</div>
       </div>
-      <div className="group relative">
-        <button className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary">
-          {currentUser.photoURL ? (
-            <img src={currentUser.photoURL} alt={currentUser.displayName} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-slate-800">
-              <img src="/logo.png" alt="Default Avatar" className="w-full h-full object-cover opacity-80" />
+      <div className="relative">
+        {dropdownOpen && (
+          <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+        )}
+        <div className="relative z-50">
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            {currentUser.photoURL ? (
+              <img src={currentUser.photoURL} alt={currentUser.displayName} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white font-bold">
+                {currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'}
+              </div>
+            )}
+          </button>
+
+          {/* Provider Badge */}
+          {currentUser.providerData?.some(p => p.providerId === 'google.com') ? (
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center p-0.5 shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-slate-800" title="Google User">
+              <span className="w-full h-full rounded-full flex items-center justify-center text-[10px] text-black font-extrabold pb-[1px]">G</span>
             </div>
-          )}
-        </button>
+          ) : currentUser.uid.startsWith('discord:') ? (
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#5865F2] rounded-full flex items-center justify-center p-0.5 shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-slate-800" title="Discord User">
+              <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 127.14 96.36" fill="currentColor">
+                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77.7,77.7,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.31,60,73.31,53s5-12.74,11.43-12.74S96.3,46,96.19,53,91.08,65.69,84.69,65.69Z" />
+              </svg>
+            </div>
+          ) : null}
+        </div>
         {/* Dropdown Menu */}
-        <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+        <div className={`absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-xl transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
           <div className="p-2">
             <Link
               to="/profile"
+              onClick={() => setDropdownOpen(false)}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
             >
               <User size={16} />
               {t('auth.my_profile')}
             </Link>
             <button
-              onClick={logout}
+              onClick={() => { setDropdownOpen(false); logout(); }}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-red-400 hover:bg-white/5 rounded-md transition-colors"
             >
               <LogOut size={16} />

@@ -121,6 +121,7 @@ const DashboardPage = () => {
                         <div className="flex flex-col md:flex-row gap-4 items-center">
                             <div className="flex-1 w-full">
                                 <Input
+                                    aria-label={t('common.search')}
                                     placeholder={t('common.search')}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -150,48 +151,87 @@ const DashboardPage = () => {
                             </div>
                         </CardHeader>
                         <CardContent className="flex-1 overflow-hidden p-0">
-                            <div className="h-full overflow-auto overflow-x-auto custom-scrollbar">
-                                <Table>
-                                    <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
-                                        <TableRow>
-                                            <TableHead className="w-[60px] text-center text-xs">{t('dashboard.rank')}</TableHead>
-                                            <TableHead className="text-xs">{t('dashboard.name')}</TableHead>
-                                            <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('power')}>{t('dashboard.power')}</TableHead>
-                                            <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('kp')}>Kill Points</TableHead>
-                                            <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('deads')}>{t('dashboard.total_dead')}</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {displayedPlayers.map((player) => (
-                                            <TableRow
-                                                key={player.id}
-                                                className="group cursor-pointer hover:bg-white/5 transition-colors"
-                                                onClick={() => setSelectedPlayer(player)}
-                                            >
-                                                <TableCell className="text-center font-medium text-slate-500 group-hover:text-slate-300">#{player.rank}</TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex-shrink-0">
-                                                            <Avatar
-                                                                id={player.id}
-                                                                name={player.name}
-                                                                size="sm"
-                                                                className="border border-slate-700 bg-slate-800"
-                                                            />
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <span className="font-semibold text-slate-200 group-hover:text-primary transition-colors">{player.name}</span>
-                                                            <span className="text-xs text-slate-500">[{player.alliance || '---'}] {player.id}</span>
-                                                        </div>
+                            <div className="h-full overflow-auto custom-scrollbar relative">
+                                {/* Mobile Card View */}
+                                <div className="md:hidden flex flex-col gap-3 p-4">
+                                    {displayedPlayers.map((player) => (
+                                        <div
+                                            key={player.id}
+                                            className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 hover:border-primary/50 flex flex-col gap-3 cursor-pointer transition-colors"
+                                            onClick={() => setSelectedPlayer(player)}
+                                        >
+                                            <div className="flex items-center gap-3 border-b border-slate-700/50 pb-2">
+                                                <div className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded">#{player.rank}</div>
+                                                <Avatar id={player.id} name={player.name} size="sm" className="border border-slate-700 bg-slate-800" />
+                                                <div className="flex items-center justify-between w-full">
+                                                    <div className="flex flex-col">
+                                                        <span className="font-bold text-white text-sm">{player.name}</span>
+                                                        <span className="text-[10px] text-slate-500">[{player.alliance || '---'}] {player.id}</span>
                                                     </div>
-                                                </TableCell>
-                                                <TableCell className="text-right font-mono text-blue-400">{formatNumber(player.power)}</TableCell>
-                                                <TableCell className="text-right font-mono text-red-400">{formatNumber(player.kp)}</TableCell>
-                                                <TableCell className="text-right font-mono text-slate-400">{formatNumber(player.deads)}</TableCell>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-2 px-1">
+                                                <div className="flex flex-col text-xs">
+                                                    <span className="text-slate-500 mb-0.5">{t('dashboard.power')}</span>
+                                                    <span className="font-mono font-medium text-blue-400">{formatNumber(player.power)}</span>
+                                                </div>
+                                                <div className="flex flex-col text-xs border-l border-slate-700 pl-2">
+                                                    <span className="text-slate-500 mb-0.5">Kill Points</span>
+                                                    <span className="font-mono font-medium text-red-400">{formatNumber(player.kp)}</span>
+                                                </div>
+                                                <div className="flex flex-col text-xs border-l border-slate-700 pl-2">
+                                                    <span className="text-slate-500 mb-0.5">{t('dashboard.total_dead')}</span>
+                                                    <span className="font-mono font-medium text-slate-400">{formatNumber(player.deads)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Desktop Table View */}
+                                <div className="hidden md:block w-full min-w-[600px]">
+                                    <Table>
+                                        <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
+                                            <TableRow>
+                                                <TableHead className="w-[60px] text-center text-xs">{t('dashboard.rank')}</TableHead>
+                                                <TableHead className="text-xs">{t('dashboard.name')}</TableHead>
+                                                <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('power')}>{t('dashboard.power')}</TableHead>
+                                                <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('kp')}>Kill Points</TableHead>
+                                                <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('deads')}>{t('dashboard.total_dead')}</TableHead>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {displayedPlayers.map((player) => (
+                                                <TableRow
+                                                    key={player.id}
+                                                    className="group cursor-pointer hover:bg-white/5 transition-colors"
+                                                    onClick={() => setSelectedPlayer(player)}
+                                                >
+                                                    <TableCell className="text-center font-medium text-slate-500 group-hover:text-slate-300">#{player.rank}</TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex-shrink-0">
+                                                                <Avatar
+                                                                    id={player.id}
+                                                                    name={player.name}
+                                                                    size="sm"
+                                                                    className="border border-slate-700 bg-slate-800"
+                                                                />
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="font-semibold text-slate-200 group-hover:text-primary transition-colors">{player.name}</span>
+                                                                <span className="text-xs text-slate-500">[{player.alliance || '---'}] {player.id}</span>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-mono text-blue-400">{formatNumber(player.power)}</TableCell>
+                                                    <TableCell className="text-right font-mono text-red-400">{formatNumber(player.kp)}</TableCell>
+                                                    <TableCell className="text-right font-mono text-slate-400">{formatNumber(player.deads)}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
