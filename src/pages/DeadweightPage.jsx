@@ -173,55 +173,99 @@ const DeadweightPage = () => {
                     />
                 </CardHeader>
                 <CardContent className="flex-1 overflow-hidden p-0">
-                    <div className="h-full overflow-auto overflow-x-auto custom-scrollbar">
-                        <Table>
-                            <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
-                                <TableRow>
-                                    <TableHead className="w-[80px] text-xs">ID</TableHead>
-                                    <TableHead className="text-xs">{t('war.governor')}</TableHead>
-                                    <TableHead className="text-xs">Power</TableHead>
-                                    <TableHead className="text-xs">Kill Points</TableHead>
-                                    <TableHead className="text-xs">{t('war.status')}</TableHead>
-                                    <TableHead className="text-xs">{t('common.notes')}</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredList.length > 0 ? (
-                                    filteredList.map((row, index) => (
-                                        <TableRow key={row.id || index} className="hover:bg-white/5 transition-colors">
-                                            <TableCell className="font-mono text-xs text-slate-500">{row.id}</TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-3">
-                                                    <Avatar
-                                                        id={row.id}
-                                                        name={row.name}
-                                                        size="sm"
-                                                        className="bg-slate-800 border border-slate-700"
-                                                    />
-                                                    <span className="font-medium text-slate-300">{row.name}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="font-mono text-slate-400">{formatNumber(row.power)}</TableCell>
-                                            <TableCell className="font-mono text-slate-400">{formatNumber(row.kp)}</TableCell>
-                                            <TableCell>
-                                                <span className={`px-2 py-1 rounded text-xs border ${getStatusColor(row.status)}`}>
-                                                    {row.status}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell className="text-xs text-slate-500 max-w-[200px] truncate" title={row.note}>
-                                                {row.note || '-'}
+                    <div className="h-full overflow-auto custom-scrollbar relative">
+                        {/* Mobile Card View */}
+                        <div className="md:hidden flex flex-col gap-3 p-4">
+                            {filteredList.map((row, index) => (
+                                <div key={row.id || index} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
+                                    <div className="flex justify-between items-center border-b border-slate-700/50 pb-2">
+                                        <div className="flex items-center gap-2">
+                                            <Avatar id={row.id} name={row.name} size="sm" className="bg-slate-800 border border-slate-700" />
+                                            <div className="flex flex-col">
+                                                <span className="font-bold text-white text-sm truncate max-w-[140px]">{row.name}</span>
+                                                <span className="text-[10px] text-slate-500">{row.id}</span>
+                                            </div>
+                                        </div>
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getStatusColor(row.status)}`}>
+                                            {row.status}
+                                        </span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 text-xs">
+                                        <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                            <span className="text-slate-500">Power</span>
+                                            <span className="font-mono text-slate-300">{formatNumber(row.power)}</span>
+                                        </div>
+                                        <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                            <span className="text-slate-500">KP</span>
+                                            <span className="font-mono text-slate-300">{formatNumber(row.kp)}</span>
+                                        </div>
+                                        {(row.note && row.note.trim() !== '' && row.note !== '-') && (
+                                            <div className="col-span-2 flex flex-col bg-slate-900/30 border border-slate-700/30 p-2 rounded gap-1">
+                                                <span className="text-slate-500 text-[10px]">Notes</span>
+                                                <span className="text-slate-300 line-clamp-2">{row.note}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                            {filteredList.length === 0 && (
+                                <div className="text-center py-8 text-slate-500 text-sm">
+                                    {t('common.no_results')}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Desktop Table View */}
+                        <div className="hidden md:block w-full min-w-[700px]">
+                            <Table>
+                                <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
+                                    <TableRow>
+                                        <TableHead className="w-[80px] text-xs">ID</TableHead>
+                                        <TableHead className="text-xs">{t('war.governor')}</TableHead>
+                                        <TableHead className="text-xs">Power</TableHead>
+                                        <TableHead className="text-xs">Kill Points</TableHead>
+                                        <TableHead className="text-xs">{t('war.status')}</TableHead>
+                                        <TableHead className="text-xs">{t('common.notes')}</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredList.length > 0 ? (
+                                        filteredList.map((row, index) => (
+                                            <TableRow key={row.id || index} className="hover:bg-white/5 transition-colors">
+                                                <TableCell className="font-mono text-xs text-slate-500">{row.id}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <Avatar
+                                                            id={row.id}
+                                                            name={row.name}
+                                                            size="sm"
+                                                            className="bg-slate-800 border border-slate-700"
+                                                        />
+                                                        <span className="font-medium text-slate-300">{row.name}</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="font-mono text-slate-400">{formatNumber(row.power)}</TableCell>
+                                                <TableCell className="font-mono text-slate-400">{formatNumber(row.kp)}</TableCell>
+                                                <TableCell>
+                                                    <span className={`px-2 py-1 rounded text-xs border ${getStatusColor(row.status)}`}>
+                                                        {row.status}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="text-xs text-slate-500 max-w-[200px] truncate" title={row.note}>
+                                                    {row.note || '-'}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                                                {t('common.no_results')}
                                             </TableCell>
                                         </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-8 text-slate-500">
-                                            {t('common.no_results')}
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
