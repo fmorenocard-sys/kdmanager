@@ -1,26 +1,139 @@
-# DevOps Strategy: Static Deployment
+# DevOps Strategy — Kingdom Manager (KD 2997)
 
-## Architecture Choice: Static Site (GitHub Pages)
+> Last updated: 2026-02-24 | App version: 1.0.0
 
-We have chosen a **Static Site** architecture hosted on **GitHub Pages** for maximum cost efficiency (free) and simplicity.
+## Architecture: Firebase Full-Stack (SPA + Serverless)
 
-### Workflow
-1.  **Data Ingestion (Local)**
-    - Excel files are placed in `public/data/`.
-    - `npm run digest-data` scripts parse Excel -> JSON.
-    - JSON files are committed to the repository.
+The app uses a **Firebase-first, serverless** architecture split into three tiers:
 
-2.  **Build & Deploy (GitHub Actions)**
-    - Trigger: Push to `main`.
-    - Action: `npm run build` (Vite build).
-    - Deploy: The `dist` folder is deployed to the `gh-pages` branch.
-    - Hosting: Served statically by GitHub Pages.
+| Tier | Service | Role |
+|------|---------|------|
+| Frontend | Firebase Hosting | Serves the Vite/React SPA (`dist/`) |
+| Backend | Cloud Functions (Node.js) | XLSX parsing, data sync trigger |
+| Database | Cloud Firestore | Persistent player/war/bank data |
+| Auth | Firebase Auth (Google Sign-In) | Role-based access (King / Officer / Warrior) |
 
-### Constraints & Limitations
-- **Read-Only**: No database, no user writes.
-- **Update Latency**: Data updates require a git commit and push.
-- **Public**: All data in the repo is public.
+**Firebase project ID:** `kd-97-manager`
 
-### Troubleshooting
-- **404 on Data**: Ensure paths use `import.meta.env.BASE_URL` (e.g. `/kdmanager/data/...`).
-- **Routing 404s**: GitHub Pages is a static host. SPA routing (Client-side) requires a specialized 404.html or hash router if deep linking breaks. *Current app uses state-based routing (`activePage` state), so deep links are not supported but navigation works.*
+---
+
+## Tech Stack
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Frontend | React + Vite | 19 / 7 |
+| Styling | TailwindCSS v4 + PostCSS | 4.x |
+| Routing | React Router DOM | v7 |
+| Charts | Recharts | 3.x |
+| Icons | Lucide React | latest |
+| i18n | i18next + react-i18next | 25/16 |
+| XLSX parsing | xlsx (SheetJS) | 0.18 |
+| Firebase SDK | firebase | 12.x |
+
+**Supported languages:** EN · DE · TR · UK · AR · PL · ES · VI
+
+---
+
+## Pages / Screens
+
+| Route | Page | Auth Required |
+|-------|------|--------------|
+| `/` | Dashboard | ✅ |
+| `/performance` | KvK Performance | ✅ |
+| `/trophies` | Kingdom Trophies | ✅ |
+| `/deadweight` | Deadweight Tracking | ✅ |
+| `/bank` | Kingdom Treasury | ✅ |
+| `/war` | War Tracker | ✅ |
+| `/profile` | My Profile | ✅ |
+
+---
+
+## Data Flow
+
+```
+Officer uploads XLSX
+    ↓
+Firebase Cloud Function (HTTP trigger)
+    ↓
+Parses XLSX (SheetJS) → validates → writes Firestore
+    ↓
+React app reads Firestore in real-time
+```
+
+The `digest-data.js` script (local) and the Cloud Function both handle XLSX → Firestore ingestion.
+
+---
+
+## Deploy Commands
+
+### Frontend
+```bash
+npm run build          # Vite build → dist/
+firebase deploy --only hosting
+```
+
+### Functions
+```bash
+firebase deploy --only functions
+```
+
+### Firestore Rules
+```bash
+firebase deploy --only firestore:rules
+```
+
+### Full deploy
+```bash
+firebase deploy
+```
+
+---
+
+## CI/CD Status
+
+> ⚠️ No automated CI/CD pipeline is configured yet (`.github/workflows/` is empty).
+> Manual deploy via Firebase CLI is the current practice.
+
+**Recommended next step:** Add a GitHub Actions workflow:
+- Trigger: push to `main`
+- Steps: `npm ci` → `npm run build` → `firebase deploy --only hosting`
+
+---
+
+## Environments
+
+| Environment | Description |
+|-------------|-------------|
+| `local` | `npm run dev` (Vite dev server, port 5173) |
+| `prod` | `kd-97-manager.web.app` (Firebase Hosting) |
+
+No staging environment is currently configured.
+
+---
+
+## Secrets & Config
+
+- Firebase config is read from environment variables (`.env`)
+- `.env.example` is provided for onboarding
+- Secrets must **never** be committed to Git
+
+---
+
+## Rollback
+
+Firebase Hosting keeps a deployment history. To rollback:
+```bash
+firebase hosting:clone kd-97-manager:live kd-97-manager:live --version <VERSION_ID>
+```
+Or via Firebase Console → Hosting → Release History → Rollback.
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| SPA 404 on direct URL | Handled by `"rewrites": [{ "source": "**", "destination": "/index.html" }]` in `firebase.json` |
+| Firestore permission denied | Check `firestore.rules` — roles are stored as Firebase custom claims |
+| Function cold start | Functions may take 1–3s on first call; acceptable for manual sync actions |
+| XLSX parse error | Validate sheet names and column order match `src/config.js` mappings |

@@ -1,7 +1,3 @@
----
-description: Règles de l’Agent — Architecte Déploiement (Low-cost / Serverless-first)
----
-
 # ☁️ Règles de l’Agent — Architecte Déploiement (Low-cost / Serverless-first)
 
 ## 🎯 Mission

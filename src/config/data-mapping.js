@@ -114,5 +114,23 @@ export const DATA_CONFIG = {
             GOAL_PERCENT: 14,
             RATE: 18
         }
-    }
+    },
+
+    KVK_FILLER: {
+        SHEET_NAME: 'Filler Accounts',
+        COLUMNS: {
+            ID: 0, // A
+            NAME: 1, // B
+            INITIAL_POWER: 2, // C
+            FINAL_POWER: 6, // G
+            KP: 3, // D
+            T4_DEAD: 12, // M
+            T5_DEAD: 13, // N
+            PASS4_DEAD: 14, // O
+            PASS7_DEAD: 15, // P
+            KL_DEAD: 16, // Q
+            TOTAL_DEAD: 17, // R
+            GOAL_PERCENT: 19 // T
+        }
+    },
 };

@@ -382,6 +382,59 @@ function processKvkStats() {
     console.log(`✅ Generated ${DATA_CONFIG.KVK.JSON_OUTPUT} (${uniqueKvkList.length} records)`);
 }
 
+// 6. Process KvK Filler Stats
+function processKvkFillerStats() {
+    const filePath = findFile(DATA_CONFIG.KVK.FILE);
+    if (!filePath) {
+        // console.error(`❌ KvK file not found: ${DATA_CONFIG.KVK.FILE}`); // Already logged in main stats
+        return;
+    }
+
+    const workbook = XLSX.readFile(filePath);
+    const sheet = workbook.Sheets[DATA_CONFIG.KVK_FILLER.SHEET_NAME];
+
+    if (!sheet) {
+        console.warn(`⚠️ Sheet '${DATA_CONFIG.KVK_FILLER.SHEET_NAME}' not found in KvK file (local).`);
+        return;
+    }
+
+    console.log(`FOUND KvK Filler Sheet: ${DATA_CONFIG.KVK_FILLER.SHEET_NAME}`);
+    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    // Header is Row 2 (index 1), Data Row 3 (index 2)
+    const startRowIndex = 2;
+
+    // Safety check for empty sheet
+    if (jsonData.length <= startRowIndex) {
+        console.warn("⚠️ KvK Filler sheet appears empty or header-only.");
+        return;
+    }
+
+    const kvkFillerList = jsonData.slice(startRowIndex).map(row => {
+        return {
+            id: row[DATA_CONFIG.KVK_FILLER.COLUMNS.ID],
+            name: row[DATA_CONFIG.KVK_FILLER.COLUMNS.NAME],
+            initialPower: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.INITIAL_POWER]) || 0,
+            finalPower: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.FINAL_POWER]) || 0,
+            kp: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.KP]) || 0,
+            t4Dead: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.T4_DEAD]) || 0,
+            t5Dead: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.T5_DEAD]) || 0,
+            pass4Dead: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.PASS4_DEAD]) || 0,
+            pass7Dead: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.PASS7_DEAD]) || 0,
+            klDead: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.KL_DEAD]) || 0,
+            totalDead: Number(row[DATA_CONFIG.KVK_FILLER.COLUMNS.TOTAL_DEAD]) || 0,
+            goalPercent: row[DATA_CONFIG.KVK_FILLER.COLUMNS.GOAL_PERCENT]
+        };
+    }).filter(p => p.id && p.name);
+
+    // Deduplicate by ID
+    const uniqueList = Array.from(new Map(kvkFillerList.map(item => [item.id, item])).values());
+
+    const outputFile = path.join(OUTPUT_DIR, 'kvk_filler_stats.json');
+    fs.writeFileSync(outputFile, JSON.stringify(uniqueList, null, 2));
+    console.log(`✅ Generated kvk_filler_stats.json (${uniqueList.length} records)`);
+}
+
 // Execute
 try {
     processPlayers();
@@ -389,6 +442,7 @@ try {
     processTrophies();
     processDeadweight();
     processKvkStats();
+    processKvkFillerStats();
     console.log(`🎉 Data digestion complete!`);
 } catch (e) {
     console.error("❌ Fatal Error during digestion:", e);

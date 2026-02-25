@@ -19,12 +19,14 @@ Ce document synthétise le contexte, l'architecture et les besoins de l'applicat
 
 | Fonctionnalité | Description | Pages concernées | État |
 | :--- | :--- | :--- | :--- |
-| **Dashboard Général** | Vue d'ensemble des stats du royaume (Puissance, Kills, Évolution). | `DashboardPage.jsx` | 🟢 Fonctionnelle |
-| **Gestion "Deadweight"** | Analyse des joueurs à faible contribution. Auto-fetch du fichier par défaut. | `DeadweightPage.jsx` | 🟢 Fonctionnelle |
-| **Banque & Trésorerie** | Suivi des stocks de ressources et contributions hebdomadaires. | `BankPage.jsx` | 🟢 Fonctionnelle (Fixé) |
-| **Trophées du Royaume** | Historique des gagnants hebdomadaires (MGE, Events). | `KingdomTrophiesPage.jsx` | 🟢 Fonctionnelle |
-| **Import de Données** | Système unifié pour mettre à jour les données (upload Excel). | `DataRefreshControl.jsx` | 🟢 Fonctionnelle |
-| **Détail Joueur** | Vue détaillée d’un joueur (Side Panel). | `PlayerSidePanel.jsx` | 🟢 Fonctionnelle |
+| **Dashboard** | General KD stats (Power, Kill Points, RSS). | `DashboardPage.jsx` | 🟢 Live |
+| **Performance** | KvK Player analysis (Kills, Dead, Goals). | `KvKPerformancePage.jsx` | 🟢 Live |
+| **Trophies** | Weekly wins & event history. | `KingdomTrophiesPage.jsx` | 🟢 Live |
+| **Deadweight** | Tracking inactive/non-compliant players. | `DeadweightPage.jsx` | 🟢 Live |
+| **Bank** | Resource tracking & weekly deposits. | `BankPage.jsx` | 🟢 Live |
+| **War Tracker** | Readiness, tech budget, marched list. | `WarTrackerPage.jsx` | 🟢 Live |
+| **Profile** | User settings (Google Auth), linking ID. | `ProfilePage.jsx` | 🟢 Live |
+| **Data Sync** | Officer-only XLSX upload trigger. | `DataRefreshControl.jsx` | 🟢 Live |
 
 ### 2.2 Mapping des User Flows
 

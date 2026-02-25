@@ -1,29 +1,54 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
-import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search } from 'lucide-react';
+import Avatar from '../components/ui/Avatar';
+import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users } from 'lucide-react';
 import Card from '../components/ui/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
 import Input from '../components/ui/Input';
 import DataRefreshControl from '../components/DataRefreshControl';
 import StatCard from '../components/ui/StatCard';
 import StatusFilter from '../components/ui/StatusFilter';
-import avatarMapping from '../data/player-avatars.json';
 
 const KvKPerformancePage = () => {
-    const { kvkStats, loading, error } = useData();
+    const { kvkStats, kvkFillerStats, loading, error } = useData();
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState([]); // [] = All, array of values = multi-select
     const [sortConfig, setSortConfig] = useState({ key: 'finalPower', direction: 'desc' });
+    const [activeTab, setActiveTab] = useState('main'); // 'main' | 'filler'
+
+    // Reset/Set Sort when Tab Changes
+    React.useEffect(() => {
+        if (activeTab === 'filler') {
+            setSortConfig({ key: 'goalPercent', direction: 'desc' });
+        } else {
+            setSortConfig({ key: 'finalPower', direction: 'desc' });
+        }
+    }, [activeTab]);
+
+    // Dedup by id to avoid React duplicate key warnings (in case XLSX has duplicate rows)
+    const activeData = useMemo(() => {
+        const raw = activeTab === 'main' ? kvkStats : kvkFillerStats;
+        if (!Array.isArray(raw)) return [];
+        const seen = new Set();
+        return raw.filter(p => {
+            const key = String(p.id ?? p.name ?? Math.random());
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }, [activeTab, kvkStats, kvkFillerStats]);
 
     // Summary Stats Calculation
     const stats = useMemo(() => {
-        if (!kvkStats || kvkStats.length === 0) return { totalDead: 0, totalPowerDiff: 0, totalKpGained: 0 };
-        return kvkStats.reduce((acc, curr) => ({
+        if (!activeData || !Array.isArray(activeData) || activeData.length === 0) return { totalDead: 0, totalPowerDiff: 0, totalKpGained: 0 };
+        return activeData.reduce((acc, curr) => ({
             totalDead: acc.totalDead + (curr.totalDead || 0),
             totalPowerDiff: acc.totalPowerDiff + (curr.totalPowerDiff || 0),
             totalKpGained: acc.totalKpGained + (curr.totalKpGained || 0)
         }), { totalDead: 0, totalPowerDiff: 0, totalKpGained: 0 });
-    }, [kvkStats]);
+    }, [activeData]);
 
     const getRateColor = (rate) => {
         if (!rate) return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
@@ -37,12 +62,12 @@ const KvKPerformancePage = () => {
 
     // 1. Filter by Search
     const searchedData = useMemo(() => {
-        if (!kvkStats) return [];
-        return kvkStats.filter(p =>
+        if (!activeData || !Array.isArray(activeData)) return [];
+        return activeData.filter(p =>
             p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             String(p.id).includes(searchTerm)
         );
-    }, [kvkStats, searchTerm]);
+    }, [activeData, searchTerm]);
 
     // 2. Calculate Status Counts (based on search results)
     const statusOptions = useMemo(() => {
@@ -74,8 +99,8 @@ const KvKPerformancePage = () => {
     const filteredAndSortedData = useMemo(() => {
         let data = [...searchedData];
 
-        if (statusFilter !== 'all') {
-            data = data.filter(p => p.rate === statusFilter);
+        if (statusFilter.length > 0) {
+            data = data.filter(p => statusFilter.includes(p.rate));
         }
 
         if (sortConfig.key) {
@@ -115,49 +140,106 @@ const KvKPerformancePage = () => {
 
     const formatNumber = (num) => num?.toLocaleString() || '0';
 
-    if (loading) return <div className="p-8 text-center text-muted">Loading KvK Stats...</div>;
+    if (loading) return <div className="p-8 text-center text-muted">{t('common.loading')}</div>;
     if (error) return <div className="p-8 text-center text-red-400">{error}</div>;
+
+    const mainColumns = [
+        { k: 'id', L: 'ID' },
+        { k: 'name', L: t('dashboard.name') },
+        { k: 'initialPower', L: t('performance.init_power') },
+        { k: 'finalPower', L: t('performance.final_power') },
+        { k: 'initialKp', L: 'Init KP' },
+        { k: 'finalKp', L: 'Final KP' },
+        { k: 'totalDead', L: t('performance.total_dead') },
+        { k: 'totalKpGained', L: 'KP Gained' },
+        { k: 'goalPercent', L: '% Goal' },
+        { k: 'rate', L: t('performance.rate') },
+    ];
+
+    const fillerColumns = [
+        { k: 'id', L: 'ID' },
+        { k: 'name', L: t('dashboard.name') },
+        { k: 'initialPower', L: t('performance.init_power') },
+        { k: 'finalPower', L: t('performance.final_power') },
+        { k: 'kp', L: 'KP' },
+        { k: 't4Dead', L: 'T4 Dead' },
+        { k: 't5Dead', L: 'T5 Dead' },
+        { k: 'pass4Dead', L: 'Pass 4 Dead' },
+        { k: 'pass7Dead', L: 'Pass 7 Dead' },
+        { k: 'klDead', L: 'KL Dead' },
+        { k: 'totalDead', L: t('performance.total_dead') },
+        { k: 'goalPercent', L: '% Goal' },
+    ];
+
+    const columns = activeTab === 'main' ? mainColumns : fillerColumns;
+
+    const TabButton = ({ id, label, icon: Icon }) => (
+        <button
+            onClick={() => { setActiveTab(id); setStatusFilter([]); setSearchTerm(''); }}
+            className={`flex items-center gap-2 px-4 md:px-6 py-3 text-sm font-medium transition-colors relative whitespace-nowrap
+                ${activeTab === id ? 'text-indigo-400' : 'text-slate-400 hover:text-slate-200'}
+            `}
+        >
+            {Icon && <Icon size={18} />}
+            {label}
+            {activeTab === id && (
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 rounded-t-full" />
+            )}
+        </button>
+    );
 
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-2">
-                <div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent flex items-center gap-3">
-                        <Swords className="text-red-500" size={36} />
-                        Fighting Performance
-                    </h1>
-                    <p className="text-gray-400 mt-1">SoC 2: Storm of Stratagems (2025)</p>
-                </div>
-                <DataRefreshControl pageId="kvk" title="Update KvK Data" />
+            <div className="mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent flex items-center gap-2 md:gap-3">
+                    <Swords className="text-red-500" size={24} />
+                    {t('performance.title')}
+                </h1>
+                <p className="text-gray-400 mt-1">SoC 2: Storm of Stratagems (2025)</p>
+            </div>
+            <DataRefreshControl pageId="kvk" title="Update KvK Data" />
+
+            {/* Tabs */}
+            <div className="flex border-b border-slate-700 mb-6 overflow-x-auto">
+                <TabButton id="main" label={t('performance.main_accounts')} icon={Users} />
+                <TabButton id="filler" label={t('performance.filler_accounts')} icon={Users} />
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <StatCard
-                    title="Total Dead"
+                    title={t('performance.total_dead')}
                     value={formatNumber(stats.totalDead)}
                     icon={Skull}
                     color="red"
                 />
 
-                <StatCard
-                    title="Total Power Diff"
-                    value={
-                        <span className={stats.totalPowerDiff < 0 ? 'text-red-400' : 'text-emerald-400'}>
-                            {formatNumber(stats.totalPowerDiff)}
-                        </span>
-                    }
-                    icon={TrendingDown}
-                    color="amber"
-                />
+                {activeTab === 'main' && (
+                    <>
+                        <StatCard
+                            title={t('performance.total_power_diff')}
+                            value={
+                                <span className={stats.totalPowerDiff < 0 ? 'text-red-400' : 'text-emerald-400'}>
+                                    {formatNumber(stats.totalPowerDiff)}
+                                </span>
+                            }
+                            icon={TrendingDown}
+                            color="amber"
+                        />
 
-                <StatCard
-                    title="Total KP Gained"
-                    value={formatNumber(stats.totalKpGained)}
-                    icon={Activity}
-                    color="emerald"
-                />
+                        <StatCard
+                            title={t('performance.total_kp_gained')}
+                            value={formatNumber(stats.totalKpGained)}
+                            icon={Activity}
+                            color="emerald"
+                        />
+                    </>
+                )}
+                {activeTab === 'filler' && (
+                    /* Placeholder/Alternative cards for Filler if needed, or just keep Total Dead */
+                    <div className="hidden md:block"></div>
+                )}
             </div>
 
             {/* Controls */}
@@ -165,7 +247,7 @@ const KvKPerformancePage = () => {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="w-full max-w-md">
                         <Input
-                            placeholder="Search Governor ID or Name..."
+                            placeholder={t('performance.search_placeholder')}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             leftIcon={<Search size={16} />}
@@ -173,15 +255,27 @@ const KvKPerformancePage = () => {
                     </div>
                 </div>
 
-                {/* Status Filters */}
-                <StatusFilter
-                    options={statusOptions}
-                    selected={statusFilter}
-                    onSelect={setStatusFilter}
-                />
+                {/* Status Filters - Only if rates exist */}
+                {activeTab === 'main' && (
+                    <StatusFilter
+                        options={statusOptions}
+                        selected={statusFilter}
+                        onSelect={(value) => {
+                            if (value === 'all') {
+                                setStatusFilter([]);
+                            } else {
+                                setStatusFilter(prev =>
+                                    prev.includes(value)
+                                        ? prev.filter(v => v !== value) // deselect
+                                        : [...prev, value]              // add
+                                );
+                            }
+                        }}
+                    />
+                )}
 
                 <div className="text-sm text-gray-400 self-end">
-                    Showing <span className="text-white font-bold">{filteredAndSortedData.length}</span> records
+                    {t('common.showing_records', { count: filteredAndSortedData.length })}
                 </div>
             </div>
 
@@ -192,18 +286,7 @@ const KvKPerformancePage = () => {
                         <TableHeader className="bg-slate-900/80 sticky top-0 z-10 backdrop-blur-sm">
                             <TableRow>
                                 <TableHead className="w-12 text-center text-slate-500 text-xs font-mono select-none">#</TableHead>
-                                {[
-                                    { k: 'id', L: 'ID' },
-                                    { k: 'name', L: 'Name' },
-                                    { k: 'initialPower', L: 'Init Power' },
-                                    { k: 'finalPower', L: 'Final Power' },
-                                    { k: 'initialKp', L: 'Init KP' },
-                                    { k: 'finalKp', L: 'Final KP' },
-                                    { k: 'totalDead', L: 'Total Dead' },
-                                    { k: 'totalKpGained', L: 'KP Gained' },
-                                    { k: 'goalPercent', L: '% Goal' },
-                                    { k: 'rate', L: 'Rate' },
-                                ].map(({ k, L }) => (
+                                {columns.map(({ k, L }) => (
                                     <TableHead
                                         key={k}
                                         onClick={() => handleSort(k)}
@@ -219,49 +302,44 @@ const KvKPerformancePage = () => {
                         </TableHeader>
                         <TableBody>
                             {filteredAndSortedData.map((row, index) => (
-                                <TableRow key={row.id} className="hover:bg-white/5 transition-colors border-b border-white/5">
+                                <TableRow key={`${row.id || 'unknown'}-${index}`} className="hover:bg-white/5 transition-colors border-b border-white/5">
                                     <TableCell className="w-8 text-center text-slate-500 text-xs border-r border-white/5 font-mono select-none py-1 px-2">{index + 1}</TableCell>
                                     <TableCell className="font-mono text-xs text-gray-500 text-left py-1 px-2">{row.id}</TableCell>
                                     <TableCell className="font-medium text-white text-left text-xs py-1 px-2 truncate max-w-[150px]" title={row.name}>
                                         <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-full bg-slate-800 overflow-hidden flex-shrink-0 border border-slate-700">
-                                                {avatarMapping[row.id] ? (
-                                                    <img
-                                                        src={`${import.meta.env.BASE_URL}${avatarMapping[row.id]?.replace(/^\//, '')}`}
-                                                        alt={row.name}
-                                                        width="24"
-                                                        height="24"
-                                                        className="w-full h-full object-cover"
-                                                        onError={(e) => { e.target.style.display = 'none'; }}
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-slate-500">
-                                                        {row.name.charAt(0)}
-                                                    </div>
-                                                )}
-                                            </div>
+                                            <Avatar
+                                                id={row.id}
+                                                name={row.name}
+                                                size="xs"
+                                                className="border border-slate-700"
+                                            />
                                             <span className="truncate">{row.name}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-left text-gray-400 text-xs py-1 px-2 tabular-nums">{formatNumber(row.initialPower)}</TableCell>
-                                    <TableCell className="text-left text-white font-medium text-xs py-1 px-2 tabular-nums">{formatNumber(row.finalPower)}</TableCell>
-                                    <TableCell className="text-left text-gray-400 text-xs py-1 px-2 tabular-nums">{formatNumber(row.initialKp)}</TableCell>
-                                    <TableCell className="text-left text-white font-medium text-xs py-1 px-2 tabular-nums">{formatNumber(row.finalKp)}</TableCell>
-                                    <TableCell className="text-left text-red-400 font-bold text-xs py-1 px-2 tabular-nums">{formatNumber(row.totalDead)}</TableCell>
-                                    <TableCell className="text-left text-emerald-400 font-bold text-xs py-1 px-2 tabular-nums">+{formatNumber(row.totalKpGained)}</TableCell>
-                                    <TableCell className="text-left py-1 px-2">
-                                        <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400 bg-green-400/10' :
-                                            (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400 bg-yellow-400/10' :
-                                                'text-red-400 bg-red-400/10'
-                                            }`}>
-                                            {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell className="text-left py-1 px-2">
-                                        <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
-                                            {row.rate}
-                                        </span>
-                                    </TableCell>
+
+                                    {/* Generic Cell Rendering based on columns */}
+                                    {columns.slice(2).map(({ k }) => (
+                                        <TableCell key={k} className="text-left text-xs py-1 px-2 tabular-nums">
+                                            {k === 'goalPercent' ? (
+                                                <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400 bg-green-400/10' :
+                                                    (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400 bg-yellow-400/10' :
+                                                        'text-red-400 bg-red-400/10'
+                                                    }`}>
+                                                    {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}
+                                                </span>
+                                            ) : k === 'rate' ? (
+                                                <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
+                                                    {row.rate}
+                                                </span>
+                                            ) : k.toLowerCase().includes('dead') ? (
+                                                <span className="text-red-400 font-bold">{formatNumber(row[k])}</span>
+                                            ) : k.toLowerCase().includes('gained') ? (
+                                                <span className="text-emerald-400 font-bold">+{formatNumber(row[k])}</span>
+                                            ) : (
+                                                <span className="text-gray-300">{formatNumber(row[k])}</span>
+                                            )}
+                                        </TableCell>
+                                    ))}
                                 </TableRow>
                             ))}
                         </TableBody>

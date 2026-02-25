@@ -7,6 +7,8 @@ import {
 import Card from './ui/Card';
 import Button from './ui/Button';
 
+import Avatar from './ui/Avatar';
+
 const PlayerDetailPanel = ({ player, onClose }) => {
     // Close on escape key
     useEffect(() => {
@@ -30,9 +32,7 @@ const PlayerDetailPanel = ({ player, onClose }) => {
                 {/* Header */}
                 <div className="sticky top-0 z-20 bg-slate-900/90 backdrop-blur-md border-b border-white/10 p-6 flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-blue-500/20">
-                            {player.name.charAt(0).toUpperCase()}
-                        </div>
+                        <Avatar id={player.id} name={player.name} size="xl" showRing={true} ringColor="border-blue-500/50" />
                         <div>
                             <h2 className="text-2xl font-bold text-white">{player.name}</h2>
                             <div className="flex items-center gap-2 mt-1">

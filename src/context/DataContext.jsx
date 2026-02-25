@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { DATA_CONFIG } from '../config/data-mapping';
 import { parsePlayers, parseHistory, parseBank, parseTrophies, parseDeadweight, parseKvkStats } from '../utils/data-parser';
+import { db } from '../config/firebase';
+import { doc, onSnapshot } from "firebase/firestore";
 
 const DataContext = createContext(null);
 
@@ -13,6 +15,7 @@ export const DataProvider = ({ children }) => {
         trophies: [],
         deadweight: null,
         kvkStats: [],
+        kvkFillerStats: [],
         loading: true,
         error: null,
         lastUpdated: null
@@ -22,13 +25,16 @@ export const DataProvider = ({ children }) => {
         try {
             // Fetch generated JSONs
             const baseUrl = import.meta.env.BASE_URL;
-            const [playersRes, historyRes, bankRes, trophiesRes, deadweightRes, kvkRes] = await Promise.all([
+            const [playersRes, historyRes, bankRes, trophiesRes, deadweightRes, kvkRes, kvkFillerRes] = await Promise.all([
                 fetch(`${baseUrl}data/players.json`),
                 fetch(`${baseUrl}data/kingdom_history.json`),
                 fetch(`${baseUrl}data/bank.json`),
                 fetch(`${baseUrl}data/trophies.json`),
                 fetch(`${baseUrl}data/deadweight.json`),
-                fetch(`${baseUrl}data/kvk_stats.json`)
+                fetch(`${baseUrl}data/trophies.json`),
+                fetch(`${baseUrl}data/deadweight.json`),
+                fetch(`${baseUrl}data/kvk_stats.json`),
+                fetch(`${baseUrl}data/kvk_filler_stats.json`)
             ]);
 
             if (!playersRes.ok) throw new Error("Failed to load players data");
@@ -38,7 +44,18 @@ export const DataProvider = ({ children }) => {
             const bank = bankRes.ok ? await bankRes.json() : null;
             const trophies = trophiesRes.ok ? await trophiesRes.json() : [];
             const deadweight = deadweightRes.ok ? await deadweightRes.json() : null;
-            const kvkStats = kvkRes.ok ? await kvkRes.json() : [];
+
+            let kvkStats = [];
+            if (kvkRes.ok) {
+                const json = await kvkRes.json();
+                kvkStats = Array.isArray(json) ? json : (json.list || []);
+            }
+
+            let kvkFillerStats = [];
+            if (kvkFillerRes.ok) {
+                const json = await kvkFillerRes.json();
+                kvkFillerStats = Array.isArray(json) ? json : (json.list || []);
+            }
 
             setState(prev => ({
                 ...prev,
@@ -48,6 +65,7 @@ export const DataProvider = ({ children }) => {
                 trophies,
                 deadweight,
                 kvkStats,
+                kvkFillerStats,
                 loading: false,
                 lastUpdated: new Date()
             }));
@@ -58,8 +76,69 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+
+
     useEffect(() => {
         fetchData();
+
+        // Real-time listeners for Firestore Sync
+        const unsubPlayers = onSnapshot(doc(db, "static_data", "players"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                if (data.list) setState(prev => ({ ...prev, players: data.list, lastUpdated: new Date() }));
+            }
+        });
+
+        const unsubBank = onSnapshot(doc(db, "static_data", "bank"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                // bank document structure matches bankData in function: { total, weekly, history }
+                setState(prev => ({ ...prev, bank: data, lastUpdated: new Date() }));
+            }
+        });
+
+        const unsubTrophies = onSnapshot(doc(db, "static_data", "trophies"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                if (data.weekList) setState(prev => ({ ...prev, trophies: data.weekList, lastUpdated: new Date() }));
+            }
+        });
+
+        const unsubDeadweight = onSnapshot(doc(db, "static_data", "deadweight"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                // match deadweight structure { list, count, ... }
+                // App expects deadweight to be the object or list?
+                // Context state define deadweight: null.
+                // parseDeadweight returns { updatedAt, count, list }.
+                // So we set deadweight to data.
+                setState(prev => ({ ...prev, deadweight: data, lastUpdated: new Date() }));
+            }
+        });
+
+        // KvK Stats listener if needed
+        const unsubKvk = onSnapshot(doc(db, "static_data", "kvk"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                if (data.list) setState(prev => ({ ...prev, kvkStats: data.list, lastUpdated: new Date() }));
+            }
+        });
+
+        const unsubKvkFiller = onSnapshot(doc(db, "static_data", "kvk_filler"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                if (data.list) setState(prev => ({ ...prev, kvkFillerStats: data.list, lastUpdated: new Date() }));
+            }
+        });
+
+        return () => {
+            unsubPlayers();
+            unsubBank();
+            unsubTrophies();
+            unsubDeadweight();
+            unsubKvk();
+            unsubKvkFiller();
+        };
     }, []);
 
     const processUpload = async (file, type) => {
@@ -96,8 +175,39 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const triggerSync = async () => {
+        setState(prev => ({ ...prev, loading: true }));
+        try {
+            // Call the Cloud Function
+            const response = await fetch("https://us-central1-kd-97-manager.cloudfunctions.net/syncData", {
+                method: 'GET', // or POST if needed, usually GET for simple triggers or POST for secure
+                mode: 'cors'
+            });
+
+            if (!response.ok) {
+                throw new Error(`Sync failed with status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("Sync Result:", result);
+
+            if (result.success) {
+                // Determine if we need to auto-reload or just let listeners handle it.
+                // Listeners should handle it.
+                setState(prev => ({ ...prev, loading: false, lastUpdated: new Date() }));
+                return true;
+            } else {
+                throw new Error(result.error || "Sync reported failure");
+            }
+        } catch (err) {
+            console.error("Sync Trigger Error:", err);
+            setState(prev => ({ ...prev, loading: false, error: "Cloud Sync Failed. Check console." }));
+            return false;
+        }
+    };
+
     return (
-        <DataContext.Provider value={{ ...state, refreshData: processUpload }}>
+        <DataContext.Provider value={{ ...state, refreshData: processUpload, triggerSync }}>
             {children}
         </DataContext.Provider>
     );

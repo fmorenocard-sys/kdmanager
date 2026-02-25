@@ -1,0 +1,50 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is admin/king
+    // For now we rely on the implementation plan which says Admin/Kings are manually promoted in DB.
+    // We don't need complex write rules yet as only Console edits roles.
+
+    // Allow public read for static data (Dashboard, Bank, etc.)
+    match /static_data/{document=**} {
+      allow read: if true;
+      allow write: if false; // Only Cloud Functions can write
+    }
+
+    // Roles collection
+    match /roles/{userId} {
+      // Allow anyone to read roles (needed for Profile badges and future features)
+      allow read: if true;
+      // Only allow write from backend or console (denied here)
+      allow write: if false; 
+    }
+
+    // War Tracker: KvK Configuration
+    match /kvk_config/{document} {
+      allow read: if true;
+      // Only Admin/King/Officer can write? Let's restrict to Kings/Officers for now.
+      // Since we don't have custom claims, we'll verify via the roles collection.
+      // BUT rules cannot easily read other collections without cost. 
+      // For MVP, we'll trust the UI RoleGuard + maybe a simple check if auth != null 
+      // OR better: allow write if request.auth != null (Authenticated users for now, relying on UI hiding)
+      // Ideally we would read get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role in ['King', 'Officer']
+      allow write: if request.auth != null; 
+    }
+
+    // War Tracker: Availabilities
+    match /war_availabilities/{document} {
+      // Public read? No, maybe only officers? 
+      // Let's allow read for everyone for now (simpler for "My Declaration" check)
+      // or restrict list view in UI.
+      allow read: if true;
+      
+      // Allow create/update if:
+      // 1. Authenticated user updating their own doc (doc ID contains Auth UID?) - Implementing simpler open write for Guest support
+      // 2. OR Guest (unauthenticated) - so allow write: if true;
+      allow write: if true;
+    }
+  }
+}

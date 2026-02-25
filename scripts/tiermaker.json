@@ -1,0 +1,506 @@
+{
+    "json": {
+        "commanders": [
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/0-julius-caesar.png",
+                "name": "Julius Caesar"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/01-frederick.png",
+                "name": "Frederick"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/02-cao-cao.png",
+                "name": "Cao Cao"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/03-charles-martel.png",
+                "name": "Charles Martel"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/04-el-cid.png",
+                "name": "El Cid"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/05-mehmed.png",
+                "name": "Mehmed"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/06-minamoto.png",
+                "name": "Minamoto"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/07-hannibal-barca.png",
+                "name": "Hannibal Barca"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/08-aethelflaed.png",
+                "name": "Aethelflaed"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/09-mulan.png",
+                "name": "Mulan"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/099-ragnar.png",
+                "name": "Ragnar"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/0999-thutmose.png",
+                "name": "Thutmose"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/09999-pyrrhus.png",
+                "name": "Pyrrhus"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/1-richard.png",
+                "name": "Richard"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/1-yi-seong-gye.png",
+                "name": "Yi Seong Gye"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/15-charlamagne.png",
+                "name": "Charlamagne"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/15-lubu.png",
+                "name": "Lubu"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/2-saladin.png",
+                "name": "Saladin"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/2-genghis-khan.png",
+                "name": "Genghis Khan"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/21-alexander-the-great.png",
+                "name": "Alexander the Great"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/21-constantine.png",
+                "name": "Constantine"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/22-edward.png",
+                "name": "Edward"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/22-tomyris.png",
+                "name": "Tomyris"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/25-wu-zetian.png",
+                "name": "Wu Zetian"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/3-takeda.png",
+                "name": "Takeda"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/3-attila.png",
+                "name": "Attila"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/3-guan-yu.png",
+                "name": "Guan Yu"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/3-leonidas.png",
+                "name": "Leonidas"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/3-ramesses.png",
+                "name": "Ramesses"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/3-artemisia.png",
+                "name": "Artemisia"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-yi-sun-sin.png",
+                "name": "Yi Sun Sin"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-theodora.png",
+                "name": "Theodora"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-william.png",
+                "name": "William"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-chandragupta.png",
+                "name": "Chandragupta"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-harald.png",
+                "name": "Harald"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-zenobia.png",
+                "name": "Zenobia"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-cyrus.png",
+                "name": "Cyrus"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-nebuchadnezzar.png",
+                "name": "Nebuchadnezzar"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-trajan.png",
+                "name": "Trajan"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/4-moctezuma.png",
+                "name": "Moctezuma"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-xiang-yu.png",
+                "name": "Xiang Yu"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-jadwiga.png",
+                "name": "Jadwiga"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-cheok.png",
+                "name": "Cheok"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-pakal.png",
+                "name": "Pakal"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-gilgamesh.png",
+                "name": "Gilgamesh"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-amanitore.png",
+                "name": "Amanitore"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-honda-tadakatsu.png",
+                "name": "Honda Tadakatsu"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/5-suleiman.png",
+                "name": "Suleiman"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-nevsky.png",
+                "name": "Nevsky"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-bertrand.png",
+                "name": "Bertrand"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-scipio.png",
+                "name": "Scipio"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-flavius.png",
+                "name": "Flavius"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-boudica-prime.png",
+                "name": "Boudica Prime"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-henry-v.png",
+                "name": "Henry V"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-joan-of-arc-prime.png",
+                "name": "Joan of Arc Prime"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-jan-zizka.png",
+                "name": "Jan Zizka"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-sargon.png",
+                "name": "Sargon"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/6-tariq.png",
+                "name": "Tariq"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-margaret.png",
+                "name": "Margaret"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-babur.png",
+                "name": "Babur"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-heraclius.png",
+                "name": "Heraclius"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-zhuge-liang.png",
+                "name": "Zhuge Liang"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-dido.png",
+                "name": "Dido"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-huo.png",
+                "name": "Huo"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-justinian.png",
+                "name": "Justinian"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-liu-che.png",
+                "name": "Liu Che"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/7-gorgo.png",
+                "name": "Gorgo"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1714417136hermann-prime-expertise-copy.png",
+                "name": "Hermann Prime"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-17047378768-ashurbanipal.png",
+                "name": "Ashurbanipal"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1708111457gajah-mada-expertise-copy.png",
+                "name": "Gajah Mada"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1708111457gonzalo-expertise-copy.png",
+                "name": "Gonzalo"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1714416851lapu-lapu-expertise-copy.png",
+                "name": "Lapu Lapu"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1714416851belisarius-prime-expertise-copy.png",
+                "name": "Belisarius Prime"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1714416851eleanor-expertise-copy.png",
+                "name": "Eleanor"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1721906525new-scipio-expertise-copy2.png",
+                "name": "New Scipio"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1721906525william-wallace-expertise-copy.png",
+                "name": "William Wallace"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1728056412choe-yeong-expertise-copy.png",
+                "name": "Choe Yeong"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1728056412shajar-expertise.png",
+                "name": "Shajar"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1729891235ragnar-prime-expertise-tier-maker-copy.png",
+                "name": "Ragnar Prime"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1745966597john-hunyadi-expertise-copy.png",
+                "name": "John Hunyadi"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1745966597stephen-iii-expertise-copy.png",
+                "name": "Stephen III"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1737212546philip-ii-expertise-copy.png",
+                "name": "Philip II"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1736000058king-arthur-expertise-copy.png",
+                "name": "King Arthur"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1741964763subutai-expertise-copy.png",
+                "name": "Subutai"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1744807249bai-qi-expertise-copy.png",
+                "name": "Bai Qi"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1745966597tokugawa-expertise-copy.png",
+                "name": "Tokugawa"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1750852519emperor-qin-expertise-copy.png",
+                "name": "Emperor Qin"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1754078806shapur-expertise.png",
+                "name": "Shapur"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1754079029archimedes-expertise-copy-2.png",
+                "name": "Archimedes"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1754079029mary-i-expertise-copy.png",
+                "name": "Mary I"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1770675177matthias-i-expertise-copy.png",
+                "name": "Matthias I"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1770675177afonso-expertise-copy.png",
+                "name": "Afonso"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1770675177pepin-expertise-copy.png",
+                "name": "Pepin"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1770675177casimir-expertise-copy.png",
+                "name": "Casimir"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1760964291achilles-expertise-copy.png",
+                "name": "Achilles"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1762006764hector-expertise-copy-2.png",
+                "name": "Hector"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1762893309gang-gamchan-expertise-copy-2.png",
+                "name": "Gang Gamchan"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1762620899david-expertise-copy-2.png",
+                "name": "David"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1770674888sun-tzu-prime-expertise-copy.png",
+                "name": "Sun Tzu Prime"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/zzzzz-1770674888ivar-expertise-copy.png",
+                "name": "Ivar"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-baibars.png",
+                "name": "Baibars"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-belisarius.png",
+                "name": "Belisarius"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-bjorn.png",
+                "name": "Bjorn"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-boudica.png",
+                "name": "Boudica"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-diaochan.png",
+                "name": "Diaochan"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-eulji.png",
+                "name": "Eulji"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-hermann.png",
+                "name": "Hermann"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-imhotep.png",
+                "name": "Imhotep"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-joan-of-arc.png",
+                "name": "Joan of Arc"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-keira.png",
+                "name": "Keira"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-kusunoki.png",
+                "name": "Kusunoki"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-lohar.png",
+                "name": "Lohar"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-matilda.png",
+                "name": "Matilda"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-osman.png",
+                "name": "Osman"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-pelagius.png",
+                "name": "Pelagius"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-queen-tamar.png",
+                "name": "Queen Tamar"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-scipio.png",
+                "name": "Scipio"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99-sun-tzu.png",
+                "name": "Sun Tzu"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/999-cleopatra.png",
+                "name": "Cleopatra"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/999-ishida.png",
+                "name": "Ishida"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/999-sundeok.png",
+                "name": "Sundeok"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/9999-torgny.png",
+                "name": "Torgny"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/9999-wafura.png",
+                "name": "Wafura"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99999-universal-legendary.png",
+                "name": "Universal Legendary"
+            },
+            {
+                "imageUrl": "https://tiermaker.com/images/media/template_images/2024/370894/rise-of-kingdoms-all-legendary-and-epic-commanders-2023-370894-2/99999-universal-legendary2.png",
+                "name": "Universal Legendary 2"
+            }
+        ]
+    }
+}

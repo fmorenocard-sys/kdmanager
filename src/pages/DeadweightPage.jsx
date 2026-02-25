@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Users, AlertTriangle, CheckCircle, Plane, Search, XCircle, ShieldAlert, UserX } from 'lucide-react';
@@ -7,9 +8,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import Input from '../components/ui/Input';
 import StatCard from '../components/ui/StatCard';
 import StatusFilter from '../components/ui/StatusFilter';
+import Avatar from '../components/ui/Avatar';
 
 const DeadweightPage = () => {
     const { deadweight, loading, error } = useData();
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
 
@@ -94,43 +97,41 @@ const DeadweightPage = () => {
         return new Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 1 }).format(num);
     };
 
-    if (loading) return <div className="p-8 text-center text-muted">Loading Deadweight Data...</div>;
+    if (loading) return <div className="p-8 text-center text-muted">{t('common.loading')}</div>;
     if (error) return <div className="p-8 text-center text-red-400">{error}</div>;
 
     return (
         <div className="space-y-8 animate-fade-in">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent flex items-center gap-3">
-                        <AlertTriangle className="text-red-500" size={36} />
-                        Deadweight Tracking
-                    </h1>
-                    <p className="text-gray-400 mt-1">Monitoring inactive or non-compliant accounts ({dwList.length} tracked)</p>
-                </div>
-                <DataRefreshControl
-                    pageId="deadweight"
-                    title="Update List"
-                    expectedFilePattern="Deadweight"
-                />
+            <div>
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent flex items-center gap-2 md:gap-3">
+                    <AlertTriangle className="text-red-500" size={24} />
+                    {t('deadweight.title')}
+                </h1>
+                <p className="text-gray-400 mt-1">{t('deadweight.subtitle', { count: dwList.length })}</p>
             </div>
+            <DataRefreshControl
+                pageId="deadweight"
+                title="Update List"
+                expectedFilePattern="Deadweight"
+            />
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
-                    title="Reducible Power"
+                    title={t('deadweight.reducible_power')}
                     value={formatNumber(stats.reduciblePower)}
                     icon={ShieldAlert}
                     color="red"
                 />
                 <StatCard
-                    title="Reducible KP"
+                    title={t('deadweight.reducible_kp')}
                     value={formatNumber(stats.reducibleKP)}
                     icon={UserX}
                     color="orange"
                 />
                 <StatCard
-                    title="Migrated"
+                    title={t('deadweight.migrated')}
                     value={
                         <div className="flex items-baseline gap-1">
                             {stats.migratedCount}
@@ -141,7 +142,7 @@ const DeadweightPage = () => {
                     color="blue"
                 />
                 <StatCard
-                    title="King Pardon"
+                    title={t('deadweight.king_pardon')}
                     value={stats.kingPardonCount}
                     icon={CheckCircle}
                     color="emerald"
@@ -149,13 +150,13 @@ const DeadweightPage = () => {
             </div>
 
             {/* Filters and Table */}
-            <Card className="flex flex-col h-[600px]">
+            <Card className="flex flex-col h-[600px] overflow-hidden">
                 <CardHeader className="flex flex-col gap-4 border-b border-white/5 pb-4">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <CardTitle className="whitespace-nowrap">Deadweight List</CardTitle>
+                        <CardTitle className="whitespace-nowrap">{t('deadweight.title')}</CardTitle>
                         <div className="w-full md:w-64">
                             <Input
-                                placeholder="Search governor or ID..."
+                                placeholder={t('common.search_placeholder')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 leftIcon={<Search size={16} />}
@@ -171,16 +172,16 @@ const DeadweightPage = () => {
                     />
                 </CardHeader>
                 <CardContent className="flex-1 overflow-hidden p-0">
-                    <div className="h-full overflow-auto custom-scrollbar">
+                    <div className="h-full overflow-auto overflow-x-auto custom-scrollbar">
                         <Table>
                             <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
                                 <TableRow>
                                     <TableHead className="w-[80px] text-xs">ID</TableHead>
-                                    <TableHead className="text-xs">Governor</TableHead>
+                                    <TableHead className="text-xs">{t('war.governor')}</TableHead>
                                     <TableHead className="text-xs">Power</TableHead>
                                     <TableHead className="text-xs">Kill Points</TableHead>
-                                    <TableHead className="text-xs">Status</TableHead>
-                                    <TableHead className="text-xs">Notes</TableHead>
+                                    <TableHead className="text-xs">{t('war.status')}</TableHead>
+                                    <TableHead className="text-xs">{t('common.notes')}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -188,7 +189,17 @@ const DeadweightPage = () => {
                                     filteredList.map((row, index) => (
                                         <TableRow key={row.id || index} className="hover:bg-white/5 transition-colors">
                                             <TableCell className="font-mono text-xs text-slate-500">{row.id}</TableCell>
-                                            <TableCell className="font-medium text-slate-300">{row.name}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-3">
+                                                    <Avatar
+                                                        id={row.id}
+                                                        name={row.name}
+                                                        size="sm"
+                                                        className="bg-slate-800 border border-slate-700"
+                                                    />
+                                                    <span className="font-medium text-slate-300">{row.name}</span>
+                                                </div>
+                                            </TableCell>
                                             <TableCell className="font-mono text-slate-400">{formatNumber(row.power)}</TableCell>
                                             <TableCell className="font-mono text-slate-400">{formatNumber(row.kp)}</TableCell>
                                             <TableCell>
@@ -204,7 +215,7 @@ const DeadweightPage = () => {
                                 ) : (
                                     <TableRow>
                                         <TableCell colSpan={6} className="text-center py-8 text-slate-500">
-                                            No deadweight found matching filter.
+                                            {t('common.no_results')}
                                         </TableCell>
                                     </TableRow>
                                 )}

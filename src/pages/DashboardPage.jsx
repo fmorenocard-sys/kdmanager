@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import DataRefreshControl from '../components/DataRefreshControl';
 import PlayerDetailPanel from '../components/PlayerDetailPanel';
@@ -9,10 +10,11 @@ import { TrendingUp, Users, Skull, Sword, Coins, Search, Filter, AlertCircle } f
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import StatCard from '../components/ui/StatCard';
-import avatarMapping from '../data/player-avatars.json';
+import Avatar from '../components/ui/Avatar';
 
 const DashboardPage = () => {
     const { players, history, bank } = useData();
+    const { t } = useTranslation();
     const [sortConfig, setSortConfig] = useState({ key: 'power', direction: 'desc' });
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedAlliance, setSelectedAlliance] = useState("All");
@@ -75,39 +77,39 @@ const DashboardPage = () => {
             {/* Header / Actions */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">Kingdom Overview</h2>
-                    <p className="text-slate-400 mt-1">Real-time statistics for Kingdom 2997</p>
+                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">{t('dashboard.title')}</h2>
+                    <p className="text-slate-400 mt-1">Kingdom 2997</p>
                 </div>
             </div>
 
             <DataRefreshControl />
 
             {/* Main Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 <StatCard
-                    title="Total Power"
+                    title={t('dashboard.power')}
                     value={formatNumber(stats.power)}
                     icon={TrendingUp}
                     color="blue"
                 />
                 <StatCard
-                    title="Kill Points"
+                    title={t('dashboard.kp')}
                     value={formatNumber(stats.kp)}
                     icon={Sword}
                     color="red"
                 />
                 <StatCard
-                    title="Dead Troops"
+                    title={t('dashboard.dead')}
                     value={formatNumber(stats.deads)}
                     icon={Skull}
                     color="slate"
                 />
                 <StatCard
-                    title="Active Governors"
+                    title={t('dashboard.players')}
                     value={players.length}
                     icon={Users}
                     color="amber"
-                    subtext="Top 300 Tracked"
+                    subtext="Top 300"
                 />
             </div>
 
@@ -119,7 +121,7 @@ const DashboardPage = () => {
                         <div className="flex flex-col md:flex-row gap-4 items-center">
                             <div className="flex-1 w-full">
                                 <Input
-                                    placeholder="Search governor by name or ID..."
+                                    placeholder={t('common.search')}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     leftIcon={<Search size={18} />}
@@ -133,7 +135,7 @@ const DashboardPage = () => {
                                     onChange={(e) => setSelectedAlliance(e.target.value)}
                                 >
                                     {alliances.map(a => (
-                                        <option key={a} value={a} className="bg-slate-900">{a === "All" ? "All Alliances" : a}</option>
+                                        <option key={a} value={a} className="bg-slate-900">{a === "All" ? t('common.all') : a}</option>
                                     ))}
                                 </select>
                             </div>
@@ -142,21 +144,21 @@ const DashboardPage = () => {
 
                     <Card className="flex flex-col h-[600px]">
                         <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>Governor Leaderboard</CardTitle>
+                            <CardTitle>{t('dashboard.player_list')}</CardTitle>
                             <div className="text-sm text-slate-400">
-                                {sortedPlayers.length} Governors found
+                                {t('common.showing_records', { count: sortedPlayers.length })}
                             </div>
                         </CardHeader>
                         <CardContent className="flex-1 overflow-hidden p-0">
-                            <div className="h-full overflow-auto custom-scrollbar">
+                            <div className="h-full overflow-auto overflow-x-auto custom-scrollbar">
                                 <Table>
                                     <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
                                         <TableRow>
-                                            <TableHead className="w-[60px] text-center text-xs">Rank</TableHead>
-                                            <TableHead className="text-xs">Governor</TableHead>
-                                            <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('power')}>Power</TableHead>
+                                            <TableHead className="w-[60px] text-center text-xs">{t('dashboard.rank')}</TableHead>
+                                            <TableHead className="text-xs">{t('dashboard.name')}</TableHead>
+                                            <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('power')}>{t('dashboard.power')}</TableHead>
                                             <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('kp')}>Kill Points</TableHead>
-                                            <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('deads')}>Deads</TableHead>
+                                            <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('deads')}>{t('dashboard.total_dead')}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -169,21 +171,13 @@ const DashboardPage = () => {
                                                 <TableCell className="text-center font-medium text-slate-500 group-hover:text-slate-300">#{player.rank}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-full bg-slate-800 overflow-hidden flex-shrink-0 border border-slate-700">
-                                                            {avatarMapping[player.id] ? (
-                                                                <img
-                                                                    src={`${import.meta.env.BASE_URL}${avatarMapping[player.id]?.replace(/^\//, '')}`}
-                                                                    alt={player.name}
-                                                                    width="32"
-                                                                    height="32"
-                                                                    className="w-full h-full object-cover"
-                                                                    onError={(e) => { e.target.style.display = 'none'; }}
-                                                                />
-                                                            ) : (
-                                                                <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-500">
-                                                                    {player.name.charAt(0)}
-                                                                </div>
-                                                            )}
+                                                        <div className="flex-shrink-0">
+                                                            <Avatar
+                                                                id={player.id}
+                                                                name={player.name}
+                                                                size="sm"
+                                                                className="border border-slate-700 bg-slate-800"
+                                                            />
                                                         </div>
                                                         <div className="flex flex-col">
                                                             <span className="font-semibold text-slate-200 group-hover:text-primary transition-colors">{player.name}</span>
@@ -213,7 +207,7 @@ const DashboardPage = () => {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Coins className="text-amber-500" size={20} />
-                                Treasury Status
+                                {t('bank.title')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -229,13 +223,13 @@ const DashboardPage = () => {
                                             </div>
                                         ))}
                                         <div className="pt-4 mt-4 border-t border-white/10 text-xs text-center text-slate-500">
-                                            Last Updated: {new Date(bank.updatedAt || Date.now()).toLocaleDateString()}
+                                            {t('datarefresh.last_sync')}: {new Date(bank.updatedAt || Date.now()).toLocaleDateString()}
                                         </div>
                                     </>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-8 text-slate-500 gap-2">
                                         <AlertCircle size={32} />
-                                        <span>No Treasury Data Available</span>
+                                        <span>{t('common.error')}</span>
                                     </div>
                                 )}
                             </div>
@@ -247,7 +241,7 @@ const DashboardPage = () => {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <TrendingUp className="text-blue-500" size={20} />
-                                Kingdom Evolution
+                                {t('dashboard.power')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="h-[300px]">
@@ -314,7 +308,7 @@ const DashboardPage = () => {
                                 </ResponsiveContainer>
                             ) : (
                                 <div className="flex items-center justify-center h-full text-slate-500">
-                                    No History Data
+                                    {t('common.loading')}
                                 </div>
                             )}
                         </CardContent>

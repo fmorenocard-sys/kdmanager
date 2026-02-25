@@ -20,29 +20,31 @@ const StatCard = ({ title, value, icon: Icon, color = "blue", subtext, className
 
     return (
         <Card className={cn(
-            "border-l-4 bg-slate-900/50 backdrop-blur-sm transition-all hover:bg-slate-900/70",
+            "border-l-4 bg-slate-900/50 backdrop-blur-sm transition-all hover:bg-slate-900/70 min-w-0",
             styles.border,
             className
         )}>
             <div className={cn(
-                "flex items-center gap-4",
+                "flex items-center gap-2 md:gap-4 min-w-0",
                 iconPosition === "right" ? "justify-between" : "justify-start"
             )}>
                 {iconPosition === "left" && (
-                    <div className={cn("p-3 rounded-xl", styles.iconBg, styles.iconText, styles.ring)}>
-                        <Icon size={24} />
+                    <div className={cn("p-2 md:p-3 rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
+                        <Icon size={18} className="md:hidden" />
+                        <Icon size={24} className="hidden md:block" />
                     </div>
                 )}
 
-                <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-400 uppercase tracking-wider">{title}</p>
-                    <div className="text-2xl font-bold text-white mt-1">{value}</div>
-                    {subtext && <p className="text-xs text-slate-500 mt-1">{subtext}</p>}
+                <div className="flex-1 min-w-0">
+                    <p className="text-xs md:text-sm font-medium text-slate-400 uppercase tracking-wider truncate">{title}</p>
+                    <div className="text-lg md:text-2xl font-bold text-white mt-0.5 truncate">{value}</div>
+                    {subtext && <p className="text-xs text-slate-500 mt-1 truncate">{subtext}</p>}
                 </div>
 
                 {iconPosition === "right" && (
-                    <div className={cn("p-3 rounded-xl", styles.iconBg, styles.iconText, styles.ring)}>
-                        <Icon size={24} />
+                    <div className={cn("p-2 md:p-3 rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
+                        <Icon size={18} className="md:hidden" />
+                        <Icon size={24} className="hidden md:block" />
                     </div>
                 )}
             </div>
