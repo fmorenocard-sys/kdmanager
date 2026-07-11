@@ -1,5 +1,11 @@
 # QA Changelog
 
+## v2.2 - 2026-07-11
+### Changed
+- **Données KvK (F-008)** : Ingestion de la nouvelle campagne « SoC 4: King of All Britain (2026) » (47 comptes principaux, 23 fillers) directement depuis Google Sheets. `scripts/digest-data.js` télécharge désormais le classeur live (variable `KVK_SHEET_ID` dans `.env`, repli sur le snapshot xlsx committé). Documents Firestore `static_data/kvk` et `static_data/kvk_filler` mis à jour (anciens documents sauvegardés).
+### Fixed
+- **Mapping Fillers** : `KVK_FILLER.GOAL_PERCENT` pointait sur la colonne S (« %min Dead ») au lieu de T (« %Goal ») — corrigé dans `src/config/data-mapping.js` ET `functions/data-mapping.js` (⚠️ redéploiement des functions requis pour que la synchro in-app utilise le bon mapping).
+
 ## v2.1 - 2026-02-26
 ### Added
 - **AutomatedTestStrategy**: Création du document recommandant Playwright et l'utilisation de Firebase Emulator Suite.

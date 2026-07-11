@@ -133,8 +133,8 @@ export const DATA_CONFIG = {
             PASS4_DEAD: 14, // O
             // PASS7_DEAD: 15,
             KL_DEAD: 15, // P
-            TOTAL_DEAD: 16, // R
-            GOAL_PERCENT: 18 // T
+            TOTAL_DEAD: 16, // Q
+            GOAL_PERCENT: 19 // T: %Goal (col 18/S is %min Dead)
         }
     },
 };

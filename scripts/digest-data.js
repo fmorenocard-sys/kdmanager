@@ -16,6 +16,43 @@ console.log(`🚀 Starting Data Digestion...`);
 console.log(`📂 Project Root: ${PROJECT_ROOT}`);
 console.log(`📂 Scanning directory: ${DATA_DIR}`);
 
+// Load .env (KVK_SHEET_ID etc.) — plain Node script, Vite doesn't do this for us
+function loadEnv() {
+    const envPath = path.join(PROJECT_ROOT, '.env');
+    if (!fs.existsSync(envPath)) return;
+    for (const line of fs.readFileSync(envPath, 'utf8').split(/\r?\n/)) {
+        const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+        if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+    }
+}
+
+// Download the live KvK workbook from Google Sheets (link-shared) into DATA_DIR.
+// Falls back to the committed snapshot if the ID is unset or the fetch fails,
+// so CI builds keep working offline.
+async function downloadKvkSheet() {
+    loadEnv();
+    const sheetId = process.env.KVK_SHEET_ID;
+    if (!sheetId) {
+        console.log(`ℹ️ KVK_SHEET_ID not set — using local ${DATA_CONFIG.KVK.FILE}`);
+        return;
+    }
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=xlsx`;
+    try {
+        console.log(`⬇️ Downloading KvK workbook from Google Sheets (${sheetId.slice(0, 8)}…)`);
+        const res = await fetch(url, { redirect: 'follow' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = Buffer.from(await res.arrayBuffer());
+        // xlsx files are zip archives — anything else means we got a login/error page
+        if (buf.length < 4 || buf[0] !== 0x50 || buf[1] !== 0x4b) {
+            throw new Error('response is not an xlsx file (is the sheet link-shared?)');
+        }
+        fs.writeFileSync(path.join(DATA_DIR, DATA_CONFIG.KVK.FILE), buf);
+        console.log(`✅ Refreshed ${DATA_CONFIG.KVK.FILE} from Google Sheets (${(buf.length / 1024).toFixed(0)} KB)`);
+    } catch (e) {
+        console.warn(`⚠️ Google Sheets download failed (${e.message}) — using local ${DATA_CONFIG.KVK.FILE}`);
+    }
+}
+
 // Helper: Find file by partial name or exact config match
 function findFile(pattern) {
     if (!fs.existsSync(DATA_DIR)) {
@@ -447,6 +484,7 @@ function processKvkFillerStats() {
 
 // Execute
 try {
+    await downloadKvkSheet();
     processPlayers();
     processBank();
     processTrophies();
