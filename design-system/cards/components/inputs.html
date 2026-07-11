@@ -1,0 +1,40 @@
+<!-- @dsCard group="Formulaires" name="Inputs & Select" subtitle="Label, icône, date, sélecteur de campagne" width="560" -->
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inputs — KD Manager</title><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #0f172a;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(59,130,246,.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245,158,11,.05), transparent 25%);
+    color: #f8fafc; padding: 24px; -webkit-font-smoothing: antialiased;
+  }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin: 22px 0 10px; }
+  h2:first-of-type { margin-top: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .note { font-size: 11px; color: #64748b; margin-top: 6px; }
+  .glass { background: rgba(15,23,42,.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.3); }
+</style></head><body>
+    <style>
+      label { display:block; font-size:14px; font-weight:500; color:#94a3b8; margin:0 0 4px; }
+      .inp { width:100%; max-width:380px; background:rgba(2,6,23,.5); border:1px solid #1e293b; border-radius:8px; padding:8px 16px; font-size:14px; color:#e2e8f0; font-family:inherit; }
+      .inp::placeholder { color:#64748b; }
+      .inp:focus { outline:none; box-shadow:0 0 0 2px rgba(148,163,184,.5); }
+      .wrap { position:relative; max-width:380px; }
+      .wrap .inp { padding-left:40px; }
+      .ico { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; }
+      .sel { background:rgba(15,23,42,.8); border:1px solid #334155; border-radius:8px; padding:10px 12px; font-size:14px; color:#e2e8f0; font-family:inherit; min-height:44px; }
+      .fld { margin-bottom:16px; }
+    </style>
+    <div class="fld"><label>Avec label</label><input class="inp" value="SoC 4: King of All Britain (2026)"></div>
+    <div class="fld"><label>Recherche (leftIcon)</label>
+      <div class="wrap"><span class="ico">🔍</span><input class="inp" placeholder="Rechercher un joueur..."></div>
+    </div>
+    <div class="fld"><label>Date</label><input type="date" class="inp" value="2026-06-11" style="max-width:200px"></div>
+    <div class="fld"><label>Sélecteur de campagne</label>
+      <select class="sel"><option>SoC 4: King of All Britain (2026) — En cours</option><option>SoC 3: Heroic Anthem (2026)</option></select>
+    </div>
+    <div class="note">Cibles tactiles ≥ 44px (règle responsiveness du projet).</div></body></html>

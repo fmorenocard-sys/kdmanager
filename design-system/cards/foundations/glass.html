@@ -1,0 +1,30 @@
+<!-- @dsCard group="Fondations" name="Glassmorphism" subtitle="Cartes translucides, blur, ombres" width="560" -->
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glassmorphism — KD Manager</title><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #0f172a;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(59,130,246,.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245,158,11,.05), transparent 25%);
+    color: #f8fafc; padding: 24px; -webkit-font-smoothing: antialiased;
+  }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin: 22px 0 10px; }
+  h2:first-of-type { margin-top: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .note { font-size: 11px; color: #64748b; margin-top: 6px; }
+  .glass { background: rgba(15,23,42,.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.3); }
+</style></head><body>
+    <h2>Carte standard (Card)</h2>
+    <div class="glass" style="padding:24px;max-width:460px">
+      <div style="font-size:20px;font-weight:700;margin-bottom:6px">Titre de carte</div>
+      <div style="font-size:14px;color:#94a3b8">bg-slate-900/40 · backdrop-blur-md · border-white/10 · rounded-xl · shadow-xl</div>
+    </div>
+    <h2>Utilitaire .card (hover)</h2>
+    <div style="background:rgba(255,255,255,.05);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:20px;max-width:460px">
+      <div style="font-size:14px;color:#cbd5e1">bg-white/5 → hover bg-white/10, border-white/20</div>
+    </div>
+    <div class="note">Le fond de page porte deux gradients radiaux (bleu 8 %, ambre 5 %) qui donnent la profondeur au verre.</div></body></html>

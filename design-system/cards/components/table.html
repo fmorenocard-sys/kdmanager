@@ -1,0 +1,50 @@
+<!-- @dsCard group="Data" name="Table & carte mobile" subtitle="Rangées desktop + variante mobile card" width="760" -->
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Table — KD Manager</title><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #0f172a;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(59,130,246,.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245,158,11,.05), transparent 25%);
+    color: #f8fafc; padding: 24px; -webkit-font-smoothing: antialiased;
+  }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin: 22px 0 10px; }
+  h2:first-of-type { margin-top: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .note { font-size: 11px; color: #64748b; margin-top: 6px; }
+  .glass { background: rgba(15,23,42,.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.3); }
+</style></head><body>
+    <style>
+      table { border-collapse:collapse; width:100%; font-size:12px; }
+      th { text-align:left; padding:8px; color:#94a3b8; font-weight:600; background:rgba(15,23,42,.8); white-space:nowrap; }
+      td { padding:6px 8px; border-bottom:1px solid rgba(255,255,255,.05); font-variant-numeric:tabular-nums; }
+      tr:hover td { background:rgba(255,255,255,.05); }
+      .id { font-family:"JetBrains Mono",monospace; color:#64748b; font-size:11px; }
+      .av { width:20px; height:20px; border-radius:50%; background:linear-gradient(135deg,#6366f1,#a855f7); display:inline-block; vertical-align:middle; margin-right:6px; border:1px solid #334155; }
+      .bdg { padding:2px 8px; border-radius:999px; font-size:10px; font-weight:700; border:1px solid; }
+      .mob { background:rgba(30,41,59,.8); border:1px solid #334155; border-radius:12px; padding:12px; max-width:340px; margin-top:8px; }
+      .kv { display:flex; justify-content:space-between; background:rgba(15,23,42,.5); padding:6px; border-radius:6px; font-size:11px; }
+    </style>
+    <h2>Desktop (dans une Card glass, en-tête sticky)</h2>
+    <div class="glass" style="padding:0;overflow:hidden">
+    <table>
+      <tr><th>#</th><th>ID</th><th>Nom</th><th>Puis. finale</th><th>KP gagnés</th><th>% Goal</th><th>Note</th></tr>
+      <tr><td>1</td><td class="id">75481347</td><td><span class="av"></span>Lord Guineapig</td><td>123 003 111</td><td style="color:#34d399;font-weight:700">+1 174 227 156</td><td><span style="color:#4ade80;background:rgba(74,222,128,.1);padding:2px 6px;border-radius:6px;font-weight:700;font-size:10px">136.5%</span></td><td><span class="bdg" style="color:#c084fc;background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.2)">Excellent</span></td></tr>
+      <tr><td>2</td><td class="id">79650085</td><td><span class="av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"></span>Keshiba ツ</td><td>84 681 280</td><td style="color:#34d399;font-weight:700">+35 853 547</td><td><span style="color:#f87171;background:rgba(248,113,113,.1);padding:2px 6px;border-radius:6px;font-weight:700;font-size:10px">7.8%</span></td><td><span class="bdg" style="color:#f87171;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2)">Dead Weight</span></td></tr>
+    </table>
+    </div>
+    <h2>Mobile (&lt; 768px — jamais de scroll horizontal)</h2>
+    <div class="mob">
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(51,65,85,.5);padding-bottom:8px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px"><span style="background:#0f172a;color:#94a3b8;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px">#1</span><span class="av" style="width:28px;height:28px"></span><div><div style="font-size:13px;font-weight:700">Lord Guineapig</div><div class="id">75481347</div></div></div>
+        <span class="bdg" style="color:#c084fc;background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.2)">Excellent</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="kv"><span style="color:#64748b">Puis. finale</span><span class="mono">123 003 111</span></div>
+        <div class="kv"><span style="color:#64748b">KP gagnés</span><span class="mono" style="color:#34d399">+1.17B</span></div>
+      </div>
+    </div></body></html>

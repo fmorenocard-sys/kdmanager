@@ -1,0 +1,50 @@
+<!-- @dsCard group="Actions" name="Boutons" subtitle="5 variants × 3 tailles, focus, disabled" width="620" -->
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boutons — KD Manager</title><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #0f172a;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(59,130,246,.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245,158,11,.05), transparent 25%);
+    color: #f8fafc; padding: 24px; -webkit-font-smoothing: antialiased;
+  }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin: 22px 0 10px; }
+  h2:first-of-type { margin-top: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .note { font-size: 11px; color: #64748b; margin-top: 6px; }
+  .glass { background: rgba(15,23,42,.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.3); }
+</style></head><body>
+    <style>
+      .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:8px; font-weight:500; border:none; cursor:pointer; font-family:inherit; transition:background .15s; }
+      .md { height:40px; padding:8px 16px; font-size:14px; } .sm { height:32px; padding:0 12px; font-size:12px; } .lg { height:48px; padding:0 32px; font-size:18px; }
+      .primary { background:#f59e0b; color:#fff; box-shadow:0 10px 15px -3px rgba(245,158,11,.2); } .primary:hover { background:#d97706; }
+      .secondary { background:#2563eb; color:#fff; box-shadow:0 10px 15px -3px rgba(37,99,235,.2); } .secondary:hover { background:#1d4ed8; }
+      .outline { background:transparent; border:1px solid rgba(255,255,255,.2); color:#f1f5f9; } .outline:hover { background:rgba(255,255,255,.05); }
+      .ghost { background:transparent; color:#cbd5e1; } .ghost:hover { background:rgba(255,255,255,.1); color:#fff; }
+      .danger { background:#ef4444; color:#fff; } .danger:hover { background:#dc2626; }
+      .focus { outline:none; box-shadow:0 0 0 2px #0f172a, 0 0 0 4px #94a3b8; }
+    </style>
+    <h2>Variants (md)</h2>
+    <div class="row">
+      <button class="btn md primary">Primary</button>
+      <button class="btn md secondary">Secondary</button>
+      <button class="btn md outline">Outline</button>
+      <button class="btn md ghost">Ghost</button>
+      <button class="btn md danger">Danger</button>
+    </div>
+    <h2>Tailles</h2>
+    <div class="row">
+      <button class="btn sm primary">Small</button>
+      <button class="btn md primary">Medium</button>
+      <button class="btn lg primary">Large</button>
+    </div>
+    <h2>États</h2>
+    <div class="row">
+      <button class="btn md primary focus">Focus ring</button>
+      <button class="btn md primary" style="opacity:.5;pointer-events:none">Disabled</button>
+    </div>
+    <div class="note">Focus ring global : ring-2 primary + ring-offset slate-900 (règle a11y du projet).</div></body></html>

@@ -1,0 +1,32 @@
+<!-- @dsCard group="Data" name="StatCards" subtitle="Bordure gauche colorée + bulle d’icône" width="720" -->
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StatCards — KD Manager</title><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #0f172a;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(59,130,246,.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245,158,11,.05), transparent 25%);
+    color: #f8fafc; padding: 24px; -webkit-font-smoothing: antialiased;
+  }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin: 22px 0 10px; }
+  h2:first-of-type { margin-top: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .note { font-size: 11px; color: #64748b; margin-top: 6px; }
+  .glass { background: rgba(15,23,42,.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.3); }
+</style></head><body>
+    <style>
+      .stat { display:flex; justify-content:space-between; align-items:center; gap:16px; background:rgba(15,23,42,.5); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.1); border-left-width:4px; border-radius:12px; padding:20px; width:220px; }
+      .t { font-size:12px; font-weight:500; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; }
+      .v { font-size:22px; font-weight:700; margin-top:2px; }
+      .b { padding:12px; border-radius:12px; font-size:20px; }
+    </style>
+    <div class="row">
+      <div class="stat" style="border-left-color:#ef4444"><div><div class="t">Morts totaux</div><div class="v">46 698 975</div></div><div class="b" style="background:rgba(239,68,68,.2)">💀</div></div>
+      <div class="stat" style="border-left-color:#f59e0b"><div><div class="t">Diff puissance</div><div class="v" style="color:#f87171">-45 832 920</div></div><div class="b" style="background:rgba(245,158,11,.2)">📉</div></div>
+      <div class="stat" style="border-left-color:#10b981"><div><div class="t">KP gagnés</div><div class="v" style="color:#34d399">11.9B</div></div><div class="b" style="background:rgba(16,185,129,.2)">⚡</div></div>
+    </div>
+    <div class="note">9 couleurs disponibles : blue, red, amber, emerald, yellow, purple, orange, stone, slate.</div></body></html>

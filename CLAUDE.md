@@ -50,6 +50,10 @@ Secrets were once committed because a corrupted `.gitignore` entry silently fail
 - Write `.gitignore` and other dot-files as UTF-8 (PowerShell `Out-File` defaults to UTF-16 and corrupts them — use `-Encoding utf8` or the Write tool).
 - One-off scratch scripts/dumps go in `scratch/` or `tmp/` (gitignored), not the repo root.
 
+## Design system (Claude Design)
+
+The UI kit is mirrored to the "KD Manager Design System" project on claude.ai/design (projectId `d5cd9187-40ba-45fc-a2f4-b6ac5f946c04`). Source of truth stays in code: `design-system/generate.mjs` builds self-contained HTML cards into `design-system/cards/` from the real tokens (`src/index.css` @theme, `src/components/ui/*`). After changing UI tokens or components, re-run the generator and re-sync the affected cards via DesignSync (incremental, never wholesale). Note: primary buttons are **amber-500**, not indigo — the indigo family is for active tabs/current badges.
+
 ## Known technical debt (see `docs/project_context.md` §5)
 
 - XLSX ingestion is tightly coupled to the exact export format; header/tab changes require `src/config/data-mapping.js` + `functions/data-mapping.js` maintenance (keep both in sync).
