@@ -20,6 +20,7 @@ Ce document centralise l'état de toutes les fonctionnalités du Kingdom Manager
 | F-014 | KvK Goals Calculator | Calcul algorithmique des objectifs de chaque joueur (KP, Deads, DKP) selon sa Puissance (courbe quadratique). | À développer | P1 | Fort | Formule "Req DKP" |
 | F-015 | Historique des KvK | Archivage des campagnes KvK (clôture manuelle par le Roi vers `kvk_history`), sélecteur de campagne sur Performance KvK et vue progression multi-campagnes par joueur. SoC 1/2/3 importées le 2026-07-11. Reste : `/mykvk <campagne>` Discord (US-014, V2). | Live | P1 | Fort | F-005, F-006 |
 | F-016 | Avatars dynamiques | Cascade d'avatars joueurs : URL Lilith CDN fraîche (pass quotidien `syncAvatars` via ProKingdoms) → avatar Discord (profils liés) → JPG local → logo. Doc `static_data/avatars`, thumbnail dans `/mystats`. | Live | P2 | Moyen | F-007 (SSO), scheduledSync, Etude_Avatars_Joueurs |
+| F-017 | Design System v2 & mode clair | Direction « Glass Raffiné + gradients » conçue dans Claude Design puis portée dans le code : tokens CSS dark/light, boutons gradient, cartes hairline, toggle thème persistant. Migration progressive des classes codées en dur via shim light. | Live (shim transitoire) | P2 | Moyen | Projet Claude Design (v2/tokens.css) |
 
 ## Problèmes connus actuels
 * **F-008 (Data Ingestion)**: L'ingestion repose encore fortement sur des traitements manuels de fichiers XLSX avant de nourrir le frontend (ou un script local `digest-data.js`). Le processus mériterait d'être full in-app ou automatisé via Cloud Functions.

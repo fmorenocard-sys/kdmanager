@@ -18,10 +18,16 @@
   .note { font-size: 11px; color: #64748b; margin-top: 6px; }
   .glass { background: rgba(15,23,42,.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.3); }
 </style></head><body>
-    <h2>Carte standard (Card)</h2>
-    <div class="glass" style="padding:24px;max-width:460px">
+    <h2>Carte standard v2 (.v2-glass — bordure gradient hairline)</h2>
+    <style>
+      .v2g { position:relative; background:rgba(15,23,42,.45); backdrop-filter:blur(14px); border-radius:14px; box-shadow:0 20px 40px -12px rgba(0,0,0,.4); }
+      .v2g::before { content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+        background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(255,255,255,.04) 40%,rgba(245,158,11,.18));
+        -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+    </style>
+    <div class="v2g" style="padding:24px;max-width:460px">
       <div style="font-size:20px;font-weight:700;margin-bottom:6px">Titre de carte</div>
-      <div style="font-size:14px;color:#94a3b8">bg-slate-900/40 · backdrop-blur-md · border-white/10 · rounded-xl · shadow-xl</div>
+      <div style="font-size:14px;color:#a8b6ca">surface 45 % · blur 14px · radius 14px · hairline gradient (blanc→ambre)</div>
     </div>
     <h2>Utilitaire .card (hover)</h2>
     <div style="background:rgba(255,255,255,.05);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:20px;max-width:460px">

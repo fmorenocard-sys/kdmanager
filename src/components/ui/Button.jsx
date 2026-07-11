@@ -5,8 +5,8 @@ const Button = React.forwardRef(({ className, variant = "primary", size = "md", 
     const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50";
 
     const variants = {
-        primary: "bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20",
-        secondary: "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20",
+        primary: "btn-grad-primary text-white",
+        secondary: "btn-grad-accent text-white",
         outline: "border border-white/20 bg-transparent hover:bg-white/5 text-slate-100",
         ghost: "hover:bg-white/10 text-slate-300 hover:text-white",
         danger: "bg-red-500 text-white hover:bg-red-600",

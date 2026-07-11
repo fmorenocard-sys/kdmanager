@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.6 - 2026-07-12
+### Added
+- **F-017 Design System v2 & mode clair** : tokens v2 (conçus dans Claude Design, dossier `v2/` du projet design system) portés dans `src/index.css` — variables CSS dark/light, boutons gradient (primaire ambre→orange, accent indigo→violet, glow), cartes glass à bordure gradient hairline (`.v2-glass`), contraste des textes secondaires renforcé. **Toggle clair/sombre** dans le header (`ThemeToggle`, persistance localStorage `kd_theme`, classe `light` sur `<html>`, clé i18n ×9 langues). Shim de compatibilité light pour les ~600 classes de couleur codées en dur (audit : top 25 = 90 % de couverture) en attendant la migration progressive des pages. Vérifié dans les deux modes (dashboard + KvK). Cartes `buttons` et `glass` du design system re-synchronisées.
+
 ## v2.5 - 2026-07-11
 ### Added
 - **F-016 Avatars dynamiques** : étape `syncAvatars` dans `runFullSync` (pagination lente du leaderboard ProKingdoms — gestion 429, merge-only, jamais de downgrade lilith→discord) alimentant `static_data/avatars` ; fallback avatar Discord pour les profils liés ; cascade frontend dans `Avatar.jsx` (src → URL fraîche → JPG local → logo, bascule automatique sur erreur de chargement) ; thumbnail dans l'embed `/mystats`. Vérifié en production : 27 avatars frais, 54 images servies par le CDN Lilith sur la page KvK. Timeout des functions de sync porté à 300 s.

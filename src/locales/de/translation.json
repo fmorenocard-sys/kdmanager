@@ -38,7 +38,8 @@
     "no_results": "Keine Ergebnisse gefunden.",
     "no_data": "Keine Daten verfügbar.",
     "notes": "Notizen",
-    "min_chars": "Mindestens 3 Zeichen eingeben..."
+    "min_chars": "Mindestens 3 Zeichen eingeben...",
+    "toggle_theme": "Helles/dunkles Design umschalten"
   },
   "dashboard": {
     "title": "Dashboard",

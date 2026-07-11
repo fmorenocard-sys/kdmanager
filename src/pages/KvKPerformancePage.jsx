@@ -372,7 +372,7 @@ const KvKPerformancePage = () => {
             </div>
 
             {/* Table */}
-            <Card className="overflow-hidden border border-slate-700/50 bg-slate-900/40 backdrop-blur-md">
+            <Card className="overflow-hidden">
                 <div className="overflow-auto custom-scrollbar relative max-h-[800px]">
                     {/* Mobile Card View */}
                     <div className="md:hidden flex flex-col gap-3 p-3">
@@ -527,7 +527,7 @@ const KvKPerformancePage = () => {
 
                     {/* Progression detail */}
                     {selectedPlayer && (
-                        <Card className="overflow-hidden border border-slate-700/50 bg-slate-900/40 backdrop-blur-md">
+                        <Card className="overflow-hidden">
                             <div className="p-4 border-b border-slate-700/50 flex items-center gap-3">
                                 <Avatar id={selectedPlayer.id} name={selectedPlayer.name} size="sm" className="border border-slate-700" />
                                 <div className="min-w-0">

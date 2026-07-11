@@ -38,7 +38,8 @@
     "no_results": "Aucun résultat trouvé.",
     "no_data": "Aucune donnée disponible.",
     "notes": "Notes",
-    "min_chars": "Tapez au moins 3 caractères..."
+    "min_chars": "Tapez au moins 3 caractères...",
+    "toggle_theme": "Basculer thème clair/sombre"
   },
   "dashboard": {
     "title": "Tableau de Bord",

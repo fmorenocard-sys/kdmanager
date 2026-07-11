@@ -38,7 +38,8 @@
     "no_results": "Sonuç bulunamadı.",
     "no_data": "Veri yok.",
     "notes": "Notlar",
-    "min_chars": "En az 3 karakter girin..."
+    "min_chars": "En az 3 karakter girin...",
+    "toggle_theme": "Açık/koyu temayı değiştir"
   },
   "dashboard": {
     "title": "Panel",

@@ -54,12 +54,61 @@
   --image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
 }
 
+/* ============================================================
+   Design System v2 — tokens (source: Claude Design v2/tokens.css)
+   Direction "Glass Raffiné + boutons gradient". Dark par défaut,
+   .light sur <html> pour le mode clair (toggle dans le header).
+   ============================================================ */
+:root {
+  --background: #0f172a;
+  --page-bg-image:
+    radial-gradient(circle at 15% 40%, rgba(59, 130, 246, .1), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(245, 158, 11, .07), transparent 30%);
+  --surface: rgba(15, 23, 42, .45);
+  --surface-solid: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #a8b6ca;
+  --text-meta: #8494ab;
+  --border-flat: rgba(255, 255, 255, .1);
+  --border-gradient: linear-gradient(160deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, .04) 40%, rgba(245, 158, 11, .18));
+  --border-gradient-indigo: linear-gradient(160deg, rgba(165, 180, 252, .4), rgba(255, 255, 255, .05) 45%, rgba(168, 85, 247, .25));
+  --grad-primary: linear-gradient(135deg, #f59e0b, #ea580c);
+  --grad-primary-hover: linear-gradient(135deg, #fbbf24, #f97316);
+  --grad-accent: linear-gradient(135deg, #6366f1, #a855f7);
+  --grad-title: linear-gradient(90deg, #fbbf24, #f97316);
+  --glass-blur: 14px;
+  --shadow-card: 0 20px 40px -12px rgba(0, 0, 0, .4);
+  --shadow-glow-accent: 0 4px 16px rgba(139, 92, 246, .35);
+  --shadow-glow-primary: 0 4px 16px rgba(234, 88, 12, .35);
+  --radius-card: 14px;
+}
+
+.light {
+  --background: #f1f5f9;
+  --page-bg-image:
+    radial-gradient(circle at 15% 40%, rgba(59, 130, 246, .07), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(245, 158, 11, .06), transparent 30%);
+  --surface: rgba(255, 255, 255, .65);
+  --surface-solid: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #48566b;
+  --text-meta: #64748b;
+  --border-flat: rgba(15, 23, 42, .08);
+  --border-gradient: linear-gradient(160deg, rgba(15, 23, 42, .14), rgba(15, 23, 42, .04) 40%, rgba(217, 119, 6, .22));
+  --border-gradient-indigo: linear-gradient(160deg, rgba(99, 102, 241, .35), rgba(15, 23, 42, .04) 45%, rgba(168, 85, 247, .25));
+  --grad-primary-hover: linear-gradient(135deg, #d97706, #c2410c);
+  --grad-title: linear-gradient(90deg, #d97706, #ea580c);
+  --shadow-card: 0 12px 28px -8px rgba(15, 23, 42, .12);
+  --shadow-glow-accent: 0 4px 14px rgba(139, 92, 246, .3);
+  --shadow-glow-primary: 0 4px 14px rgba(234, 88, 12, .3);
+}
+
 @layer base {
   body {
-    @apply bg-slate-900 text-slate-50 antialiased overflow-x-hidden;
-    background-image:
-      radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.05), transparent 25%);
+    @apply antialiased overflow-x-hidden;
+    background-color: var(--background);
+    color: var(--text-primary);
+    background-image: var(--page-bg-image);
   }
 
   /* Global Accessibility Focus Rings */
@@ -81,6 +130,60 @@
 
   .card:hover {
     @apply bg-white/10 border-white/20 shadow-2xl;
+  }
+
+  /* v2 — carte glass à bordure gradient hairline */
+  .v2-glass {
+    position: relative;
+    background: var(--surface);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .v2-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--border-gradient);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .v2-glass.v2-indigo::before {
+    background: var(--border-gradient-indigo);
+  }
+
+  /* v2 — boutons gradient */
+  .btn-grad-primary {
+    background: var(--grad-primary);
+    box-shadow: var(--shadow-glow-primary);
+  }
+
+  .btn-grad-primary:hover {
+    background: var(--grad-primary-hover);
+  }
+
+  .btn-grad-accent {
+    background: var(--grad-accent);
+    box-shadow: var(--shadow-glow-accent);
+  }
+
+  .btn-grad-accent:hover {
+    filter: brightness(1.1);
+  }
+
+  /* v2 — titre gradient ambre */
+  .v2-title {
+    background: var(--grad-title);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   /* Buttons */
@@ -138,3 +241,51 @@
     /* Chrome, Safari and Opera */
   }
 }
+/* ============================================================
+   v2 — shim de compatibilité mode clair.
+   Les pages historiques utilisent ~600 classes de couleur codées en
+   dur (audit 2026-07-12 : le top 25 couvre 90 %). Ce bloc les remappe
+   sous .light en attendant leur migration progressive vers les tokens.
+   Non layered : gagne sur @layer utilities dans la cascade.
+   ============================================================ */
+.light .text-white { color: #0f172a; }
+.light .text-slate-50, .light .text-slate-100 { color: #1e293b; }
+.light .text-slate-200 { color: #2b3a52; }
+.light .text-slate-300, .light .text-gray-300 { color: #3b4a5f; }
+.light .text-slate-400, .light .text-gray-400 { color: #48566b; }
+.light .text-slate-500, .light .text-gray-500 { color: #64748b; }
+.light .text-slate-600 { color: #64748b; }
+.light .bg-slate-900, .light .bg-slate-950 { background-color: #e8edf4; }
+.light .bg-slate-900\/95 { background-color: rgba(255, 255, 255, .95); }
+.light .bg-slate-900\/80 { background-color: rgba(255, 255, 255, .85); }
+.light .bg-slate-900\/50, .light .bg-slate-900\/40 { background-color: rgba(255, 255, 255, .65); }
+.light .bg-slate-950\/50 { background-color: #ffffff; }
+.light .bg-slate-800 { background-color: #ffffff; }
+.light .bg-slate-800\/80, .light .bg-slate-800\/50 { background-color: rgba(255, 255, 255, .8); }
+.light .bg-slate-700, .light .bg-slate-700\/50 { background-color: rgba(15, 23, 42, .08); }
+.light .bg-white\/5 { background-color: rgba(15, 23, 42, .04); }
+.light .bg-white\/10 { background-color: rgba(15, 23, 42, .07); }
+.light .hover\:bg-white\/5:hover { background-color: rgba(15, 23, 42, .05); }
+.light .hover\:bg-white\/10:hover { background-color: rgba(15, 23, 42, .08); }
+.light .hover\:bg-slate-700\/50:hover { background-color: rgba(15, 23, 42, .08); }
+.light .hover\:bg-white\/5:hover .text-white, .light .hover\:text-white:hover { color: #0f172a; }
+.light .border-slate-500, .light .border-slate-600 { border-color: rgba(15, 23, 42, .18); }
+.light .border-slate-700, .light .border-slate-700\/50, .light .border-slate-700\/80 { border-color: rgba(15, 23, 42, .12); }
+.light .border-slate-800 { border-color: rgba(15, 23, 42, .1); }
+.light .border-white\/10, .light .border-white\/20 { border-color: rgba(15, 23, 42, .08); }
+.light .border-white\/5, .light .border-r.border-white\/5 { border-color: rgba(15, 23, 42, .05); }
+/* Ratings & badges : versions foncées lisibles sur clair (tokens v2) */
+.light .text-purple-400 { color: #7e22ce; }
+.light .text-emerald-400 { color: #047857; }
+.light .text-yellow-400 { color: #a16207; }
+.light .text-red-400 { color: #b91c1c; }
+.light .text-indigo-400 { color: #4f46e5; }
+.light .text-indigo-300 { color: #4338ca; }
+.light .text-sky-400 { color: #0369a1; }
+.light .text-amber-400, .light .text-amber-200 { color: #b45309; }
+.light .text-green-400 { color: #15803d; }
+.light .text-slate-900 { color: #f8fafc; } /* texte sur boutons primaires clairs */
+/* Titres gradient : version foncée en mode clair (grad-title-neutral des tokens v2) */
+.light .heading-xl,
+.light .from-white.to-slate-400 { background-image: linear-gradient(90deg, #334155, #64748b); }
+.light .bg-gradient-to-r.from-white { background-image: linear-gradient(90deg, #334155, #64748b); }

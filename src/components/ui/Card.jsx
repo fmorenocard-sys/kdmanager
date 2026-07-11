@@ -4,7 +4,7 @@ import { cn } from '../../lib/utils'; // We'll need to create this utility
 const Card = ({ children, className, hoverEffect, ...props }) => {
     return (
         <div
-            className={cn("bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-xl p-3 md:p-6 shadow-xl", className)}
+            className={cn("v2-glass p-3 md:p-6", className)}
             {...props}
         >
             {children}

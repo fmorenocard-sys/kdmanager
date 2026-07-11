@@ -15,6 +15,7 @@ import ProfilePage from './pages/ProfilePage';
 import WarTrackerPage from './pages/WarTrackerPage';
 import BottomNav from './components/BottomNav';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
+import ThemeToggle from './components/ui/ThemeToggle';
 
 const Sidebar = ({ isOpen, onNavigate, onClose }) => {
   const location = useLocation();
@@ -214,6 +215,7 @@ const MainContent = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <LanguageSwitcher />
             <UserProfile />
           </div>

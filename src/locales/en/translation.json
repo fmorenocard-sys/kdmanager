@@ -38,7 +38,8 @@
     "no_results": "No results found.",
     "no_data": "No data available.",
     "notes": "Notes",
-    "min_chars": "Type at least 3 characters..."
+    "min_chars": "Type at least 3 characters...",
+    "toggle_theme": "Toggle light/dark theme"
   },
   "dashboard": {
     "title": "Dashboard",

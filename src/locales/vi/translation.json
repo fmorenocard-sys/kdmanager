@@ -38,7 +38,8 @@
     "no_results": "Không tìm thấy kết quả.",
     "no_data": "Không có dữ liệu.",
     "notes": "Ghi chú",
-    "min_chars": "Nhập ít nhất 3 ký tự..."
+    "min_chars": "Nhập ít nhất 3 ký tự...",
+    "toggle_theme": "Chuyển giao diện sáng/tối"
   },
   "dashboard": {
     "title": "Bảng điều khiển",

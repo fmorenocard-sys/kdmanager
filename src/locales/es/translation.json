@@ -38,7 +38,8 @@
     "no_results": "No se encontraron resultados.",
     "no_data": "No hay datos disponibles.",
     "notes": "Notas",
-    "min_chars": "Escribe al menos 3 caracteres..."
+    "min_chars": "Escribe al menos 3 caracteres...",
+    "toggle_theme": "Cambiar tema claro/oscuro"
   },
   "dashboard": {
     "title": "Panel",

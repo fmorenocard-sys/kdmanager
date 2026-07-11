@@ -115,10 +115,16 @@ const FILES = {
     '<!-- @dsCard group="Fondations" name="Glassmorphism" subtitle="Cartes translucides, blur, ombres" width="560" -->',
     'Glassmorphism — KD Manager',
     `
-    <h2>Carte standard (Card)</h2>
-    <div class="glass" style="padding:24px;max-width:460px">
+    <h2>Carte standard v2 (.v2-glass — bordure gradient hairline)</h2>
+    <style>
+      .v2g { position:relative; background:rgba(15,23,42,.45); backdrop-filter:blur(14px); border-radius:14px; box-shadow:0 20px 40px -12px rgba(0,0,0,.4); }
+      .v2g::before { content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+        background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(255,255,255,.04) 40%,rgba(245,158,11,.18));
+        -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+    </style>
+    <div class="v2g" style="padding:24px;max-width:460px">
       <div style="font-size:20px;font-weight:700;margin-bottom:6px">Titre de carte</div>
-      <div style="font-size:14px;color:#94a3b8">bg-slate-900/40 · backdrop-blur-md · border-white/10 · rounded-xl · shadow-xl</div>
+      <div style="font-size:14px;color:#a8b6ca">surface 45 % · blur 14px · radius 14px · hairline gradient (blanc→ambre)</div>
     </div>
     <h2>Utilitaire .card (hover)</h2>
     <div style="background:rgba(255,255,255,.05);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:20px;max-width:460px">
@@ -135,14 +141,14 @@ const FILES = {
     <style>
       .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:8px; font-weight:500; border:none; cursor:pointer; font-family:inherit; transition:background .15s; }
       .md { height:40px; padding:8px 16px; font-size:14px; } .sm { height:32px; padding:0 12px; font-size:12px; } .lg { height:48px; padding:0 32px; font-size:18px; }
-      .primary { background:#f59e0b; color:#fff; box-shadow:0 10px 15px -3px rgba(245,158,11,.2); } .primary:hover { background:#d97706; }
-      .secondary { background:#2563eb; color:#fff; box-shadow:0 10px 15px -3px rgba(37,99,235,.2); } .secondary:hover { background:#1d4ed8; }
+      .primary { background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; box-shadow:0 4px 16px rgba(234,88,12,.35); } .primary:hover { background:linear-gradient(135deg,#fbbf24,#f97316); }
+      .secondary { background:linear-gradient(135deg,#6366f1,#a855f7); color:#fff; box-shadow:0 4px 16px rgba(139,92,246,.35); } .secondary:hover { filter:brightness(1.1); }
       .outline { background:transparent; border:1px solid rgba(255,255,255,.2); color:#f1f5f9; } .outline:hover { background:rgba(255,255,255,.05); }
       .ghost { background:transparent; color:#cbd5e1; } .ghost:hover { background:rgba(255,255,255,.1); color:#fff; }
       .danger { background:#ef4444; color:#fff; } .danger:hover { background:#dc2626; }
       .focus { outline:none; box-shadow:0 0 0 2px #0f172a, 0 0 0 4px #94a3b8; }
     </style>
-    <h2>Variants (md)</h2>
+    <h2>Variants (md) — v2 : gradients + glow</h2>
     <div class="row">
       <button class="btn md primary">Primary</button>
       <button class="btn md secondary">Secondary</button>

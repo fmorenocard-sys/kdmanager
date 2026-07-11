@@ -38,7 +38,8 @@
     "no_results": "Nie znaleziono wyników.",
     "no_data": "Brak danych.",
     "notes": "Notatki",
-    "min_chars": "Wpisz co najmniej 3 znaki..."
+    "min_chars": "Wpisz co najmniej 3 znaki...",
+    "toggle_theme": "Przełącz jasny/ciemny motyw"
   },
   "dashboard": {
     "title": "Panel",
