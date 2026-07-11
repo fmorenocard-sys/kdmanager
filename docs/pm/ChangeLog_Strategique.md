@@ -2,6 +2,11 @@
 
 Ce fichier logue les évolutions majeures et décisions stratégiques modifiant le cap du produit.
 
+## 2026-07-11
+* **Nouvelle donnée live** : Ingestion de la campagne « SoC 4 : King of All Britain (2026) » directement depuis Google Sheets (47 mains + 23 fillers). Le pipeline `digest-data.js` télécharge désormais le classeur live — première brique de la dé-rigidification de F-008 (BUG-001).
+* **Déploiement** : Release hosting du 2026-07-11 publiant l'ensemble des travaux de février (RTL/arabe, locale FR, cartes mobiles, footer) + titre SoC 4.
+* **Décision stratégique — E-004 Historique des KvK** : sur demande du Roi, l'historisation multi-KvK est remontée du Long terme au Moyen terme comme nouveau focus. Arbitrages produit rendus : MVP = consultation + progression joueur ; migration SoC 1 (Tides of War), SoC 2 (Storm of Stratagems), SoC 3 (Heroic Anthem) ; clôture manuelle par le Roi. Étude complète : `Etude_Historique_KvK.md`. Nouvelle feature F-015, user stories US-010 → US-014, dette BUG-003 (mapping fillers de la function déployée) rattachée à cette epic.
+
 ## 2026-02-24
 * **Évolution Stratégique** : Transition d'une architecture orientée GitHub Pages (statique) vers Firebase (Auth, Firestore, Hosting, etc.).
 * **Nouveaux Ajouts** :

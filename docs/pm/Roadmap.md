@@ -10,8 +10,9 @@
 * **Nouveau Focus :** Pivot sur l'Epic E-003 pour les interactions Discord.
 
 ### Moyen terme (1–3 mois)
-* **Objectif :** Automatisation & Engagement Discord (Pivot 2026-02-25)
+* **Objectif :** Historique KvK & Automatisation Discord (Repriorisation 2026-07-11)
 * **Attendu :**
+  * **E-004 / F-015 : Historique des KvK (🟠 Important — nouveau focus)** — clôture manuelle des campagnes, sélecteur de campagne, vue progression joueur, import SoC 1/2/3. Voir `Etude_Historique_KvK.md`. *Dépendances : F-006 (kvk_config), sauvegarde SoC 3, Sheets Drive SoC 1/2. Risques : formats hétérogènes des anciennes campagnes.* Le redéploiement functions associé embarque le correctif BUG-003.
   * E-001: Uploader In-app. Remplacement total de `digest-data.js` par un module backend/frontend.
   * E-003: Bot Discord - Slash Commands (`/mystats`, `/mykvk`) pour consultation in-chat (Priorité P1).
   * E-003: Bot Discord - Pings Automatisés pour les "Missing Forms" (Priorité P1).
@@ -23,6 +24,6 @@
 ### Long terme (3–6 mois)
 * **Objectif :** Scalabilité & Outils Différenciants
 * **Attendu :**
-  * Bot Interactif Avancé (Gestion de banque /bank, rapports complexes).
-  * Historisation multi-KvK sur l'ensemble de l'app (pas uniquement War Tracker).
+  * Bot Interactif Avancé (Gestion de banque /bank, rapports complexes, `/mykvk <campagne>` — US-014, extension de F-015).
+  * ~~Historisation multi-KvK sur l'ensemble de l'app~~ → **remontée en Moyen terme (E-004, décision du 2026-07-11)**.
   * API publique (si applicable).
