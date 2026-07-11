@@ -29,6 +29,12 @@ Propriétés vérifiées (tests du 2026-07-11) :
 
 C'est exactement pourquoi « on n'a jamais trouvé comment ils font » : il n'y a **pas de flux d'images à télécharger** — il y a un flux d'**URLs** rapporté par des scanners in-game (infrastructure que nous n'avons pas et qui viole probablement les ToS du jeu si on la construisait nous-mêmes).
 
+### 2.1 Comment couvrir « tous les royaumes » avec si peu de scanners
+
+1. **Un KvK = une carte de ~32 royaumes.** Les classements in-game du Lost Kingdom sont inter-royaumes : un seul compte présent dans n'importe quel royaume de la carte voit les gouverneurs des 32 royaumes. Leur API est d'ailleurs indexée par `mapId`, pas par royaume. Quelques dizaines de comptes couvrent donc toutes les cartes actives.
+2. **Modèle partenaire.** Les royaumes qui veulent un suivi « live » fournissent un compte de scan ou paient (endpoints `live-partners`, offres Premium observées) ; les autres — dont 2997 — héritent gratuitement de la couverture parce qu'ils partagent la carte d'un partenaire, avec une mise à jour quotidienne (00:00 UTC).
+3. **Émulation du protocole client, pas d'OCR.** Preuves observées : les URLs d'avatars dans les données (impossibles à extraire d'un screenshot) et les `latest_update` des 32 royaumes espacés de quelques secondes (itération séquentielle automatisée des classements).
+
 ## 3. Ce qui est exploitable pour KD Manager (testé)
 
 L'API publique non documentée de ProKingdoms expose ces URLs pendant un KvK :
