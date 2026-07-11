@@ -1,17 +1,13 @@
-# Open Questions & Ambiguities
+# Open Questions & Ambiguities - QA
 
-## Active Questions
+## 1. F-004 Kingdom Trophies
+- **Question** : Où sont stockées les données des Trophées ? Est-ce manuel ou dynamique depuis le jeu ? (Hypothèse : Données lues depuis Firebase Firestore, saisies manuellement par le Roi).
 
-### Q-001: Trophies Data History
-- **Context**: `trophies.json` currently contains only 2 weeks of data from `Offseason_KingTrophies_2026.xlsx`.
-- **Question**: Do we need to import historical data from previous years/seasons?
-- **Impact**: JSON file size might grow large if we import everything.
-- **Status**: Open.
+## 2. F-006 Player Detail View
+- **Question** : Le Panel de détail joueur s'ouvre-t-il sur chaque page où le nom du joueur apparaît (Dashboard, Deadweight, KvK) ou uniquement sur le Dashboard principal ? (Hypothèse : Uniquement sur Dashboard pour le moment).
 
-### Q-002: Player Detail - "Economy" Tab
-- **Context**: `PlayerDetailPanel` shows an "Economy" section.
-- **Question**: Which specific columns from `Top 300` should map to "Economy"? Currently using RSS Gathered/Assistance.
-- **Status**: Assumed correct, pending verification.
+## 3. E-003 Ingestion Size Limit
+- **Question** : Que se passe-t-il si le payload dépasse 10MB ? L' UI affiche-t-elle une erreur explicite avant ou après l'envoi ? (Hypothèse : L'erreur est catchée par la Cloud Function et une erreur 500/Payload Too Large est retournée et affichée en Toaster sur le front).
 
-## Resolved Questions
-- *None yet.*
+## 4. Stratégie d'automatisation
+- **Question** : Devons-nous mettre en place les Github Actions pour exécuter Playwright sur chaque Pull Request ?

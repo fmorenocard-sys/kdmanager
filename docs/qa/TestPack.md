@@ -1,4 +1,4 @@
-# Test Pack - KD Manager - v2.0
+# Test Pack - KD Manager - v2.1
 
 ## Test Suite TS-001: Dashboard (F-001)
 
@@ -53,6 +53,15 @@
   2. Wait for the success notification.
   3. Verify the Dashboard updates with the new data.
 - **Expected Result**: File is sent via base64, processed by the cloud function successfully, and the dashboard reflects changes immediately.
+
+### TC-018: Ingestion Size Limits (E-003)
+- **Requirements**: E-003
+- **Priority**: P1 (Regression)
+- **Preconditions**: File size > 10MB.
+- **Steps**:
+  1. Click "Update Data" and provide a large file exceeding 10MB.
+  2. Observe the UI response.
+- **Expected Result**: The UI shows an explicit error that the file is too large before or gracefully after the request is rejected by Cloud Functions.
 
 ## Test Suite TS-004: Deadweight Tracking (F-002)
 
@@ -131,3 +140,43 @@
   1. Login as Officer. Navigate to `/war-tracker` -> `Dashboard`.
   2. Verify the global metrics visually display the cumulative number of assigned marches and Siege counts.
 - **Expected Result**: The War Dashboard accurately reads `war_availabilities` submissions and presents a high-level table of combat readiness per timezone.
+
+### TC-017: Form Missing Campaign (E-002)
+- **Requirements**: F-011, E-002
+- **Priority**: P1 (Regression)
+- **Steps**:
+  1. Login as Warrior. Ensure NO active KvK campaign is set.
+  2. Navigate to `/war-tracker`.
+  3. Verify the form is NOT displayed.
+- **Expected Result**: A placeholder/warning screen is shown indicating no active campaign, preventing submission.
+
+## Test Suite TS-008: Kingdom Trophies (F-004)
+
+### TC-014: View Historical Trophies
+- **Requirements**: F-004, P-004
+- **Priority**: P2 
+- **Steps**:
+  1. Navigate to `/trophies`.
+  2. Verify past winners for Zenith and MGE are displayed in cards/lists.
+- **Expected Result**: Trophies load correctly without errors.
+
+## Test Suite TS-009: Player Detail View (F-006)
+
+### TC-015: Open Player Detail Panel
+- **Requirements**: F-006, P-001
+- **Priority**: P1 (Regression)
+- **Steps**:
+  1. Navigate to `/` (Dashboard).
+  2. Click on any player row in the Top 300 table.
+- **Expected Result**: A side panel opens displaying detailed combat, economy, and note metrics for the specific player.
+
+## Test Suite TS-010: Multi-Language i18n (F-014)
+
+### TC-016: Switch UI Language
+- **Requirements**: F-014
+- **Priority**: P1 (Regression)
+- **Steps**:
+  1. On any page, open the language selector in the navbar.
+  2. Switch from 'EN' to 'FR'.
+  3. Verify static UI text translates.
+- **Expected Result**: UI renders in the chosen language immediately without reloading. Game terms remain in EN if configured so.

@@ -17,3 +17,16 @@ Ce fichier logue les évolutions majeures et décisions stratégiques modifiant 
 * **Évolution Stratégique** : Pivot sur l'Epic E-003 (Discord Integration). La fonctionnalité de "Bot d'alerte global" est mise en pause au profit d'un développement ciblé sur :
   * Les Slash Commands in-server (`/mystats`, `/mykvk`) pour un accès friction-less à la donnée (US-007).
   * L'automatisation des "Pings" (Missing Forms) pour soulager la charge mentale des R4/R5 lors de la préparation des KvK (US-008).
+
+## 2026-03-14
+* **Résolution & Déploiement** : Lancement complet (Live) des bots Discord (US-007 / F-012). C'est un point d'étape majeur pour sortir l'application "du navigateur" et l'intégrer directement là où les joueurs interagissent.
+  * *Correction Critique (Bugfix)* : Résolution d'un bug majeur lié au parsing Firestore pour les utilisateurs s'authentifiant exclusivement via le SSO Discord (sans attachement à un compte Google préalable). Le resolveur de profils gère désormais correctement la fallback `discordUid`.
+
+## 2026-03-18
+* **Nouveaux Ajouts** :
+  * Étude PM finalisée pour l'implémentation du Calculateur d'Objectifs Individuels KvK (F-014). Les objectifs (KP, Deads, DKP) seront calculés de façon algorithmique (fonctions quadratiques) sur la base de la puissance du joueur, offrant une approche juste et automatisée pour remplacer les quotas fixés manuellement.
+
+## [2026-05-21] Pivot Stratégique : Verrouillage de la Déclaration KvK
+- **Décision :** La soumission anonyme (ouverte) pour la disponibilité KvK (War Tracker) a été abandonnée.
+- **Raison :** Haut risque de fausses données / spam, détruisant la fiabilité du War Dashboard pour les officiers.
+- **Action :** Implémentation d'une barrière d'authentification forcée (Discord/Google) sur le composant `AvailabilityForm`. Les utilisateurs invités voient désormais un message explicatif les invitant à se connecter.

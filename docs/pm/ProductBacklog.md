@@ -18,8 +18,9 @@
 * **US-004 (E-003) [DONE]**: En tant que joueur, je veux pouvoir m'inscrire/me connecter via mon compte Discord, afin de ne pas utiliser mon compte Google personnel.
 * **US-005 (E-003)**: En tant qu'officier, je veux qu'un bot Discord annonce automatiquement l'ouverture d'un nouveau KvK sur notre serveur de royaume, avec le lien direct vers le formulaire.
 * **US-006 (E-003) [DONE]**: En tant qu'officier, je veux que les permissions in-app (King, Officer) de mes joueurs soient synchronisées avec leurs rôles sur le serveur Discord, afin d'automatiser la gestion des accès.
-* **US-007 (E-003)**: En tant que joueur, je veux interagir avec le Bot Discord via des commandes (ex: `/mystats`, `/mykvk`) pour recevoir un résumé de mes statistiques (Power, KP, Objectifs) directement dans le chat, sans ouvrir l'application web.
+* **US-007 (E-003) [LIVE]**: En tant que joueur, je veux interagir avec le Bot Discord via des commandes (ex: `/mystats`, `/mykvk`) pour recevoir un résumé de mes statistiques (Power, KP, Objectifs) directement dans le chat, sans ouvrir l'application web.
 * **US-008 (E-003)**: En tant qu'officier, je veux pouvoir déclencher depuis l'application web une alerte "Missing Forms" qui ping automatiquement sur Discord tous les membres du Top 300 n'ayant pas encore rempli leurs disponibilités pour le KvK.
+* **US-009**: En tant que joueur ou officier, je veux voir mes objectifs Minimums et mes Goals (KP, Dead, DKP) basés sur ma Puissance directement dans un onglet du War Tracker et via une commande Discord `/mykvkgoals`, afin de savoir facilement ce qui est attendu de moi.
 
 ## Bugs / Dette
 * **BUG-001**: Dette technique liée à la rigidité du parsing XLSX (`digest-data.js`). *Sévérité: Moyenne*.

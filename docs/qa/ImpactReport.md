@@ -1,21 +1,20 @@
-# QA Impact Report - KD Manager
+# Impact Report - SSOT v2.0 Sync
 
-**Date:** 2026-02-25
-**Trigger:** Executed `generic-qa-workflow` after releasing major features (Discord Role Sync, Cloud Synchronization, and War Tracker module).
+## Contexte
+Comparaison de la SSOT (Structured Source of Truth v2.0) avec le TestPack actuel.
 
-## 1. Documentation Impacts
-- **project_context.md**: Completely regenerated via `retrodocker` workflow to properly abstract the application's architecture (moving away from static localized Excel files towards Firestore schemas and Cloud functions).
+## Deltas Identifiés (Missing Coverage)
+- **F-004 (Kingdom Trophies)** : Aucun test associé.
+- **F-006 (Player Detail View)** : Aucun test associé.
+- **F-014 (Multi-Language i18n)** : Aucun test associé.
+- **E-002 (Form Missing Campaign)** : Manque de vérification de sécurité sur le War Tracker.
+- **E-003 (Ingestion Size Limits)** : Manque de test de robustesse sur le Cloud Sync.
 
-## 2. Test Suite Impacts
-We have updated the SSOT to version 2.0 to define the new capabilities.
+## Actions Requises
+1. **add_new_tests** `TC-014` pour F-004
+2. **add_new_tests** `TC-015` pour F-006
+3. **add_new_tests** `TC-016` pour F-014
+4. **add_new_tests** `TC-017` pour E-002 (War Tracker error handling)
+5. **add_new_tests** `TC-018` pour E-003 (Cloud function payload limit)
 
-| Artifact | Change Type | Note |
-| :--- | :--- | :--- |
-| **SSOT.md** | `Modified` | Added features F-009 through F-014 (Auth, Discord, War Tracker, Multi-Language). Reclassified Roles and added Error states. |
-| **TestPlan.md** | `Modified` | Expanded scope to test Cloud Functions payloads and RBAC (Role-Based Access Control) using emulators. |
-| **TestPack.md** | `Added/Updated` | Added TS-006 (Discord Auth Test Suite) and TS-007 (War Tracker Test Suite). Optimized data accuracy Smoke tests to reflect Firebase endpoints. |
-| **TraceabilityMatrix.md** | `Modified` | Re-mapped newly generated TCs to their respective SSOT nodes. |
-
-## 3. Recommended Actions
-- Perform a manual execution of TS-006 (Discord Auth) on the production site.
-- Prepare automated or script-based end-to-end (Playwright/Cypress) testing for TS-007 (War Tracker) as it is highly transactional.
+*Statut : Exécuté.*
