@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import avatarMapping from '../../data/player-avatars.json';
+import { DataContext } from '../../context/DataContext';
 
 const Avatar = ({
     src,
@@ -10,7 +11,33 @@ const Avatar = ({
     showRing = false,
     ringColor = 'border-slate-700'
 }) => {
-    const [imgError, setImgError] = useState(false);
+    // Cascade (see Etude_Avatars_Joueurs.md): explicit src prop > fresh URL
+    // from static_data/avatars (Lilith CDN / Discord, synced daily) >
+    // bundled legacy JPG > logo. A broken candidate falls through to the next.
+    const ctx = useContext(DataContext); // null outside DataProvider
+    const remoteUrl = id ? ctx?.avatars?.[String(id)]?.url : null;
+
+    const candidates = useMemo(() => {
+        const list = [];
+        if (src) list.push(src);
+        if (remoteUrl) list.push(remoteUrl);
+        if (id && avatarMapping[id]) {
+            const path = avatarMapping[id];
+            list.push(`${import.meta.env.BASE_URL}${path.startsWith('/') ? path.slice(1) : path}`);
+        }
+        return list;
+    }, [src, remoteUrl, id]);
+
+    // Reset the cascade when the candidate list changes (adjust-state-during-render pattern)
+    const candidatesKey = candidates.join('|');
+    const [candidateIndex, setCandidateIndex] = useState(0);
+    const [lastKey, setLastKey] = useState(candidatesKey);
+    if (candidatesKey !== lastKey) {
+        setLastKey(candidatesKey);
+        setCandidateIndex(0);
+    }
+
+    const finalSrc = candidates[candidateIndex];
 
     // Determine size classes
     const sizeClasses = {
@@ -23,22 +50,13 @@ const Avatar = ({
         '3xl': 'w-32 h-32 text-4xl'
     };
 
-    // Determine final image source
-    // Priority: 1. direct src prop, 2. mapped avatar from JSON, 3. fallback to initials
-    let finalSrc = src;
-    if (!finalSrc && id && avatarMapping[id]) {
-        // Ensure path starts with / 
-        const path = avatarMapping[id];
-        finalSrc = `${import.meta.env.BASE_URL}${path.startsWith('/') ? path.slice(1) : path}`;
-    }
-
     // Default fallback UI (Logo)
     const renderFallback = () => {
         return (
             <div className={`
-                ${sizeClasses[size]} 
-                bg-slate-800 
-                flex items-center justify-center 
+                ${sizeClasses[size]}
+                bg-slate-800
+                flex items-center justify-center
                 rounded-full select-none overflow-hidden
                 ${showRing ? `border-2 ${ringColor}` : ''}
                 ${className}
@@ -52,7 +70,7 @@ const Avatar = ({
         );
     };
 
-    if (imgError || !finalSrc) {
+    if (!finalSrc) {
         return renderFallback();
     }
 
@@ -60,13 +78,14 @@ const Avatar = ({
         <img
             src={finalSrc}
             alt={name || 'Avatar'}
+            loading="lazy"
             className={`
-                ${sizeClasses[size]} 
-                rounded-full object-cover 
+                ${sizeClasses[size]}
+                rounded-full object-cover
                 ${showRing ? `border-2 ${ringColor}` : ''}
                 ${className}
             `}
-            onError={() => setImgError(true)}
+            onError={() => setCandidateIndex(i => i + 1)}
         />
     );
 };

@@ -17,6 +17,7 @@ const deduplicateById = (list) => {
 };
 
 const DataContext = createContext(null);
+export { DataContext };
 
 export const DataProvider = ({ children }) => {
     const [state, setState] = useState({
@@ -28,6 +29,7 @@ export const DataProvider = ({ children }) => {
         kvkStats: [],
         kvkFillerStats: [],
         stats: null,
+        avatars: {},
         loading: true,
         error: null,
         lastUpdated: null
@@ -135,6 +137,14 @@ export const DataProvider = ({ children }) => {
             }
         });
 
+        // Freshest known avatar URLs { governorId: { url, source } } — see Etude_Avatars_Joueurs.md
+        const unsubAvatars = onSnapshot(doc(db, "static_data", "avatars"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                if (data.map) setState(prev => ({ ...prev, avatars: data.map }));
+            }
+        });
+
         // KvK Stats listener if needed
         const unsubKvk = onSnapshot(doc(db, "static_data", "kvk"), (doc) => {
             if (doc.exists()) {
@@ -157,6 +167,7 @@ export const DataProvider = ({ children }) => {
             unsubDeadweight();
             unsubHistory();
             unsubStats();
+            unsubAvatars();
             unsubKvk();
             unsubKvkFiller();
         };

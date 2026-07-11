@@ -419,6 +419,57 @@ async function syncKvkFiller(sheets) {
     return { status: "success", count: uniqueList.length };
 }
 
+// Avatar refresh (docs/pm/Etude_Avatars_Joueurs.md): fresh in-game avatar
+// URLs from ProKingdoms' public KvK endpoint (Lilith CDN), with Discord
+// avatars from linked profiles as fallback tier. Merge-only: an entry is
+// never downgraded (lilith > discord) nor removed when a player drops off
+// the leaderboard.
+async function syncAvatars() {
+    const cfg = DATA_CONFIG.PROKINGDOMS || {};
+    const fresh = {};
+
+    if (cfg.KVK_MAP_ID) {
+        for (let page = 1; page <= (cfg.MAX_PAGES || 8); page++) {
+            const res = await fetch(
+                `https://beta.prokingdoms.com/proxy-fast/stats/kvk/aggregated/${cfg.KVK_MAP_ID}?isLiveTable=0&pageNumber=${page}`,
+                { headers: { "User-Agent": "Mozilla/5.0 (kdmanager avatar sync)" } }
+            );
+            if (res.status === 429) { logger.warn(`syncAvatars: rate limited at page ${page}, keeping partial results`); break; }
+            if (!res.ok) { logger.warn(`syncAvatars: HTTP ${res.status} at page ${page}`); break; }
+            const j = await res.json();
+            const rows = j?.kvkData?.kvkDetailsData || [];
+            for (const r of rows) {
+                if (r.kingdom === (cfg.KINGDOM_ID || 2997) && r.avatar?.avatar) {
+                    fresh[String(r.governor_id)] = { url: r.avatar.avatar, source: "lilith", seenAt: new Date().toISOString() };
+                }
+            }
+            if (rows.length < 100) break;
+            await new Promise((r) => setTimeout(r, cfg.PAGE_DELAY_MS || 2500));
+        }
+    }
+
+    // Discord avatars for linked governors (fallback tier)
+    const profiles = await getDb().collection("user_profiles").get();
+    profiles.docs.forEach((d) => {
+        const p = d.data();
+        const gid = p.governorId ? String(p.governorId) : null;
+        if (gid && p.photoURL && !fresh[gid]) {
+            fresh[gid] = { url: p.photoURL, source: "discord", seenAt: new Date().toISOString() };
+        }
+    });
+
+    const ref = getDb().collection("static_data").doc("avatars");
+    const map = (await ref.get()).data()?.map || {};
+    let updated = 0;
+    for (const [gid, entry] of Object.entries(fresh)) {
+        if (entry.source === "discord" && map[gid]?.source === "lilith") continue; // never downgrade
+        if (map[gid]?.url !== entry.url) updated++;
+        map[gid] = entry;
+    }
+    await ref.set({ map, updatedAt: new Date().toISOString() });
+    return { status: "success", fresh: Object.keys(fresh).length, updated, total: Object.keys(map).length };
+}
+
 // Full sync pipeline, shared by the HTTP endpoint and the daily schedule.
 // Each source is isolated: one failing sheet never blocks the others.
 async function runFullSync() {
@@ -447,6 +498,7 @@ async function runFullSync() {
         trophies: syncTrophies,
         kvk: syncKvk,
         kvkFiller: syncKvkFiller,
+        avatars: syncAvatars,
     };
     for (const [name, fn] of Object.entries(steps)) {
         try {
@@ -460,7 +512,7 @@ async function runFullSync() {
 }
 
 // Main Export
-export const syncData = onRequest(async (req, res) => {
+export const syncData = onRequest({ timeoutSeconds: 300 }, async (req, res) => {
     // CORS Headers
     res.set('Access-Control-Allow-Origin', '*'); // Allow all origins (or specify your domain)
     if (req.method === 'OPTIONS') {
@@ -492,7 +544,7 @@ export const syncData = onRequest(async (req, res) => {
 
 // Daily automatic refresh (05:00 UTC) so the app and the Discord bot
 // never serve week-old data when nobody thinks to press "Sync".
-export const scheduledSync = onSchedule({ schedule: "0 5 * * *", timeZone: "Etc/UTC" }, async () => {
+export const scheduledSync = onSchedule({ schedule: "0 5 * * *", timeZone: "Etc/UTC", timeoutSeconds: 300 }, async () => {
     const { results } = await runFullSync();
     const failed = Object.entries(results).filter(([, r]) => r.status === "error");
     if (failed.length) {

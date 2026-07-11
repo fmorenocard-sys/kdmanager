@@ -155,6 +155,19 @@ async function loadKvKData(governorId, db) {
     };
 }
 
+/**
+ * Load the freshest known avatar URL for a governor (static_data/avatars,
+ * maintained by syncAvatars — lilith CDN first, Discord fallback).
+ */
+async function loadAvatarUrl(governorId, db) {
+    try {
+        const doc = await db.collection("static_data").doc("avatars").get();
+        return doc.exists ? (doc.data()?.map?.[String(governorId)]?.url || null) : null;
+    } catch {
+        return null;
+    }
+}
+
 // "2026-07-11T20:59:23.814Z" -> "2026-07-11"; stale data must be visible as such
 const fmtDataDate = (iso) => (iso ? String(iso).split("T")[0] : "unknown");
 
@@ -198,9 +211,10 @@ async function buildMyStatsEmbed(discordId, db) {
 
     const { governorId } = profile;
 
-    const [{ player, updatedAt: playerUpdatedAt }, { kvk, updatedAt: kvkUpdatedAt }] = await Promise.all([
+    const [{ player, updatedAt: playerUpdatedAt }, { kvk, updatedAt: kvkUpdatedAt }, avatarUrl] = await Promise.all([
         loadPlayerData(governorId, db),
         loadKvKData(governorId, db),
+        loadAvatarUrl(governorId, db),
     ]);
 
     if (!player) {
@@ -290,6 +304,7 @@ async function buildMyStatsEmbed(discordId, db) {
                 color,
                 title: `👑 ${player.name || "Joueur inconnu"}${player.alliance ? `  ·  ${player.alliance}` : ""}`,
                 description: `Governor ID: \`${governorId}\``,
+                ...(avatarUrl ? { thumbnail: { url: avatarUrl } } : {}),
                 fields,
                 footer: {
                     text: dataFooter([["Profile data", playerUpdatedAt], ["KvK data", kvkUpdatedAt]]),

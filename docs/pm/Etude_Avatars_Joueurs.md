@@ -1,7 +1,7 @@
 # Étude — Avatars des joueurs : comment ProKingdoms a des images toujours fraîches
 
 > Date : 2026-07-11
-> Statut : Étude terminée, tests techniques concluants — en attente d'arbitrage du Roi
+> Statut : ✅ Implémentée le 2026-07-11 (option A+B, cascade complète — F-016)
 > Demande : comprendre le mécanisme d'avatars de https://beta.prokingdoms.com et remplacer nos 120 JPG statiques (figés depuis février) par des images fraîches.
 
 ---

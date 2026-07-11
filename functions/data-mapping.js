@@ -155,5 +155,14 @@ export const DATA_CONFIG = {
         KVK: {
             SPREADSHEET_ID: "1qX6b4Z6w70x5gbk63aACVLU3QSNMHDWFo0QO1a7hy3A"
         }
+    },
+
+    // Fresh in-game avatar URLs (Lilith CDN) relayed by ProKingdoms' public
+    // KvK endpoint — see docs/pm/Etude_Avatars_Joueurs.md.
+    PROKINGDOMS: {
+        KVK_MAP_ID: "1249539", // current KvK map — update each season (null disables the pass)
+        KINGDOM_ID: 2997,
+        MAX_PAGES: 8,          // ~429 rate limit beyond this in one burst
+        PAGE_DELAY_MS: 2500
     }
 };

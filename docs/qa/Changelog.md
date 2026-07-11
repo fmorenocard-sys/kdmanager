@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.5 - 2026-07-11
+### Added
+- **F-016 Avatars dynamiques** : étape `syncAvatars` dans `runFullSync` (pagination lente du leaderboard ProKingdoms — gestion 429, merge-only, jamais de downgrade lilith→discord) alimentant `static_data/avatars` ; fallback avatar Discord pour les profils liés ; cascade frontend dans `Avatar.jsx` (src → URL fraîche → JPG local → logo, bascule automatique sur erreur de chargement) ; thumbnail dans l'embed `/mystats`. Vérifié en production : 27 avatars frais, 54 images servies par le CDN Lilith sur la page KvK. Timeout des functions de sync porté à 300 s.
+
 ## v2.4 - 2026-07-11
 ### Fixed
 - **BUG-004 — `/mystats` données périmées (F-012)** : les blocs GENERAL PROFILE / COMBAT / ECONOMY affichaient des données du 23 mai (dernière synchro manuelle) alors que le bloc KvK était à jour. Cause racine : `static_data/players` n'est rafraîchi que par `syncData`, jamais déclenchée depuis mai. Correctifs : (1) synchro exécutée immédiatement (Top300_7_7_2026), (2) **`scheduledSync`** — synchro automatique quotidienne à 05:00 UTC via Cloud Scheduler, (3) **footer de fraîcheur** dans les embeds `/mystats` et `/mykvk` (« Profile data: 2026-07-11 • KvK data: 2026-07-11 ») pour rendre toute obsolescence visible. Refactor : `runFullSync()` partagé entre l'endpoint HTTP et le scheduler, isolation d'erreur par source conservée.
