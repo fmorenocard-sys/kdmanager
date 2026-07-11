@@ -192,7 +192,7 @@ const MainContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b1121] text-slate-100 flex">
+    <div className="min-h-screen flex">
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}

@@ -66,6 +66,7 @@
     radial-gradient(circle at 85% 20%, rgba(245, 158, 11, .07), transparent 30%);
   --surface: rgba(15, 23, 42, .45);
   --surface-solid: #1e293b;
+  --surface-input: #020617;
   --text-primary: #f8fafc;
   --text-secondary: #a8b6ca;
   --text-meta: #8494ab;
@@ -90,6 +91,7 @@
     radial-gradient(circle at 85% 20%, rgba(245, 158, 11, .06), transparent 30%);
   --surface: rgba(255, 255, 255, .65);
   --surface-solid: #ffffff;
+  --surface-input: #ffffff;
   --text-primary: #0f172a;
   --text-secondary: #48566b;
   --text-meta: #64748b;
@@ -289,3 +291,8 @@
 .light .heading-xl,
 .light .from-white.to-slate-400 { background-image: linear-gradient(90deg, #334155, #64748b); }
 .light .bg-gradient-to-r.from-white { background-image: linear-gradient(90deg, #334155, #64748b); }
+/* Suspend toutes les transitions pendant le basculement de thème
+   (les `transition-all` v1 ne convergent jamais sinon). */
+.theme-switching *, .theme-switching *::before, .theme-switching *::after {
+  transition: none !important;
+}

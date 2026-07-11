@@ -8,8 +8,7 @@ const Avatar = ({
     name,
     size = 'md',
     className = '',
-    showRing = false,
-    ringColor = 'border-slate-700'
+    showRing = false
 }) => {
     // Cascade (see Etude_Avatars_Joueurs.md): explicit src prop > fresh URL
     // from static_data/avatars (Lilith CDN / Discord, synced daily) >
@@ -50,15 +49,28 @@ const Avatar = ({
         '3xl': 'w-32 h-32 text-4xl'
     };
 
+    // v2: flat ring becomes an indigo gradient ring (Claude Design
+    // v2/components/avatars-statcards.html). ringColor kept for API compat.
+    const withRing = (node) => {
+        if (!showRing) return node;
+        return (
+            <span
+                className="inline-flex rounded-full p-[2px] shrink-0"
+                style={{ background: 'var(--border-gradient-indigo)' }}
+            >
+                {node}
+            </span>
+        );
+    };
+
     // Default fallback UI (Logo)
     const renderFallback = () => {
-        return (
+        return withRing(
             <div className={`
                 ${sizeClasses[size]}
-                bg-slate-800
+                bg-[var(--surface-solid)]
                 flex items-center justify-center
                 rounded-full select-none overflow-hidden
-                ${showRing ? `border-2 ${ringColor}` : ''}
                 ${className}
             `}>
                 <img
@@ -74,7 +86,7 @@ const Avatar = ({
         return renderFallback();
     }
 
-    return (
+    return withRing(
         <img
             src={finalSrc}
             alt={name || 'Avatar'}
@@ -82,7 +94,6 @@ const Avatar = ({
             className={`
                 ${sizeClasses[size]}
                 rounded-full object-cover
-                ${showRing ? `border-2 ${ringColor}` : ''}
                 ${className}
             `}
             onError={() => setCandidateIndex(i => i + 1)}

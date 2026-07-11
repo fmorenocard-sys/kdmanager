@@ -20,7 +20,7 @@ const StatCard = ({ title, value, icon: Icon, color = "blue", subtext, className
 
     return (
         <Card className={cn(
-            "border-l-4 bg-slate-900/50 backdrop-blur-sm transition-all hover:bg-slate-900/70 min-w-0",
+            "border-l-[3px] transition-all min-w-0",
             styles.border,
             className
         )}>
@@ -29,7 +29,7 @@ const StatCard = ({ title, value, icon: Icon, color = "blue", subtext, className
                 iconPosition === "right" ? "justify-between" : "justify-start"
             )}>
                 {iconPosition === "left" && (
-                    <div className={cn("p-2 md:p-3 rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
+                    <div className={cn("w-11 h-11 flex items-center justify-center rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
                         <Icon size={18} className="md:hidden" />
                         <Icon size={24} className="hidden md:block" />
                     </div>
@@ -42,7 +42,7 @@ const StatCard = ({ title, value, icon: Icon, color = "blue", subtext, className
                 </div>
 
                 {iconPosition === "right" && (
-                    <div className={cn("p-2 md:p-3 rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
+                    <div className={cn("w-11 h-11 flex items-center justify-center rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
                         <Icon size={18} className="md:hidden" />
                         <Icon size={24} className="hidden md:block" />
                     </div>

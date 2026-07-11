@@ -5,7 +5,13 @@ import { Sun, Moon } from 'lucide-react';
 const STORAGE_KEY = 'kd_theme';
 
 const applyTheme = (theme) => {
-    document.documentElement.classList.toggle('light', theme === 'light');
+    const root = document.documentElement;
+    // v1 legacy `transition-all` elements never settle if they animate the
+    // theme flip — suspend all transitions for the swap (index.css guard).
+    root.classList.add('theme-switching');
+    root.classList.toggle('light', theme === 'light');
+    void root.offsetHeight; // force reflow with transitions disabled
+    window.setTimeout(() => root.classList.remove('theme-switching'), 80);
 };
 
 /**

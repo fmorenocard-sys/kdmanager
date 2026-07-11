@@ -555,10 +555,10 @@ const KvKPerformancePage = () => {
                                         </div>
                                         {typeof e.goalPercent === 'number' && (
                                             <div className="flex items-center gap-2">
-                                                <div className="flex-1 h-2 bg-slate-900 rounded-full overflow-hidden">
+                                                <div className="flex-1 h-[9px] bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-full overflow-hidden">
                                                     <div
-                                                        className={`h-full rounded-full ${e.goalPercent >= 1 ? 'bg-emerald-500' : e.goalPercent >= 0.5 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                                                        style={{ width: `${Math.min(e.goalPercent * 100, 100)}%` }}
+                                                        className="h-full rounded-full"
+                                                        style={{ width: `${Math.min(e.goalPercent * 100, 100)}%`, background: e.goalPercent >= 1 ? 'linear-gradient(90deg,#10b981,#34d399)' : e.goalPercent >= 0.5 ? 'linear-gradient(90deg,#f59e0b,#facc15)' : 'linear-gradient(90deg,#ef4444,#f87171)' }}
                                                     />
                                                 </div>
                                                 <span className="text-xs font-mono text-slate-300 shrink-0">{(e.goalPercent * 100).toFixed(1)}%</span>
@@ -588,7 +588,7 @@ const KvKPerformancePage = () => {
                                                 <TableCell className="text-xs py-2 px-2 text-white font-medium whitespace-nowrap">
                                                     {e.campaignTitle}
                                                     {e.isFiller && <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
-                                                    {e.isCurrent && <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] border text-indigo-400 bg-indigo-500/10 border-indigo-500/20">{t('kvk_history.current_badge')}</span>}
+                                                    {e.isCurrent && <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] text-white border border-transparent" style={{ background: 'var(--grad-accent)' }}>{t('kvk_history.current_badge')}</span>}
                                                 </TableCell>
                                                 <TableCell className="text-xs py-2 px-2 tabular-nums text-gray-300">{formatNumber(e.initialPower)}</TableCell>
                                                 <TableCell className="text-xs py-2 px-2 tabular-nums text-gray-300">{formatNumber(e.finalPower)}</TableCell>
@@ -597,10 +597,10 @@ const KvKPerformancePage = () => {
                                                 <TableCell className="text-xs py-2 px-2 min-w-[140px]">
                                                     {typeof e.goalPercent === 'number' ? (
                                                         <div className="flex items-center gap-2">
-                                                            <div className="flex-1 h-2 bg-slate-900 rounded-full overflow-hidden min-w-[60px]">
+                                                            <div className="flex-1 h-[9px] bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-full overflow-hidden min-w-[60px]">
                                                                 <div
-                                                                    className={`h-full rounded-full ${e.goalPercent >= 1 ? 'bg-emerald-500' : e.goalPercent >= 0.5 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                                                                    style={{ width: `${Math.min(e.goalPercent * 100, 100)}%` }}
+                                                                    className="h-full rounded-full"
+                                                                    style={{ width: `${Math.min(e.goalPercent * 100, 100)}%`, background: e.goalPercent >= 1 ? 'linear-gradient(90deg,#10b981,#34d399)' : e.goalPercent >= 0.5 ? 'linear-gradient(90deg,#f59e0b,#facc15)' : 'linear-gradient(90deg,#ef4444,#f87171)' }}
                                                                 />
                                                             </div>
                                                             <span className="font-mono text-slate-300">{(e.goalPercent * 100).toFixed(1)}%</span>

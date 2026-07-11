@@ -1,5 +1,11 @@
 # QA Changelog
 
+## v2.7 - 2026-07-12
+### Fixed
+- **F-017 mode clair — fond restant sombre** : le wrapper racine portait un hex codé en dur (`bg-[#0b1121]`) hors de portée du shim → supprimé, le body piloté par tokens reprend la main. Contrôles du Dashboard migrés vers `var(--surface-input)`. **Garde-fou `theme-switching`** : les `transition-all` v1 ne convergeaient jamais au basculement de thème (transitions relancées en boucle) — toutes les transitions sont suspendues ~80 ms pendant le flip. Vérifié : bascule propre dans les deux sens (body, sidebar, inputs).
+### Added
+- **Compléments v2 depuis Claude Design** : `Input` v2 (44px min, radius 10, focus ambre, état erreur + message, tokens surface/bordure), `Avatar` ring gradient indigo (remplace l'anneau plat), `StatCard` v2 (accent gauche 3px, bulle d'icône 44px, surface glass pure), badge « En cours » en gradient accent, barres % objectif v2 (9px, fills gradient vert/ambre/rouge, bordure token).
+
 ## v2.6 - 2026-07-12
 ### Added
 - **F-017 Design System v2 & mode clair** : tokens v2 (conçus dans Claude Design, dossier `v2/` du projet design system) portés dans `src/index.css` — variables CSS dark/light, boutons gradient (primaire ambre→orange, accent indigo→violet, glow), cartes glass à bordure gradient hairline (`.v2-glass`), contraste des textes secondaires renforcé. **Toggle clair/sombre** dans le header (`ThemeToggle`, persistance localStorage `kd_theme`, classe `light` sur `<html>`, clé i18n ×9 langues). Shim de compatibilité light pour les ~600 classes de couleur codées en dur (audit : top 25 = 90 % de couverture) en attendant la migration progressive des pages. Vérifié dans les deux modes (dashboard + KvK). Cartes `buttons` et `glass` du design system re-synchronisées.
