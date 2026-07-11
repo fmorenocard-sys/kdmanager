@@ -21,8 +21,14 @@ if (process.env.FUNCTIONS_EMULATOR) {
 } else {
     initializeApp();
 }
-const db = getFirestore("kdmanagerdb");
-db.settings({ ignoreUndefinedProperties: true });
+let _db;
+function getDb() {
+    if (!_db) {
+        _db = getFirestore("kdmanagerdb");
+        _db.settings({ ignoreUndefinedProperties: true });
+    }
+    return _db;
+}
 
 
 
@@ -88,37 +94,91 @@ async function syncPlayers(sheets) {
 
     const rows = await getSheetData(sheets, SPREADSHEET_ID, sheetName);
 
+    if (rows.length < 2) return { status: "error", reason: "Sheet is empty or missing headers" };
+
+    const headers = rows[0].map(h => typeof h === 'string' ? h.toLowerCase().trim() : '');
+    
+    // Build dynamic index map
+    const colMap = {};
+    for (const [key, possibleNames] of Object.entries(DATA_CONFIG.PLAYER_COLUMNS)) {
+        colMap[key] = headers.findIndex(h => possibleNames.includes(h));
+    }
+
+    const getVal = (row, key) => colMap[key] !== -1 ? row[colMap[key]] : undefined;
+
     // Skip header (Row 1)
     const players = rows.slice(1).map((row, index) => ({
         rank: index + 1,
-        id: row[DATA_CONFIG.PLAYER_COLUMNS.ID],
-        name: row[DATA_CONFIG.PLAYER_COLUMNS.NAME],
-        power: Number(row[DATA_CONFIG.PLAYER_COLUMNS.POWER]) || 0,
-        kp: Number(row[DATA_CONFIG.PLAYER_COLUMNS.KP]) || 0,
-        deads: Number(row[DATA_CONFIG.PLAYER_COLUMNS.DEADS]) || 0,
-        t1Kills: Number(row[DATA_CONFIG.PLAYER_COLUMNS.T1_KILLS]) || 0,
-        t4Kills: Number(row[DATA_CONFIG.PLAYER_COLUMNS.T4_KILLS]) || 0,
-        t5Kills: Number(row[DATA_CONFIG.PLAYER_COLUMNS.T5_KILLS]) || 0,
-        ranged: Number(row[DATA_CONFIG.PLAYER_COLUMNS.RANGED]) || 0,
-        rssGathered: Number(row[DATA_CONFIG.PLAYER_COLUMNS.RSS_GATHERED]) || 0,
-        rssAssistance: Number(row[DATA_CONFIG.PLAYER_COLUMNS.RSS_ASSISTANCE]) || 0,
-        helps: Number(row[DATA_CONFIG.PLAYER_COLUMNS.HELPS]) || 0,
-        alliance: row[DATA_CONFIG.PLAYER_COLUMNS.ALLIANCE] || "Unknown",
-        cityHall: Number(row[DATA_CONFIG.PLAYER_COLUMNS.CITY_HALL]) || 0,
-        location: row[DATA_CONFIG.PLAYER_COLUMNS.LOCATION] || "",
-        notes: row[DATA_CONFIG.PLAYER_COLUMNS.NOTES] || "",
-        powerDiff: Number(row[DATA_CONFIG.PLAYER_COLUMNS.POWER_DIFF]) || 0
+        id: getVal(row, 'ID'),
+        name: getVal(row, 'NAME'),
+        power: Number(getVal(row, 'POWER')) || 0,
+        kp: Number(getVal(row, 'KP')) || 0,
+        deads: Number(getVal(row, 'DEADS')) || 0,
+        t1Kills: Number(getVal(row, 'T1_KILLS')) || 0,
+        t4Kills: Number(getVal(row, 'T4_KILLS')) || 0,
+        t5Kills: Number(getVal(row, 'T5_KILLS')) || 0,
+        ranged: Number(getVal(row, 'RANGED')) || 0,
+        rssGathered: Number(getVal(row, 'RSS_GATHERED')) || 0,
+        rssAssistance: Number(getVal(row, 'RSS_ASSISTANCE')) || 0,
+        helps: Number(getVal(row, 'HELPS')) || 0,
+        alliance: getVal(row, 'ALLIANCE') || "Unknown",
+        cityHall: Number(getVal(row, 'CITY_HALL')) || 0,
+        location: getVal(row, 'LOCATION') || "",
+        notes: getVal(row, 'NOTES') || "",
+        powerDiff: Number(getVal(row, 'POWER_DIFF')) || 0
     })).filter(p => p.id && p.name);
 
+    // Extract CH25 Total Power (Line 303 -> index 302)
+    const totalPowerCH25 = colMap['POWER'] !== -1 ? (Number(rows[302]?.[colMap['POWER']]) || 0) : 0;
+
     // Save one big doc to keep it simple for frontend
-    await db.collection("static_data").doc("players").set({ list: players, updatedAt: new Date().toISOString() });
+    await getDb().collection("static_data").doc("players").set({ list: players, updatedAt: new Date().toISOString() });
 
-    // Also save history stats if present in same sheet? 
-    // Logic from digest-data.js implies history is in the same workbook but different sheet matching 'Dashboard'
-    // We'll skip history sync for this MVP step or add it if easy.
-    // Let's add history.
+    // Save Kingdom Stats (Global)
+    await getDb().collection("static_data").doc("stats").set({
+        totalPowerCH25,
+        updatedAt: new Date().toISOString()
+    });
 
-    return { status: "success", count: players.length };
+    // Sync History Stats (from 'Dashboard' sheet in same workbook)
+    const historySheetName = await findSheetName(sheets, SPREADSHEET_ID, DATA_CONFIG.SHEETS.KINGDOM_STATS);
+    if (historySheetName) {
+        const historyRows = await getSheetData(sheets, SPREADSHEET_ID, historySheetName);
+
+        // Find "Kingdom Stats Scan" block
+        let startRow = -1;
+        for (let i = 0; i < historyRows.length; i++) {
+            if (JSON.stringify(historyRows[i]).includes("Kingdom Stats Scan")) {
+                startRow = i;
+                break;
+            }
+        }
+
+        if (startRow !== -1) {
+            const history = historyRows.slice(startRow + 1).map(row => {
+                let date = row[DATA_CONFIG.HISTORY_COLUMNS.DATE];
+                if (!date) return null;
+
+                // Simple date parsing if it's an Excel number
+                if (typeof date === 'number') {
+                    const parsedDate = new Date(Math.round((date - 25569) * 86400 * 1000));
+                    date = parsedDate.toLocaleDateString('en-US');
+                } else if (typeof date !== 'string' || !date.includes('/')) {
+                    return null;
+                }
+
+                return {
+                    date: date,
+                    power: Number(row[DATA_CONFIG.HISTORY_COLUMNS.POWER]) || 0,
+                    kp: Number(row[DATA_CONFIG.HISTORY_COLUMNS.KP]) || 0
+                };
+            }).filter(h => h && h.power > 0);
+
+            await getDb().collection("static_data").doc("history").set({ list: history, updatedAt: new Date().toISOString() });
+        }
+    }
+
+    return { status: "success", count: players.length, historyTracked: historySheetName ? true : false };
 }
 
 async function syncBank(sheets) {
@@ -190,7 +250,7 @@ async function syncBank(sheets) {
         bankData.history = weeklyHistory;
     }
 
-    await db.collection("static_data").doc("bank").set(bankData);
+    await getDb().collection("static_data").doc("bank").set(bankData);
     return { status: "success" };
 }
 
@@ -229,7 +289,7 @@ async function syncDeadweight(sheets) {
         };
     }).filter(Boolean);
 
-    await db.collection("static_data").doc("deadweight").set({
+    await getDb().collection("static_data").doc("deadweight").set({
         list: deadweightList,
         count: deadweightList.length,
         updatedAt: new Date().toISOString()
@@ -282,7 +342,7 @@ async function syncTrophies(sheets) {
     if (currentWeek) parsedWeeks.push(currentWeek);
 
     // Save as array in doc
-    await db.collection("static_data").doc("trophies").set({ weekList: parsedWeeks, updatedAt: new Date().toISOString() });
+    await getDb().collection("static_data").doc("trophies").set({ weekList: parsedWeeks, updatedAt: new Date().toISOString() });
     return { status: "success", count: parsedWeeks.length };
 }
 
@@ -304,7 +364,9 @@ async function syncKvk(sheets) {
             finalPower: Number(row[DATA_CONFIG.KVK.COLUMNS.FINAL_POWER]) || 0,
             initialKp: Number(row[DATA_CONFIG.KVK.COLUMNS.INITIAL_KP]) || 0,
             finalKp: Number(row[DATA_CONFIG.KVK.COLUMNS.FINAL_KP]) || 0,
+            totalKills: Number(row[DATA_CONFIG.KVK.COLUMNS.TOTAL_KILLS]) || 0,
             totalDead: Number(row[DATA_CONFIG.KVK.COLUMNS.TOTAL_DEAD]) || 0,
+            totalAcclaim: Number(row[DATA_CONFIG.KVK.COLUMNS.TOTAL_ACCLAIM]) || 0,
             totalPowerDiff: Number(row[DATA_CONFIG.KVK.COLUMNS.TOTAL_POWER_DIFF]) || 0,
             totalKpGained: Number(row[DATA_CONFIG.KVK.COLUMNS.TOTAL_KP_GAINED]) || 0,
             goalPercent: row[DATA_CONFIG.KVK.COLUMNS.GOAL_PERCENT],
@@ -315,7 +377,7 @@ async function syncKvk(sheets) {
     // Deduplicate by ID
     const uniqueKvkList = Array.from(new Map(kvkList.map(item => [item.id, item])).values());
 
-    await db.collection("static_data").doc("kvk").set({ list: uniqueKvkList, updatedAt: new Date().toISOString() });
+    await getDb().collection("static_data").doc("kvk").set({ list: uniqueKvkList, updatedAt: new Date().toISOString() });
     return { status: "success", count: uniqueKvkList.length };
 }
 
@@ -352,7 +414,7 @@ async function syncKvkFiller(sheets) {
     // Deduplicate by ID
     const uniqueList = Array.from(new Map(kvkFillerList.map(item => [item.id, item])).values());
 
-    await db.collection("static_data").doc("kvk_filler").set({ list: uniqueList, updatedAt: new Date().toISOString() });
+    await getDb().collection("static_data").doc("kvk_filler").set({ list: uniqueList, updatedAt: new Date().toISOString() });
     return { status: "success", count: uniqueList.length };
 }
 
@@ -459,3 +521,6 @@ export const syncData = onRequest(async (req, res) => {
 
 // Export Discord Auth Cloud Functions
 export { discordLogin, discordCallback, confirmDiscordLink, forceRoleSync } from "./discordAuth.js";
+
+// Export Discord Bot Interaction Handler (Slash Commands)
+export { discordInteractionHandler } from "./discordBot.js";

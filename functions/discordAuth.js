@@ -208,18 +208,24 @@ export const discordCallback = onRequest({ cors: true, secrets: [DISCORD_CLIENT_
             try {
                 await getAuth().getUser(discordUid);
                 // Update existing user to keep avatar and name fresh
-                await getAuth().updateUser(discordUid, {
-                    displayName: displayName,
-                    photoURL: photoURL
-                });
+                const updateParams = {
+                    displayName: displayName
+                };
+                if (photoURL) {
+                    updateParams.photoURL = photoURL;
+                }
+                await getAuth().updateUser(discordUid, updateParams);
             } catch (error) {
                 if (error.code === 'auth/user-not-found') {
                     // Create new user
-                    await getAuth().createUser({
+                    const createParams = {
                         uid: discordUid,
-                        displayName: displayName,
-                        photoURL: photoURL
-                    });
+                        displayName: displayName
+                    };
+                    if (photoURL) {
+                        createParams.photoURL = photoURL;
+                    }
+                    await getAuth().createUser(createParams);
                 } else {
                     throw error;
                 }
