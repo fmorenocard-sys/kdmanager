@@ -22,8 +22,8 @@ const CampaignArchiveControl = () => {
     const { isAuthorized } = useRole();
     const [title, setTitle] = useState(DATA_CONFIG.KVK.TITLE || '');
     const [order, setOrder] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState(DATA_CONFIG.KVK.START_DATE || '');
+    const [endDate, setEndDate] = useState(DATA_CONFIG.KVK.END_DATE || '');
     const [confirming, setConfirming] = useState(false);
     const [busy, setBusy] = useState(false);
     const [message, setMessage] = useState(null); // { type: 'ok'|'err', text }

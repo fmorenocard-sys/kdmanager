@@ -35,6 +35,8 @@ const KvKPerformancePage = () => {
     const currentCampaign = useMemo(() => ({
         docId: 'current',
         title: DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE,
+        startDate: DATA_CONFIG.KVK.START_DATE || null,
+        endDate: DATA_CONFIG.KVK.END_DATE || null,
         order: Number.MAX_SAFE_INTEGER,
         isCurrent: true,
         list: Array.isArray(kvkStats) ? kvkStats : [],
