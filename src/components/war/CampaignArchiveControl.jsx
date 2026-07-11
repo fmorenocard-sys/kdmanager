@@ -1,0 +1,166 @@
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { db } from '../../config/firebase';
+import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { useRole, ROLES } from '../../context/RoleContext';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import Card from '../ui/Card';
+import { Archive, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { DATA_CONFIG } from '../../config/data-mapping';
+import { invalidateKvkHistoryCache } from '../../hooks/useKvkHistory';
+
+const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+
+/**
+ * F-015 / US-010 — King-only control that archives the current KvK performance
+ * data (static_data/kvk + static_data/kvk_filler) into kvk_history/{id}.
+ * Create-only: an already archived campaign can never be overwritten (rules enforce it too).
+ */
+const CampaignArchiveControl = () => {
+    const { t } = useTranslation();
+    const { isAuthorized } = useRole();
+    const [title, setTitle] = useState(DATA_CONFIG.KVK.TITLE || '');
+    const [order, setOrder] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [confirming, setConfirming] = useState(false);
+    const [busy, setBusy] = useState(false);
+    const [message, setMessage] = useState(null); // { type: 'ok'|'err', text }
+    const [counts, setCounts] = useState(null);
+
+    const authorized = isAuthorized([ROLES.KING]);
+    const docId = slugify(title);
+
+    // Suggest the next season number from existing archives
+    useEffect(() => {
+        if (!authorized) return;
+        getDocs(collection(db, 'kvk_history')).then(snap => {
+            const maxOrder = snap.docs.reduce((m, d) => Math.max(m, d.data().order || 0), 0);
+            setOrder(String(maxOrder + 1));
+        }).catch(() => setOrder(''));
+    }, [authorized]);
+
+    if (!authorized) return null;
+
+    const prepare = async () => {
+        setMessage(null);
+        setBusy(true);
+        try {
+            if (!docId) throw new Error(t('kvk_history.title_required'));
+            const [existing, kvkSnap, fillerSnap] = await Promise.all([
+                getDoc(doc(db, 'kvk_history', docId)),
+                getDoc(doc(db, 'static_data', 'kvk')),
+                getDoc(doc(db, 'static_data', 'kvk_filler'))
+            ]);
+            if (existing.exists()) throw new Error(t('kvk_history.already_archived'));
+            const list = kvkSnap.exists() ? kvkSnap.data().list || [] : [];
+            const fillerList = fillerSnap.exists() ? fillerSnap.data().list || [] : [];
+            if (list.length === 0) throw new Error(t('kvk_history.no_current_data'));
+            setCounts({ mains: list.length, fillers: fillerList.length });
+            setConfirming(true);
+        } catch (err) {
+            setMessage({ type: 'err', text: err.message });
+        }
+        setBusy(false);
+    };
+
+    const archive = async () => {
+        setBusy(true);
+        setMessage(null);
+        try {
+            const [kvkSnap, fillerSnap] = await Promise.all([
+                getDoc(doc(db, 'static_data', 'kvk')),
+                getDoc(doc(db, 'static_data', 'kvk_filler'))
+            ]);
+            await setDoc(doc(db, 'kvk_history', docId), {
+                title: title.trim(),
+                order: Number(order) || null,
+                startDate: startDate || null,
+                endDate: endDate || null,
+                list: kvkSnap.exists() ? kvkSnap.data().list || [] : [],
+                fillerList: fillerSnap.exists() ? fillerSnap.data().list || [] : [],
+                archivedAt: new Date().toISOString(),
+                source: 'in-app closure (CampaignArchiveControl)'
+            });
+            invalidateKvkHistoryCache();
+            setConfirming(false);
+            setMessage({ type: 'ok', text: t('kvk_history.archived_success', { title }) });
+        } catch (err) {
+            console.error('Archive failed:', err);
+            setMessage({ type: 'err', text: err.message });
+        }
+        setBusy(false);
+    };
+
+    return (
+        <Card className="p-4 md:p-6 border border-amber-500/20 bg-slate-900/40">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-1">
+                <Archive size={18} className="text-amber-400" />
+                {t('kvk_history.archive_title')}
+            </h3>
+            <p className="text-sm text-slate-400 mb-4">{t('kvk_history.archive_desc')}</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <Input
+                    aria-label={t('kvk_history.campaign_title_label')}
+                    label={t('kvk_history.campaign_title_label')}
+                    value={title}
+                    onChange={(e) => { setTitle(e.target.value); setConfirming(false); }}
+                />
+                <Input
+                    aria-label={t('kvk_history.order_label')}
+                    label={t('kvk_history.order_label')}
+                    type="number"
+                    value={order}
+                    onChange={(e) => setOrder(e.target.value)}
+                />
+                <Input
+                    aria-label={t('kvk_history.start_date')}
+                    label={t('kvk_history.start_date')}
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                />
+                <Input
+                    aria-label={t('kvk_history.end_date')}
+                    label={t('kvk_history.end_date')}
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                />
+            </div>
+
+            {!confirming ? (
+                <Button onClick={prepare} disabled={busy || !title.trim()} className="bg-amber-600 hover:bg-amber-500">
+                    <Archive size={16} />
+                    {t('kvk_history.archive_button')}
+                </Button>
+            ) : (
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex flex-col gap-3">
+                    <p className="text-sm text-amber-200 flex items-start gap-2">
+                        <AlertTriangle size={16} className="shrink-0 mt-0.5" />
+                        {t('kvk_history.confirm_prompt', { title, mains: counts?.mains, fillers: counts?.fillers, id: docId })}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        <Button onClick={archive} disabled={busy} className="bg-amber-600 hover:bg-amber-500">
+                            {busy ? t('common.loading') : t('kvk_history.confirm_button')}
+                        </Button>
+                        <Button onClick={() => setConfirming(false)} disabled={busy} variant="secondary">
+                            {t('kvk_history.cancel_button')}
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            {message && (
+                <p className={`mt-3 text-sm flex items-center gap-2 ${message.type === 'ok' ? 'text-emerald-400' : 'text-red-400'}`} role="status">
+                    {message.type === 'ok' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
+                    {message.text}
+                </p>
+            )}
+        </Card>
+    );
+};
+
+export default CampaignArchiveControl;

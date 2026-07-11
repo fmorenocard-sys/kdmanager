@@ -245,5 +245,28 @@
     "kp_goal": "Objetivo KP",
     "dead_goal": "Objetivo de bajas",
     "save": "Guardar configuración"
+  },
+  "kvk_history": {
+    "archived_badge": "Archivada",
+    "current_badge": "Actual",
+    "selector_label": "Campaña",
+    "progression_tab": "Progresión",
+    "select_player_hint": "Busca un jugador para ver su progresión",
+    "no_data": "Ningún jugador encontrado",
+    "campaign_col": "Campaña",
+    "archive_title": "Cerrar y archivar campaña",
+    "archive_desc": "Copia los datos de rendimiento KvK actuales al historial permanente. Una campaña archivada nunca puede sobrescribirse.",
+    "campaign_title_label": "Título de la campaña",
+    "order_label": "Número de temporada",
+    "start_date": "Fecha de inicio",
+    "end_date": "Fecha de fin",
+    "archive_button": "Cerrar campaña",
+    "confirm_prompt": "¿Archivar «{{title}}» ({{mains}} cuentas principales, {{fillers}} fillers) como {{id}}? Esta acción es irreversible.",
+    "confirm_button": "Confirmar archivado",
+    "cancel_button": "Cancelar",
+    "already_archived": "Ya existe una campaña archivada con este título.",
+    "archived_success": "«{{title}}» ha sido archivada.",
+    "title_required": "El título de la campaña es obligatorio.",
+    "no_current_data": "No hay datos KvK actuales para archivar."
   }
 }

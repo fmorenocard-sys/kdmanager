@@ -245,5 +245,28 @@
     "kp_goal": "Cel KP",
     "dead_goal": "Cel zabitych",
     "save": "Zapisz konfigurację"
+  },
+  "kvk_history": {
+    "archived_badge": "Zarchiwizowana",
+    "current_badge": "Bieżąca",
+    "selector_label": "Kampania",
+    "progression_tab": "Progresja",
+    "select_player_hint": "Wyszukaj gracza, aby zobaczyć jego progresję",
+    "no_data": "Nie znaleziono gracza",
+    "campaign_col": "Kampania",
+    "archive_title": "Zamknij i zarchiwizuj kampanię",
+    "archive_desc": "Kopiuje bieżące dane wyników KvK do stałej historii. Zarchiwizowanej kampanii nie można nadpisać.",
+    "campaign_title_label": "Tytuł kampanii",
+    "order_label": "Numer sezonu",
+    "start_date": "Data rozpoczęcia",
+    "end_date": "Data zakończenia",
+    "archive_button": "Zamknij kampanię",
+    "confirm_prompt": "Zarchiwizować „{{title}}” ({{mains}} kont głównych, {{fillers}} fillerów) jako {{id}}? Tej operacji nie można cofnąć.",
+    "confirm_button": "Potwierdź archiwizację",
+    "cancel_button": "Anuluj",
+    "already_archived": "Kampania o tym tytule jest już zarchiwizowana.",
+    "archived_success": "„{{title}}” została zarchiwizowana.",
+    "title_required": "Tytuł kampanii jest wymagany.",
+    "no_current_data": "Brak bieżących danych KvK do archiwizacji."
   }
 }

@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.3 - 2026-07-11
+### Added
+- **F-015 Historique KvK (E-004)** : SSOT enrichie (F-015, BR-006 immutabilité des archives, BR-007 jointure par ID gouverneur), suite de tests TS-011 (TC-019 → TC-022), matrice de traçabilité mise à jour. Implémentation livrée : collection `kvk_history` (rules create-only King, lecture publique — vérifiées positivement ET négativement), import SoC 1/2/3 (139+9, 177+17, 64+17 comptes, chaîne KP inter-saisons validée), sélecteur de campagne, vue progression joueur, clôture manuelle (`CampaignArchiveControl`), 21 clés i18n × 9 langues.
+
 ## v2.2 - 2026-07-11
 ### Changed
 - **Données KvK (F-008)** : Ingestion de la nouvelle campagne « SoC 4: King of All Britain (2026) » (47 comptes principaux, 23 fillers) directement depuis Google Sheets. `scripts/digest-data.js` télécharge désormais le classeur live (variable `KVK_SHEET_ID` dans `.env`, repli sur le snapshot xlsx committé). Documents Firestore `static_data/kvk` et `static_data/kvk_filler` mis à jour (anciens documents sauvegardés).

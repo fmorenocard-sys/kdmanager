@@ -20,9 +20,21 @@ service cloud.firestore {
       return isAuthenticated() && (getUserRole() == 'King' || getUserRole() == 'Officer');
     }
 
+    function isKing() {
+      return isAuthenticated() && getUserRole() == 'King';
+    }
+
     match /static_data/{document=**} {
       allow read: if true;
-      allow write: if false; 
+      allow write: if false;
+    }
+
+    // Archived KvK campaigns (F-015). Public read like static_data;
+    // only the King archives, and never over an existing campaign.
+    match /kvk_history/{kvkId} {
+      allow read: if true;
+      allow create: if isKing();
+      allow update, delete: if false;
     }
 
     match /roles/{userId} {

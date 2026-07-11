@@ -16,7 +16,9 @@
 | **F-012** (War Tracker - Dashboard) | Feature | TC-013 |
 | **F-013** (KvK Configuration) | Feature | TC-011 |
 | **F-014** (Multi-Language i18n) | Feature | TC-016 |
+| **F-015** (KvK History) | Feature | TC-019, TC-020, TC-021, TC-022 |
 | **BR-003** (Discord Role Priority) | Rule | TC-009 |
+| **BR-006** (KvK Archive Immutability) | Rule | TC-021, TC-022 |
 | **R-002** (Warrior) | Role | TC-012 |
 | **R-003** (Officer) | Role | TC-013 |
 | **R-004** (King) | Role | TC-011 |

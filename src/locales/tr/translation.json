@@ -245,5 +245,28 @@
     "kp_goal": "KP Hedefi",
     "dead_goal": "Ölü Hedefi",
     "save": "Yapılandırmayı Kaydet"
+  },
+  "kvk_history": {
+    "archived_badge": "Arşivlendi",
+    "current_badge": "Güncel",
+    "selector_label": "Kampanya",
+    "progression_tab": "Gelişim",
+    "select_player_hint": "Gelişimini görmek için bir oyuncu arayın",
+    "no_data": "Oyuncu bulunamadı",
+    "campaign_col": "Kampanya",
+    "archive_title": "Kampanyayı Kapat ve Arşivle",
+    "archive_desc": "Mevcut KvK performans verilerini kalıcı geçmişe kopyalar. Arşivlenmiş bir kampanyanın üzerine asla yazılamaz.",
+    "campaign_title_label": "Kampanya başlığı",
+    "order_label": "Sezon numarası",
+    "start_date": "Başlangıç tarihi",
+    "end_date": "Bitiş tarihi",
+    "archive_button": "Kampanyayı kapat",
+    "confirm_prompt": "\"{{title}}\" ({{mains}} ana hesap, {{fillers}} filler) {{id}} olarak arşivlensin mi? Bu işlem geri alınamaz.",
+    "confirm_button": "Arşivlemeyi onayla",
+    "cancel_button": "İptal",
+    "already_archived": "Bu başlıkla arşivlenmiş bir kampanya zaten var.",
+    "archived_success": "\"{{title}}\" arşivlendi.",
+    "title_required": "Kampanya başlığı gereklidir.",
+    "no_current_data": "Arşivlenecek güncel KvK verisi yok."
   }
 }

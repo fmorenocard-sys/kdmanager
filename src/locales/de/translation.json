@@ -245,5 +245,28 @@
     "kp_goal": "KP-Ziel",
     "dead_goal": "Tote-Ziel",
     "save": "Konfiguration speichern"
+  },
+  "kvk_history": {
+    "archived_badge": "Archiviert",
+    "current_badge": "Aktuell",
+    "selector_label": "Kampagne",
+    "progression_tab": "Entwicklung",
+    "select_player_hint": "Spieler suchen, um seine Entwicklung zu sehen",
+    "no_data": "Kein Spieler gefunden",
+    "campaign_col": "Kampagne",
+    "archive_title": "Kampagne abschließen & archivieren",
+    "archive_desc": "Kopiert die aktuellen KvK-Leistungsdaten in den dauerhaften Verlauf. Eine archivierte Kampagne kann nie überschrieben werden.",
+    "campaign_title_label": "Kampagnentitel",
+    "order_label": "Saisonnummer",
+    "start_date": "Startdatum",
+    "end_date": "Enddatum",
+    "archive_button": "Kampagne abschließen",
+    "confirm_prompt": "„{{title}}“ ({{mains}} Hauptkonten, {{fillers}} Filler) als {{id}} archivieren? Dies kann nicht rückgängig gemacht werden.",
+    "confirm_button": "Archivierung bestätigen",
+    "cancel_button": "Abbrechen",
+    "already_archived": "Eine Kampagne mit diesem Titel ist bereits archiviert.",
+    "archived_success": "„{{title}}“ wurde archiviert.",
+    "title_required": "Kampagnentitel ist erforderlich.",
+    "no_current_data": "Keine aktuellen KvK-Daten zum Archivieren."
   }
 }

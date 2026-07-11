@@ -17,7 +17,8 @@
 | **F-011** | **War Tracker (Availability)** | Allow players to declare their presence for KvK marches (Garrison, Rally, Siege) across specific time slots. | Warriors |
 | **F-012** | **War Dashboard** | Aggregate view for Officers of all declared availabilities, tech levels, and troops for the active campaign. | Leadership, Officers |
 | **F-013** | **KvK Configuration** | Define the Active Campaign (name, start/end dates). Archiving previous campaigns. | Leadership (King) |
-| **F-014** | **Multi-Language (i18n)** | UI localized in 8 languages (EN, FR, ES, DE, PL, TR, UK, VI). | All Users |
+| **F-014** | **Multi-Language (i18n)** | UI localized in 9 languages (EN, FR, ES, DE, PL, TR, UK, AR, VI). | All Users |
+| **F-015** | **KvK History** | Archive of past KvK campaigns (`kvk_history` collection). Campaign selector on the Performance page, per-player progression view across campaigns, manual closure by the King. | All Users (read), King (closure) |
 
 ## 2. Business Rules (BR)
 
@@ -28,6 +29,8 @@
 | **BR-003** | **Discord Role Priority** | Sync gives Priority: King > Officer > Warrior. If a user is not in the discord server or has no matching role, they default to Guest. |
 | **BR-004** | **KvK Campaign Isolation** | War Tracker forms strictly post to the campaign matching `kvk_config/current`. Historic campaign data is saved but only accessible via Dashboard filtering. |
 | **BR-005** | **Cloud Function Extraction** | The `syncData` Cloud Function expects specific `.xlsx` structures and names (Bank Ledger, Deadweight, Top 300) sent as base64 buffers. |
+| **BR-006** | **KvK Archive Immutability** | `kvk_history` documents are create-only: only the King can create them, and no client can update or delete an archived campaign (enforced by Firestore rules). |
+| **BR-007** | **Governor ID Join Key** | Cross-campaign player progression joins on the governor ID, never on the display name (names change between seasons). |
 
 ## 3. Pages / Screens (P)
 

@@ -245,5 +245,28 @@
     "kp_goal": "Ціль KP",
     "dead_goal": "Ціль загиблих",
     "save": "Зберегти"
+  },
+  "kvk_history": {
+    "archived_badge": "Архівована",
+    "current_badge": "Поточна",
+    "selector_label": "Кампанія",
+    "progression_tab": "Прогрес",
+    "select_player_hint": "Знайдіть гравця, щоб побачити його прогрес",
+    "no_data": "Гравця не знайдено",
+    "campaign_col": "Кампанія",
+    "archive_title": "Закрити та архівувати кампанію",
+    "archive_desc": "Копіює поточні дані KvK до постійної історії. Архівовану кампанію неможливо перезаписати.",
+    "campaign_title_label": "Назва кампанії",
+    "order_label": "Номер сезону",
+    "start_date": "Дата початку",
+    "end_date": "Дата завершення",
+    "archive_button": "Закрити кампанію",
+    "confirm_prompt": "Архівувати «{{title}}» ({{mains}} основних акаунтів, {{fillers}} філерів) як {{id}}? Цю дію неможливо скасувати.",
+    "confirm_button": "Підтвердити архівування",
+    "cancel_button": "Скасувати",
+    "already_archived": "Кампанія з такою назвою вже архівована.",
+    "archived_success": "«{{title}}» архівовано.",
+    "title_required": "Назва кампанії обов'язкова.",
+    "no_current_data": "Немає поточних даних KvK для архівування."
   }
 }

@@ -245,5 +245,28 @@
     "kp_goal": "KP Goal",
     "dead_goal": "Dead Goal",
     "save": "Save Config"
+  },
+  "kvk_history": {
+    "archived_badge": "Archived",
+    "current_badge": "Current",
+    "selector_label": "Campaign",
+    "progression_tab": "Progression",
+    "select_player_hint": "Search for a player to view their progression",
+    "no_data": "No player found",
+    "campaign_col": "Campaign",
+    "archive_title": "Close & Archive Campaign",
+    "archive_desc": "Copies the current KvK performance data into the permanent history. An archived campaign can never be overwritten.",
+    "campaign_title_label": "Campaign title",
+    "order_label": "Season number",
+    "start_date": "Start date",
+    "end_date": "End date",
+    "archive_button": "Close campaign",
+    "confirm_prompt": "Archive \"{{title}}\" ({{mains}} main accounts, {{fillers}} fillers) as {{id}}? This cannot be undone.",
+    "confirm_button": "Confirm archive",
+    "cancel_button": "Cancel",
+    "already_archived": "A campaign with this title is already archived.",
+    "archived_success": "\"{{title}}\" has been archived.",
+    "title_required": "Campaign title is required.",
+    "no_current_data": "No current KvK data to archive."
   }
 }

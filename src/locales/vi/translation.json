@@ -245,5 +245,28 @@
     "kp_goal": "Mục tiêu KP",
     "dead_goal": "Mục tiêu tử trận",
     "save": "Lưu cấu hình"
+  },
+  "kvk_history": {
+    "archived_badge": "Đã lưu trữ",
+    "current_badge": "Hiện tại",
+    "selector_label": "Chiến dịch",
+    "progression_tab": "Tiến trình",
+    "select_player_hint": "Tìm người chơi để xem tiến trình",
+    "no_data": "Không tìm thấy người chơi",
+    "campaign_col": "Chiến dịch",
+    "archive_title": "Đóng & lưu trữ chiến dịch",
+    "archive_desc": "Sao chép dữ liệu hiệu suất KvK hiện tại vào lịch sử vĩnh viễn. Chiến dịch đã lưu trữ không bao giờ bị ghi đè.",
+    "campaign_title_label": "Tên chiến dịch",
+    "order_label": "Số mùa giải",
+    "start_date": "Ngày bắt đầu",
+    "end_date": "Ngày kết thúc",
+    "archive_button": "Đóng chiến dịch",
+    "confirm_prompt": "Lưu trữ \"{{title}}\" ({{mains}} tài khoản chính, {{fillers}} filler) thành {{id}}? Hành động này không thể hoàn tác.",
+    "confirm_button": "Xác nhận lưu trữ",
+    "cancel_button": "Hủy",
+    "already_archived": "Đã có chiến dịch được lưu trữ với tên này.",
+    "archived_success": "\"{{title}}\" đã được lưu trữ.",
+    "title_required": "Cần nhập tên chiến dịch.",
+    "no_current_data": "Không có dữ liệu KvK hiện tại để lưu trữ."
   }
 }

@@ -245,5 +245,28 @@
     "kp_goal": "هدف KP",
     "dead_goal": "هدف القتلى",
     "save": "حفظ التكوين"
+  },
+  "kvk_history": {
+    "archived_badge": "مؤرشفة",
+    "current_badge": "الحالية",
+    "selector_label": "الحملة",
+    "progression_tab": "التطور",
+    "select_player_hint": "ابحث عن لاعب لعرض تطوره",
+    "no_data": "لم يتم العثور على لاعب",
+    "campaign_col": "الحملة",
+    "archive_title": "إغلاق وأرشفة الحملة",
+    "archive_desc": "ينسخ بيانات أداء KvK الحالية إلى السجل الدائم. لا يمكن الكتابة فوق حملة مؤرشفة أبدًا.",
+    "campaign_title_label": "عنوان الحملة",
+    "order_label": "رقم الموسم",
+    "start_date": "تاريخ البداية",
+    "end_date": "تاريخ النهاية",
+    "archive_button": "إغلاق الحملة",
+    "confirm_prompt": "أرشفة \"{{title}}\" ({{mains}} حسابات رئيسية، {{fillers}} حسابات ثانوية) باسم {{id}}؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirm_button": "تأكيد الأرشفة",
+    "cancel_button": "إلغاء",
+    "already_archived": "توجد حملة مؤرشفة بهذا العنوان بالفعل.",
+    "archived_success": "تمت أرشفة \"{{title}}\".",
+    "title_required": "عنوان الحملة مطلوب.",
+    "no_current_data": "لا توجد بيانات KvK حالية للأرشفة."
   }
 }

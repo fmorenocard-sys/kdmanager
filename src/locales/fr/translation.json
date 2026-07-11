@@ -245,5 +245,28 @@
     "kp_goal": "Objectif KP",
     "dead_goal": "Objectif Morts",
     "save": "Enregistrer Config"
+  },
+  "kvk_history": {
+    "archived_badge": "Archivée",
+    "current_badge": "En cours",
+    "selector_label": "Campagne",
+    "progression_tab": "Progression",
+    "select_player_hint": "Rechercher un joueur pour voir sa progression",
+    "no_data": "Aucun joueur trouvé",
+    "campaign_col": "Campagne",
+    "archive_title": "Clôturer & archiver la campagne",
+    "archive_desc": "Copie les données de performance KvK actuelles dans l'historique permanent. Une campagne archivée ne peut jamais être écrasée.",
+    "campaign_title_label": "Titre de la campagne",
+    "order_label": "Numéro de saison",
+    "start_date": "Date de début",
+    "end_date": "Date de fin",
+    "archive_button": "Clôturer la campagne",
+    "confirm_prompt": "Archiver « {{title}} » ({{mains}} comptes principaux, {{fillers}} fillers) sous {{id}} ? Cette action est irréversible.",
+    "confirm_button": "Confirmer l'archivage",
+    "cancel_button": "Annuler",
+    "already_archived": "Une campagne avec ce titre est déjà archivée.",
+    "archived_success": "« {{title}} » a été archivée.",
+    "title_required": "Le titre de la campagne est requis.",
+    "no_current_data": "Aucune donnée KvK courante à archiver."
   }
 }

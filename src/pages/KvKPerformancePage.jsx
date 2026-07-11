@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import Avatar from '../components/ui/Avatar';
-import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users } from 'lucide-react';
+import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive } from 'lucide-react';
+import { useKvkHistory } from '../hooks/useKvkHistory';
 import Card from '../components/ui/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
 import Input from '../components/ui/Input';
@@ -12,11 +13,14 @@ import StatusFilter from '../components/ui/StatusFilter';
 import { DATA_CONFIG } from '../config/data-mapping';
 const KvKPerformancePage = () => {
     const { kvkStats, kvkFillerStats, loading, error } = useData();
+    const { campaigns: historyCampaigns } = useKvkHistory();
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState([]); // [] = All, array of values = multi-select
     const [sortConfig, setSortConfig] = useState({ key: 'finalPower', direction: 'desc' });
-    const [activeTab, setActiveTab] = useState('main'); // 'main' | 'filler'
+    const [activeTab, setActiveTab] = useState('main'); // 'main' | 'filler' | 'progression'
+    const [selectedCampaignId, setSelectedCampaignId] = useState('current'); // F-015 campaign selector
+    const [selectedPlayerId, setSelectedPlayerId] = useState(null); // F-015 progression view
 
     // Reset/Set Sort when Tab Changes
     React.useEffect(() => {
@@ -27,18 +31,61 @@ const KvKPerformancePage = () => {
         }
     }, [activeTab]);
 
+    // F-015: the live campaign plus archived ones from kvk_history
+    const currentCampaign = useMemo(() => ({
+        docId: 'current',
+        title: DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE,
+        order: Number.MAX_SAFE_INTEGER,
+        isCurrent: true,
+        list: Array.isArray(kvkStats) ? kvkStats : [],
+        fillerList: Array.isArray(kvkFillerStats) ? kvkFillerStats : []
+    }), [kvkStats, kvkFillerStats]);
+
+    const allCampaigns = useMemo(() => [currentCampaign, ...historyCampaigns], [currentCampaign, historyCampaigns]);
+    const selectedCampaign = allCampaigns.find(c => c.docId === selectedCampaignId) || currentCampaign;
+
+    // F-015: per-player index across all campaigns (governor ID is the stable join key)
+    const playerIndex = useMemo(() => {
+        const map = new Map();
+        const asc = [...allCampaigns].sort((a, b) => (a.order || 0) - (b.order || 0));
+        for (const c of asc) {
+            const add = (p, isFiller) => {
+                if (!p.id) return;
+                const e = map.get(p.id) || { id: p.id, name: p.name, entries: [] };
+                e.name = p.name || e.name; // keep the most recent display name
+                e.entries.push({ ...p, isFiller, campaignTitle: c.title, campaignId: c.docId, isCurrent: !!c.isCurrent });
+                map.set(p.id, e);
+            };
+            (c.list || []).forEach(p => add(p, false));
+            (c.fillerList || []).forEach(p => add(p, true));
+        }
+        return map;
+    }, [allCampaigns]);
+
+    const playerMatches = useMemo(() => {
+        if (activeTab !== 'progression') return [];
+        const q = searchTerm.toLowerCase().trim();
+        const all = [...playerIndex.values()];
+        const filtered = q
+            ? all.filter(p => p.name?.toLowerCase().includes(q) || String(p.id).includes(q))
+            : all.sort((a, b) => b.entries.length - a.entries.length);
+        return filtered.slice(0, 12);
+    }, [playerIndex, searchTerm, activeTab]);
+
+    const selectedPlayer = selectedPlayerId ? playerIndex.get(selectedPlayerId) : null;
+
     // Dedup by id to avoid React duplicate key warnings (in case XLSX has duplicate rows)
     const activeData = useMemo(() => {
-        const raw = activeTab === 'main' ? kvkStats : kvkFillerStats;
+        const raw = activeTab === 'main' ? selectedCampaign.list : selectedCampaign.fillerList;
         if (!Array.isArray(raw)) return [];
         const seen = new Set();
-        return raw.filter(p => {
-            const key = String(p.id ?? p.name ?? Math.random());
+        return raw.filter((p, i) => {
+            const key = String(p.id ?? p.name ?? `row_${i}`);
             if (seen.has(key)) return false;
             seen.add(key);
             return true;
         });
-    }, [activeTab, kvkStats, kvkFillerStats]);
+    }, [activeTab, selectedCampaign]);
 
     // Summary Stats Calculation
     const stats = useMemo(() => {
@@ -181,15 +228,51 @@ const KvKPerformancePage = () => {
                     <Swords className="text-red-500" size={24} />
                     {t('performance.title')}
                 </h1>
-                <p className="text-gray-400 mt-1">{DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE}</p>
+                <p className="text-gray-400 mt-1 flex flex-wrap items-center gap-2">
+                    {selectedCampaign.title}
+                    {!selectedCampaign.isCurrent && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border text-amber-400 bg-amber-500/10 border-amber-500/20">
+                            <Archive size={10} />
+                            {t('kvk_history.archived_badge')}
+                        </span>
+                    )}
+                    {(selectedCampaign.startDate || selectedCampaign.endDate) && (
+                        <span className="text-xs text-slate-500">
+                            {selectedCampaign.startDate || '…'} → {selectedCampaign.endDate || '…'}
+                        </span>
+                    )}
+                </p>
             </div>
-            <DataRefreshControl pageId="kvk" title="Update KvK Data" />
+
+            {/* F-015: campaign selector */}
+            {historyCampaigns.length > 0 && activeTab !== 'progression' && (
+                <div className="flex items-center gap-2 flex-wrap">
+                    <label htmlFor="kvk-campaign-select" className="text-sm text-slate-400 flex items-center gap-1.5">
+                        <History size={14} />
+                        {t('kvk_history.selector_label')}
+                    </label>
+                    <select
+                        id="kvk-campaign-select"
+                        value={selectedCampaignId}
+                        onChange={(e) => { setSelectedCampaignId(e.target.value); setStatusFilter([]); setSearchTerm(''); }}
+                        className="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[44px]"
+                    >
+                        <option value="current">{currentCampaign.title} — {t('kvk_history.current_badge')}</option>
+                        {historyCampaigns.map(c => (
+                            <option key={c.docId} value={c.docId}>{c.title}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
+            {selectedCampaign.isCurrent && <DataRefreshControl pageId="kvk" title="Update KvK Data" />}
 
             {/* Tabs */}
             <div className="flex flex-wrap gap-2 mb-6 pb-2" role="group" aria-label="KvK Performance Views">
                 {[
                     { id: 'main', label: t('performance.main_accounts'), icon: Users },
-                    { id: 'filler', label: t('performance.filler_accounts'), icon: Users }
+                    { id: 'filler', label: t('performance.filler_accounts'), icon: Users },
+                    { id: 'progression', label: t('kvk_history.progression_tab'), icon: History }
                 ].map(tab => {
                     const isActive = activeTab === tab.id;
                     return (
@@ -211,6 +294,7 @@ const KvKPerformancePage = () => {
                 })}
             </div>
 
+            {activeTab !== 'progression' && (<>
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <StatCard
@@ -396,6 +480,149 @@ const KvKPerformancePage = () => {
                     </div>
                 </div>
             </Card>
+            </>)}
+
+            {/* F-015 / US-012: player progression across campaigns */}
+            {activeTab === 'progression' && (
+                <div className="space-y-4">
+                    <div className="w-full max-w-md">
+                        <Input
+                            aria-label={t('kvk_history.select_player_hint')}
+                            placeholder={t('kvk_history.select_player_hint')}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            leftIcon={<Search size={16} />}
+                        />
+                    </div>
+
+                    {/* Player matches */}
+                    <div className="flex flex-wrap gap-2" role="listbox" aria-label={t('kvk_history.select_player_hint')}>
+                        {playerMatches.map(p => {
+                            const isSelected = p.id === selectedPlayerId;
+                            return (
+                                <button
+                                    key={p.id}
+                                    type="button"
+                                    role="option"
+                                    aria-selected={isSelected}
+                                    onClick={() => setSelectedPlayerId(p.id)}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm border transition-all min-h-[44px] focus:outline-none focus:ring-2 focus:ring-indigo-500/50 ${
+                                        isSelected
+                                            ? 'text-indigo-300 bg-indigo-500/10 border-indigo-500/40'
+                                            : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:border-slate-500'
+                                    }`}
+                                >
+                                    <Avatar id={p.id} name={p.name} size="xs" className="border border-slate-700" />
+                                    <span className="max-w-[140px] truncate">{p.name}</span>
+                                    <span className="text-[10px] text-slate-500 font-mono">×{p.entries.length}</span>
+                                </button>
+                            );
+                        })}
+                        {playerMatches.length === 0 && (
+                            <p className="text-sm text-slate-500">{t('kvk_history.no_data')}</p>
+                        )}
+                    </div>
+
+                    {/* Progression detail */}
+                    {selectedPlayer && (
+                        <Card className="overflow-hidden border border-slate-700/50 bg-slate-900/40 backdrop-blur-md">
+                            <div className="p-4 border-b border-slate-700/50 flex items-center gap-3">
+                                <Avatar id={selectedPlayer.id} name={selectedPlayer.name} size="sm" className="border border-slate-700" />
+                                <div className="min-w-0">
+                                    <h3 className="font-bold text-white truncate">{selectedPlayer.name}</h3>
+                                    <p className="text-xs text-slate-500 font-mono">{selectedPlayer.id}</p>
+                                </div>
+                            </div>
+
+                            {/* Mobile cards */}
+                            <div className="md:hidden flex flex-col gap-3 p-3">
+                                {selectedPlayer.entries.map((e, i) => (
+                                    <div key={`${e.campaignId}-${i}`} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-2">
+                                        <div className="flex justify-between items-center gap-2 border-b border-slate-700/50 pb-2">
+                                            <span className="font-bold text-white text-sm truncate">{e.campaignTitle}</span>
+                                            <span className="flex gap-1 shrink-0">
+                                                {e.isFiller && <span className="px-2 py-0.5 rounded-full text-[10px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
+                                                {e.rate && <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(e.rate)}`}>{e.rate}</span>}
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2 text-xs">
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">{t('performance.init_power')}</span><span className="font-mono text-white">{formatNumber(e.initialPower)}</span></div>
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">{t('performance.final_power')}</span><span className="font-mono text-white">{formatNumber(e.finalPower)}</span></div>
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">KP</span><span className="font-mono text-emerald-400">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</span></div>
+                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">{t('performance.total_dead')}</span><span className="font-mono text-red-400">{formatNumber(e.totalDead)}</span></div>
+                                        </div>
+                                        {typeof e.goalPercent === 'number' && (
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex-1 h-2 bg-slate-900 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`h-full rounded-full ${e.goalPercent >= 1 ? 'bg-emerald-500' : e.goalPercent >= 0.5 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                                        style={{ width: `${Math.min(e.goalPercent * 100, 100)}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-xs font-mono text-slate-300 shrink-0">{(e.goalPercent * 100).toFixed(1)}%</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Desktop table */}
+                            <div className="hidden md:block overflow-x-auto">
+                                <Table>
+                                    <TableHeader className="bg-slate-900/80">
+                                        <TableRow>
+                                            <TableHead className="text-left text-xs">{t('kvk_history.campaign_col')}</TableHead>
+                                            <TableHead className="text-left text-xs">{t('performance.init_power')}</TableHead>
+                                            <TableHead className="text-left text-xs">{t('performance.final_power')}</TableHead>
+                                            <TableHead className="text-left text-xs">KP</TableHead>
+                                            <TableHead className="text-left text-xs">{t('performance.total_dead')}</TableHead>
+                                            <TableHead className="text-left text-xs">% Goal</TableHead>
+                                            <TableHead className="text-left text-xs">{t('performance.rate')}</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {selectedPlayer.entries.map((e, i) => (
+                                            <TableRow key={`${e.campaignId}-${i}`} className="hover:bg-white/5 border-b border-white/5">
+                                                <TableCell className="text-xs py-2 px-2 text-white font-medium whitespace-nowrap">
+                                                    {e.campaignTitle}
+                                                    {e.isFiller && <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
+                                                    {e.isCurrent && <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] border text-indigo-400 bg-indigo-500/10 border-indigo-500/20">{t('kvk_history.current_badge')}</span>}
+                                                </TableCell>
+                                                <TableCell className="text-xs py-2 px-2 tabular-nums text-gray-300">{formatNumber(e.initialPower)}</TableCell>
+                                                <TableCell className="text-xs py-2 px-2 tabular-nums text-gray-300">{formatNumber(e.finalPower)}</TableCell>
+                                                <TableCell className="text-xs py-2 px-2 tabular-nums text-emerald-400 font-bold">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</TableCell>
+                                                <TableCell className="text-xs py-2 px-2 tabular-nums text-red-400 font-bold">{formatNumber(e.totalDead)}</TableCell>
+                                                <TableCell className="text-xs py-2 px-2 min-w-[140px]">
+                                                    {typeof e.goalPercent === 'number' ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex-1 h-2 bg-slate-900 rounded-full overflow-hidden min-w-[60px]">
+                                                                <div
+                                                                    className={`h-full rounded-full ${e.goalPercent >= 1 ? 'bg-emerald-500' : e.goalPercent >= 0.5 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                                                    style={{ width: `${Math.min(e.goalPercent * 100, 100)}%` }}
+                                                                />
+                                                            </div>
+                                                            <span className="font-mono text-slate-300">{(e.goalPercent * 100).toFixed(1)}%</span>
+                                                        </div>
+                                                    ) : <span className="text-slate-600">—</span>}
+                                                </TableCell>
+                                                <TableCell className="text-xs py-2 px-2">
+                                                    {e.rate ? (
+                                                        <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(e.rate)}`}>{e.rate}</span>
+                                                    ) : <span className="text-slate-600">—</span>}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        </Card>
+                    )}
+
+                    {!selectedPlayer && playerMatches.length > 0 && (
+                        <p className="text-sm text-slate-500">{t('kvk_history.select_player_hint')}</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

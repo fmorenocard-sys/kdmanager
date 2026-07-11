@@ -7,6 +7,7 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
 import { Save, Calendar, Shield, CheckCircle2, ChevronDown, ChevronUp, History, Users } from 'lucide-react';
+import CampaignArchiveControl from './CampaignArchiveControl';
 
 const KvKConfigForm = () => {
     const { role, isAuthorized } = useRole();
@@ -486,6 +487,9 @@ const KvKConfigForm = () => {
                     </div>
                 </Card>
             )}
+
+            {/* F-015: archive the current KvK performance data into kvk_history */}
+            <CampaignArchiveControl />
         </div>
     );
 };

@@ -180,3 +180,39 @@
   2. Switch from 'EN' to 'FR'.
   3. Verify static UI text translates.
 - **Expected Result**: UI renders in the chosen language immediately without reloading. Game terms remain in EN if configured so.
+
+## Test Suite TS-011: KvK History (F-015)
+
+### TC-019: Browse an archived campaign
+- **Requirements**: F-015
+- **Priority**: P1
+- **Steps**:
+  1. Open the KvK Performance page (no login required).
+  2. In the "Campaign" selector, choose an archived campaign (e.g. "SoC 2: Storm of Stratagems (2025)").
+  3. Check the subtitle, the "Archived" badge, the summary cards and the table.
+- **Expected Result**: The full table (mains + fillers tabs) of the archived campaign renders with its own totals; the data upload control is hidden; switching back to the current campaign restores live data.
+
+### TC-020: Player progression across campaigns
+- **Requirements**: F-015, BR-007
+- **Priority**: P1
+- **Steps**:
+  1. On the KvK Performance page, open the "Progression" tab.
+  2. Search a player present in several campaigns (e.g. by governor ID).
+  3. Select the player chip.
+- **Expected Result**: One row per campaign in chronological order (mains and filler entries flagged), joined by governor ID even if the display name changed; %Goal renders as a progress bar; campaigns without a rating show "—".
+
+### TC-021: Campaign closure is King-only
+- **Requirements**: F-015, BR-002, BR-006
+- **Priority**: P0
+- **Steps**:
+  1. As Guest/Warrior/Officer, open the War Tracker config section.
+  2. As King, open the same section, fill the closure form and confirm.
+- **Expected Result**: The "Close & Archive Campaign" card only renders for the King; a direct Firestore write to `kvk_history` from any non-King client is rejected (permission-denied); the King's closure creates `kvk_history/{id}` with mains + fillers and the campaign appears in the selector.
+
+### TC-022: Archive immutability (double closure)
+- **Requirements**: F-015, BR-006
+- **Priority**: P0
+- **Steps**:
+  1. As King, attempt to close a campaign whose title matches an already archived one.
+  2. Attempt an update/delete on an existing `kvk_history` document via the client SDK.
+- **Expected Result**: The UI blocks with "already archived" before any write; Firestore rules deny update/delete for every role including King.
