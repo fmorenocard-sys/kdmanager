@@ -12,7 +12,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'cards');
+const ROOT = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(ROOT, 'cards');
+
+// The Claude Design sandbox can't fetch external resources, so the typography
+// card embeds the app's self-hosted fonts (public/fonts) as data URIs.
+const fontB64 = (file) =>
+    fs.readFileSync(path.join(ROOT, '..', 'public', 'fonts', file)).toString('base64');
+const FONT_FACES = `
+  @font-face { font-family:"Inter"; src:url(data:font/woff2;base64,${fontB64('inter-latin.woff2')}) format("woff2"); font-weight:400 700; font-display:swap; }
+  @font-face { font-family:"JetBrains Mono"; src:url(data:font/woff2;base64,${fontB64('jetbrains-mono-latin.woff2')}) format("woff2"); font-weight:400 700; font-display:swap; }
+`;
 
 const BASE_CSS = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -86,6 +96,7 @@ const FILES = {
     '<!-- @dsCard group="Fondations" name="Typographie" subtitle="Inter + JetBrains Mono, gradients de titres" width="560" -->',
     'Typographie — KD Manager',
     `
+    <style>${FONT_FACES}</style>
     <h2>Familles</h2>
     <div style="font-size:17px">Inter — interface <span style="color:#94a3b8">(system-ui fallback)</span></div>
     <div class="mono" style="font-size:15px;margin-top:4px;color:#cbd5e1">JetBrains Mono — IDs &amp; valeurs <span class="mono" style="font-variant-numeric:tabular-nums">1 174 227 156</span></div>

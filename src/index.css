@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+/* Self-hosted fonts (public/fonts) — the @theme below always declared
+   Inter/JetBrains Mono but nothing ever loaded them (fixed 2026-07-12). */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* Colors */
   --color-background: #0f172a;
