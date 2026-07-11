@@ -125,9 +125,12 @@ async function resolvePlayer(discordId, db) {
  */
 async function loadPlayerData(governorId, db) {
     const doc = await db.collection("static_data").doc("players").get();
-    if (!doc.exists) return null;
-    const list = doc.data()?.list || [];
-    return list.find((p) => String(p.id) === String(governorId)) || null;
+    if (!doc.exists) return { player: null, updatedAt: null };
+    const data = doc.data();
+    return {
+        player: (data?.list || []).find((p) => String(p.id) === String(governorId)) || null,
+        updatedAt: data?.updatedAt || null,
+    };
 }
 
 /**
@@ -146,8 +149,17 @@ async function loadKvKData(governorId, db) {
     const filler = fillerList.find((p) => String(p.id) === String(governorId)) || null;
 
     // Prefer main, fallback to filler
-    return main || filler;
+    return {
+        kvk: main || filler,
+        updatedAt: (main ? kvkDoc.data()?.updatedAt : fillerDoc.data()?.updatedAt) || null,
+    };
 }
+
+// "2026-07-11T20:59:23.814Z" -> "2026-07-11"; stale data must be visible as such
+const fmtDataDate = (iso) => (iso ? String(iso).split("T")[0] : "unknown");
+
+const dataFooter = (parts) =>
+    `KD 2997 — Kingdom Manager  •  ${parts.map(([label, iso]) => `${label}: ${fmtDataDate(iso)}`).join("  •  ")}`;
 
 // --- Embed Builders ---
 
@@ -186,7 +198,7 @@ async function buildMyStatsEmbed(discordId, db) {
 
     const { governorId } = profile;
 
-    const [player, kvk] = await Promise.all([
+    const [{ player, updatedAt: playerUpdatedAt }, { kvk, updatedAt: kvkUpdatedAt }] = await Promise.all([
         loadPlayerData(governorId, db),
         loadKvKData(governorId, db),
     ]);
@@ -280,7 +292,7 @@ async function buildMyStatsEmbed(discordId, db) {
                 description: `Governor ID: \`${governorId}\``,
                 fields,
                 footer: {
-                    text: `KD 2997 — Kingdom Manager`,
+                    text: dataFooter([["Profile data", playerUpdatedAt], ["KvK data", kvkUpdatedAt]]),
                 },
                 timestamp: new Date().toISOString(),
             },
@@ -299,11 +311,11 @@ async function buildMyKvKEmbed(discordId, db) {
     }
 
     const { governorId } = profile;
-    const kvk = await loadKvKData(governorId, db);
+    const { kvk, updatedAt: kvkUpdatedAt } = await loadKvKData(governorId, db);
 
     if (!kvk) {
         // Still show who the player is, but no data
-        const player = await loadPlayerData(governorId, db);
+        const { player } = await loadPlayerData(governorId, db);
         return {
             embeds: [
                 {
@@ -365,7 +377,7 @@ async function buildMyKvKEmbed(discordId, db) {
                         inline: false,
                     },
                 ],
-                footer: { text: "KD 2997 — Kingdom Manager" },
+                footer: { text: dataFooter([["KvK data", kvkUpdatedAt]]) },
                 timestamp: new Date().toISOString(),
             },
         ],

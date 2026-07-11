@@ -1,4 +1,5 @@
 import { onRequest } from "firebase-functions/v2/https";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
 import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
@@ -418,6 +419,46 @@ async function syncKvkFiller(sheets) {
     return { status: "success", count: uniqueList.length };
 }
 
+// Full sync pipeline, shared by the HTTP endpoint and the daily schedule.
+// Each source is isolated: one failing sheet never blocks the others.
+async function runFullSync() {
+    let serviceAccountEmail = "unknown";
+    let sheets;
+    try {
+        const { google } = await import("googleapis");
+        const auth = new google.auth.GoogleAuth({
+            keyFile: "./service-account.json",
+            scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+        });
+        const client = await auth.getClient();
+        serviceAccountEmail = client.email;
+        logger.info("Running as Service Account:", serviceAccountEmail);
+        sheets = google.sheets({ version: "v4", auth });
+    } catch (e) {
+        logger.error("Failed to authenticate", e);
+        throw new Error("Auth Failed: " + e.message);
+    }
+
+    const results = {};
+    const steps = {
+        players: syncPlayers,
+        bank: syncBank,
+        deadweight: syncDeadweight,
+        trophies: syncTrophies,
+        kvk: syncKvk,
+        kvkFiller: syncKvkFiller,
+    };
+    for (const [name, fn] of Object.entries(steps)) {
+        try {
+            results[name] = await fn(sheets);
+        } catch (e) {
+            logger.error(`Error syncing ${name}`, e);
+            results[name] = { status: "error", error: e.message };
+        }
+    }
+    return { serviceAccountEmail, results };
+}
+
 // Main Export
 export const syncData = onRequest(async (req, res) => {
     // CORS Headers
@@ -431,91 +472,33 @@ export const syncData = onRequest(async (req, res) => {
         return;
     }
 
-    let serviceAccountEmail = "unknown";
     try {
         logger.info("Starting Sync Process...");
-
-        // Auth Step
-        let sheets;
-        try {
-            const { google } = await import("googleapis");
-            const auth = new google.auth.GoogleAuth({
-                keyFile: "./service-account.json",
-                scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
-            });
-            const client = await auth.getClient();
-            serviceAccountEmail = client.email; // Capture email
-            logger.info("Running as Service Account:", serviceAccountEmail);
-            sheets = google.sheets({ version: "v4", auth });
-        } catch (e) {
-            logger.error("Failed to authenticate", e);
-            throw new Error("Auth Failed: " + e.message);
-        }
-
-        const results = {};
-
-        // Sync Players
-        try {
-            results.players = await syncPlayers(sheets);
-        } catch (e) {
-            logger.error("Error syncing Players", e);
-            results.players = { status: "error", error: e.message };
-        }
-
-        // Sync Bank
-        try {
-            results.bank = await syncBank(sheets);
-        } catch (e) {
-            logger.error("Error syncing Bank", e);
-            results.bank = { status: "error", error: e.message };
-        }
-
-        // Sync Deadweight
-        try {
-            results.deadweight = await syncDeadweight(sheets);
-        } catch (e) {
-            logger.error("Error syncing Deadweight", e);
-            results.deadweight = { status: "error", error: e.message };
-        }
-
-        // Sync Trophies
-        try {
-            results.trophies = await syncTrophies(sheets);
-        } catch (e) {
-            logger.error("Error syncing Trophies", e);
-            results.trophies = { status: "error", error: e.message };
-        }
-
-        // Sync KvK
-        try {
-            results.kvk = await syncKvk(sheets);
-        } catch (e) {
-            logger.error("Error syncing KvK", e);
-            results.kvk = { status: "error", error: e.message };
-        }
-
-        // Sync KvK Filler
-        try {
-            results.kvkFiller = await syncKvkFiller(sheets);
-        } catch (e) {
-            logger.error("Error syncing KvK Filler", e);
-            results.kvkFiller = { status: "error", error: e.message };
-        }
-
+        const { serviceAccountEmail, results } = await runFullSync();
         logger.info("Sync Complete", results);
-        // Include email in response
         res.json({ success: true, serviceAccountEmail, results });
     } catch (error) {
         logger.error("Sync Critical Failure", error);
         // Return full error info for debugging
         res.status(500).json({
             success: false,
-            serviceAccountEmail, // Include here too if available
             error: error.message,
             code: error.code,
             details: error.details,
             stack: error.stack
         });
+    }
+});
+
+// Daily automatic refresh (05:00 UTC) so the app and the Discord bot
+// never serve week-old data when nobody thinks to press "Sync".
+export const scheduledSync = onSchedule({ schedule: "0 5 * * *", timeZone: "Etc/UTC" }, async () => {
+    const { results } = await runFullSync();
+    const failed = Object.entries(results).filter(([, r]) => r.status === "error");
+    if (failed.length) {
+        logger.error("Scheduled sync finished with errors", results);
+    } else {
+        logger.info("Scheduled sync complete", results);
     }
 });
 
