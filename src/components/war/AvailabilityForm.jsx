@@ -9,11 +9,15 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
 import CommanderSelector from './CommanderSelector';
+import ActiveHoursPickerUTC from './ActiveHoursPickerUTC';
 import { COMMANDERS } from '../../data/commanders';
 import { Save, User, Database, Swords, Zap, X, Calendar } from 'lucide-react';
 
 const AvailabilityForm = () => {
     const { currentUser, governorId, linkGovernor } = useAuth();
+
+
+
     const { players } = useData();
     const { t, i18n } = useTranslation();
 
@@ -27,6 +31,7 @@ const AvailabilityForm = () => {
         governorId: '',
         availability: 'Available',
         crystalTech: 'Low',
+        activeHoursUTC: { from: '', to: '' },
         resources: { food: 0, wood: 0, stone: 0, gold: 0 },
         speedups: { total: 0 },
         marches: [] // { type: 'Infantry', primary: 'alexander_the_great', secondary: 'ysg' }
@@ -55,6 +60,19 @@ const AvailabilityForm = () => {
         }
     }, [currentUser, governorId, players]);
 
+    // Dynamic Lookup when governorId changes (manually typed or prefilled)
+    useEffect(() => {
+        if (formData.governorId && players.length > 0) {
+            const player = players.find(p => String(p.id) === String(formData.governorId));
+            if (player && player.name && player.name !== formData.governorName) {
+                setFormData(prev => ({
+                    ...prev,
+                    governorName: player.name
+                }));
+            }
+        }
+    }, [formData.governorId, players]);
+
     // Fetch the overarching KvK dates and the user's specific submission if logged in
     useEffect(() => {
         const fetchConfigAndData = async () => {
@@ -71,12 +89,13 @@ const AvailabilityForm = () => {
                     const endDateStr = data.endDate ? new Date(data.endDate.seconds * 1000).toISOString().split('T')[0] : '';
 
                     configData = {
+                        id: data.id,
                         name: data.name,
                         startDate: startDateStr,
                         endDate: endDateStr
                     };
                     setKvkConfig(configData);
-                    currentKvkId = `${configData.name}_${configData.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
+                    currentKvkId = data.id || `${configData.name}_${configData.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
                 }
 
                 // If user is logged in, query their specific declaration for THIS KvK
@@ -86,7 +105,12 @@ const AvailabilityForm = () => {
                     const sn = await getDoc(docRef);
                     if (sn.exists()) {
                         const data = sn.data();
-                        setFormData(prev => ({ ...prev, ...data }));
+                        setFormData(prev => ({
+                            ...prev,
+                            ...data,
+                            // Ensure activeHoursUTC is always an object
+                            activeHoursUTC: data.activeHoursUTC || { from: '', to: '' }
+                        }));
                     }
                 }
             } catch (e) {
@@ -161,10 +185,10 @@ const AvailabilityForm = () => {
                     const data = configSnap.data();
                     kvkName = data.name;
                     const startDateStr = data.startDate ? new Date(data.startDate.seconds * 1000).toISOString().split('T')[0] : '';
-                    localKvkId = `${data.name}_${startDateStr.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
+                    localKvkId = data.id || `${data.name}_${startDateStr.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
                 }
             } else {
-                localKvkId = `${kvkConfig.name}_${kvkConfig.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
+                localKvkId = kvkConfig.id || `${kvkConfig.name}_${kvkConfig.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
                 kvkName = kvkConfig.name;
             }
 
@@ -182,10 +206,17 @@ const AvailabilityForm = () => {
                 total: Number(formData.speedups?.total) || 0
             };
 
+            // Sanitize activeHoursUTC — ensure it is a clean object
+            const sanitizedActiveHours = {
+                from: formData.activeHoursUTC?.from || '',
+                to: formData.activeHoursUTC?.to || ''
+            };
+
             await setDoc(doc(db, "war_availabilities", docId), {
                 ...formData,
                 resources: sanitizedResources,
                 speedups: sanitizedSpeedups,
+                activeHoursUTC: sanitizedActiveHours,
                 userId: currentUser ? currentUser.uid : 'guest',
                 kvkId: localKvkId,
                 kvkName: kvkName || 'Unknown',
@@ -203,8 +234,23 @@ const AvailabilityForm = () => {
     const getCmdImage = (id) => COMMANDERS.find(c => c.id === id)?.image || null;
     const getCmdName = (id) => COMMANDERS.find(c => c.id === id)?.name || id;
 
+    if (!currentUser) {
+        return (
+            <div className="w-full flex items-center justify-center p-8">
+                <div className="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-rose-500/30 text-center max-w-lg w-full shadow-2xl shadow-rose-900/20">
+                    <div className="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/50">
+                        <User className="text-rose-400" size={32} />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white mb-3">{t("war.auth_required_title")}</h2>
+                    <p className="text-slate-300 mb-6">{t("war.auth_required_desc")}</p>
+                    <p className="text-sm text-slate-400">{t("war.auth_required_hint")}</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <Card className="w-full max-w-3xl mx-auto space-y-5">
+        <Card className="w-full space-y-5">
             <div className="space-y-4 mb-6">
                 <div>
                     <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -219,7 +265,7 @@ const AvailabilityForm = () => {
                 {kvkConfig && (
                     <div className="bg-gradient-to-r from-indigo-900/40 via-slate-800/40 to-slate-900/40 border border-indigo-500/30 p-4 rounded-xl flex items-center gap-4 relative overflow-hidden shadow-lg">
                         {/* Decorative glow */}
-                        <div className="absolute top-0 left-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full"></div>
+                        <div className="absolute top-0 start-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full"></div>
 
                         <div className="bg-indigo-500/20 ring-1 ring-indigo-500/40 p-3 rounded-lg text-indigo-400 relative z-10">
                             <Calendar size={24} />
@@ -260,7 +306,8 @@ const AvailabilityForm = () => {
                 />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Availability + Crystal Tech row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-slate-400 mb-1">{t('war.availability')}</label>
                     <select
@@ -272,16 +319,6 @@ const AvailabilityForm = () => {
                         <option value="Partial">🟡 {t('statuses.partial')}</option>
                         <option value="Unavailable">🔴 {t('statuses.unavailable')}</option>
                     </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-400 mb-1">{t('war.time_range_utc')}</label>
-                    <input
-                        type="text"
-                        className="w-full bg-slate-700 text-white rounded px-3 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500 placeholder-slate-500"
-                        value={formData.timeRange || ''}
-                        onChange={(e) => setFormData({ ...formData, timeRange: e.target.value })}
-                        placeholder="e.g. 14:00 - 18:00"
-                    />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-slate-400 mb-1">{t('war.crystal_tech')}</label>
@@ -296,6 +333,14 @@ const AvailabilityForm = () => {
                         <option value="High">High / Whale</option>
                     </select>
                 </div>
+            </div>
+
+            {/* Active Hours UTC — full-width dedicated section */}
+            <div className="bg-slate-900/50 p-3 md:p-4 rounded-lg border border-slate-700">
+                <ActiveHoursPickerUTC
+                    value={formData.activeHoursUTC}
+                    onChange={(val) => setFormData(prev => ({ ...prev, activeHoursUTC: val }))}
+                />
             </div>
 
             <div className="bg-slate-900/50 p-3 md:p-4 rounded-lg border border-slate-700">
@@ -342,7 +387,7 @@ const AvailabilityForm = () => {
 
                                 <div className="flex items-center gap-[-10px]">
                                     <img src={getCmdImage(m.primary)} alt="" className="w-8 h-8 rounded-full border-2 border-slate-600 z-10" />
-                                    <img src={getCmdImage(m.secondary)} alt="" className="w-8 h-8 rounded-full border-2 border-slate-600 -ml-3 z-0" />
+                                    <img src={getCmdImage(m.secondary)} alt="" className="w-8 h-8 rounded-full border-2 border-slate-600 -ms-3 z-0" />
                                 </div>
                                 <div className="flex flex-col min-w-0">
                                     <span className="text-sm font-medium text-slate-200 truncate">{getCmdName(m.primary)}</span>
@@ -404,7 +449,7 @@ const AvailabilityForm = () => {
             {/* Submit */}
             <div className="flex justify-end pt-4">
                 <Button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto bg-green-600 hover:bg-green-700">
-                    <Save size={18} className="mr-2" />
+                    <Save size={18} className="me-2" />
                     {loading ? t('common.loading') : t('war.save_declaration')}
                 </Button>
             </div>

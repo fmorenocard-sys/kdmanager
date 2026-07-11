@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { db } from '../../config/firebase';
 import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import { useRole, ROLES } from '../../context/RoleContext';
+import { useData } from '../../context/DataContext';
 import Card from '../ui/Card';
 import StatCard from '../ui/StatCard';
 import { Database, Swords, Zap, Shield } from 'lucide-react';
@@ -10,6 +11,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '.
 
 const WarDashboard = () => {
     const { isAuthorized } = useRole();
+    const { players } = useData();
     const { t } = useTranslation();
     const [allDeclarations, setAllDeclarations] = useState([]);
     const [selectedKvkId, setSelectedKvkId] = useState('');
@@ -26,6 +28,14 @@ const WarDashboard = () => {
         return `${config.name}_${config.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
     };
 
+    const getPlayerName = (d) => {
+        if (players && players.length > 0) {
+            const player = players.find(p => String(p.id) === String(d.governorId));
+            if (player && player.name) return player.name;
+        }
+        return d.governorName;
+    };
+
     const fetchData = async () => {
         try {
             // First fetch current KvK config
@@ -37,12 +47,14 @@ const WarDashboard = () => {
             if (configSnap.exists()) {
                 const data = configSnap.data();
                 configData = {
+                    id: data.id,
                     name: data.name,
                     startDate: data.startDate ? new Date(data.startDate.seconds * 1000).toISOString().split('T')[0] : '',
                     endDate: data.endDate ? new Date(data.endDate.seconds * 1000).toISOString().split('T')[0] : ''
                 };
+                configData.id = configData.id || getKvKId(configData);
                 setKvkConfig(configData);
-                currentKvkId = getKvKId(configData);
+                currentKvkId = configData.id;
             }
 
             const querySnapshot = await getDocs(collection(db, "war_availabilities"));
@@ -213,8 +225,10 @@ const WarDashboard = () => {
             )}
 
             {/* Overview Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <StatCard title={t('war.total_food')} value={formatBillions(stats.food)} icon={Database} color="amber" />
+                <StatCard title={t('war.total_wood')} value={formatBillions(stats.wood)} icon={Database} color="emerald" />
+                <StatCard title={t('war.total_stone')} value={formatBillions(stats.stone)} icon={Database} color="slate" />
                 <StatCard title={t('war.total_gold')} value={formatBillions(stats.gold)} icon={Database} color="yellow" />
                 <StatCard title={t('war.total_marches')} value={stats.totalMarches} icon={Swords} color="red" />
                 <StatCard
@@ -246,7 +260,7 @@ const WarDashboard = () => {
                                 <div className="flex justify-between items-center border-b border-slate-700/50 pb-2">
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-bold text-white text-sm truncate max-w-[140px]">{d.governorName}</span>
+                                            <span className="font-bold text-white text-sm truncate max-w-[140px]">{getPlayerName(d)}</span>
                                             {d.userId === 'guest' && <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-600 text-slate-300">Guest</span>}
                                         </div>
                                         <span className="text-[10px] text-slate-500">{d.governorId}</span>
@@ -309,7 +323,7 @@ const WarDashboard = () => {
                                 {declarations.map((d) => (
                                     <TableRow key={d.id} className="hover:bg-white/5">
                                         <TableCell className="font-medium text-white">
-                                            {d.governorName} <span className="text-xs text-slate-500">({d.governorId})</span>
+                                            {getPlayerName(d)} <span className="text-xs text-slate-500">({d.governorId})</span>
                                             {d.userId === 'guest' && <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-slate-600 text-slate-300">Guest</span>}
                                         </TableCell>
                                         <TableCell>

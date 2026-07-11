@@ -90,32 +90,37 @@ const BankPage = () => {
 
             {/* Week Selector */}
             {history.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                    {weekLabels.map((label, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => setSelectedWeekIndex(idx)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${selectedWeekIndex === idx
-                                ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20'
-                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                <div className="flex flex-wrap gap-2 pb-2" role="group" aria-label="Filter by Week">
+                    {weekLabels.map((label, idx) => {
+                        const isActive = selectedWeekIndex === idx;
+                        return (
+                            <button
+                                key={idx}
+                                onClick={() => setSelectedWeekIndex(idx)}
+                                aria-pressed={isActive}
+                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all border select-none ${
+                                    isActive
+                                        ? 'ring-1 ring-amber-500/20 shadow-lg shadow-amber-500/10 text-amber-400 bg-amber-500/10 border-amber-500/20'
+                                        : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
                                 }`}
-                        >
-                            {label}
-                        </button>
-                    ))}
+                            >
+                                {label}
+                            </button>
+                        );
+                    })}
                 </div>
             )}
 
             {/* Weekly Contribution Table */}
             <Card className="flex flex-col h-[600px] overflow-hidden">
-                <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-4">
-                    <div className="flex items-center gap-4">
-                        <CardTitle>{t('bank.weekly_contributions')}</CardTitle>
-                        <span className="text-xs px-2 py-1 rounded bg-slate-800 text-amber-400 border border-amber-500/20">
+                <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-4 gap-4">
+                    <div className="flex items-center gap-3 flex-wrap">
+                        <CardTitle className="whitespace-nowrap">{t('bank.weekly_contributions')}</CardTitle>
+                        <span className="text-xs px-2 py-1 rounded bg-slate-800 text-amber-400 border border-amber-500/20 whitespace-nowrap shrink-0">
                             {weekLabels[selectedWeekIndex] || "Current Week"}
                         </span>
                     </div>
-                    <div className="text-sm text-slate-400 font-mono">
+                    <div className="text-sm text-slate-400 font-mono whitespace-nowrap shrink-0">
                         {t('bank.contributors', { count: sortedWeeklyData?.length || 0 })}
                     </div>
                 </CardHeader>

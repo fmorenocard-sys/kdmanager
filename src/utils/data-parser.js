@@ -7,26 +7,36 @@ export const parsePlayers = (workbook) => {
 
     const sheet = workbook.Sheets[sheetName];
     const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    if (jsonData.length < 2) return [];
+
+    const headers = jsonData[0].map(h => typeof h === 'string' ? h.toLowerCase().trim() : '');
+    
+    const colMap = {};
+    for (const [key, possibleNames] of Object.entries(DATA_CONFIG.PLAYER_COLUMNS)) {
+        colMap[key] = headers.findIndex(h => possibleNames.includes(h));
+    }
+
+    const getVal = (row, key) => colMap[key] !== -1 ? row[colMap[key]] : undefined;
 
     return jsonData.slice(1).map((row, index) => ({
         rank: index + 1,
-        id: row[DATA_CONFIG.PLAYER_COLUMNS.ID],
-        name: row[DATA_CONFIG.PLAYER_COLUMNS.NAME],
-        power: Number(row[DATA_CONFIG.PLAYER_COLUMNS.POWER]) || 0,
-        kp: Number(row[DATA_CONFIG.PLAYER_COLUMNS.KP]) || 0,
-        deads: Number(row[DATA_CONFIG.PLAYER_COLUMNS.DEADS]) || 0,
-        t1Kills: Number(row[DATA_CONFIG.PLAYER_COLUMNS.T1_KILLS]) || 0,
-        t4Kills: Number(row[DATA_CONFIG.PLAYER_COLUMNS.T4_KILLS]) || 0,
-        t5Kills: Number(row[DATA_CONFIG.PLAYER_COLUMNS.T5_KILLS]) || 0,
-        ranged: Number(row[DATA_CONFIG.PLAYER_COLUMNS.RANGED]) || 0,
-        rssGathered: Number(row[DATA_CONFIG.PLAYER_COLUMNS.RSS_GATHERED]) || 0,
-        rssAssistance: Number(row[DATA_CONFIG.PLAYER_COLUMNS.RSS_ASSISTANCE]) || 0,
-        helps: Number(row[DATA_CONFIG.PLAYER_COLUMNS.HELPS]) || 0,
-        alliance: row[DATA_CONFIG.PLAYER_COLUMNS.ALLIANCE] || "Unknown",
-        cityHall: Number(row[DATA_CONFIG.PLAYER_COLUMNS.CITY_HALL]) || 0,
-        location: row[DATA_CONFIG.PLAYER_COLUMNS.LOCATION] || "",
-        notes: row[DATA_CONFIG.PLAYER_COLUMNS.NOTES] || "",
-        powerDiff: Number(row[DATA_CONFIG.PLAYER_COLUMNS.POWER_DIFF]) || 0
+        id: getVal(row, 'ID'),
+        name: getVal(row, 'NAME'),
+        power: Number(getVal(row, 'POWER')) || 0,
+        kp: Number(getVal(row, 'KP')) || 0,
+        deads: Number(getVal(row, 'DEADS')) || 0,
+        t1Kills: Number(getVal(row, 'T1_KILLS')) || 0,
+        t4Kills: Number(getVal(row, 'T4_KILLS')) || 0,
+        t5Kills: Number(getVal(row, 'T5_KILLS')) || 0,
+        ranged: Number(getVal(row, 'RANGED')) || 0,
+        rssGathered: Number(getVal(row, 'RSS_GATHERED')) || 0,
+        rssAssistance: Number(getVal(row, 'RSS_ASSISTANCE')) || 0,
+        helps: Number(getVal(row, 'HELPS')) || 0,
+        alliance: getVal(row, 'ALLIANCE') || "Unknown",
+        cityHall: Number(getVal(row, 'CITY_HALL')) || 0,
+        location: getVal(row, 'LOCATION') || "",
+        notes: getVal(row, 'NOTES') || "",
+        powerDiff: Number(getVal(row, 'POWER_DIFF')) || 0
     })).filter(p => p.id && p.name);
 };
 

@@ -40,8 +40,8 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
         />
       )}
 
-      <aside className={`fixed left-0 top-0 h-full bg-slate-900/95 backdrop-blur-xl border-r border-white/10 transition-all duration-300 z-50 
-        ${isOpen ? 'translate-x-0 w-64 shadow-2xl' : '-translate-x-full w-64 md:translate-x-0 md:w-20'}
+      <aside className={`fixed start-0 top-0 h-full bg-slate-900/95 backdrop-blur-xl border-r border-white/10 transition-all duration-300 z-50 overflow-x-hidden
+        ${isOpen ? 'translate-x-0 w-64 shadow-2xl' : 'ltr:-translate-x-full rtl:translate-x-full w-64 ltr:md:translate-x-0 rtl:md:translate-x-0 md:w-20'}
       `}>
         <div className={`flex items-center gap-3 mb-8 transition-all duration-300 ${isOpen ? 'p-6' : 'p-4 justify-center'}`}>
           <img
@@ -62,14 +62,18 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
               <Link
                 key={item.id}
                 to={item.path}
+                aria-label={item.label}
+                title={item.label}
                 onClick={() => onNavigate && onNavigate()} // Optional: close mobile menu
                 className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${isActive
                   ? 'bg-primary/20 text-primary border border-primary/20'
                   : 'text-slate-400 hover:bg-white/5 hover:text-white'
                   }`}
               >
-                {item.icon}
-                {isOpen && <span className="font-medium">{item.label}</span>}
+                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                  {item.icon}
+                </div>
+                {isOpen && <span className="font-medium truncate whitespace-nowrap">{item.label}</span>}
               </Link>
             );
           })}
@@ -146,7 +150,7 @@ const UserProfile = () => {
           ) : null}
         </div>
         {/* Dropdown Menu */}
-        <div className={`absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-xl transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+        <div className={`absolute end-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-xl transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
           <div className="p-2">
             <Link
               to="/profile"
@@ -194,8 +198,8 @@ const MainContent = () => {
         onNavigate={() => window.innerWidth < 768 && setSidebarOpen(false)}
       />
 
-      <main className={`flex-1 transition-all duration-300 ml-0 ${sidebarOpen ? 'md:ml-64' : 'md:ml-20'}`}>
-        <header className="h-16 border-b border-white/5 bg-slate-900/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-6">
+      <main className={`flex-1 transition-all duration-300 ms-0 ${sidebarOpen ? 'md:ms-64' : 'md:ms-20'} min-h-screen flex flex-col min-w-0`}>
+        <header className="h-16 border-b border-white/5 bg-slate-900/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-6 min-w-0">
           {/* Hamburger — desktop only */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -215,18 +219,29 @@ const MainContent = () => {
           </div>
         </header>
 
-        <div className="p-4 md:p-6 lg:p-10 pb-20 md:pb-6 lg:pb-10 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/kvk" element={<KvKPerformancePage />} />
-            <Route path="/war-tracker" element={<WarTrackerPage />} />
-            <Route path="/trophies" element={<KingdomTrophiesPage />} />
-            <Route path="/deadweight" element={<DeadweightPage />} />
-            <Route path="/bank" element={<BankPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            {/* Fallback route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+        <div className="flex-1 w-full max-w-7xl mx-auto flex flex-col p-4 md:p-6 lg:p-10 pb-24 md:pb-6 lg:pb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 min-w-0">
+          <div className="flex-1 min-w-0">
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/kvk" element={<KvKPerformancePage />} />
+              <Route path="/war-tracker" element={<WarTrackerPage />} />
+              <Route path="/trophies" element={<KingdomTrophiesPage />} />
+              <Route path="/deadweight" element={<DeadweightPage />} />
+              <Route path="/bank" element={<BankPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              {/* Fallback route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+
+          <footer className="mt-12 pt-6 border-t border-white/10 text-center flex flex-col items-center justify-center gap-2 opacity-80">
+            <p className="text-sm text-slate-400">
+              &copy; {new Date().getFullYear()} Kingdom Manager &bull; Unitas 2997. All rights reserved.
+            </p>
+            <p className="text-xs text-slate-500">
+              Designed & Developed for Kingdom 2997
+            </p>
+          </footer>
         </div>
       </main>
 

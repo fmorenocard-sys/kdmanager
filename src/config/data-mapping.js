@@ -28,25 +28,25 @@ export const DATA_CONFIG = {
         DEADWEIGHT: 'KD97 DW'
     },
 
-    // Column Mappings (Indices)
+    // Column Mappings (Header Names for Dynamic Parsing)
     PLAYER_COLUMNS: {
-        ID: 0,
-        NAME: 1,
-        POWER: 2,
-        POWER_DIFF: 3,
-        KP: 4,
-        DEADS: 5,
-        T1_KILLS: 6,
-        T4_KILLS: 7,
-        T5_KILLS: 8,
-        RANGED: 9,
-        RSS_GATHERED: 10,
-        RSS_ASSISTANCE: 11,
-        HELPS: 12,
-        ALLIANCE: 13,
-        CITY_HALL: 14,
-        LOCATION: 15,
-        NOTES: 16
+        ID: ['id', 'governor id'],
+        NAME: ['name', 'governor', 'governor name'],
+        POWER: ['power'],
+        POWER_DIFF: ['power diff', 'power difference'],
+        KP: ['kill points', 'killpoints', 'kp'],
+        DEADS: ['dead', 'deads'],
+        T1_KILLS: ['t1 kills', 't1'],
+        T4_KILLS: ['t4 kills', 't4'],
+        T5_KILLS: ['t5 kills', 't5'],
+        RANGED: ['ranged', 'ranged pts', 'ranged points'],
+        RSS_GATHERED: ['rss gathered', 'gathered'],
+        RSS_ASSISTANCE: ['rss assistance', 'assistance'],
+        HELPS: ['helps', 'help'],
+        ALLIANCE: ['alliance', 'tag'],
+        CITY_HALL: ['city hall', 'ch'],
+        LOCATION: ['location', 'kingdom'],
+        NOTES: ['notes', 'note']
     },
 
     // Kingdom History Columns (in Dashboard sheet)
@@ -98,21 +98,25 @@ export const DATA_CONFIG = {
     },
 
     KVK: {
-        FILE: 'SoC_2_StormOfStratagems_2025.xlsx',
+        FILE: 'SoC_4_KingOfAllBritain_2026.xlsx',
+        TITLE: 'SoC 4: King of All Britain (2026)',
         SHEET_NAME: 'Performance Analysis',
         JSON_OUTPUT: 'kvk_stats.json',
         COLUMNS: {
-            ID: 0,
-            NAME: 1,
-            INITIAL_POWER: 2,
-            FINAL_POWER: 3,
-            INITIAL_KP: 4,
-            FINAL_KP: 5,
-            TOTAL_DEAD: 8,
-            TOTAL_POWER_DIFF: 9,
-            TOTAL_KP_GAINED: 10,
-            GOAL_PERCENT: 14,
-            RATE: 18
+            ID: 0,           // A: Governor ID
+            NAME: 1,         // B: Name
+            INITIAL_POWER: 2,// C: Initial Power
+            FINAL_POWER: 3,  // D: Final Power
+            INITIAL_KP: 4,   // E: Initial KP
+            FINAL_KP: 5,     // F: Final KP
+            TOTAL_KILLS: 6,  // G: Total Kills (NEW)
+            TOTAL_DEAD: 7,   // H: Total Dead
+            TOTAL_ACCLAIM: 8,// I: Total Acclaim (NEW)
+            TOTAL_POWER_DIFF: 9, // J: Total Power Diff
+            TOTAL_KP_GAINED: 10, // K: Total KP Gained
+            GOAL_PERCENT: 14,    // O: % Goal
+            GOAL_RATIO: 17,      // R: Goal Ratio
+            RATE: 18             // S: Rate
         }
     },
 
@@ -127,10 +131,10 @@ export const DATA_CONFIG = {
             T4_DEAD: 12, // M
             T5_DEAD: 13, // N
             PASS4_DEAD: 14, // O
-            PASS7_DEAD: 15, // P
-            KL_DEAD: 16, // Q
-            TOTAL_DEAD: 17, // R
-            GOAL_PERCENT: 19 // T
+            // PASS7_DEAD: 15,
+            KL_DEAD: 15, // P
+            TOTAL_DEAD: 16, // R
+            GOAL_PERCENT: 18 // T
         }
     },
 };

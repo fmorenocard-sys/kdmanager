@@ -6,14 +6,14 @@ import PlayerDetailPanel from '../components/PlayerDetailPanel';
 import Card, { CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, ComposedChart, Area, Line } from 'recharts';
-import { TrendingUp, Users, Skull, Sword, Coins, Search, Filter, AlertCircle } from 'lucide-react';
+import { TrendingUp, Users, Skull, Sword, Coins, Search, Filter, AlertCircle, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
 
 const DashboardPage = () => {
-    const { players, history, bank } = useData();
+    const { players, history, bank, stats: kingdomStats } = useData();
     const { t } = useTranslation();
     const [sortConfig, setSortConfig] = useState({ key: 'power', direction: 'desc' });
     const [searchTerm, setSearchTerm] = useState("");
@@ -39,8 +39,17 @@ const DashboardPage = () => {
     const sortedPlayers = useMemo(() => {
         let sorted = [...filteredPlayers];
         sorted.sort((a, b) => {
-            if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
-            if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+            let valA = a[sortConfig.key];
+            let valB = b[sortConfig.key];
+            
+            // Force numeric comparison for known number fields to avoid string comparison bugs
+            if (['power', 'kp', 'deads', 'rank'].includes(sortConfig.key)) {
+                valA = Number(valA) || 0;
+                valB = Number(valB) || 0;
+            }
+
+            if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
             return 0;
         });
         return sorted;
@@ -70,6 +79,27 @@ const DashboardPage = () => {
         }));
     };
 
+    const renderSortHeader = (label, sortKey, align = 'right') => {
+        const isActive = sortConfig.key === sortKey;
+        return (
+            <TableHead 
+                className={`cursor-pointer hover:bg-white/5 hover:text-white transition-colors group select-none text-xs ${align === 'right' ? 'text-right' : 'text-left'}`}
+                onClick={() => handleSort(sortKey)}
+            >
+                <div className={`flex items-center gap-1 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
+                    {label}
+                    <span className={`transition-colors ${isActive ? 'text-primary' : 'text-slate-600 group-hover:text-slate-400'}`}>
+                        {isActive ? (
+                            sortConfig.direction === 'desc' ? <ArrowDown size={14} /> : <ArrowUp size={14} />
+                        ) : (
+                            <ArrowUpDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
+                    </span>
+                </div>
+            </TableHead>
+        );
+    };
+
     return (
         <div className="space-y-8">
             <PlayerDetailPanel player={selectedPlayer} onClose={() => setSelectedPlayer(null)} />
@@ -88,9 +118,10 @@ const DashboardPage = () => {
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 <StatCard
                     title={t('dashboard.power')}
-                    value={formatNumber(stats.power)}
+                    value={formatNumber(kingdomStats?.totalPowerCH25 || stats.power)}
                     icon={TrendingUp}
                     color="blue"
+                    subtext={kingdomStats?.totalPowerCH25 ? "CH25 only" : "Total"}
                 />
                 <StatCard
                     title={t('dashboard.kp')}
@@ -116,32 +147,62 @@ const DashboardPage = () => {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 {/* Leaderboard Table section */}
                 <div className="xl:col-span-2 space-y-4">
-                    {/* Filters */}
-                    <Card className="p-4">
-                        <div className="flex flex-col md:flex-row gap-4 items-center">
-                            <div className="flex-1 w-full">
-                                <Input
-                                    aria-label={t('common.search')}
-                                    placeholder={t('common.search')}
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    leftIcon={<Search size={18} />}
-                                />
+                    {/* Filters & Sorting */}
+                    <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-2xl p-4 md:p-5 shadow-lg">
+                        <div className="flex flex-col gap-4">
+                            {/* Search and Alliance Filter Row */}
+                            <div className="flex flex-col sm:flex-row gap-4 items-center">
+                                <div className="flex-1 w-full relative group">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 group-focus-within:text-primary transition-colors">
+                                        <Search size={18} />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        aria-label={t('common.search')}
+                                        placeholder={t('common.search')}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="w-full bg-slate-950/50 border border-slate-700/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                                    />
+                                </div>
+                                <div className="flex items-center gap-2 w-full sm:w-auto">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center border border-slate-700/50 text-slate-400">
+                                        <Filter size={18} />
+                                    </div>
+                                    <select
+                                        className="flex-1 sm:flex-none bg-slate-950/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all cursor-pointer min-w-[140px]"
+                                        value={selectedAlliance}
+                                        onChange={(e) => setSelectedAlliance(e.target.value)}
+                                    >
+                                        {alliances.map(a => (
+                                            <option key={a} value={a} className="bg-slate-900">{a === "All" ? t('common.all') : a}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-2 w-full md:w-auto">
-                                <Filter size={18} className="text-slate-400" />
+
+                            {/* Mobile Sort Row (visible on small screens to replace table headers) */}
+                            <div className="flex sm:hidden items-center gap-2 pt-3 border-t border-slate-800/50">
+                                <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold min-w-[60px]">Sort by:</span>
                                 <select
-                                    className="bg-slate-950/50 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                    value={selectedAlliance}
-                                    onChange={(e) => setSelectedAlliance(e.target.value)}
+                                    className="flex-1 bg-slate-950/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-primary/50"
+                                    value={sortConfig.key}
+                                    onChange={(e) => setSortConfig(prev => ({ ...prev, key: e.target.value }))}
                                 >
-                                    {alliances.map(a => (
-                                        <option key={a} value={a} className="bg-slate-900">{a === "All" ? t('common.all') : a}</option>
-                                    ))}
+                                    <option value="rank">Rank</option>
+                                    <option value="power">Power</option>
+                                    <option value="kp">Kill Points</option>
+                                    <option value="deads">Deads</option>
                                 </select>
+                                <button
+                                    onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === 'desc' ? 'asc' : 'desc' }))}
+                                    className="p-2 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg border border-slate-700/50 transition-colors text-slate-300 min-w-[44px] flex items-center justify-center"
+                                >
+                                    {sortConfig.direction === 'desc' ? <ArrowDown size={16} /> : <ArrowUp size={16} />}
+                                </button>
                             </div>
                         </div>
-                    </Card>
+                    </div>
 
                     <Card className="flex flex-col h-[600px]">
                         <CardHeader className="flex flex-row items-center justify-between">
@@ -193,11 +254,11 @@ const DashboardPage = () => {
                                     <Table>
                                         <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
                                             <TableRow>
-                                                <TableHead className="w-[60px] text-center text-xs">{t('dashboard.rank')}</TableHead>
-                                                <TableHead className="text-xs">{t('dashboard.name')}</TableHead>
-                                                <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('power')}>{t('dashboard.power')}</TableHead>
-                                                <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('kp')}>Kill Points</TableHead>
-                                                <TableHead className="text-right cursor-pointer hover:text-white transition-colors text-xs" onClick={() => handleSort('deads')}>{t('dashboard.total_dead')}</TableHead>
+                                                {renderSortHeader(t('dashboard.rank'), 'rank', 'center')}
+                                                {renderSortHeader(t('dashboard.name'), 'name', 'left')}
+                                                {renderSortHeader(t('dashboard.power'), 'power')}
+                                                {renderSortHeader('Kill Points', 'kp')}
+                                                {renderSortHeader(t('dashboard.total_dead'), 'deads')}
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>

@@ -5,6 +5,17 @@ import { parsePlayers, parseHistory, parseBank, parseTrophies, parseDeadweight, 
 import { db } from '../config/firebase';
 import { doc, onSnapshot } from "firebase/firestore";
 
+const deduplicateById = (list) => {
+    if (!Array.isArray(list)) return [];
+    const seen = new Set();
+    return list.filter(item => {
+        if (!item.id) return true;
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
+        return true;
+    });
+};
+
 const DataContext = createContext(null);
 
 export const DataProvider = ({ children }) => {
@@ -16,6 +27,7 @@ export const DataProvider = ({ children }) => {
         deadweight: null,
         kvkStats: [],
         kvkFillerStats: [],
+        stats: null,
         loading: true,
         error: null,
         lastUpdated: null
@@ -31,15 +43,13 @@ export const DataProvider = ({ children }) => {
                 fetch(`${baseUrl}data/bank.json`),
                 fetch(`${baseUrl}data/trophies.json`),
                 fetch(`${baseUrl}data/deadweight.json`),
-                fetch(`${baseUrl}data/trophies.json`),
-                fetch(`${baseUrl}data/deadweight.json`),
                 fetch(`${baseUrl}data/kvk_stats.json`),
                 fetch(`${baseUrl}data/kvk_filler_stats.json`)
             ]);
 
             if (!playersRes.ok) throw new Error("Failed to load players data");
 
-            const players = await playersRes.json();
+            const players = deduplicateById(await playersRes.json());
             const history = historyRes.ok ? await historyRes.json() : [];
             const bank = bankRes.ok ? await bankRes.json() : null;
             const trophies = trophiesRes.ok ? await trophiesRes.json() : [];
@@ -85,7 +95,7 @@ export const DataProvider = ({ children }) => {
         const unsubPlayers = onSnapshot(doc(db, "static_data", "players"), (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
-                if (data.list) setState(prev => ({ ...prev, players: data.list, lastUpdated: new Date() }));
+                if (data.list) setState(prev => ({ ...prev, players: deduplicateById(data.list), lastUpdated: new Date() }));
             }
         });
 
@@ -107,12 +117,21 @@ export const DataProvider = ({ children }) => {
         const unsubDeadweight = onSnapshot(doc(db, "static_data", "deadweight"), (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
-                // match deadweight structure { list, count, ... }
-                // App expects deadweight to be the object or list?
-                // Context state define deadweight: null.
-                // parseDeadweight returns { updatedAt, count, list }.
-                // So we set deadweight to data.
                 setState(prev => ({ ...prev, deadweight: data, lastUpdated: new Date() }));
+            }
+        });
+
+        const unsubHistory = onSnapshot(doc(db, "static_data", "history"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                if (data.list) setState(prev => ({ ...prev, history: data.list, lastUpdated: new Date() }));
+            }
+        });
+
+        const unsubStats = onSnapshot(doc(db, "static_data", "stats"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                setState(prev => ({ ...prev, stats: data, lastUpdated: new Date() }));
             }
         });
 
@@ -136,6 +155,8 @@ export const DataProvider = ({ children }) => {
             unsubBank();
             unsubTrophies();
             unsubDeadweight();
+            unsubHistory();
+            unsubStats();
             unsubKvk();
             unsubKvkFiller();
         };
@@ -148,7 +169,7 @@ export const DataProvider = ({ children }) => {
             const workbook = XLSX.read(data, { type: 'array' });
 
             // Determine what to update based on file/type or guess
-            const newPlayers = parsePlayers(workbook);
+            const newPlayers = deduplicateById(parsePlayers(workbook));
             const newHistory = parseHistory(workbook);
             const newBank = parseBank(workbook);
             const newTrophies = parseTrophies(workbook);

@@ -15,8 +15,9 @@ const firebaseConfig = {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import { connectAuthEmulator } from "firebase/auth";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -25,8 +26,14 @@ export const auth = getAuth(app);
 export const db = getFirestore(app, "kdmanagerdb");
 export const functions = getFunctions(app);
 
-// Use emulator for local dev
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+// Use emulator for local dev if environment variable is set
+if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
+    console.log("Using Firebase Emulators");
+    connectAuthEmulator(auth, "http://127.0.0.1:9099");
+    connectFirestoreEmulator(db, '127.0.0.1', 8082);
+    connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+} else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    // Legacy local dev without full emulators (just functions)
     connectFunctionsEmulator(functions, '127.0.0.1', 5001);
 }
 

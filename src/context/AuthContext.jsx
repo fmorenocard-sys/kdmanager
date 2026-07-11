@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth, googleProvider } from "../config/firebase";
+import { auth, googleProvider, db } from "../config/firebase";
 import { onAuthStateChanged, signInWithPopup, signOut, signInWithCustomToken } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -38,10 +39,20 @@ export const AuthProvider = ({ children }) => {
         return signOut(auth);
     };
 
-    const linkGovernor = (id) => {
+    const linkGovernor = async (id) => {
         if (currentUser) {
             localStorage.setItem(`gov_link_${currentUser.uid}`, id);
             setGovernorId(id);
+            // Persist to Firestore so the Discord bot can resolve the governor
+            try {
+                await setDoc(
+                    doc(db, "user_profiles", currentUser.uid),
+                    { governorId: String(id) },
+                    { merge: true }
+                );
+            } catch (err) {
+                console.warn("Could not persist governorId to Firestore:", err);
+            }
         }
     };
 
@@ -102,12 +113,27 @@ export const AuthProvider = ({ children }) => {
     }, [auth]);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setCurrentUser(user);
             if (user) {
                 const storedGovId = localStorage.getItem(`gov_link_${user.uid}`);
                 if (storedGovId) {
                     setGovernorId(storedGovId);
+                    // Proactively sync it to Firestore in case it failed previously due to permission errors
+                    setDoc(doc(db, "user_profiles", user.uid), { governorId: String(storedGovId) }, { merge: true })
+                        .catch(err => console.warn("Could not auto-sync governorId to Firestore:", err));
+                } else {
+                    // Try to fetch from Firestore
+                    try {
+                        const snap = await getDoc(doc(db, "user_profiles", user.uid));
+                        if (snap.exists() && snap.data().governorId) {
+                            const dbGovId = snap.data().governorId;
+                            setGovernorId(dbGovId);
+                            localStorage.setItem(`gov_link_${user.uid}`, dbGovId);
+                        }
+                    } catch (err) {
+                        console.warn("Could not fetch governorId from Firestore:", err);
+                    }
                 }
             } else {
                 setGovernorId(null);

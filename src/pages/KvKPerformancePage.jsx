@@ -9,7 +9,7 @@ import Input from '../components/ui/Input';
 import DataRefreshControl from '../components/DataRefreshControl';
 import StatCard from '../components/ui/StatCard';
 import StatusFilter from '../components/ui/StatusFilter';
-
+import { DATA_CONFIG } from '../config/data-mapping';
 const KvKPerformancePage = () => {
     const { kvkStats, kvkFillerStats, loading, error } = useData();
     const { t } = useTranslation();
@@ -173,21 +173,6 @@ const KvKPerformancePage = () => {
 
     const columns = activeTab === 'main' ? mainColumns : fillerColumns;
 
-    const TabButton = ({ id, label, icon: Icon }) => (
-        <button
-            onClick={() => { setActiveTab(id); setStatusFilter([]); setSearchTerm(''); }}
-            className={`flex items-center gap-2 px-4 md:px-6 py-3 text-sm font-medium transition-colors relative whitespace-nowrap
-                ${activeTab === id ? 'text-indigo-400' : 'text-slate-400 hover:text-slate-200'}
-            `}
-        >
-            {Icon && <Icon size={18} />}
-            {label}
-            {activeTab === id && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 rounded-t-full" />
-            )}
-        </button>
-    );
-
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Header */}
@@ -196,14 +181,34 @@ const KvKPerformancePage = () => {
                     <Swords className="text-red-500" size={24} />
                     {t('performance.title')}
                 </h1>
-                <p className="text-gray-400 mt-1">SoC 2: Storm of Stratagems (2025)</p>
+                <p className="text-gray-400 mt-1">{DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE}</p>
             </div>
             <DataRefreshControl pageId="kvk" title="Update KvK Data" />
 
             {/* Tabs */}
-            <div className="flex border-b border-slate-700 mb-6 overflow-x-auto">
-                <TabButton id="main" label={t('performance.main_accounts')} icon={Users} />
-                <TabButton id="filler" label={t('performance.filler_accounts')} icon={Users} />
+            <div className="flex flex-wrap gap-2 mb-6 pb-2" role="group" aria-label="KvK Performance Views">
+                {[
+                    { id: 'main', label: t('performance.main_accounts'), icon: Users },
+                    { id: 'filler', label: t('performance.filler_accounts'), icon: Users }
+                ].map(tab => {
+                    const isActive = activeTab === tab.id;
+                    return (
+                        <button
+                            key={tab.id}
+                            type="button"
+                            onClick={() => { setActiveTab(tab.id); setStatusFilter([]); setSearchTerm(''); }}
+                            aria-pressed={isActive}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border select-none ${
+                                isActive 
+                                    ? 'ring-1 ring-indigo-500/20 shadow-lg shadow-indigo-500/10 text-indigo-400 bg-indigo-500/10 border-indigo-500/20' 
+                                    : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
+                            }`}
+                        >
+                            <tab.icon size={18} />
+                            {tab.label}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Summary Cards */}
@@ -284,29 +289,29 @@ const KvKPerformancePage = () => {
             <Card className="overflow-hidden border border-slate-700/50 bg-slate-900/40 backdrop-blur-md">
                 <div className="overflow-auto custom-scrollbar relative max-h-[800px]">
                     {/* Mobile Card View */}
-                    <div className="md:hidden flex flex-col gap-3 p-4">
+                    <div className="md:hidden flex flex-col gap-3 p-3">
                         {filteredAndSortedData.map((row, index) => (
-                            <div key={`${row.id || 'unknown'}-${index}`} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
-                                <div className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                                    <div className="flex items-center gap-2">
-                                        <span className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded">#{index + 1}</span>
-                                        <Avatar id={row.id} name={row.name} size="sm" className="border border-slate-700 bg-slate-800" />
-                                        <div className="flex flex-col">
-                                            <span className="font-bold text-white text-sm truncate max-w-[140px]">{row.name}</span>
-                                            <span className="text-[10px] text-slate-500">{row.id}</span>
+                            <div key={`${row.id || 'unknown'}-${index}`} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3 overflow-hidden">
+                                <div className="flex justify-between items-center border-b border-slate-700/50 pb-2 gap-2">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded shrink-0">#{index + 1}</span>
+                                        <Avatar id={row.id} name={row.name} size="sm" className="border border-slate-700 bg-slate-800 shrink-0" />
+                                        <div className="flex flex-col min-w-0">
+                                            <span className="font-bold text-white text-sm truncate">{row.name}</span>
+                                            <span className="text-[10px] text-slate-500 truncate">{row.id}</span>
                                         </div>
                                     </div>
                                     {activeTab === 'main' && row.rate && (
-                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
+                                        <span className={`shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
                                             {row.rate}
                                         </span>
                                     )}
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     {columns.filter(c => !['id', 'name', 'rate'].includes(c.k)).map(({ k, L }) => (
-                                        <div key={k} className="flex justify-between bg-slate-900/50 p-1.5 rounded">
-                                            <span className="text-slate-500">{L}</span>
-                                            <span className="font-mono text-white text-right">
+                                        <div key={k} className="flex justify-between items-center bg-slate-900/50 p-1.5 rounded gap-1 min-w-0">
+                                            <span className="text-slate-500 text-[10px] sm:text-xs truncate">{L}</span>
+                                            <span className="font-mono text-white text-right text-[10px] sm:text-xs shrink-0 whitespace-nowrap">
                                                 {k === 'goalPercent' ? (
                                                     <span className={`${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400' : (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400' : 'text-red-400'}`}>
                                                         {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}

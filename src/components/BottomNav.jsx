@@ -16,7 +16,7 @@ const BottomNav = () => {
     const { t } = useTranslation();
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10 safe-area-inset-bottom">
+        <nav className="fixed bottom-0 start-0 end-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10 safe-area-inset-bottom">
             <div className="flex items-stretch justify-around h-16">
                 {NAV_ITEMS.map(({ path, iconComp: Icon, key }) => {
                     const active = pathname === path || (path !== '/' && pathname.startsWith(path));

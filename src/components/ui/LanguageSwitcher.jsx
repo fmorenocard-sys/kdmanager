@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 
 const LANGS = [
     { code: 'en', label: 'EN', name: 'English' },
+    { code: 'fr', label: 'FR', name: 'Français' },
     { code: 'de', label: 'DE', name: 'Deutsch' },
     { code: 'tr', label: 'TR', name: 'Türkçe' },
     { code: 'uk', label: 'UK', name: 'Українська' },
@@ -32,6 +33,7 @@ const LanguageSwitcher = () => {
         <div ref={ref} className="relative">
             <button
                 onClick={() => setOpen(o => !o)}
+                data-testid="language-switcher-button"
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors text-xs font-bold"
                 aria-label="Switch language"
             >
