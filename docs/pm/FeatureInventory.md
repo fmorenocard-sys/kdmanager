@@ -18,7 +18,7 @@ Ce document centralise l'état de toutes les fonctionnalités du Kingdom Manager
 | F-012 | Discord Slash Commands | Bot Discord permettant aux joueurs de requêter leurs stats via `/mystats` ou `/mykvk`. Accès Warrior+ uniquement. | Live | P2 | Fort | F-007, F-010 |
 | F-013 | Discord "Missing Forms" Pings | Système permettant aux officiers de déclencher un ping automatique groupé sur Discord pour les retardataires du KvK. | À développer | P1 | Fort | F-006, F-007 |
 | F-014 | KvK Goals Calculator | Calcul algorithmique des objectifs de chaque joueur (KP, Deads, DKP) selon sa Puissance (courbe quadratique). | À développer | P1 | Fort | Formule "Req DKP" |
-| F-015 | Historique des KvK | Archivage des campagnes KvK (clôture manuelle par le Roi vers `kvk_history`), sélecteur de campagne sur Performance KvK et vue progression multi-campagnes par joueur. Import initial SoC 1/2/3. | À développer | P1 | Fort | F-005, F-006, Backup SoC 3, Sheets SoC 1/2 |
+| F-015 | Historique des KvK | Archivage des campagnes KvK (clôture manuelle par le Roi vers `kvk_history`), sélecteur de campagne sur Performance KvK et vue progression multi-campagnes par joueur. SoC 1/2/3 importées le 2026-07-11. Reste : `/mykvk <campagne>` Discord (US-014, V2). | Live | P1 | Fort | F-005, F-006 |
 
 ## Problèmes connus actuels
 * **F-008 (Data Ingestion)**: L'ingestion repose encore fortement sur des traitements manuels de fichiers XLSX avant de nourrir le frontend (ou un script local `digest-data.js`). Le processus mériterait d'être full in-app ou automatisé via Cloud Functions.

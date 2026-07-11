@@ -25,13 +25,13 @@
 * **US-007 (E-003) [LIVE]**: En tant que joueur, je veux interagir avec le Bot Discord via des commandes (ex: `/mystats`, `/mykvk`) pour recevoir un résumé de mes statistiques (Power, KP, Objectifs) directement dans le chat, sans ouvrir l'application web.
 * **US-008 (E-003)**: En tant qu'officier, je veux pouvoir déclencher depuis l'application web une alerte "Missing Forms" qui ping automatiquement sur Discord tous les membres du Top 300 n'ayant pas encore rempli leurs disponibilités pour le KvK.
 * **US-009**: En tant que joueur ou officier, je veux voir mes objectifs Minimums et mes Goals (KP, Dead, DKP) basés sur ma Puissance directement dans un onglet du War Tracker et via une commande Discord `/mykvkgoals`, afin de savoir facilement ce qui est attendu de moi.
-* **US-010 (E-004)**: En tant que Roi, je veux pouvoir « Clôturer la campagne » active pour archiver ses données dans l'historique, afin qu'elles ne soient pas écrasées par la campagne suivante.
-* **US-011 (E-004)**: En tant qu'utilisateur, je veux un sélecteur de campagne sur la page Performance KvK, afin de consulter le tableau complet de n'importe quelle campagne passée.
-* **US-012 (E-004)**: En tant que Roi ou joueur, je veux voir la progression d'un joueur à travers les campagnes (KP gagnés, morts, % objectif, note), afin d'évaluer sa trajectoire long-terme.
-* **US-013 (E-004)**: En tant que Roi, je veux que les campagnes SoC 1 (Tides of War), SoC 2 (Storm of Stratagems) et SoC 3 (Heroic Anthem) soient importées dans l'historique, afin de démarrer avec la mémoire complète du royaume.
+* **US-010 (E-004) [LIVE 2026-07-11]**: En tant que Roi, je veux pouvoir « Clôturer la campagne » active pour archiver ses données dans l'historique, afin qu'elles ne soient pas écrasées par la campagne suivante.
+* **US-011 (E-004) [LIVE 2026-07-11]**: En tant qu'utilisateur, je veux un sélecteur de campagne sur la page Performance KvK, afin de consulter le tableau complet de n'importe quelle campagne passée.
+* **US-012 (E-004) [LIVE 2026-07-11]**: En tant que Roi ou joueur, je veux voir la progression d'un joueur à travers les campagnes (KP gagnés, morts, % objectif, note), afin d'évaluer sa trajectoire long-terme.
+* **US-013 (E-004) [DONE 2026-07-11]**: En tant que Roi, je veux que les campagnes SoC 1 (Tides of War), SoC 2 (Storm of Stratagems) et SoC 3 (Heroic Anthem) soient importées dans l'historique, afin de démarrer avec la mémoire complète du royaume.
 * **US-014 (E-004) [V2]**: En tant que joueur, je veux `/mykvk <campagne>` sur Discord, afin de consulter mes performances passées sans ouvrir l'app.
 
 ## Bugs / Dette
 * **BUG-001**: Dette technique liée à la rigidité du parsing XLSX (`digest-data.js`). *Sévérité: Moyenne*. *(Partiellement réduite le 2026-07-11 : téléchargement direct du classeur KvK depuis Google Sheets.)*
 * **BUG-002**: Les règles de sécurité Firestore actuelles sont vraisemblablement trop permissives ou limitées. Besoin d'un audit de sécurité. *Sévérité: Haute*. *(Rules durcies commit b4b905c — audit complet restant à faire.)*
-* **BUG-003**: La function `syncData` déployée utilise l'ancien mapping fillers (`GOAL_PERCENT` colonne S au lieu de T) — un clic sur « Sync » in-app écraserait les données fillers corrigées. Correctif committé, **redéploiement functions à faire avec E-004** (décision du 2026-07-11). *Sévérité: Moyenne*.
+* **BUG-003 [RÉSOLU 2026-07-11]**: La function `syncData` déployée utilisait l'ancien mapping fillers (`GOAL_PERCENT` colonne S au lieu de T). Correctif déployé avec la release E-004 — le bouton « Sync » in-app est de nouveau sûr.
