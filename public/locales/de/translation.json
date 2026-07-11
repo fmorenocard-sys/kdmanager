@@ -124,7 +124,11 @@
         "link_placeholder": "ID eingeben",
         "link_account_title": "Konto verknüpfen",
         "link_save": "ID speichern",
-        "your_account": "Dein Konto"
+        "your_account": "Dein Konto",
+        "active_hours_to": "Bis",
+        "active_hours_from": "Von",
+        "active_hours_utc": "Aktive Stunden (UTC)",
+        "active_hours_hint": "Dein aktivstes Spielfenster in UTC."
     },
     "trophies": {
         "title": "Königreich-Trophäen",

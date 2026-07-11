@@ -124,7 +124,11 @@
         "link_placeholder": "ID'nizi girin",
         "link_account_title": "Hesap Bağla",
         "link_save": "ID Kaydet",
-        "your_account": "Hesabınız"
+        "your_account": "Hesabınız",
+        "active_hours_to": "Bitis",
+        "active_hours_from": "Baslangic",
+        "active_hours_utc": "Aktif Saatler (UTC)",
+        "active_hours_hint": "KvK sirasinda en aktif oldugun UTC zaman dilimini sec."
     },
     "trophies": {
         "title": "Krallık Kupaları",

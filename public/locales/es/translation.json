@@ -124,7 +124,11 @@
         "link_placeholder": "Introduce tu ID",
         "link_account_title": "Vincular cuenta",
         "link_save": "Guardar ID",
-        "your_account": "Tu cuenta"
+        "your_account": "Tu cuenta",
+        "active_hours_to": "Hasta",
+        "active_hours_from": "Desde",
+        "active_hours_utc": "Horas activas (UTC)",
+        "active_hours_hint": "Tu ventana de juego mas activa en UTC durante el KvK."
     },
     "trophies": {
         "title": "Trofeos del Reino",

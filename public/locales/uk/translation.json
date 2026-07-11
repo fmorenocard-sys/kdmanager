@@ -124,7 +124,11 @@
         "link_placeholder": "Введіть ваш ID",
         "link_account_title": "Прив'язати акаунт",
         "link_save": "Зберегти ID",
-        "your_account": "Ваш акаунт"
+        "your_account": "Ваш акаунт",
+        "active_hours_to": "Do",
+        "active_hours_from": "Vid",
+        "active_hours_utc": "Aktyvni hodyny (UTC)",
+        "active_hours_hint": "Vash pik aktyvnosti v UTC pid chas KvK."
     },
     "trophies": {
         "title": "Трофеї Королівства",

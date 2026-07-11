@@ -124,7 +124,11 @@
         "link_placeholder": "أدخل معرفك",
         "link_account_title": "ربط الحساب",
         "link_save": "حفظ المعرف",
-        "your_account": "حسابك"
+        "your_account": "حسابك",
+        "active_hours_to": "الى",
+        "active_hours_from": "من",
+        "active_hours_utc": "ساعات النشاط (UTC)",
+        "active_hours_hint": "نافذة اللعب الاكثر نشاطا بتوقيت UTC خلال KvK."
     },
     "trophies": {
         "title": "كؤوس المملكة",

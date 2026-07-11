@@ -124,7 +124,11 @@
         "link_placeholder": "Enter your ID",
         "link_account_title": "Link Account",
         "link_save": "Save ID",
-        "your_account": "Your Account"
+        "your_account": "Your Account",
+        "active_hours_to": "To",
+        "active_hours_from": "From",
+        "active_hours_utc": "Active Hours (UTC)",
+        "active_hours_hint": "Your peak gaming window in UTC — when you will be most active during the KvK."
     },
     "trophies": {
         "title": "Kingdom Trophies",
