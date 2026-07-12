@@ -119,31 +119,32 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setCurrentUser(user);
             if (user) {
-                if (user.uid.startsWith('discord:')) {
-                    setIsDiscordUser(true);
-                } else {
-                    getDoc(doc(db, "user_profiles", user.uid))
-                        .then(snap => setIsDiscordUser(!!(snap.exists() && (snap.data().discordId || snap.data().discordUid))))
-                        .catch(() => setIsDiscordUser(false));
-                }
+                // Read the profile ONCE, before any write: a concurrent merge-write
+                // makes reads return the optimistic local view (the pending fields
+                // only), which broke the Discord check in production builds.
                 const storedGovId = localStorage.getItem(`gov_link_${user.uid}`);
+                let profile = {};
+                try {
+                    const snap = await getDoc(doc(db, "user_profiles", user.uid));
+                    if (snap.exists()) profile = snap.data();
+                } catch (err) {
+                    console.warn("Could not fetch user profile from Firestore:", err);
+                }
+
+                setIsDiscordUser(
+                    user.uid.startsWith('discord:') || !!(profile.discordId || profile.discordUid)
+                );
+
                 if (storedGovId) {
                     setGovernorId(storedGovId);
-                    // Proactively sync it to Firestore in case it failed previously due to permission errors
-                    setDoc(doc(db, "user_profiles", user.uid), { governorId: String(storedGovId) }, { merge: true })
-                        .catch(err => console.warn("Could not auto-sync governorId to Firestore:", err));
-                } else {
-                    // Try to fetch from Firestore
-                    try {
-                        const snap = await getDoc(doc(db, "user_profiles", user.uid));
-                        if (snap.exists() && snap.data().governorId) {
-                            const dbGovId = snap.data().governorId;
-                            setGovernorId(dbGovId);
-                            localStorage.setItem(`gov_link_${user.uid}`, dbGovId);
-                        }
-                    } catch (err) {
-                        console.warn("Could not fetch governorId from Firestore:", err);
+                    // Sync to Firestore only when it actually diverges
+                    if (String(profile.governorId || '') !== String(storedGovId)) {
+                        setDoc(doc(db, "user_profiles", user.uid), { governorId: String(storedGovId) }, { merge: true })
+                            .catch(err => console.warn("Could not auto-sync governorId to Firestore:", err));
                     }
+                } else if (profile.governorId) {
+                    setGovernorId(profile.governorId);
+                    localStorage.setItem(`gov_link_${user.uid}`, profile.governorId);
                 }
             } else {
                 setGovernorId(null);

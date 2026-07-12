@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.11 - 2026-07-12
+### Fixed
+- **BUG-006 — onglets Discord invisibles en production (BR-008)** : dans AuthContext, la lecture du profil et l'auto-synchro du governorId partaient en parallèle ; l'écriture merge concurrente faisait retourner à la lecture la **vue optimiste locale** (doc réduit à {governorId}, hasPendingWrites) au lieu de l'état serveur → isDiscordUser=false malgré un compte lié. Invisible en dev (timing StrictMode), systématique en build minifié. Correctif structurel : **une seule lecture du profil avant toute écriture**, check Discord et governorId dérivés du même snapshot, setDoc uniquement en cas de divergence (économise aussi une écriture par session). Reproduit et vérifié via vite preview puis en production avec le compte du Roi (3 onglets).
+
 ## v2.10 - 2026-07-12
 ### Changed
 - **E-001 finalisé — Firestore source unique** : suppression du fetch des JSON statiques dans `DataContext` (listeners Firestore seuls, chargement résolu au premier snapshot, gestion d'erreur ajoutée), `digest-data.js` retiré du build, JSON générés supprimés de `public/data` (xlsx d'archives et `avatars/` conservés). Vérifié : zéro requête `/data/*.json`, Dashboard alimenté en direct. *Note : la suite Playwright devra seeder `static_data` dans l'émulateur pour tester avec données.*
