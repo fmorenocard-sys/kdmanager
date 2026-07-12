@@ -196,7 +196,7 @@ const WarDashboard = () => {
                         className="w-full md:w-auto truncate bg-indigo-900/40 border border-indigo-500/50 text-indigo-200 px-4 py-2 rounded-lg font-bold appearance-none cursor-pointer hover:bg-indigo-800/60 transition-colors shadow-sm outline-none focus:ring-2 focus:ring-indigo-500"
                     >
                         {availableCampaigns.map(c => (
-                            <option key={c.id} value={c.id} className="bg-slate-800 text-white">
+                            <option key={c.id} value={c.id} className="bg-[var(--surface-solid)] text-[var(--text-primary)]">
                                 {c.name} {kvkConfig && getKvKId(kvkConfig) === c.id ? '(Active)' : ''}
                             </option>
                         ))}
@@ -237,7 +237,7 @@ const WarDashboard = () => {
                     icon={Zap}
                     color="purple"
                 />
-                <Card className="bg-slate-800 border-slate-700 p-4 flex flex-col justify-center">
+                <Card className="p-4 flex flex-col justify-center">
                     <h3 className="text-slate-400 text-sm font-semibold mb-2">{t('war.march_distribution')}</h3>
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
                         <span className="text-blue-400">Inf: {stats.infantry}</span>
@@ -249,15 +249,15 @@ const WarDashboard = () => {
             </div>
 
             {/* Detailed List */}
-            <Card className="overflow-hidden border border-slate-700/50 bg-slate-900/40">
-                <h3 className="p-4 text-lg font-bold text-white border-b border-slate-800">{t('war.declarations')} ({declarations.length})</h3>
+            <Card className="overflow-hidden border border-[var(--border-flat)] bg-slate-900/40">
+                <h3 className="p-4 text-lg font-bold text-white border-b border-[var(--border-flat)]">{t('war.declarations')} ({declarations.length})</h3>
                 <div className="overflow-x-auto max-h-[600px] custom-scrollbar">
 
                     {/* Mobile Card View */}
                     <div className="md:hidden flex flex-col gap-3 p-4">
                         {declarations.map((d) => (
-                            <div key={d.id} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
-                                <div className="flex justify-between items-center border-b border-slate-700/50 pb-2">
+                            <div key={d.id} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-3">
+                                <div className="flex justify-between items-center border-b border-[var(--border-flat)] pb-2">
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-2">
                                             <span className="font-bold text-white text-sm truncate max-w-[140px]">{getPlayerName(d)}</span>
@@ -273,21 +273,21 @@ const WarDashboard = () => {
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 text-xs">
-                                    <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                    <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                         <span className="text-slate-500">{t('war.time_utc')}</span>
                                         <span className="font-mono text-slate-300">{d.timeRange || '-'}</span>
                                     </div>
-                                    <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                    <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                         <span className="text-slate-500">{t('war.tech')}</span>
                                         <span className="font-mono text-slate-300">{d.crystalTech}</span>
                                     </div>
-                                    <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                    <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                         <span className="text-slate-500">{t('war.marches')}</span>
                                         <span className="font-mono text-slate-300">
                                             {d.marches?.length || 0} <span className="text-slate-500 text-[10px]">({d.marches?.map(m => m.type.substr(0, 1)).join(',')})</span>
                                         </span>
                                     </div>
-                                    <div className="col-span-2 flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                    <div className="col-span-2 flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                         <span className="text-slate-500">RSS / SpdU</span>
                                         <span className="font-mono text-amber-400">
                                             {formatBillions((d.resources?.food || 0) + (d.resources?.wood || 0) + (d.resources?.stone || 0) + (d.resources?.gold || 0))}

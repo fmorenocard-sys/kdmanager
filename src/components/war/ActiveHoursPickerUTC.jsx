@@ -17,7 +17,7 @@ const HourSelect = ({ value, onChange, id, label }) => (
             id={id}
             value={value}
             onChange={onChange}
-            className="w-full bg-slate-700/80 text-white rounded-lg px-3 py-2.5 border border-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-colors text-sm font-mono appearance-none cursor-pointer"
+            className="w-full bg-slate-700/80 text-white rounded-lg px-3 py-2.5 border border-[var(--border-flat)] focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-colors text-sm font-mono appearance-none cursor-pointer"
         >
             <option value="">--:--</option>
             {HOURS.map(h => (

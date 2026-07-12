@@ -89,7 +89,7 @@ const KingdomTrophiesPage = () => {
         <div className="space-y-6 animate-fade-in">
             {/* Header */}
             <div className="mb-4">
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-amber-600 bg-clip-text text-transparent flex items-center gap-2 md:gap-3">
+                <h1 className="text-2xl md:text-3xl font-bold v2-title flex items-center gap-2 md:gap-3">
                     <Trophy className="text-yellow-500" size={24} />
                     {t('trophies.title')}
                 </h1>
@@ -229,7 +229,7 @@ const KingdomTrophiesPage = () => {
                                             name={winner.name}
                                             id={winner.id}
                                             size="md"
-                                            className={`border-2 border-slate-700 ${group.type === 'Epic' ? 'ring-2 ring-purple-500/20' : ''
+                                            className={`border-2 border-[var(--border-flat)] ${group.type === 'Epic' ? 'ring-2 ring-purple-500/20' : ''
                                                 }`}
                                         />
                                         <div className="flex-1 font-medium text-sm text-gray-300 group-hover:text-white transition-colors">

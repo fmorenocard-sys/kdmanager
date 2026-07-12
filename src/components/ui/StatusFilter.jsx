@@ -17,7 +17,7 @@ const StatusFilter = ({ options = [], selected = [], onSelect, className }) => {
                     "px-3 py-1 rounded-full text-xs font-bold transition-all border select-none",
                     isAll
                         ? "bg-white/10 text-white border-white/20 ring-1 ring-white/20"
-                        : "bg-slate-800/50 text-slate-400 border-slate-700 hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200"
+                        : "bg-[var(--border-flat)] text-slate-400 border-[var(--border-flat)] hover:brightness-110  hover:text-slate-200"
                 )}
             >
                 All
@@ -35,7 +35,7 @@ const StatusFilter = ({ options = [], selected = [], onSelect, className }) => {
                             "px-3 py-1 rounded-full text-xs font-bold transition-all border select-none flex items-center gap-2",
                             isActive
                                 ? cn(option.colorClass, "ring-1 ring-current/20 shadow-lg shadow-current/10")
-                                : "bg-slate-800/50 text-slate-400 border-slate-700 hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200"
+                                : "bg-[var(--border-flat)] text-slate-400 border-[var(--border-flat)] hover:brightness-110  hover:text-slate-200"
                         )}
                     >
                         <span>{option.label}</span>

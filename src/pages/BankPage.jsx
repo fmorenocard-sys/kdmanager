@@ -46,7 +46,7 @@ const BankPage = () => {
             {/* Header */}
             <div>
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 to-yellow-600 bg-clip-text text-transparent flex items-center gap-2 md:gap-3">
+                    <h1 className="text-2xl md:text-3xl font-bold v2-title flex items-center gap-2 md:gap-3">
                         <Wallet className="text-amber-500" size={24} />
                         {t('bank.title')}
                     </h1>
@@ -101,7 +101,7 @@ const BankPage = () => {
                                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all border select-none ${
                                     isActive
                                         ? 'ring-1 ring-amber-500/20 shadow-lg shadow-amber-500/10 text-amber-400 bg-amber-500/10 border-amber-500/20'
-                                        : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
+                                        : 'bg-[var(--border-flat)] text-slate-400 border-[var(--border-flat)] hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
                                 }`}
                             >
                                 {label}
@@ -116,7 +116,7 @@ const BankPage = () => {
                 <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-4 gap-4">
                     <div className="flex items-center gap-3 flex-wrap">
                         <CardTitle className="whitespace-nowrap">{t('bank.weekly_contributions')}</CardTitle>
-                        <span className="text-xs px-2 py-1 rounded bg-slate-800 text-amber-400 border border-amber-500/20 whitespace-nowrap shrink-0">
+                        <span className="text-xs px-2 py-1 rounded bg-[var(--border-flat)] text-amber-400 border border-amber-500/20 whitespace-nowrap shrink-0">
                             {weekLabels[selectedWeekIndex] || "Current Week"}
                         </span>
                     </div>
@@ -130,29 +130,29 @@ const BankPage = () => {
                             {/* Mobile Card View */}
                             <div className="md:hidden flex flex-col gap-3 p-4">
                                 {sortedWeeklyData.map((row, idx) => (
-                                    <div key={row.id || idx} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
-                                        <div className="flex items-center gap-3 border-b border-slate-700/50 pb-2">
+                                    <div key={row.id || idx} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-3">
+                                        <div className="flex items-center gap-3 border-b border-[var(--border-flat)] pb-2">
                                             <span className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded">#{idx + 1}</span>
-                                            <Avatar id={row.id} name={row.name} size="sm" className="border border-slate-700 bg-slate-800" />
+                                            <Avatar id={row.id} name={row.name} size="sm" className="border border-[var(--border-flat)]" />
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-white text-sm truncate max-w-[140px]">{row.name}</span>
                                                 <span className="text-[10px] text-slate-500">{row.id}</span>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 text-xs">
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                                 <span className="text-amber-500/80">Food</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.food)}</span>
                                             </div>
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                                 <span className="text-emerald-500/80">Wood</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.wood)}</span>
                                             </div>
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                                 <span className="text-stone-500/80">Stone</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.stone)}</span>
                                             </div>
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                                 <span className="text-yellow-500/80">Gold</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.gold)}</span>
                                             </div>
@@ -168,7 +168,7 @@ const BankPage = () => {
                             {/* Desktop Table */}
                             <div className="hidden md:block w-full min-w-[700px]">
                                 <Table>
-                                    <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
+                                    <TableHeader className="bg-[var(--surface)] sticky top-0 backdrop-blur-md z-10">
                                         <TableRow>
                                             <TableHead className="w-[60px] text-xs text-center">{t('dashboard.rank')}</TableHead>
                                             <TableHead className="text-xs">{t('war.governor')}</TableHead>
@@ -191,7 +191,7 @@ const BankPage = () => {
                                                             id={row.id}
                                                             name={row.name}
                                                             size="sm"
-                                                            className="bg-slate-800 border border-slate-700"
+                                                            className="border border-[var(--border-flat)]"
                                                         />
                                                         <div className="flex flex-col">
                                                             <span className="font-medium text-slate-200 group-hover:text-white transition-colors">{row.name}</span>

@@ -41,7 +41,7 @@ const WarTrackerPage = () => {
                             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border select-none ${
                                 isActive 
                                     ? 'ring-1 ring-indigo-500/20 shadow-lg shadow-indigo-500/10 text-indigo-400 bg-indigo-500/10 border-indigo-500/20' 
-                                    : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
+                                    : 'bg-[var(--border-flat)] text-slate-400 border-[var(--border-flat)] hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
                             }`}
                         >
                             <tab.icon size={18} />

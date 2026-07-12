@@ -34,7 +34,7 @@ const DataRefreshControl = () => {
 
     return (
         <div
-            className="rounded-xl border border-slate-700/60 bg-slate-900/40 backdrop-blur-sm mb-6"
+            className="rounded-xl border border-[var(--border-flat)]/60 bg-slate-900/40 backdrop-blur-sm mb-6"
             onDragOver={(e) => isAuthorized && e.preventDefault()}
             onDrop={onDrop}
         >
@@ -75,7 +75,7 @@ const DataRefreshControl = () => {
                     <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={loading}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg border border-[var(--border-flat)] bg-[var(--surface-solid)] hover:bg-slate-700 text-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Upload size={13} />
                         {loading ? 'Processing…' : 'Upload File'}

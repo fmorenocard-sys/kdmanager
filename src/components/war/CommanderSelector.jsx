@@ -39,8 +39,8 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
             <button
                 onClick={() => setIsOpen(true)}
                 className={`flex items-center gap-3 w-full h-12 px-3 py-1.5 rounded-lg border transition-all ${selectedCommander
-                    ? 'bg-slate-800 border-slate-600 hover:border-slate-500'
-                    : 'bg-slate-900/50 border-slate-700 hover:border-slate-600 border-dashed'
+                    ? 'bg-slate-800 border-[var(--border-flat)] hover:border-slate-500'
+                    : 'bg-slate-900/50 border-[var(--border-flat)] hover:border-[var(--border-flat)] border-dashed'
                     }`}
             >
                 {selectedCommander ? (
@@ -54,7 +54,7 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
                     </>
                 ) : (
                     <div className="flex items-center gap-2 text-slate-500">
-                        <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-xs">?</div>
+                        <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center border border-[var(--border-flat)] text-xs">?</div>
                         <span className="text-sm">{label}</span>
                     </div>
                 )}
@@ -63,9 +63,9 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
             {/* Modal Overlay */}
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-slate-900 border border-slate-700 rounded-xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="bg-slate-900 border border-[var(--border-flat)] rounded-xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
                         {/* Header */}
-                        <div className="p-4 border-b border-slate-700 flex items-center justify-between bg-slate-900/50 rounded-t-xl">
+                        <div className="p-4 border-b border-[var(--border-flat)] flex items-center justify-between bg-slate-900/50 rounded-t-xl">
                             <h3 className="text-lg font-bold text-white">Select Commander</h3>
                             <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white transition-colors">
                                 <X size={20} />
@@ -73,7 +73,7 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
                         </div>
 
                         {/* Search */}
-                        <div className="p-4 border-b border-slate-800 bg-slate-900/50">
+                        <div className="p-4 border-b border-[var(--border-flat)] bg-slate-900/50">
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                 <input
@@ -81,7 +81,7 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
                                     placeholder="Search commander..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-primary transition-colors"
+                                    className="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 border border-[var(--border-flat)] focus:outline-none focus:border-primary transition-colors"
                                     autoFocus
                                 />
                             </div>

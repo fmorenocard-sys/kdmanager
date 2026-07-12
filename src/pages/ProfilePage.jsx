@@ -72,7 +72,7 @@ const ProfilePage = () => {
             <h1 className="text-2xl font-bold text-white mb-6">{t('profile.title')}</h1>
 
             {/* Profile Status Card */}
-            <div className="bg-slate-800 rounded-lg p-6 border border-slate-700 shadow-lg">
+            <div className="v2-glass p-6">
                 <div className="flex items-center space-x-4 mb-6">
                     <Avatar
                         src={currentUser.photoURL}
@@ -99,7 +99,7 @@ const ProfilePage = () => {
                     </div>
                 </div>
 
-                <div className="border-t border-slate-700 pt-6">
+                <div className="border-t border-[var(--border-flat)] pt-6">
                     <h3 className="text-lg font-semibold text-white mb-4">{t('profile.linked_governor')}</h3>
 
                     {linkedPlayer ? (
@@ -125,7 +125,7 @@ const ProfilePage = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="bg-slate-900/50 rounded-lg p-6 border border-slate-700 text-center">
+                        <div className="v2-glass p-6 text-center">
                             <p className="text-slate-300 mb-4">{t('profile.no_governor_linked')}</p>
 
                             <div className="max-w-md mx-auto relative">
@@ -133,7 +133,7 @@ const ProfilePage = () => {
                                     type="text"
                                     aria-label={t('common.search_placeholder')}
                                     placeholder={t('common.search_placeholder')}
-                                    className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full bg-[var(--surface-input)] text-[var(--text-primary)] rounded-[10px] min-h-[44px] px-4 py-2 border border-[var(--border-flat)] focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={searchTerm}
                                     onChange={handleSearch}
                                 />
@@ -146,7 +146,7 @@ const ProfilePage = () => {
                             {filteredPlayers.length > 0 && (
                                 <div className="mt-4 space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
                                     {filteredPlayers.map(player => (
-                                        <div key={player.id} className="flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700 hover:border-indigo-500/50 transition-colors">
+                                        <div key={player.id} className="flex items-center justify-between bg-[var(--surface-solid)] p-3 rounded border border-[var(--border-flat)] hover:border-indigo-500/50 transition-colors">
                                             <div className="flex items-center space-x-3 text-left">
                                                 <Avatar
                                                     id={player.id}
@@ -178,7 +178,7 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Account Linking Section */}
-                <div className="border-t border-slate-700 pt-6 mt-6">
+                <div className="border-t border-[var(--border-flat)] pt-6 mt-6">
                     <h3 className="text-lg font-semibold text-white mb-4">{t('profile.linked_accounts', 'Comptes Liés')}</h3>
 
                     {currentUser.uid?.startsWith("discord:") ? (
@@ -200,7 +200,7 @@ const ProfilePage = () => {
                                 <button
                                     onClick={handleForceRoleSync}
                                     disabled={syncingRoles}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded border border-slate-600 transition-colors disabled:opacity-50"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--border-flat)] hover:brightness-125 text-slate-300 text-xs rounded border border-[var(--border-flat)] transition-colors disabled:opacity-50"
                                     title={t('profile.sync_roles_desc', 'Forcer la mise à jour de vos permissions depuis le serveur Discord')}
                                 >
                                     <RefreshCw size={14} className={syncingRoles ? "animate-spin" : ""} />
@@ -227,7 +227,7 @@ const ProfilePage = () => {
                                 <button
                                     onClick={handleForceRoleSync}
                                     disabled={syncingRoles}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded border border-slate-600 transition-colors disabled:opacity-50"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--border-flat)] hover:brightness-125 text-slate-300 text-xs rounded border border-[var(--border-flat)] transition-colors disabled:opacity-50"
                                     title={t('profile.sync_roles_desc', 'Forcer la mise à jour de vos permissions depuis le serveur Discord')}
                                 >
                                     <RefreshCw size={14} className={syncingRoles ? "animate-spin" : ""} />
@@ -236,7 +236,7 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-slate-900/50 rounded-lg p-6 border border-slate-700 text-center">
+                        <div className="v2-glass p-6 text-center">
                             <p className="text-slate-300 mb-4">{t('profile.link_discord_desc', 'Liez votre compte Discord pour synchroniser vos rôles in-app.')}</p>
                             <button
                                 onClick={linkWithDiscord}

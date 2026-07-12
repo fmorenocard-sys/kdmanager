@@ -148,7 +148,7 @@ const DashboardPage = () => {
                 {/* Leaderboard Table section */}
                 <div className="xl:col-span-2 space-y-4">
                     {/* Filters & Sorting */}
-                    <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-2xl p-4 md:p-5 shadow-lg">
+                    <div className="v2-glass p-4 md:p-5">
                         <div className="flex flex-col gap-4">
                             {/* Search and Alliance Filter Row */}
                             <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -166,7 +166,7 @@ const DashboardPage = () => {
                                     />
                                 </div>
                                 <div className="flex items-center gap-2 w-full sm:w-auto">
-                                    <div className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center border border-slate-700/50 text-slate-400">
+                                    <div className="w-10 h-10 rounded-xl bg-[var(--border-flat)] flex items-center justify-center border border-[var(--border-flat)] text-slate-400">
                                         <Filter size={18} />
                                     </div>
                                     <select
@@ -182,7 +182,7 @@ const DashboardPage = () => {
                             </div>
 
                             {/* Mobile Sort Row (visible on small screens to replace table headers) */}
-                            <div className="flex sm:hidden items-center gap-2 pt-3 border-t border-slate-800/50">
+                            <div className="flex sm:hidden items-center gap-2 pt-3 border-t border-[var(--border-flat)]/50">
                                 <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold min-w-[60px]">Sort by:</span>
                                 <select
                                     className="flex-1 bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-primary/50"
@@ -196,7 +196,7 @@ const DashboardPage = () => {
                                 </select>
                                 <button
                                     onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === 'desc' ? 'asc' : 'desc' }))}
-                                    className="p-2 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg border border-slate-700/50 transition-colors text-slate-300 min-w-[44px] flex items-center justify-center"
+                                    className="p-2 bg-[var(--border-flat)] hover:bg-slate-700/50 rounded-lg border border-[var(--border-flat)] transition-colors text-slate-300 min-w-[44px] flex items-center justify-center"
                                 >
                                     {sortConfig.direction === 'desc' ? <ArrowDown size={16} /> : <ArrowUp size={16} />}
                                 </button>
@@ -218,12 +218,12 @@ const DashboardPage = () => {
                                     {displayedPlayers.map((player) => (
                                         <div
                                             key={player.id}
-                                            className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 hover:border-primary/50 flex flex-col gap-3 cursor-pointer transition-colors"
+                                            className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] hover:border-primary/50 flex flex-col gap-3 cursor-pointer transition-colors"
                                             onClick={() => setSelectedPlayer(player)}
                                         >
-                                            <div className="flex items-center gap-3 border-b border-slate-700/50 pb-2">
+                                            <div className="flex items-center gap-3 border-b border-[var(--border-flat)] pb-2">
                                                 <div className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded">#{player.rank}</div>
-                                                <Avatar id={player.id} name={player.name} size="sm" className="border border-slate-700 bg-slate-800" />
+                                                <Avatar id={player.id} name={player.name} size="sm" className="border border-[var(--border-flat)]" />
                                                 <div className="flex items-center justify-between w-full">
                                                     <div className="flex flex-col">
                                                         <span className="font-bold text-white text-sm">{player.name}</span>
@@ -236,11 +236,11 @@ const DashboardPage = () => {
                                                     <span className="text-slate-500 mb-0.5">{t('dashboard.power')}</span>
                                                     <span className="font-mono font-medium text-blue-400">{formatNumber(player.power)}</span>
                                                 </div>
-                                                <div className="flex flex-col text-xs border-l border-slate-700 pl-2">
+                                                <div className="flex flex-col text-xs border-l border-[var(--border-flat)] pl-2">
                                                     <span className="text-slate-500 mb-0.5">Kill Points</span>
                                                     <span className="font-mono font-medium text-red-400">{formatNumber(player.kp)}</span>
                                                 </div>
-                                                <div className="flex flex-col text-xs border-l border-slate-700 pl-2">
+                                                <div className="flex flex-col text-xs border-l border-[var(--border-flat)] pl-2">
                                                     <span className="text-slate-500 mb-0.5">{t('dashboard.total_dead')}</span>
                                                     <span className="font-mono font-medium text-slate-400">{formatNumber(player.deads)}</span>
                                                 </div>
@@ -252,7 +252,7 @@ const DashboardPage = () => {
                                 {/* Desktop Table View */}
                                 <div className="hidden md:block w-full min-w-[600px]">
                                     <Table>
-                                        <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
+                                        <TableHeader className="bg-[var(--surface)] sticky top-0 backdrop-blur-md z-10">
                                             <TableRow>
                                                 {renderSortHeader(t('dashboard.rank'), 'rank', 'center')}
                                                 {renderSortHeader(t('dashboard.name'), 'name', 'left')}
@@ -276,7 +276,7 @@ const DashboardPage = () => {
                                                                     id={player.id}
                                                                     name={player.name}
                                                                     size="sm"
-                                                                    className="border border-slate-700 bg-slate-800"
+                                                                    className="border border-[var(--border-flat)]"
                                                                 />
                                                             </div>
                                                             <div className="flex flex-col">

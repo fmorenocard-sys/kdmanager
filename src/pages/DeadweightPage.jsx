@@ -104,7 +104,7 @@ const DeadweightPage = () => {
         <div className="space-y-8 animate-fade-in">
             {/* Header */}
             <div>
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent flex items-center gap-2 md:gap-3">
+                <h1 className="text-2xl md:text-3xl font-bold v2-title flex items-center gap-2 md:gap-3">
                     <AlertTriangle className="text-red-500" size={24} />
                     {t('deadweight.title')}
                 </h1>
@@ -177,10 +177,10 @@ const DeadweightPage = () => {
                         {/* Mobile Card View */}
                         <div className="md:hidden flex flex-col gap-3 p-4">
                             {filteredList.map((row, index) => (
-                                <div key={row.id || index} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3">
-                                    <div className="flex justify-between items-center border-b border-slate-700/50 pb-2">
+                                <div key={row.id || index} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-3">
+                                    <div className="flex justify-between items-center border-b border-[var(--border-flat)] pb-2">
                                         <div className="flex items-center gap-2">
-                                            <Avatar id={row.id} name={row.name} size="sm" className="bg-slate-800 border border-slate-700" />
+                                            <Avatar id={row.id} name={row.name} size="sm" className="border border-[var(--border-flat)]" />
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-white text-sm truncate max-w-[140px]">{row.name}</span>
                                                 <span className="text-[10px] text-slate-500">{row.id}</span>
@@ -191,16 +191,16 @@ const DeadweightPage = () => {
                                         </span>
                                     </div>
                                     <div className="grid grid-cols-2 gap-2 text-xs">
-                                        <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                        <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                             <span className="text-slate-500">Power</span>
                                             <span className="font-mono text-slate-300">{formatNumber(row.power)}</span>
                                         </div>
-                                        <div className="flex justify-between bg-slate-900/50 p-1.5 rounded">
+                                        <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                             <span className="text-slate-500">KP</span>
                                             <span className="font-mono text-slate-300">{formatNumber(row.kp)}</span>
                                         </div>
                                         {(row.note && row.note.trim() !== '' && row.note !== '-') && (
-                                            <div className="col-span-2 flex flex-col bg-slate-900/30 border border-slate-700/30 p-2 rounded gap-1">
+                                            <div className="col-span-2 flex flex-col bg-slate-900/30 border border-[var(--border-flat)]/30 p-2 rounded gap-1">
                                                 <span className="text-slate-500 text-[10px]">Notes</span>
                                                 <span className="text-slate-300 line-clamp-2">{row.note}</span>
                                             </div>
@@ -218,7 +218,7 @@ const DeadweightPage = () => {
                         {/* Desktop Table View */}
                         <div className="hidden md:block w-full min-w-[700px]">
                             <Table>
-                                <TableHeader className="bg-slate-900/50 sticky top-0 backdrop-blur-sm z-10">
+                                <TableHeader className="bg-[var(--surface)] sticky top-0 backdrop-blur-md z-10">
                                     <TableRow>
                                         <TableHead className="w-[80px] text-xs">ID</TableHead>
                                         <TableHead className="text-xs">{t('war.governor')}</TableHead>
@@ -239,7 +239,7 @@ const DeadweightPage = () => {
                                                             id={row.id}
                                                             name={row.name}
                                                             size="sm"
-                                                            className="bg-slate-800 border border-slate-700"
+                                                            className="border border-[var(--border-flat)]"
                                                         />
                                                         <span className="font-medium text-slate-300">{row.name}</span>
                                                     </div>

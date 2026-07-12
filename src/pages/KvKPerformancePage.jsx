@@ -269,7 +269,7 @@ const KvKPerformancePage = () => {
                         id="kvk-campaign-select"
                         value={selectedCampaignId}
                         onChange={(e) => { setSelectedCampaignId(e.target.value); setStatusFilter([]); setSearchTerm(''); }}
-                        className="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[44px]"
+                        className="bg-slate-900/80 border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[44px]"
                     >
                         <option value="current">{currentCampaign.title} — {t('kvk_history.current_badge')}</option>
                         {historyCampaigns.map(c => (
@@ -388,11 +388,11 @@ const KvKPerformancePage = () => {
                     {/* Mobile Card View */}
                     <div className="md:hidden flex flex-col gap-3 p-3">
                         {filteredAndSortedData.map((row, index) => (
-                            <div key={`${row.id || 'unknown'}-${index}`} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-3 overflow-hidden">
-                                <div className="flex justify-between items-center border-b border-slate-700/50 pb-2 gap-2">
+                            <div key={`${row.id || 'unknown'}-${index}`} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-3 overflow-hidden">
+                                <div className="flex justify-between items-center border-b border-[var(--border-flat)] pb-2 gap-2">
                                     <div className="flex items-center gap-2 min-w-0">
                                         <span className="bg-slate-900 text-slate-400 text-xs font-bold px-2 py-1 rounded shrink-0">#{index + 1}</span>
-                                        <Avatar id={row.id} name={row.name} size="sm" className="border border-slate-700 bg-slate-800 shrink-0" />
+                                        <Avatar id={row.id} name={row.name} size="sm" className="border border-[var(--border-flat)] shrink-0" />
                                         <div className="flex flex-col min-w-0">
                                             <span className="font-bold text-white text-sm truncate">{row.name}</span>
                                             <span className="text-[10px] text-slate-500 truncate">{row.id}</span>
@@ -406,7 +406,7 @@ const KvKPerformancePage = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     {columns.filter(c => !['id', 'name', 'rate'].includes(c.k)).map(({ k, L }) => (
-                                        <div key={k} className="flex justify-between items-center bg-slate-900/50 p-1.5 rounded gap-1 min-w-0">
+                                        <div key={k} className="flex justify-between items-center bg-[var(--border-flat)] p-1.5 rounded gap-1 min-w-0">
                                             <span className="text-slate-500 text-[10px] sm:text-xs truncate">{L}</span>
                                             <span className="font-mono text-white text-right text-[10px] sm:text-xs shrink-0 whitespace-nowrap">
                                                 {k === 'goalPercent' ? (
@@ -457,7 +457,7 @@ const KvKPerformancePage = () => {
                                                     id={row.id}
                                                     name={row.name}
                                                     size="xs"
-                                                    className="border border-slate-700"
+                                                    className="border border-[var(--border-flat)]"
                                                 />
                                                 <span className="truncate">{row.name}</span>
                                             </div>
@@ -519,10 +519,10 @@ const KvKPerformancePage = () => {
                                     className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm border transition-all min-h-[44px] focus:outline-none focus:ring-2 focus:ring-indigo-500/50 ${
                                         isSelected
                                             ? 'text-indigo-300 bg-indigo-500/10 border-indigo-500/40'
-                                            : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:border-slate-500'
+                                            : 'bg-[var(--border-flat)] text-slate-300 border-[var(--border-flat)] hover:border-slate-500'
                                     }`}
                                 >
-                                    <Avatar id={p.id} name={p.name} size="xs" className="border border-slate-700" />
+                                    <Avatar id={p.id} name={p.name} size="xs" className="border border-[var(--border-flat)]" />
                                     <span className="max-w-[140px] truncate">{p.name}</span>
                                     <span className="text-[10px] text-slate-500 font-mono">×{p.entries.length}</span>
                                 </button>
@@ -536,8 +536,8 @@ const KvKPerformancePage = () => {
                     {/* Progression detail */}
                     {selectedPlayer && (
                         <Card className="overflow-hidden">
-                            <div className="p-4 border-b border-slate-700/50 flex items-center gap-3">
-                                <Avatar id={selectedPlayer.id} name={selectedPlayer.name} size="sm" className="border border-slate-700" />
+                            <div className="p-4 border-b border-[var(--border-flat)] flex items-center gap-3">
+                                <Avatar id={selectedPlayer.id} name={selectedPlayer.name} size="sm" className="border border-[var(--border-flat)]" />
                                 <div className="min-w-0">
                                     <h3 className="font-bold text-white truncate">{selectedPlayer.name}</h3>
                                     <p className="text-xs text-slate-500 font-mono">{selectedPlayer.id}</p>
@@ -547,8 +547,8 @@ const KvKPerformancePage = () => {
                             {/* Mobile cards */}
                             <div className="md:hidden flex flex-col gap-3 p-3">
                                 {selectedPlayer.entries.map((e, i) => (
-                                    <div key={`${e.campaignId}-${i}`} className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-col gap-2">
-                                        <div className="flex justify-between items-center gap-2 border-b border-slate-700/50 pb-2">
+                                    <div key={`${e.campaignId}-${i}`} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-2">
+                                        <div className="flex justify-between items-center gap-2 border-b border-[var(--border-flat)] pb-2">
                                             <span className="font-bold text-white text-sm truncate">{e.campaignTitle}</span>
                                             <span className="flex gap-1 shrink-0">
                                                 {e.isFiller && <span className="px-2 py-0.5 rounded-full text-[10px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
@@ -556,10 +556,10 @@ const KvKPerformancePage = () => {
                                             </span>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 text-xs">
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">{t('performance.init_power')}</span><span className="font-mono text-white">{formatNumber(e.initialPower)}</span></div>
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">{t('performance.final_power')}</span><span className="font-mono text-white">{formatNumber(e.finalPower)}</span></div>
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">KP</span><span className="font-mono text-emerald-400">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</span></div>
-                                            <div className="flex justify-between bg-slate-900/50 p-1.5 rounded"><span className="text-slate-500">{t('performance.total_dead')}</span><span className="font-mono text-red-400">{formatNumber(e.totalDead)}</span></div>
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.init_power')}</span><span className="font-mono text-white">{formatNumber(e.initialPower)}</span></div>
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.final_power')}</span><span className="font-mono text-white">{formatNumber(e.finalPower)}</span></div>
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">KP</span><span className="font-mono text-emerald-400">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</span></div>
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.total_dead')}</span><span className="font-mono text-red-400">{formatNumber(e.totalDead)}</span></div>
                                         </div>
                                         {typeof e.goalPercent === 'number' && (
                                             <div className="flex items-center gap-2">

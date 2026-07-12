@@ -311,7 +311,7 @@ const AvailabilityForm = () => {
                 <div>
                     <label className="block text-sm font-medium text-slate-400 mb-1">{t('war.availability')}</label>
                     <select
-                        className="w-full bg-slate-700 text-white rounded px-3 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
+                        className="w-full bg-slate-700 text-white rounded px-3 py-2 border border-[var(--border-flat)] focus:outline-none focus:border-indigo-500"
                         value={formData.availability}
                         onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
                     >
@@ -323,7 +323,7 @@ const AvailabilityForm = () => {
                 <div>
                     <label className="block text-sm font-medium text-slate-400 mb-1">{t('war.crystal_tech')}</label>
                     <select
-                        className="w-full bg-slate-700 text-white rounded px-3 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
+                        className="w-full bg-slate-700 text-white rounded px-3 py-2 border border-[var(--border-flat)] focus:outline-none focus:border-indigo-500"
                         value={formData.crystalTech}
                         onChange={(e) => setFormData({ ...formData, crystalTech: e.target.value })}
                     >
@@ -336,14 +336,14 @@ const AvailabilityForm = () => {
             </div>
 
             {/* Active Hours UTC — full-width dedicated section */}
-            <div className="bg-slate-900/50 p-3 md:p-4 rounded-lg border border-slate-700">
+            <div className="bg-[var(--border-flat)] p-3 md:p-4 rounded-lg">
                 <ActiveHoursPickerUTC
                     value={formData.activeHoursUTC}
                     onChange={(val) => setFormData(prev => ({ ...prev, activeHoursUTC: val }))}
                 />
             </div>
 
-            <div className="bg-slate-900/50 p-3 md:p-4 rounded-lg border border-slate-700">
+            <div className="bg-[var(--border-flat)] p-3 md:p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-amber-500 mb-3 flex items-center gap-2">
                     <Database size={18} /> {t('war.resources')}
                 </h3>
@@ -356,7 +356,7 @@ const AvailabilityForm = () => {
             </div>
 
             {/* Speedups */}
-            <div className="bg-slate-900/50 p-3 md:p-4 rounded-lg border border-slate-700">
+            <div className="bg-[var(--border-flat)] p-3 md:p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-purple-400 mb-3 flex items-center gap-2">
                     <Zap size={18} /> {t('war.speedups')}
                 </h3>
@@ -371,14 +371,14 @@ const AvailabilityForm = () => {
             </div>
 
             {/* Marches (Updated with Selector) */}
-            <div className="bg-slate-900/50 p-3 md:p-4 rounded-lg border border-slate-700">
+            <div className="bg-[var(--border-flat)] p-3 md:p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-red-400 mb-3 flex items-center gap-2">
                     <Zap size={18} /> {t('war.marches')}
                 </h3>
 
                 <div className="space-y-3 mb-4">
                     {formData.marches.map((m, idx) => (
-                        <div key={idx} className="flex justify-between items-center gap-2 bg-slate-800 p-2.5 rounded border border-slate-600 min-w-0">
+                        <div key={idx} className="flex justify-between items-center gap-2 bg-[var(--surface-solid)] p-2.5 rounded border border-[var(--border-flat)] min-w-0">
                             <div className="flex items-center gap-3">
                                 <span className={`text-xs font-bold px-2 py-1 rounded ${m.type === 'Infantry' ? 'bg-blue-500/20 text-blue-400' :
                                     m.type === 'Cavalry' ? 'bg-red-500/20 text-red-400' :
@@ -386,8 +386,8 @@ const AvailabilityForm = () => {
                                     }`}>{m.type}</span>
 
                                 <div className="flex items-center gap-[-10px]">
-                                    <img src={getCmdImage(m.primary)} alt="" className="w-8 h-8 rounded-full border-2 border-slate-600 z-10" />
-                                    <img src={getCmdImage(m.secondary)} alt="" className="w-8 h-8 rounded-full border-2 border-slate-600 -ms-3 z-0" />
+                                    <img src={getCmdImage(m.primary)} alt="" className="w-8 h-8 rounded-full border-2 border-[var(--border-flat)] z-10" />
+                                    <img src={getCmdImage(m.secondary)} alt="" className="w-8 h-8 rounded-full border-2 border-[var(--border-flat)] -ms-3 z-0" />
                                 </div>
                                 <div className="flex flex-col min-w-0">
                                     <span className="text-sm font-medium text-slate-200 truncate">{getCmdName(m.primary)}</span>
@@ -402,11 +402,11 @@ const AvailabilityForm = () => {
                     {formData.marches.length === 0 && <p className="text-slate-500 text-sm italic">{t('war.no_marches')}</p>}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-end bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-end bg-[var(--border-flat)] p-3 rounded-lg border border-[var(--border-flat)]">
                     <div className="col-span-1 md:col-span-3">
                         <label className="text-xs text-slate-400 mb-1 block">{t('war.march_type')}</label>
                         <select
-                            className="w-full bg-slate-700 text-white rounded-lg px-3 border border-slate-600 text-sm h-12 focus:outline-none focus:border-indigo-500 transition-colors"
+                            className="w-full bg-slate-700 text-white rounded-lg px-3 border border-[var(--border-flat)] text-sm h-12 focus:outline-none focus:border-indigo-500 transition-colors"
                             value={marchInput.type}
                             onChange={e => setMarchInput({ ...marchInput, type: e.target.value })}
                         >

@@ -264,7 +264,7 @@ const KvKConfigForm = () => {
                                         {savedConfig.endDate ? new Date(savedConfig.endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '...'}
                                     </span>
                                 )}
-                                <span className="text-xs font-mono text-slate-500 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/50">
+                                <span className="text-xs font-mono text-slate-500 bg-[var(--surface-solid)] px-2 py-0.5 rounded border border-[var(--border-flat)]">
                                     ID: {savedConfig.id}
                                 </span>
                             </div>
@@ -277,7 +277,7 @@ const KvKConfigForm = () => {
                     </div>
                 </div>
             )}
-            <Card className="bg-slate-800 border-slate-700">
+            <Card>
                 <div className="flex items-center gap-2 mb-2 text-amber-500">
                     <Shield size={20} />
                     <h2 className="text-lg font-bold">Admin: Active Campaign Configuration</h2>
@@ -336,7 +336,7 @@ const KvKConfigForm = () => {
 
             {/* Campaign History */}
             {availableCampaigns.length > 0 && (
-                <Card className="bg-slate-800/50 border-slate-700/50">
+                <Card className="bg-[var(--border-flat)] border-[var(--border-flat)]">
                     <button
                         type="button"
                         onClick={() => setHistoryOpen(h => !h)}
@@ -361,7 +361,7 @@ const KvKConfigForm = () => {
                                         className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
                                             isActive
                                                 ? 'border-indigo-500/40 bg-indigo-500/10'
-                                                : 'border-slate-700/50 bg-slate-900/40'
+                                                : 'border-[var(--border-flat)] bg-slate-900/40'
                                         }`}
                                     >
                                         <div className="flex items-center gap-3 min-w-0">
@@ -404,13 +404,13 @@ const KvKConfigForm = () => {
                             <select
                                 value={selectedMergeKvkId}
                                 onChange={(e) => setSelectedMergeKvkId(e.target.value)}
-                                className="w-full bg-slate-900/80 border border-slate-700/80 text-slate-200 px-4 py-2 rounded-md font-medium appearance-none outline-none focus:border-indigo-500/50 transition-colors"
+                                className="w-full bg-slate-900/80 border border-[var(--border-flat)] text-slate-200 px-4 py-2 rounded-md font-medium appearance-none outline-none focus:border-indigo-500/50 transition-colors"
                             >
                                 <option value="">-- Choose Campaign --</option>
                                 {availableCampaigns.map(c => {
                                     if (c.id === formData.id) return null; // Don't allow merging into itself
                                     return (
-                                        <option key={c.id} value={c.id} className="bg-slate-800 text-white">
+                                        <option key={c.id} value={c.id} className="bg-[var(--surface-solid)] text-[var(--text-primary)]">
                                             {c.name}
                                         </option>
                                     );
@@ -449,11 +449,11 @@ const KvKConfigForm = () => {
                                         setSelectedDeleteKvkId(e.target.value);
                                         setDeleteConfirmation('');
                                     }}
-                                    className="w-full bg-slate-900/80 border border-slate-700/80 text-slate-200 px-4 py-2 rounded-md font-medium appearance-none outline-none focus:border-red-500/50 transition-colors"
+                                    className="w-full bg-slate-900/80 border border-[var(--border-flat)] text-slate-200 px-4 py-2 rounded-md font-medium appearance-none outline-none focus:border-red-500/50 transition-colors"
                                 >
                                     <option value="">-- Choose Campaign --</option>
                                     {availableCampaigns.map(c => (
-                                        <option key={c.id} value={c.id} className="bg-slate-800 text-white">
+                                        <option key={c.id} value={c.id} className="bg-[var(--surface-solid)] text-[var(--text-primary)]">
                                             {c.name}
                                         </option>
                                     ))}
@@ -469,7 +469,7 @@ const KvKConfigForm = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        className="w-full bg-slate-900/80 border border-slate-700/80 rounded-md p-2 text-white outline-none focus:border-red-500/50 transition-colors"
+                                        className="w-full bg-slate-900/80 border border-[var(--border-flat)] rounded-md p-2 text-white outline-none focus:border-red-500/50 transition-colors"
                                         value={deleteConfirmation}
                                         onChange={(e) => setDeleteConfirmation(e.target.value)}
                                         placeholder="Campaign Name"
