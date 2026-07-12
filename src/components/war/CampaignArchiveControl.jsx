@@ -132,7 +132,7 @@ const CampaignArchiveControl = () => {
             </div>
 
             {!confirming ? (
-                <Button onClick={prepare} disabled={busy || !title.trim()} className="bg-amber-600 hover:bg-amber-500">
+                <Button onClick={prepare} disabled={busy || !title.trim()}>
                     <Archive size={16} />
                     {t('kvk_history.archive_button')}
                 </Button>
@@ -143,7 +143,7 @@ const CampaignArchiveControl = () => {
                         {t('kvk_history.confirm_prompt', { title, mains: counts?.mains, fillers: counts?.fillers, id: docId })}
                     </p>
                     <div className="flex flex-wrap gap-2">
-                        <Button onClick={archive} disabled={busy} className="bg-amber-600 hover:bg-amber-500">
+                        <Button onClick={archive} disabled={busy}>
                             {busy ? t('common.loading') : t('kvk_history.confirm_button')}
                         </Button>
                         <Button onClick={() => setConfirming(false)} disabled={busy} variant="secondary">

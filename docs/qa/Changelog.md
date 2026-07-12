@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.14 - 2026-07-12
+### Changed
+- **CTA primaire 2b (charte v2 Claude Design, carte Boutons)** : le gradient primaire passe d'amber-500→orange-600 (blanc ≈ 2.9:1, insuffisant) à **amber-600→orange-700** (#d97706→#c2410c, blanc ≈ 4.8:1 AA) ; hover descend d'un cran (700→800 : #b45309→#9a3412) au lieu d'éclaircir ; glow recalé sur rgba(194,65,12). Appliqué via tokens --grad-primary (les deux modes) — tous les boutons primaires héritent (Sync Cloud, Clôturer, Button primary). Overrides amber legacy du CampaignArchiveControl supprimés. Carte buttons officielle re-synchronisée.
+
 ## v2.13 - 2026-07-12
 ### Changed
 - **Boutons Data Management conformes à la charte** : « Sync Cloud » passe de l'indigo plein v1 au **gradient ambre CTA** (btn-grad-primary, 44px, rayon 12) ; « Upload File » devient le bouton secondaire bordé par tokens (ghost). Hiérarchie d'action unique par bloc (règle designer).

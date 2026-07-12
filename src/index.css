@@ -73,14 +73,14 @@
   --border-flat: rgba(255, 255, 255, .1);
   --border-gradient: linear-gradient(160deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, .04) 40%, rgba(245, 158, 11, .18));
   --border-gradient-indigo: linear-gradient(160deg, rgba(165, 180, 252, .4), rgba(255, 255, 255, .05) 45%, rgba(168, 85, 247, .25));
-  --grad-primary: linear-gradient(135deg, #f59e0b, #ea580c);
-  --grad-primary-hover: linear-gradient(135deg, #fbbf24, #f97316);
+  --grad-primary: linear-gradient(135deg, #d97706, #c2410c); /* 2b: amber-600 -> orange-700, white AA */
+  --grad-primary-hover: linear-gradient(135deg, #b45309, #9a3412);
   --grad-accent: linear-gradient(135deg, #6366f1, #a855f7);
   --grad-title: linear-gradient(90deg, #fbbf24, #f97316);
   --glass-blur: 14px;
   --shadow-card: 0 20px 40px -12px rgba(0, 0, 0, .4);
   --shadow-glow-accent: 0 4px 16px rgba(139, 92, 246, .35);
-  --shadow-glow-primary: 0 4px 16px rgba(234, 88, 12, .35);
+  --shadow-glow-primary: 0 4px 16px rgba(194, 65, 12, .4);
   --radius-card: 14px;
   --grad-title-neutral: linear-gradient(90deg, #fff, #94a3b8);
   --action-danger: #ef4444;
@@ -112,11 +112,11 @@
   --border-flat: rgba(15, 23, 42, .08);
   --border-gradient: linear-gradient(160deg, rgba(15, 23, 42, .14), rgba(15, 23, 42, .04) 40%, rgba(217, 119, 6, .22));
   --border-gradient-indigo: linear-gradient(160deg, rgba(99, 102, 241, .35), rgba(15, 23, 42, .04) 45%, rgba(168, 85, 247, .25));
-  --grad-primary-hover: linear-gradient(135deg, #d97706, #c2410c);
+  --grad-primary-hover: linear-gradient(135deg, #b45309, #9a3412);
   --grad-title: linear-gradient(90deg, #d97706, #ea580c);
   --shadow-card: 0 12px 28px -8px rgba(15, 23, 42, .12);
   --shadow-glow-accent: 0 4px 14px rgba(139, 92, 246, .3);
-  --shadow-glow-primary: 0 4px 14px rgba(234, 88, 12, .3);
+  --shadow-glow-primary: 0 4px 14px rgba(194, 65, 12, .3);
   --grad-title-neutral: linear-gradient(90deg, #334155, #64748b);
   --action-danger: #dc2626;
   --success: #059669;
