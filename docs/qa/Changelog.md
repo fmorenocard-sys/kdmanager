@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.9 - 2026-07-12
+### Fixed
+- **BUG-005 — Dashboard périmé (F-001)** : course de données dans `DataContext` — le fetch des JSON statiques (snapshots de build, février) résolvait après les premiers snapshots Firestore et les écrasait ; le Dashboard restait donc sur le graphe arrêté au 14/2 et la trésorerie 7.2B malgré une synchro quotidienne saine. Correctif : réf `fsArrived` — un dataset livré par Firestore n'est plus jamais écrasé par le fallback JSON. Vérifié : graphe → 7/7/2026, Food → 15.9B.
+
 ## v2.8 - 2026-07-12
 ### Changed
 - **F-017 passe d'alignement exhaustive sur la v2 consolidée (Claude Design)** : migration complète **Lucide → Phosphor** (~55 icônes, 19 fichiers, module compat `ui/icons.js` ; regular par défaut, `fill` sur états actifs, `duotone` dans les bulles StatCard ; mapping domaine appliqué à la sidebar et à la bottom nav : castle-turret/shield/trend-up/trophy/skull/bank). Navigation active en **gradient accent + glow** (sidebar, bottom nav 48px/11px, onglets 44px via `.v2-tab`). **Table v2** : rangées 40px, texte 13px, en-têtes 11px uppercase text-meta, bordures/hover par tokens. **Ratings** en `.v2-pill` (tokens light/dark recalibrés), **% Goal** en mono coloré par tokens. Titres : `v2-title` (ambre KvK, neutre Dashboard). ThemeToggle bordé avec libellé. Tokens sémantiques et ratings ajoutés (`--success`, `--rating-*`…). Vérifié programmatiquement dans les deux modes.

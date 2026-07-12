@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import { DATA_CONFIG } from '../config/data-mapping';
 import { parsePlayers, parseHistory, parseBank, parseTrophies, parseDeadweight, parseKvkStats } from '../utils/data-parser';
@@ -34,6 +34,12 @@ export const DataProvider = ({ children }) => {
         error: null,
         lastUpdated: null
     });
+
+    // Firestore is authoritative: once a listener has delivered a dataset, the
+    // static JSON fallback (built from possibly month-old local workbooks) must
+    // never overwrite it — the JSON fetch usually resolves AFTER the first
+    // snapshot and used to clobber fresh data (BUG-005).
+    const fsArrived = useRef({});
 
     const fetchData = async () => {
         try {
@@ -71,13 +77,13 @@ export const DataProvider = ({ children }) => {
 
             setState(prev => ({
                 ...prev,
-                players,
-                history,
-                bank: bank || null,
-                trophies,
-                deadweight,
-                kvkStats,
-                kvkFillerStats,
+                ...(fsArrived.current.players ? {} : { players }),
+                ...(fsArrived.current.history ? {} : { history }),
+                ...(fsArrived.current.bank ? {} : { bank: bank || null }),
+                ...(fsArrived.current.trophies ? {} : { trophies }),
+                ...(fsArrived.current.deadweight ? {} : { deadweight }),
+                ...(fsArrived.current.kvk ? {} : { kvkStats }),
+                ...(fsArrived.current.kvkFiller ? {} : { kvkFillerStats }),
                 loading: false,
                 lastUpdated: new Date()
             }));
@@ -96,6 +102,7 @@ export const DataProvider = ({ children }) => {
         // Real-time listeners for Firestore Sync
         const unsubPlayers = onSnapshot(doc(db, "static_data", "players"), (doc) => {
             if (doc.exists()) {
+                fsArrived.current.players = true;
                 const data = doc.data();
                 if (data.list) setState(prev => ({ ...prev, players: deduplicateById(data.list), lastUpdated: new Date() }));
             }
@@ -103,6 +110,7 @@ export const DataProvider = ({ children }) => {
 
         const unsubBank = onSnapshot(doc(db, "static_data", "bank"), (doc) => {
             if (doc.exists()) {
+                fsArrived.current.bank = true;
                 const data = doc.data();
                 // bank document structure matches bankData in function: { total, weekly, history }
                 setState(prev => ({ ...prev, bank: data, lastUpdated: new Date() }));
@@ -111,6 +119,7 @@ export const DataProvider = ({ children }) => {
 
         const unsubTrophies = onSnapshot(doc(db, "static_data", "trophies"), (doc) => {
             if (doc.exists()) {
+                fsArrived.current.trophies = true;
                 const data = doc.data();
                 if (data.weekList) setState(prev => ({ ...prev, trophies: data.weekList, lastUpdated: new Date() }));
             }
@@ -118,6 +127,7 @@ export const DataProvider = ({ children }) => {
 
         const unsubDeadweight = onSnapshot(doc(db, "static_data", "deadweight"), (doc) => {
             if (doc.exists()) {
+                fsArrived.current.deadweight = true;
                 const data = doc.data();
                 setState(prev => ({ ...prev, deadweight: data, lastUpdated: new Date() }));
             }
@@ -125,6 +135,7 @@ export const DataProvider = ({ children }) => {
 
         const unsubHistory = onSnapshot(doc(db, "static_data", "history"), (doc) => {
             if (doc.exists()) {
+                fsArrived.current.history = true;
                 const data = doc.data();
                 if (data.list) setState(prev => ({ ...prev, history: data.list, lastUpdated: new Date() }));
             }
@@ -148,6 +159,7 @@ export const DataProvider = ({ children }) => {
         // KvK Stats listener if needed
         const unsubKvk = onSnapshot(doc(db, "static_data", "kvk"), (doc) => {
             if (doc.exists()) {
+                fsArrived.current.kvk = true;
                 const data = doc.data();
                 if (data.list) setState(prev => ({ ...prev, kvkStats: data.list, lastUpdated: new Date() }));
             }
@@ -155,6 +167,7 @@ export const DataProvider = ({ children }) => {
 
         const unsubKvkFiller = onSnapshot(doc(db, "static_data", "kvk_filler"), (doc) => {
             if (doc.exists()) {
+                fsArrived.current.kvkFiller = true;
                 const data = doc.data();
                 if (data.list) setState(prev => ({ ...prev, kvkFillerStats: data.list, lastUpdated: new Date() }));
             }
