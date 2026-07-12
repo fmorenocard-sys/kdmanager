@@ -6,11 +6,13 @@ import PlayerDetailPanel from '../components/PlayerDetailPanel';
 import Card, { CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, ComposedChart, Area, Line } from 'recharts';
-import { TrendingUp, Users, Skull, Sword, Coins, Search, Filter, AlertCircle, ArrowUp, ArrowDown, ArrowUpDown } from '../components/ui/icons';
+import { TrendingUp, Users, Skull, Sword, Coins, Search, Filter, AlertCircle, ArrowUp, ArrowDown, ArrowUpDown , CastleTurret } from '../components/ui/icons';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
+
+import PageHeader from '../components/ui/PageHeader';
 
 const DashboardPage = () => {
     const { players, history, bank, stats: kingdomStats } = useData();
@@ -106,10 +108,7 @@ const DashboardPage = () => {
 
             {/* Header / Actions */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 className="text-3xl font-bold v2-title neutral">{t('dashboard.title')}</h2>
-                    <p className="text-slate-400 mt-1">Kingdom 2997</p>
-                </div>
+                <PageHeader icon={CastleTurret} title={t('dashboard.title')} subtitle="Kingdom 2997" />
             </div>
 
             <DataRefreshControl />

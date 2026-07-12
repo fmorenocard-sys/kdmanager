@@ -100,9 +100,12 @@ const FILES = {
     <h2>Familles</h2>
     <div style="font-size:17px">Inter — interface <span style="color:#94a3b8">(system-ui fallback)</span></div>
     <div class="mono" style="font-size:15px;margin-top:4px;color:#cbd5e1">JetBrains Mono — IDs &amp; valeurs <span class="mono" style="font-variant-numeric:tabular-nums">1 174 227 156</span></div>
-    <h2>Titres de pages (gradient)</h2>
-    <div style="font-size:28px;font-weight:700;background:linear-gradient(90deg,#ef4444,#ea580c);-webkit-background-clip:text;background-clip:text;color:transparent">Performance KvK</div>
-    <div style="font-size:28px;font-weight:700;background:linear-gradient(90deg,#fff,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent">heading-xl générique</div>
+    <h2>Titre de page — standard PageHeader (unique pour toutes les pages)</h2>
+    <div style="display:flex;align-items:center;gap:12px;font-size:28px;font-weight:700">
+      <span style="color:#f59e0b;font-size:24px">⚔</span>
+      <span style="background:linear-gradient(90deg,#fbbf24,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent">Performance KvK</span>
+    </div>
+    <div class="note">Règle : h1 unique par page via le composant <span class="mono">PageHeader</span> — icône Phosphor duotone 24px ambre au début (logique start, RTL-safe), titre en gradient ambre v2-title, sous-titre optionnel en text-secondary. Jamais d'emoji, jamais d'icône à droite.</div>
     <h2>Hiérarchie</h2>
     <div style="font-size:20px;font-weight:700">Titre de carte — 20px bold</div>
     <div style="font-size:14px;color:#f8fafc;margin-top:2px">Corps — 14px, texte primaire #f8fafc</div>

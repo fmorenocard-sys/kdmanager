@@ -2,11 +2,13 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
-import { Coins, Trees, CircleDot, Database, Wallet, Search } from '../components/ui/icons';
+import { Coins, Trees, CircleDot, Database, Wallet, Search , Bank } from '../components/ui/icons';
 import DataRefreshControl from '../components/DataRefreshControl';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
+
+import PageHeader from '../components/ui/PageHeader';
 
 const BankPage = () => {
     const { bank, loading, error } = useData();
@@ -44,15 +46,7 @@ const BankPage = () => {
     return (
         <div className="space-y-8 animate-fade-in">
             {/* Header */}
-            <div>
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold v2-title flex items-center gap-2 md:gap-3">
-                        <Wallet className="text-amber-500" size={24} />
-                        {t('bank.title')}
-                    </h1>
-                    <p className="text-gray-400 mt-1">{t('bank.subtitle')}</p>
-                </div>
-            </div>
+            <PageHeader icon={Bank} title={t('bank.title')} subtitle={t('bank.subtitle')} />
             <DataRefreshControl
                 pageId="bank"
                 title="Update Ledger"

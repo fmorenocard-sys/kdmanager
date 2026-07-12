@@ -12,6 +12,8 @@ import DataRefreshControl from '../components/DataRefreshControl';
 import StatCard from '../components/ui/StatCard';
 import StatusFilter from '../components/ui/StatusFilter';
 import { DATA_CONFIG } from '../config/data-mapping';
+import PageHeader from '../components/ui/PageHeader';
+
 const KvKPerformancePage = () => {
     const { kvkStats, kvkFillerStats, loading, error } = useData();
     const { isDiscordUser } = useAuth();
@@ -232,12 +234,7 @@ const KvKPerformancePage = () => {
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Header */}
-            <div className="mb-2">
-                <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2 md:gap-3">
-                    <Swords className="text-amber-500" size={24} weight="duotone" />
-                    <span className="v2-title">{t('performance.title')}</span>
-                </h1>
-                <p className="text-gray-400 mt-1 flex flex-wrap items-center gap-2">
+            <PageHeader icon={Swords} title={t('performance.title')}>
                     {selectedCampaign.title}
                     {selectedCampaign.isCurrent && (
                         <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold text-white" style={{ background: 'var(--grad-accent)' }}>
@@ -255,8 +252,7 @@ const KvKPerformancePage = () => {
                             {selectedCampaign.startDate || '…'} → {selectedCampaign.endDate || '…'}
                         </span>
                     )}
-                </p>
-            </div>
+            </PageHeader>
 
             {/* F-015: campaign selector */}
             {historyCampaigns.length > 0 && activeTab !== 'progression' && (

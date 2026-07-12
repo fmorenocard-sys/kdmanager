@@ -6,6 +6,8 @@ import Card from '../components/ui/Card';
 import DataRefreshControl from '../components/DataRefreshControl';
 import Avatar from '../components/ui/Avatar';
 
+import PageHeader from '../components/ui/PageHeader';
+
 const KingdomTrophiesPage = () => {
     const { trophies, loading, error, players } = useData();
     const { t } = useTranslation();
@@ -88,13 +90,7 @@ const KingdomTrophiesPage = () => {
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Header */}
-            <div className="mb-4">
-                <h1 className="text-2xl md:text-3xl font-bold v2-title flex items-center gap-2 md:gap-3">
-                    <Trophy className="text-yellow-500" size={24} />
-                    {t('trophies.title')}
-                </h1>
-                <p className="text-gray-400 mt-1">{t('trophies.subtitle')}</p>
-            </div>
+            <PageHeader icon={Trophy} title={t('trophies.title')} subtitle={t('trophies.subtitle')} />
             <DataRefreshControl
                 pageId="trophies"
                 title="Update"

@@ -7,6 +7,8 @@ import AvailabilityForm from '../components/war/AvailabilityForm';
 import WarDashboard from '../components/war/WarDashboard';
 import { Shield, Swords, LayoutDashboard } from '../components/ui/icons';
 
+import PageHeader from '../components/ui/PageHeader';
+
 const WarTrackerPage = () => {
     const { role, isAuthorized } = useRole();
     const { t } = useTranslation();
@@ -23,10 +25,7 @@ const WarTrackerPage = () => {
 
     return (
         <div className="space-y-6">
-            <header className="mb-6">
-                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{t('war.tracker_title')} ⚔️</h1>
-                <p className="text-slate-400">{t('war.tracker_subtitle')}</p>
-            </header>
+            <PageHeader icon={Shield} title={t('war.tracker_title')} subtitle={t('war.tracker_subtitle')} />
 
             {/* Navigation Tabs */}
             <div className="flex flex-wrap gap-2 mb-6 pb-2" role="group" aria-label="War Tracker Views">

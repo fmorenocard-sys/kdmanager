@@ -7,7 +7,9 @@ import Avatar from '../components/ui/Avatar';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, functions } from '../config/firebase';
 import { httpsCallable } from 'firebase/functions';
-import { RefreshCw } from '../components/ui/icons';
+import { RefreshCw , User } from '../components/ui/icons';
+
+import PageHeader from '../components/ui/PageHeader';
 
 const ProfilePage = () => {
     const { currentUser, governorId, linkGovernor, unlinkGovernor, linkWithDiscord } = useAuth();
@@ -69,7 +71,7 @@ const ProfilePage = () => {
 
     return (
         <div className="p-6 max-w-4xl mx-auto space-y-6">
-            <h1 className="text-2xl font-bold text-white mb-6">{t('profile.title')}</h1>
+            <div className="mb-6"><PageHeader icon={User} title={t('profile.title')} /></div>
 
             {/* Profile Status Card */}
             <div className="v2-glass p-6">

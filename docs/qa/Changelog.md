@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.13 - 2026-07-12
+### Changed
+- **F-017 en-têtes de pages unifiés (audit designer)** : 5 variantes incohérentes relevées (icônes présentes/absentes, à gauche/à droite/emoji, couleurs disparates, h2 vs h1, Wallet au lieu de bank). Nouveau composant unique **PageHeader** appliqué aux 7 pages : h1 + icône Phosphor **duotone 24px ambre au début** (position logique, RTL-safe) selon le mapping domaine (castle-turret, sword, skull, bank, trophy, shield, user), titre en gradient ambre v2-title, sous-titre optionnel avec slot badges (KvK). Vérifié programmatiquement sur les 7 pages. Carte typographie du design system mise à jour avec la règle.
+
 ## v2.12 - 2026-07-12
 ### Changed
 - **F-017 finitions v2 sur toutes les pages** : Dashboard, Deadweight, Bank, Trophies, Profile, WarTracker, PlayerDetailPanel, StatusFilter, DataRefreshControl et composants war alignés sur les tokens — conteneurs en v2-glass (hairline), bordures/fonds secondaires en var(--border-flat)/var(--surface-solid), en-têtes de tables sticky en var(--surface), titres de pages en v2-title (ambre) / neutral (Dashboard), inputs Profile en surface-input 44px, badge alliance du panneau joueur en v2-pill, bordures logiques (border-s) pour le RTL. Audit programmatique : 0 bloc sombre résiduel en mode clair sur les 6 pages, tokens corrects en sombre.

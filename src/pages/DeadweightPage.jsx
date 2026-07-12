@@ -2,13 +2,15 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
-import { Users, AlertTriangle, CheckCircle, Plane, Search, XCircle, ShieldAlert, UserX } from '../components/ui/icons';
+import { Users, AlertTriangle, CheckCircle, Plane, Search, XCircle, ShieldAlert, UserX , Skull } from '../components/ui/icons';
 import DataRefreshControl from '../components/DataRefreshControl';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import Input from '../components/ui/Input';
 import StatCard from '../components/ui/StatCard';
 import StatusFilter from '../components/ui/StatusFilter';
 import Avatar from '../components/ui/Avatar';
+
+import PageHeader from '../components/ui/PageHeader';
 
 const DeadweightPage = () => {
     const { deadweight, loading, error } = useData();
@@ -103,13 +105,7 @@ const DeadweightPage = () => {
     return (
         <div className="space-y-8 animate-fade-in">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl md:text-3xl font-bold v2-title flex items-center gap-2 md:gap-3">
-                    <AlertTriangle className="text-red-500" size={24} />
-                    {t('deadweight.title')}
-                </h1>
-                <p className="text-gray-400 mt-1">{t('deadweight.subtitle', { count: dwList.length })}</p>
-            </div>
+            <PageHeader icon={Skull} title={t('deadweight.title')} subtitle={t('deadweight.subtitle', { count: dwList.length })} />
             <DataRefreshControl
                 pageId="deadweight"
                 title="Update List"
