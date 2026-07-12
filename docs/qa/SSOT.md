@@ -31,6 +31,7 @@
 | **BR-005** | **Cloud Function Extraction** | The `syncData` Cloud Function expects specific `.xlsx` structures and names (Bank Ledger, Deadweight, Top 300) sent as base64 buffers. |
 | **BR-006** | **KvK Archive Immutability** | `kvk_history` documents are create-only: only the King can create them, and no client can update or delete an archived campaign (enforced by Firestore rules). |
 | **BR-007** | **Governor ID Join Key** | Cross-campaign player progression joins on the governor ID, never on the display name (names change between seasons). |
+| **BR-008** | **Discord-gated KvK views** | The Comptes Secondaires (fillers) and Progression tabs on the KvK Performance page are only rendered for Discord-verified users (SSO login discord: uid, or a linked discordId on the profile). Guests and unlinked Google users only see the main accounts table. |
 
 ## 3. Pages / Screens (P)
 

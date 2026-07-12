@@ -1,5 +1,11 @@
 # QA Changelog
 
+## v2.10 - 2026-07-12
+### Changed
+- **E-001 finalisé — Firestore source unique** : suppression du fetch des JSON statiques dans `DataContext` (listeners Firestore seuls, chargement résolu au premier snapshot, gestion d'erreur ajoutée), `digest-data.js` retiré du build, JSON générés supprimés de `public/data` (xlsx d'archives et `avatars/` conservés). Vérifié : zéro requête `/data/*.json`, Dashboard alimenté en direct. *Note : la suite Playwright devra seeder `static_data` dans l'émulateur pour tester avec données.*
+### Added
+- **BR-008 (F-008/F-015)** : onglets « Comptes Secondaires » et « Progression » réservés aux comptes vérifiés Discord (`isDiscordUser` : uid SSO `discord:` ou `discordId` lié au profil). Vérifié en invité : seul l'onglet principal est rendu.
+
 ## v2.9 - 2026-07-12
 ### Fixed
 - **BUG-005 — Dashboard périmé (F-001)** : course de données dans `DataContext` — le fetch des JSON statiques (snapshots de build, février) résolvait après les premiers snapshots Firestore et les écrasait ; le Dashboard restait donc sur le graphe arrêté au 14/2 et la trésorerie 7.2B malgré une synchro quotidienne saine. Correctif : réf `fsArrived` — un dataset livré par Firestore n'est plus jamais écrasé par le fallback JSON. Vérifié : graphe → 7/7/2026, Food → 15.9B.

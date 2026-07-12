@@ -14,6 +14,9 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const [governorId, setGovernorId] = useState(null);
+    // Discord-verified identity: logged in through Discord SSO (uid "discord:…")
+    // or a Google account whose profile carries a linked discordId (BR-008)
+    const [isDiscordUser, setIsDiscordUser] = useState(false);
 
     const loginWithGoogle = async () => {
         try {
@@ -116,6 +119,13 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setCurrentUser(user);
             if (user) {
+                if (user.uid.startsWith('discord:')) {
+                    setIsDiscordUser(true);
+                } else {
+                    getDoc(doc(db, "user_profiles", user.uid))
+                        .then(snap => setIsDiscordUser(!!(snap.exists() && (snap.data().discordId || snap.data().discordUid))))
+                        .catch(() => setIsDiscordUser(false));
+                }
                 const storedGovId = localStorage.getItem(`gov_link_${user.uid}`);
                 if (storedGovId) {
                     setGovernorId(storedGovId);
@@ -137,6 +147,7 @@ export const AuthProvider = ({ children }) => {
                 }
             } else {
                 setGovernorId(null);
+                setIsDiscordUser(false);
             }
             setLoading(false);
         });
@@ -147,6 +158,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         currentUser,
         governorId,
+        isDiscordUser,
         linkGovernor,
         unlinkGovernor,
         loginWithGoogle,

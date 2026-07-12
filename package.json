@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/digest-data.js && vite build",
+    "build": "vite build",
     "digest-data": "node scripts/digest-data.js",
     "lint": "eslint .",
     "preview": "vite preview",

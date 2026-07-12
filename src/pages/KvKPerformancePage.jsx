@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
+import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/ui/Avatar';
 import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive } from '../components/ui/icons';
 import { useKvkHistory } from '../hooks/useKvkHistory';
@@ -13,6 +14,7 @@ import StatusFilter from '../components/ui/StatusFilter';
 import { DATA_CONFIG } from '../config/data-mapping';
 const KvKPerformancePage = () => {
     const { kvkStats, kvkFillerStats, loading, error } = useData();
+    const { isDiscordUser } = useAuth();
     const { campaigns: historyCampaigns } = useKvkHistory();
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
@@ -21,6 +23,11 @@ const KvKPerformancePage = () => {
     const [activeTab, setActiveTab] = useState('main'); // 'main' | 'filler' | 'progression'
     const [selectedCampaignId, setSelectedCampaignId] = useState('current'); // F-015 campaign selector
     const [selectedPlayerId, setSelectedPlayerId] = useState(null); // F-015 progression view
+
+    // BR-008: if the Discord-only tabs become unavailable (logout), fall back to main
+    React.useEffect(() => {
+        if (!isDiscordUser && activeTab !== 'main') setActiveTab('main');
+    }, [isDiscordUser, activeTab]);
 
     // Reset/Set Sort when Tab Changes
     React.useEffect(() => {
@@ -278,8 +285,11 @@ const KvKPerformancePage = () => {
             <div className="flex flex-wrap gap-2 mb-6 pb-2" role="group" aria-label="KvK Performance Views">
                 {[
                     { id: 'main', label: t('performance.main_accounts'), icon: Users },
-                    { id: 'filler', label: t('performance.filler_accounts'), icon: Users },
-                    { id: 'progression', label: t('kvk_history.progression_tab'), icon: History }
+                    // BR-008: filler & progression views require a Discord-verified account
+                    ...(isDiscordUser ? [
+                        { id: 'filler', label: t('performance.filler_accounts'), icon: Users },
+                        { id: 'progression', label: t('kvk_history.progression_tab'), icon: History }
+                    ] : [])
                 ].map(tab => {
                     const isActive = activeTab === tab.id;
                     return (

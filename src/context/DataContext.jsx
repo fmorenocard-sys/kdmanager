@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { DATA_CONFIG } from '../config/data-mapping';
 import { parsePlayers, parseHistory, parseBank, parseTrophies, parseDeadweight, parseKvkStats } from '../utils/data-parser';
@@ -35,82 +35,27 @@ export const DataProvider = ({ children }) => {
         lastUpdated: null
     });
 
-    // Firestore is authoritative: once a listener has delivered a dataset, the
-    // static JSON fallback (built from possibly month-old local workbooks) must
-    // never overwrite it — the JSON fetch usually resolves AFTER the first
-    // snapshot and used to clobber fresh data (BUG-005).
-    const fsArrived = useRef({});
-
-    const fetchData = async () => {
-        try {
-            // Fetch generated JSONs
-            const baseUrl = import.meta.env.BASE_URL;
-            const [playersRes, historyRes, bankRes, trophiesRes, deadweightRes, kvkRes, kvkFillerRes] = await Promise.all([
-                fetch(`${baseUrl}data/players.json`),
-                fetch(`${baseUrl}data/kingdom_history.json`),
-                fetch(`${baseUrl}data/bank.json`),
-                fetch(`${baseUrl}data/trophies.json`),
-                fetch(`${baseUrl}data/deadweight.json`),
-                fetch(`${baseUrl}data/kvk_stats.json`),
-                fetch(`${baseUrl}data/kvk_filler_stats.json`)
-            ]);
-
-            if (!playersRes.ok) throw new Error("Failed to load players data");
-
-            const players = deduplicateById(await playersRes.json());
-            const history = historyRes.ok ? await historyRes.json() : [];
-            const bank = bankRes.ok ? await bankRes.json() : null;
-            const trophies = trophiesRes.ok ? await trophiesRes.json() : [];
-            const deadweight = deadweightRes.ok ? await deadweightRes.json() : null;
-
-            let kvkStats = [];
-            if (kvkRes.ok) {
-                const json = await kvkRes.json();
-                kvkStats = Array.isArray(json) ? json : (json.list || []);
-            }
-
-            let kvkFillerStats = [];
-            if (kvkFillerRes.ok) {
-                const json = await kvkFillerRes.json();
-                kvkFillerStats = Array.isArray(json) ? json : (json.list || []);
-            }
-
-            setState(prev => ({
-                ...prev,
-                ...(fsArrived.current.players ? {} : { players }),
-                ...(fsArrived.current.history ? {} : { history }),
-                ...(fsArrived.current.bank ? {} : { bank: bank || null }),
-                ...(fsArrived.current.trophies ? {} : { trophies }),
-                ...(fsArrived.current.deadweight ? {} : { deadweight }),
-                ...(fsArrived.current.kvk ? {} : { kvkStats }),
-                ...(fsArrived.current.kvkFiller ? {} : { kvkFillerStats }),
-                loading: false,
-                lastUpdated: new Date()
-            }));
-
-        } catch (err) {
-            console.error("Failed to load default data:", err);
-            setState(prev => ({ ...prev, loading: false, error: "Could not load default data." }));
-        }
-    };
-
-
-
+    // E-001 (2026-07-12): Firestore is the ONLY data source. The static JSON
+    // fallback (public/data, built from stale local workbooks) has been removed —
+    // it caused BUG-005 by racing and clobbering fresh snapshots.
     useEffect(() => {
-        fetchData();
 
         // Real-time listeners for Firestore Sync
         const unsubPlayers = onSnapshot(doc(db, "static_data", "players"), (doc) => {
             if (doc.exists()) {
-                fsArrived.current.players = true;
                 const data = doc.data();
-                if (data.list) setState(prev => ({ ...prev, players: deduplicateById(data.list), lastUpdated: new Date() }));
+                if (data.list) setState(prev => ({ ...prev, players: deduplicateById(data.list), loading: false, lastUpdated: new Date() }));
+                else setState(prev => ({ ...prev, loading: false }));
+            } else {
+                setState(prev => ({ ...prev, loading: false }));
             }
+        }, (err) => {
+            console.error("Firestore players listener error:", err);
+            setState(prev => ({ ...prev, loading: false, error: "Could not load data from Firestore." }));
         });
 
         const unsubBank = onSnapshot(doc(db, "static_data", "bank"), (doc) => {
             if (doc.exists()) {
-                fsArrived.current.bank = true;
                 const data = doc.data();
                 // bank document structure matches bankData in function: { total, weekly, history }
                 setState(prev => ({ ...prev, bank: data, lastUpdated: new Date() }));
@@ -119,7 +64,6 @@ export const DataProvider = ({ children }) => {
 
         const unsubTrophies = onSnapshot(doc(db, "static_data", "trophies"), (doc) => {
             if (doc.exists()) {
-                fsArrived.current.trophies = true;
                 const data = doc.data();
                 if (data.weekList) setState(prev => ({ ...prev, trophies: data.weekList, lastUpdated: new Date() }));
             }
@@ -127,7 +71,6 @@ export const DataProvider = ({ children }) => {
 
         const unsubDeadweight = onSnapshot(doc(db, "static_data", "deadweight"), (doc) => {
             if (doc.exists()) {
-                fsArrived.current.deadweight = true;
                 const data = doc.data();
                 setState(prev => ({ ...prev, deadweight: data, lastUpdated: new Date() }));
             }
@@ -135,7 +78,6 @@ export const DataProvider = ({ children }) => {
 
         const unsubHistory = onSnapshot(doc(db, "static_data", "history"), (doc) => {
             if (doc.exists()) {
-                fsArrived.current.history = true;
                 const data = doc.data();
                 if (data.list) setState(prev => ({ ...prev, history: data.list, lastUpdated: new Date() }));
             }
@@ -159,7 +101,6 @@ export const DataProvider = ({ children }) => {
         // KvK Stats listener if needed
         const unsubKvk = onSnapshot(doc(db, "static_data", "kvk"), (doc) => {
             if (doc.exists()) {
-                fsArrived.current.kvk = true;
                 const data = doc.data();
                 if (data.list) setState(prev => ({ ...prev, kvkStats: data.list, lastUpdated: new Date() }));
             }
@@ -167,7 +108,6 @@ export const DataProvider = ({ children }) => {
 
         const unsubKvkFiller = onSnapshot(doc(db, "static_data", "kvk_filler"), (doc) => {
             if (doc.exists()) {
-                fsArrived.current.kvkFiller = true;
                 const data = doc.data();
                 if (data.list) setState(prev => ({ ...prev, kvkFillerStats: data.list, lastUpdated: new Date() }));
             }

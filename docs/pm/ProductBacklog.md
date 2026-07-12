@@ -1,9 +1,9 @@
 # Product Backlog
 
 ## Epics
-* **E-001**: Automatisation Complète Ingestion Data
-  * *Objectif*: Remplacer le parsing local/manuel par un upload web 100% sécurisé via l'appli.
-  * *Valeur*: Gain de temps massif pour les officiers.
+* **E-001 [LIVRÉ 2026-07-12]**: Automatisation Complète Ingestion Data
+  * *Objectif (révisé puis atteint)*: Zéro fichier — Google Sheets → synchro quotidienne/bouton Sync → Firestore → app & bot en temps réel. Les JSON statiques de build et leur course de données ont été retirés le 2026-07-12 : Firestore est l'unique source de lecture.
+  * *Valeur*: Plus aucune manipulation de fichier ; fraîcheur garantie ≤ 24 h.
 * **E-002**: Scalabilité Frontend & Sécurité
   * *Objectif*: Sécuriser toutes les lectures Firestore avec des Security Rules et optimiser le bundle.
   * *Valeur*: Performance, sécurité des données des joueurs.
@@ -32,7 +32,7 @@
 * **US-014 (E-004) [V2]**: En tant que joueur, je veux `/mykvk <campagne>` sur Discord, afin de consulter mes performances passées sans ouvrir l'app.
 
 ## Bugs / Dette
-* **BUG-001**: Dette technique liée à la rigidité du parsing XLSX (`digest-data.js`). *Sévérité: Moyenne*. *(Partiellement réduite le 2026-07-11 : téléchargement direct du classeur KvK depuis Google Sheets.)*
+* **BUG-001 [CLOS 2026-07-12]**: Dette du parsing XLSX local : `digest-data.js` est sorti du build (E-001) — l'app ne dépend plus d'aucun fichier local (script conservé comme outil d'archivage manuel). Le parsing des Sheets vit uniquement dans les Cloud Functions.
 * **BUG-002**: Les règles de sécurité Firestore actuelles sont vraisemblablement trop permissives ou limitées. Besoin d'un audit de sécurité. *Sévérité: Haute*. *(Rules durcies commit b4b905c — audit complet restant à faire.)*
 * **BUG-003 [RÉSOLU 2026-07-11]**: La function `syncData` déployée utilisait l'ancien mapping fillers (`GOAL_PERCENT` colonne S au lieu de T). Correctif déployé avec la release E-004 — le bouton « Sync » in-app est de nouveau sûr.
 * **BUG-004 [RÉSOLU 2026-07-11]**: `/mystats` affichait des données de profil du 23 mai (aucune synchro déclenchée depuis). Résolu par la synchro quotidienne automatique `scheduledSync` (05:00 UTC) + footer de fraîcheur des données dans les embeds Discord. La fiabilité ne dépend plus d'un déclenchement humain.
