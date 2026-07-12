@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.15 - 2026-07-12
+### Fixed
+- **Avatars de la page Trophées (F-016)** : les gagnants des trophées sont saisis à la main dans la sheet (« Helios », « Pisontje »…) avec id:null — la cascade avatars n'avait aucune clé et affichait le logo partout. Nouveau résolveur `resolveGovernorId` (lib partagée) : normalisation NFKD (replie les préfixes unicode ᵁᴺ), matching exact → inclusion → distance d'édition ≤ 2 pour les typos, jointure avec la liste players. Vérifié : 10 avatars Lilith frais + 5 locaux sur la page, 4 non-résolus restent en logo (fallback normal).
+
 ## v2.14 - 2026-07-12
 ### Changed
 - **CTA primaire 2b (charte v2 Claude Design, carte Boutons)** : le gradient primaire passe d'amber-500→orange-600 (blanc ≈ 2.9:1, insuffisant) à **amber-600→orange-700** (#d97706→#c2410c, blanc ≈ 4.8:1 AA) ; hover descend d'un cran (700→800 : #b45309→#9a3412) au lieu d'éclaircir ; glow recalé sur rgba(194,65,12). Appliqué via tokens --grad-primary (les deux modes) — tous les boutons primaires héritent (Sync Cloud, Clôturer, Button primary). Overrides amber legacy du CampaignArchiveControl supprimés. Carte buttons officielle re-synchronisée.

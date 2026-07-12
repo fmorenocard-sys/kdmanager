@@ -7,6 +7,7 @@ import DataRefreshControl from '../components/DataRefreshControl';
 import Avatar from '../components/ui/Avatar';
 
 import PageHeader from '../components/ui/PageHeader';
+import { resolveGovernorId } from '../lib/resolveGovernorId';
 
 const KingdomTrophiesPage = () => {
     const { trophies, loading, error, players } = useData();
@@ -150,8 +151,7 @@ const KingdomTrophiesPage = () => {
                                         <div className="relative p-1 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full">
                                             <Avatar
                                                 name={w.name}
-                                                // Assuming we can match ID later, for now relying on name fallback or if we had ID in trophies
-                                                id={w.id}
+                                                id={w.id ?? resolveGovernorId(w.name, players)}
                                                 size="2xl"
                                                 className="border-4 border-slate-900"
                                             />
@@ -223,7 +223,7 @@ const KingdomTrophiesPage = () => {
                                         {/* Avatar Mini */}
                                         <Avatar
                                             name={winner.name}
-                                            id={winner.id}
+                                            id={winner.id ?? resolveGovernorId(winner.name, players)}
                                             size="md"
                                             className={`border-2 border-[var(--border-flat)] ${group.type === 'Epic' ? 'ring-2 ring-purple-500/20' : ''
                                                 }`}
