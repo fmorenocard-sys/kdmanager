@@ -1,11 +1,13 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 
+// v2 metrics (Claude Design v2/components/table.html): rows 40px, body text
+// 13px, uppercase 11px headers in text-meta, token-driven borders & hover.
 const Table = React.forwardRef(({ className, ...props }, ref) => (
     <div className="relative w-full">
         <table
             ref={ref}
-            className={cn("min-w-full caption-bottom text-sm", className)}
+            className={cn("min-w-full caption-bottom text-[13px]", className)}
             {...props}
         />
     </div>
@@ -13,7 +15,7 @@ const Table = React.forwardRef(({ className, ...props }, ref) => (
 Table.displayName = "Table";
 
 const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
-    <thead ref={ref} className={cn("[&_tr]:border-b border-white/10", className)} {...props} />
+    <thead ref={ref} className={cn("[&_tr]:border-b [&_tr]:border-[var(--border-flat)]", className)} {...props} />
 ));
 TableHeader.displayName = "TableHeader";
 
@@ -30,7 +32,7 @@ const TableRow = React.forwardRef(({ className, ...props }, ref) => (
     <tr
         ref={ref}
         className={cn(
-            "border-b border-white/5 transition-colors hover:bg-white/5 data-[state=selected]:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50",
+            "border-b border-[var(--border-flat)] transition-colors hover:bg-[var(--border-flat)] data-[state=selected]:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50",
             className
         )}
         {...props}
@@ -41,7 +43,7 @@ TableRow.displayName = "TableRow";
 const TableHead = React.forwardRef(({ className, ...props }, ref) => (
     <th
         ref={ref}
-        className={`h-10 px-2 text-left align-middle font-medium text-muted-foreground whitespace-nowrap [&:has([role=checkbox])]:pr-0 ${className}`}
+        className={`h-10 px-3 text-left align-middle font-semibold text-[11px] uppercase tracking-[.06em] text-[var(--text-meta)] whitespace-nowrap [&:has([role=checkbox])]:pr-0 ${className}`}
         {...props}
     />
 ))
@@ -50,7 +52,7 @@ TableHead.displayName = "TableHead"
 const TableCell = React.forwardRef(({ className, ...props }, ref) => (
     <td
         ref={ref}
-        className={`p-2 align-middle [&:has([role=checkbox])]:pr-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 ${className}`}
+        className={`h-10 px-3 py-0 align-middle tabular-nums [&:has([role=checkbox])]:pr-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 ${className}`}
         {...props}
     />
 ))

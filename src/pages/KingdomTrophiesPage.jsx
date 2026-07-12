@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
-import { Trophy, ChevronLeft, ChevronRight, Crown, Award, Medal, Upload } from 'lucide-react';
+import { Trophy, ChevronLeft, ChevronRight, Crown, Award, Medal, Upload } from '../components/ui/icons';
 import Card from '../components/ui/Card';
 import DataRefreshControl from '../components/DataRefreshControl';
 import Avatar from '../components/ui/Avatar';

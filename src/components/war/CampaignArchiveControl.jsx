@@ -6,7 +6,7 @@ import { useRole, ROLES } from '../../context/RoleContext';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
-import { Archive, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Archive, AlertTriangle, CheckCircle2 } from '../ui/icons';
 import { DATA_CONFIG } from '../../config/data-mapping';
 import { invalidateKvkHistoryCache } from '../../hooks/useKvkHistory';
 

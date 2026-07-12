@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
-import { Users, AlertTriangle, CheckCircle, Plane, Search, XCircle, ShieldAlert, UserX } from 'lucide-react';
+import { Users, AlertTriangle, CheckCircle, Plane, Search, XCircle, ShieldAlert, UserX } from '../components/ui/icons';
 import DataRefreshControl from '../components/DataRefreshControl';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import Input from '../components/ui/Input';

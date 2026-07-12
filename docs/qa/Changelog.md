@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.8 - 2026-07-12
+### Changed
+- **F-017 passe d'alignement exhaustive sur la v2 consolidée (Claude Design)** : migration complète **Lucide → Phosphor** (~55 icônes, 19 fichiers, module compat `ui/icons.js` ; regular par défaut, `fill` sur états actifs, `duotone` dans les bulles StatCard ; mapping domaine appliqué à la sidebar et à la bottom nav : castle-turret/shield/trend-up/trophy/skull/bank). Navigation active en **gradient accent + glow** (sidebar, bottom nav 48px/11px, onglets 44px via `.v2-tab`). **Table v2** : rangées 40px, texte 13px, en-têtes 11px uppercase text-meta, bordures/hover par tokens. **Ratings** en `.v2-pill` (tokens light/dark recalibrés), **% Goal** en mono coloré par tokens. Titres : `v2-title` (ambre KvK, neutre Dashboard). ThemeToggle bordé avec libellé. Tokens sémantiques et ratings ajoutés (`--success`, `--rating-*`…). Vérifié programmatiquement dans les deux modes.
+
 ## v2.7 - 2026-07-12
 ### Fixed
 - **F-017 mode clair — fond restant sombre** : le wrapper racine portait un hex codé en dur (`bg-[#0b1121]`) hors de portée du shim → supprimé, le body piloté par tokens reprend la main. Contrôles du Dashboard migrés vers `var(--surface-input)`. **Garde-fou `theme-switching`** : les `transition-all` v1 ne convergeaient jamais au basculement de thème (transitions relancées en boucle) — toutes les transitions sont suspendues ~80 ms pendant le flip. Vérifié : bascule propre dans les deux sens (body, sidebar, inputs).

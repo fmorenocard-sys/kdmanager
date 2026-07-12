@@ -30,8 +30,8 @@ const StatCard = ({ title, value, icon: Icon, color = "blue", subtext, className
             )}>
                 {iconPosition === "left" && (
                     <div className={cn("w-11 h-11 flex items-center justify-center rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
-                        <Icon size={18} className="md:hidden" />
-                        <Icon size={24} className="hidden md:block" />
+                        <Icon size={18} weight="duotone" className="md:hidden" />
+                        <Icon size={24} weight="duotone" className="hidden md:block" />
                     </div>
                 )}
 
@@ -43,8 +43,8 @@ const StatCard = ({ title, value, icon: Icon, color = "blue", subtext, className
 
                 {iconPosition === "right" && (
                     <div className={cn("w-11 h-11 flex items-center justify-center rounded-xl flex-shrink-0", styles.iconBg, styles.iconText, styles.ring)}>
-                        <Icon size={18} className="md:hidden" />
-                        <Icon size={24} className="hidden md:block" />
+                        <Icon size={18} weight="duotone" className="md:hidden" />
+                        <Icon size={24} weight="duotone" className="hidden md:block" />
                     </div>
                 )}
             </div>

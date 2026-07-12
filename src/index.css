@@ -82,6 +82,20 @@
   --shadow-glow-accent: 0 4px 16px rgba(139, 92, 246, .35);
   --shadow-glow-primary: 0 4px 16px rgba(234, 88, 12, .35);
   --radius-card: 14px;
+  --grad-title-neutral: linear-gradient(90deg, #fff, #94a3b8);
+  --action-danger: #ef4444;
+  --success: #34d399;
+  --warning: #fb923c;
+  --info: #22d3ee;
+  --indigo: #818cf8;
+  --rating-excellent: #c084fc;
+  --rating-good: #34d399;
+  --rating-improve: #facc15;
+  --rating-dead: #f87171;
+  --rating-excellent-bg: rgba(192, 132, 252, .14);
+  --rating-good-bg: rgba(52, 211, 153, .12);
+  --rating-improve-bg: rgba(250, 204, 21, .12);
+  --rating-dead-bg: rgba(248, 113, 113, .12);
 }
 
 .light {
@@ -103,6 +117,20 @@
   --shadow-card: 0 12px 28px -8px rgba(15, 23, 42, .12);
   --shadow-glow-accent: 0 4px 14px rgba(139, 92, 246, .3);
   --shadow-glow-primary: 0 4px 14px rgba(234, 88, 12, .3);
+  --grad-title-neutral: linear-gradient(90deg, #334155, #64748b);
+  --action-danger: #dc2626;
+  --success: #059669;
+  --warning: #ea580c;
+  --info: #0891b2;
+  --indigo: #4f46e5;
+  --rating-excellent: #7e22ce;
+  --rating-good: #047857;
+  --rating-improve: #a16207;
+  --rating-dead: #b91c1c;
+  --rating-excellent-bg: rgba(147, 51, 234, .1);
+  --rating-good-bg: rgba(5, 150, 105, .1);
+  --rating-improve-bg: rgba(202, 138, 4, .12);
+  --rating-dead-bg: rgba(220, 38, 38, .1);
 }
 
 @layer base {
@@ -187,6 +215,59 @@
     background-clip: text;
     color: transparent;
   }
+
+  /* v2 — pills de rating KvK */
+  .v2-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .v2-pill.excellent { color: var(--rating-excellent); background: var(--rating-excellent-bg); border-color: color-mix(in srgb, var(--rating-excellent) 30%, transparent); }
+  .v2-pill.good      { color: var(--rating-good);      background: var(--rating-good-bg);      border-color: color-mix(in srgb, var(--rating-good) 30%, transparent); }
+  .v2-pill.improve   { color: var(--rating-improve);   background: var(--rating-improve-bg);   border-color: color-mix(in srgb, var(--rating-improve) 30%, transparent); }
+  .v2-pill.dead      { color: var(--rating-dead);      background: var(--rating-dead-bg);      border-color: color-mix(in srgb, var(--rating-dead) 30%, transparent); }
+  .v2-pill.neutral   { color: var(--text-secondary);   background: var(--border-flat);         border-color: color-mix(in srgb, var(--text-meta) 30%, transparent); }
+
+  /* v2 — onglets (actif = gradient accent) */
+  .v2-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .v2-tab.on { background: var(--grad-accent); color: #fff; box-shadow: var(--shadow-glow-accent); }
+  .v2-tab.off { color: var(--text-secondary); border-color: var(--border-flat); }
+  .v2-tab.off:hover { color: var(--text-primary); background: var(--border-flat); }
+
+  /* v2 — items de navigation (sidebar & bottom nav) */
+  .v2-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    border-radius: 10px;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .v2-nav-item:hover { color: var(--text-primary); background: var(--border-flat); }
+  .v2-nav-item.act { background: var(--grad-accent); color: #fff; font-weight: 600; box-shadow: var(--shadow-glow-accent); }
+  .v2-nav-item.act:hover { color: #fff; }
 
   /* Buttons */
   .btn {
@@ -296,3 +377,5 @@
 .theme-switching *, .theme-switching *::before, .theme-switching *::after {
   transition: none !important;
 }
+/* v2 — variante neutre du titre gradient */
+.v2-title.neutral { background: var(--grad-title-neutral); -webkit-background-clip: text; background-clip: text; }

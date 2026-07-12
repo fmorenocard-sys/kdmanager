@@ -5,7 +5,7 @@ import { useRole, ROLES } from '../context/RoleContext';
 import KvKConfigForm from '../components/war/KvKConfigForm';
 import AvailabilityForm from '../components/war/AvailabilityForm';
 import WarDashboard from '../components/war/WarDashboard';
-import { Shield, Swords, LayoutDashboard } from 'lucide-react';
+import { Shield, Swords, LayoutDashboard } from '../components/ui/icons';
 
 const WarTrackerPage = () => {
     const { role, isAuthorized } = useRole();

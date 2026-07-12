@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Globe } from 'lucide-react';
+import { Globe } from './icons';
 import { useLang } from '../../context/LangContext';
 import { cn } from '../../lib/utils';
 

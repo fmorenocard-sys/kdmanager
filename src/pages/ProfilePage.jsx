@@ -7,7 +7,7 @@ import Avatar from '../components/ui/Avatar';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, functions } from '../config/firebase';
 import { httpsCallable } from 'firebase/functions';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw } from '../components/ui/icons';
 
 const ProfilePage = () => {
     const { currentUser, governorId, linkGovernor, unlinkGovernor, linkWithDiscord } = useAuth();

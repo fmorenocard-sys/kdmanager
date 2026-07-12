@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import Avatar from '../components/ui/Avatar';
-import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive } from 'lucide-react';
+import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive } from '../components/ui/icons';
 import { useKvkHistory } from '../hooks/useKvkHistory';
 import Card from '../components/ui/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
@@ -99,14 +99,14 @@ const KvKPerformancePage = () => {
         }), { totalDead: 0, totalPowerDiff: 0, totalKpGained: 0 });
     }, [activeData]);
 
-    const getRateColor = (rate) => {
-        if (!rate) return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+    const getRateClass = (rate) => {
+        if (!rate) return 'v2-pill neutral';
         const r = rate.toLowerCase();
-        if (r === 'excellent') return 'text-purple-400 bg-purple-500/10 border-purple-500/20';
-        if (r === 'good' || r === 'great') return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-        if (r === 'need improvement' || r === 'average' || r === 'ok') return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-        if (r === 'dead weight' || r === 'bad' || r === 'poor') return 'text-red-400 bg-red-500/10 border-red-500/20';
-        return 'text-slate-300 bg-slate-500/10 border-slate-500/20';
+        if (r === 'excellent') return 'v2-pill excellent';
+        if (r === 'good' || r === 'great') return 'v2-pill good';
+        if (r === 'need improvement' || r === 'average' || r === 'ok') return 'v2-pill improve';
+        if (r === 'dead weight' || r === 'bad' || r === 'poor') return 'v2-pill dead';
+        return 'v2-pill neutral';
     };
 
     // 1. Filter by Search
@@ -226,12 +226,17 @@ const KvKPerformancePage = () => {
         <div className="space-y-6 animate-fade-in">
             {/* Header */}
             <div className="mb-2">
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent flex items-center gap-2 md:gap-3">
-                    <Swords className="text-red-500" size={24} />
-                    {t('performance.title')}
+                <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2 md:gap-3">
+                    <Swords className="text-amber-500" size={24} weight="duotone" />
+                    <span className="v2-title">{t('performance.title')}</span>
                 </h1>
                 <p className="text-gray-400 mt-1 flex flex-wrap items-center gap-2">
                     {selectedCampaign.title}
+                    {selectedCampaign.isCurrent && (
+                        <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold text-white" style={{ background: 'var(--grad-accent)' }}>
+                            {t('kvk_history.current_badge')}
+                        </span>
+                    )}
                     {!selectedCampaign.isCurrent && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border text-amber-400 bg-amber-500/10 border-amber-500/20">
                             <Archive size={10} />
@@ -283,13 +288,9 @@ const KvKPerformancePage = () => {
                             type="button"
                             onClick={() => { setActiveTab(tab.id); setStatusFilter([]); setSearchTerm(''); }}
                             aria-pressed={isActive}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border select-none ${
-                                isActive 
-                                    ? 'ring-1 ring-indigo-500/20 shadow-lg shadow-indigo-500/10 text-indigo-400 bg-indigo-500/10 border-indigo-500/20' 
-                                    : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
-                            }`}
+                            className={`v2-tab select-none ${isActive ? 'on' : 'off'}`}
                         >
-                            <tab.icon size={18} />
+                            <tab.icon size={20} weight={isActive ? 'fill' : 'regular'} />
                             {tab.label}
                         </button>
                     );
@@ -388,7 +389,7 @@ const KvKPerformancePage = () => {
                                         </div>
                                     </div>
                                     {activeTab === 'main' && row.rate && (
-                                        <span className={`shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
+                                        <span className={`shrink-0 ${getRateClass(row.rate)}`}>
                                             {row.rate}
                                         </span>
                                     )}
@@ -399,7 +400,7 @@ const KvKPerformancePage = () => {
                                             <span className="text-slate-500 text-[10px] sm:text-xs truncate">{L}</span>
                                             <span className="font-mono text-white text-right text-[10px] sm:text-xs shrink-0 whitespace-nowrap">
                                                 {k === 'goalPercent' ? (
-                                                    <span className={`${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400' : (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400' : 'text-red-400'}`}>
+                                                    <span className="font-mono font-bold tabular-nums" style={{ color: (typeof row.goalPercent === 'number' && row.goalPercent >= 1) ? 'var(--success)' : (typeof row.goalPercent === 'number' && row.goalPercent >= 0.5) ? 'var(--rating-improve)' : 'var(--rating-dead)' }}>
                                                         {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}
                                                     </span>
                                                 ) : k.toLowerCase().includes('dead') ? (
@@ -456,14 +457,11 @@ const KvKPerformancePage = () => {
                                         {columns.slice(2).map(({ k }) => (
                                             <TableCell key={k} className="text-left text-xs py-1 px-2 tabular-nums">
                                                 {k === 'goalPercent' ? (
-                                                    <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${(typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 100) ? 'text-green-400 bg-green-400/10' :
-                                                        (typeof row.goalPercent === 'number' && row.goalPercent * 100 >= 50) ? 'text-yellow-400 bg-yellow-400/10' :
-                                                            'text-red-400 bg-red-400/10'
-                                                        }`}>
+                                                    <span className="font-mono text-xs font-bold tabular-nums" style={{ color: (typeof row.goalPercent === 'number' && row.goalPercent >= 1) ? 'var(--success)' : (typeof row.goalPercent === 'number' && row.goalPercent >= 0.5) ? 'var(--rating-improve)' : 'var(--rating-dead)' }}>
                                                         {typeof row.goalPercent === 'number' ? `${(row.goalPercent * 100).toFixed(1)}%` : row.goalPercent}
                                                     </span>
                                                 ) : k === 'rate' ? (
-                                                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(row.rate)}`}>
+                                                    <span className={getRateClass(row.rate)}>
                                                         {row.rate}
                                                     </span>
                                                 ) : k.toLowerCase().includes('dead') ? (
@@ -544,7 +542,7 @@ const KvKPerformancePage = () => {
                                             <span className="font-bold text-white text-sm truncate">{e.campaignTitle}</span>
                                             <span className="flex gap-1 shrink-0">
                                                 {e.isFiller && <span className="px-2 py-0.5 rounded-full text-[10px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
-                                                {e.rate && <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(e.rate)}`}>{e.rate}</span>}
+                                                {e.rate && <span className={getRateClass(e.rate)}>{e.rate}</span>}
                                             </span>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 text-xs">
@@ -609,7 +607,7 @@ const KvKPerformancePage = () => {
                                                 </TableCell>
                                                 <TableCell className="text-xs py-2 px-2">
                                                     {e.rate ? (
-                                                        <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRateColor(e.rate)}`}>{e.rate}</span>
+                                                        <span className={getRateClass(e.rate)}>{e.rate}</span>
                                                     ) : <span className="text-slate-600">—</span>}
                                                 </TableCell>
                                             </TableRow>

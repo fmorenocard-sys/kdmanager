@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon } from './icons';
 
 const STORAGE_KEY = 'kd_theme';
 
@@ -36,9 +36,10 @@ const ThemeToggle = () => {
             aria-label={t('common.toggle_theme')}
             title={t('common.toggle_theme')}
             aria-pressed={isLight}
-            className="w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-2 min-h-[44px] px-3 sm:px-4 rounded-xl border border-[var(--border-flat)] text-[var(--text-secondary)] text-[13px] font-bold hover:text-[var(--text-primary)] hover:bg-[var(--border-flat)] transition-colors"
         >
-            {isLight ? <Moon size={18} /> : <Sun size={18} />}
+            {isLight ? <Moon size={20} /> : <Sun size={20} />}
+            <span className="hidden sm:inline">{isLight ? 'Dark' : 'Light'}</span>
         </button>
     );
 };

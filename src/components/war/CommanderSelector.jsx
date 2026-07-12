@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { COMMANDERS } from '../../data/commanders';
-import { Search, X } from 'lucide-react';
+import { Search, X } from '../ui/icons';
 
 const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Select Commander" }) => {
     const [isOpen, setIsOpen] = useState(false);

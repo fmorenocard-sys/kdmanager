@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
-import { Coins, Trees, CircleDot, Database, Wallet, Search } from 'lucide-react';
+import { Coins, Trees, CircleDot, Database, Wallet, Search } from '../components/ui/icons';
 import DataRefreshControl from '../components/DataRefreshControl';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import StatCard from '../components/ui/StatCard';

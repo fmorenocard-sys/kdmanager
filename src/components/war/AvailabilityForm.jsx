@@ -11,7 +11,7 @@ import Card from '../ui/Card';
 import CommanderSelector from './CommanderSelector';
 import ActiveHoursPickerUTC from './ActiveHoursPickerUTC';
 import { COMMANDERS } from '../../data/commanders';
-import { Save, User, Database, Swords, Zap, X, Calendar } from 'lucide-react';
+import { Save, User, Database, Swords, Zap, X, Calendar } from '../ui/icons';
 
 const AvailabilityForm = () => {
     const { currentUser, governorId, linkGovernor } = useAuth();

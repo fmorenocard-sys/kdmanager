@@ -6,7 +6,7 @@ import { useRole, ROLES } from '../../context/RoleContext';
 import { useData } from '../../context/DataContext';
 import Card from '../ui/Card';
 import StatCard from '../ui/StatCard';
-import { Database, Swords, Zap, Shield } from 'lucide-react';
+import { Database, Swords, Zap, Shield } from '../ui/icons';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../ui/Table';
 
 const WarDashboard = () => {

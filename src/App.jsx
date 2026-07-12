@@ -5,7 +5,7 @@ import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RoleProvider } from './context/RoleContext';
 import { LangProvider } from './context/LangContext';
-import { LayoutDashboard, Users, Trophy, Wallet, Menu, Swords, LogIn, LogOut, User, Skull } from 'lucide-react';
+import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
 import KvKPerformancePage from './pages/KvKPerformancePage';
 import KingdomTrophiesPage from './pages/KingdomTrophiesPage';
@@ -22,13 +22,14 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
   const currentPath = location.pathname;
   const { t } = useTranslation();
 
+  // v2 domain iconography (Claude Design v2/foundations/iconography.html)
   const menuItems = [
-    { id: 'dashboard', path: '/', icon: <LayoutDashboard size={20} />, label: t('nav.dashboard') },
-    { id: 'war-tracker', path: '/war-tracker', icon: <Swords size={20} />, label: t('nav.war_tracker') },
-    { id: 'kvk', path: '/kvk', icon: <Users size={20} />, label: t('nav.performance') },
-    { id: 'trophies', path: '/trophies', icon: <Trophy size={20} />, label: t('nav.trophies') },
-    { id: 'deadweight', path: '/deadweight', icon: <Skull size={20} />, label: t('nav.deadweight') },
-    { id: 'bank', path: '/bank', icon: <Wallet size={20} />, label: t('nav.bank') },
+    { id: 'dashboard', path: '/', icon: CastleTurret, label: t('nav.dashboard') },
+    { id: 'war-tracker', path: '/war-tracker', icon: Shield, label: t('nav.war_tracker') },
+    { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.performance') },
+    { id: 'trophies', path: '/trophies', icon: Trophy, label: t('nav.trophies') },
+    { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
+    { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
   ];
 
   return (
@@ -66,13 +67,10 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
                 aria-label={item.label}
                 title={item.label}
                 onClick={() => onNavigate && onNavigate()} // Optional: close mobile menu
-                className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${isActive
-                  ? 'bg-primary/20 text-primary border border-primary/20'
-                  : 'text-slate-400 hover:bg-white/5 hover:text-white'
-                  }`}
+                className={`v2-nav-item w-full px-3 ${isActive ? 'act' : ''}`}
               >
                 <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                  {item.icon}
+                  <item.icon size={20} weight={isActive ? 'fill' : 'regular'} />
                 </div>
                 {isOpen && <span className="font-medium truncate whitespace-nowrap">{item.label}</span>}
               </Link>

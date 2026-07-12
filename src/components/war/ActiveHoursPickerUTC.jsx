@@ -1,7 +1,7 @@
 ﻿
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Clock } from 'lucide-react';
+import { Clock } from '../ui/icons';
 
 // Generates [ "00:00", "01:00", ... "23:00" ]
 const HOURS = Array.from({ length: 24 }, (_, i) =>

@@ -3,7 +3,7 @@ import {
     X, Activity, Shield, Trophy, MapPin,
     Swords, Skull, Users, Hammer, ScrollText,
     TrendingUp, Target, Sword
-} from 'lucide-react';
+} from './ui/icons';
 import Card from './ui/Card';
 import Button from './ui/Button';
 
