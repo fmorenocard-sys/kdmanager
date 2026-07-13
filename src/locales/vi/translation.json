@@ -64,7 +64,8 @@
     "kp_gained": "Điểm tiêu diệt đạt được",
     "percent_goal": "% Mục tiêu",
     "rate": "Tỷ lệ",
-    "no_players": "Không tìm thấy người chơi"
+    "no_players": "Không tìm thấy người chơi",
+    "open_bank": "Mở Ngân hàng"
   },
   "performance": {
     "title": "Hiệu suất KvK",

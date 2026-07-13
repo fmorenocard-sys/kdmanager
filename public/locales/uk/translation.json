@@ -56,7 +56,8 @@
         "kp_gained": "Заробл. KP",
         "percent_goal": "% Цілі",
         "rate": "Оцінка",
-        "no_players": "Гравців не знайдено"
+        "no_players": "Гравців не знайдено",
+        "open_bank": "Відкрити Банк"
     },
     "performance": {
         "title": "Ефективність KvK",

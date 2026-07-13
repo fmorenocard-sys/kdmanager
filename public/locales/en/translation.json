@@ -56,7 +56,8 @@
         "kp_gained": "KP Gained",
         "percent_goal": "% Goal",
         "rate": "Rate",
-        "no_players": "No players found"
+        "no_players": "No players found",
+        "open_bank": "Open Bank"
     },
     "performance": {
         "title": "KvK Performance",

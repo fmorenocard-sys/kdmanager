@@ -64,7 +64,8 @@
     "kp_gained": "KP obtenidos",
     "percent_goal": "% Objetivo",
     "rate": "Valoración",
-    "no_players": "No se encontraron jugadores"
+    "no_players": "No se encontraron jugadores",
+    "open_bank": "Abrir el Banco"
   },
   "performance": {
     "title": "Rendimiento KvK",

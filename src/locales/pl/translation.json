@@ -64,7 +64,8 @@
     "kp_gained": "Zdobyte KP",
     "percent_goal": "% Celu",
     "rate": "Ocena",
-    "no_players": "Nie znaleziono graczy"
+    "no_players": "Nie znaleziono graczy",
+    "open_bank": "Otwórz Bank"
   },
   "performance": {
     "title": "Wydajność KvK",

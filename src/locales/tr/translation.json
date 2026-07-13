@@ -64,7 +64,8 @@
     "kp_gained": "Kazanılan KP",
     "percent_goal": "% Hedef",
     "rate": "Değerlendirme",
-    "no_players": "Oyuncu bulunamadı"
+    "no_players": "Oyuncu bulunamadı",
+    "open_bank": "Bankayı Aç"
   },
   "performance": {
     "title": "KvK Performansı",

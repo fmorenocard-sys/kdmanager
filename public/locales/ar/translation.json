@@ -56,7 +56,8 @@
         "kp_gained": "KP المكتسبة",
         "percent_goal": "% الهدف",
         "rate": "التقييم",
-        "no_players": "لم يتم العثور على لاعبين"
+        "no_players": "لم يتم العثور على لاعبين",
+        "open_bank": "فتح البنك"
     },
     "performance": {
         "title": "أداء KvK",
