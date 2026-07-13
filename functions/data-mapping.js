@@ -75,25 +75,28 @@ export const DATA_CONFIG = {
         SHEET_PATTERN: 'List', // Actual sheet name in Offseason_KingTrophies_2026.xlsx
     },
 
+    // Format « KD 2997 DW List » (2026-07-13) : onglet unique, plus de
+    // Power Diff / KP Gained / Reason, colonne Highest Acclaim ajoutée.
     DEADWEIGHT: {
-        SHEET_NAME: 'KD97 DW',
+        SHEET_NAME: 'Arkusz1',
         COLUMNS: {
             ID: 0,
             NAME: 1,
             POWER: 2,
             KP: 3,
-            POWER_DIFF: 4,
-            KP_GAINED: 5,
-            REASON: 6,
-            READY: 7,
-            RSS_DONATION: 8,
-            LOCATION: 9,
-            PASSPORTS: 10,
-            DATE_EMIGRATION: 11,
-            NEED_KINGDOM: 12,
-            ACCOUNT_AVAILABLE: 13,
-            STATUS: 14,
-            NOTE: 15
+            ACCLAIM: 4,
+            READY: 5,
+            RSS_DONATION: 6,
+            LOCATION: 7,
+            PASSPORTS: 8,
+            DATE_EMIGRATION: 9,
+            NEED_KINGDOM: 10,
+            ACCOUNT_AVAILABLE: 11,
+            STATUS: 12,
+            NOTE: 13,
+            POWER_DIFF: -1, // absent du nouveau format
+            KP_GAINED: -1,
+            REASON: -1
         }
     },
 
@@ -150,7 +153,7 @@ export const DATA_CONFIG = {
             SPREADSHEET_ID: "1vT3dDPogf4rMLah2sRzTuJxx56AlHOb64ZVRaR1Kfmo"
         },
         DEADWEIGHT: {
-            SPREADSHEET_ID: "1lKpKQs5KdvV0XpYqNk0x8pUy-gC5hixsqdgP4zt3p-o"
+            SPREADSHEET_ID: "1Cj_2fwkhwGD9az6Ir3Y3dI-EgQvPbr84wPAES4S9nuo" // KD 2997 DW List 13/07/2026
         },
         KVK: {
             SPREADSHEET_ID: "1qX6b4Z6w70x5gbk63aACVLU3QSNMHDWFo0QO1a7hy3A"

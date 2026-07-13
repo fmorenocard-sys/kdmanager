@@ -255,11 +255,23 @@ async function syncBank(sheets) {
     return { status: "success" };
 }
 
+// Officer sheets often format numbers with (non-breaking) spaces: "82 975 614"
+function cleanNumber(v) {
+    if (v === null || v === undefined) return 0;
+    const n = Number(String(v).replace(/[^0-9.-]/g, ''));
+    return Number.isFinite(n) ? n : 0;
+}
+
 async function syncDeadweight(sheets) {
     const SPREADSHEET_ID = DATA_CONFIG.GOOGLE_SHEETS.DEADWEIGHT.SPREADSHEET_ID;
     if (!SPREADSHEET_ID || SPREADSHEET_ID.includes("YOUR_")) return { status: "skipped" };
 
-    const sheetName = await findSheetName(sheets, SPREADSHEET_ID, DATA_CONFIG.SHEETS.DEADWEIGHT);
+    let sheetName = await findSheetName(sheets, SPREADSHEET_ID, DATA_CONFIG.SHEETS.DEADWEIGHT);
+    if (!sheetName) {
+        // Officer-made files are single-tab with arbitrary names — take the first tab
+        const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+        sheetName = meta.data.sheets?.[0]?.properties?.title || null;
+    }
     if (!sheetName) return { status: "error", reason: "Deadweight sheet not found" };
 
     const rows = await getSheetData(sheets, SPREADSHEET_ID, sheetName);
@@ -273,12 +285,13 @@ async function syncDeadweight(sheets) {
         return {
             id: id,
             name: name,
-            power: Number(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.POWER]) || 0,
-            kp: Number(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.KP]) || 0,
-            powerDiff: Number(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.POWER_DIFF]) || 0,
-            kpGained: Number(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.KP_GAINED]) || 0,
-            reason: row[DATA_CONFIG.DEADWEIGHT.COLUMNS.REASON] || "Unknown",
-            ready: String(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.READY]).toLowerCase() === 'yes',
+            power: cleanNumber(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.POWER]),
+            kp: cleanNumber(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.KP]),
+            acclaim: cleanNumber(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.ACCLAIM]),
+            powerDiff: cleanNumber(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.POWER_DIFF]),
+            kpGained: cleanNumber(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.KP_GAINED]),
+            reason: row[DATA_CONFIG.DEADWEIGHT.COLUMNS.REASON] || "Deadweight",
+            ready: row[DATA_CONFIG.DEADWEIGHT.COLUMNS.READY] === true || String(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.READY]).toLowerCase() === 'yes' || String(row[DATA_CONFIG.DEADWEIGHT.COLUMNS.READY]).toLowerCase() === 'true',
             rssDonation: row[DATA_CONFIG.DEADWEIGHT.COLUMNS.RSS_DONATION],
             location: row[DATA_CONFIG.DEADWEIGHT.COLUMNS.LOCATION],
             passports: row[DATA_CONFIG.DEADWEIGHT.COLUMNS.PASSPORTS],

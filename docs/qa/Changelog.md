@@ -1,5 +1,11 @@
 # QA Changelog
 
+## v2.17 - 2026-07-13
+### Fixed
+- **Deadweight branché sur la nouvelle liste (F-004)** : la page était techniquement saine (sheet → sync 05:00 → Firestore → listeners) mais la sheet configurée « KD 97 Deadweight » était figée au 28/02. Un officier a créé « KD 2997 DW List 13/07/2026 » (format différent : onglet unique Arkusz1, colonnes décalées, sans Power Diff/Reason, avec Highest Acclaim). Config repointée, mapping adapté, syncDeadweight robustifié : repli sur le premier onglet quand le nom ne matche pas, parsing des nombres formatés avec espaces, Ready booléen. Vérifié : 19 entrées fraîches sur la page, anciennes purgées.
+### Note
+- Convention à retenir côté officiers : les fichiers datés (« DW List 13/07/2026 ») imposent une mise à jour de config à chaque nouvelle liste — préférer réutiliser la même sheet canonique (comme Top300) ou prévenir pour repointer.
+
 ## v2.16 - 2026-07-12
 ### Fixed
 - **i18n — libellés codés en dur (F-009/TC-016)** : de nombreuses clés existaient dans les 9 locales depuis février mais le code ne les appelait pas. Branchés sur t() : colonnes KvK (Init/Final KP, KP Gained, % Goal, T4/T5/Pass/KL Dead), **ratings traduits à l'affichage** (nouveau ns ratings ×9 ; la valeur brute reste la clé de filtre), DataRefreshControl (Data Management, Sync Cloud, Upload File, états), PlayerDetailPanel (ns player_panel ×9, 14 clés), ressources Banque (Food/Wood/Stone/Gold ×9), libellés Deadweight, ThemeToggle (Clair/Sombre ×9), en-têtes de la vue Progression. Vérifié en polonais : zéro chaîne anglaise résiduelle sur la page KvK, tableau 100 % traduit.
