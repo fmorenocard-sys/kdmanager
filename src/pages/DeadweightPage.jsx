@@ -188,16 +188,16 @@ const DeadweightPage = () => {
                                     </div>
                                     <div className="grid grid-cols-2 gap-2 text-xs">
                                         <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
-                                            <span className="text-slate-500">Power</span>
+                                            <span className="text-slate-500">{t('deadweight.power')}</span>
                                             <span className="font-mono text-slate-300">{formatNumber(row.power)}</span>
                                         </div>
                                         <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
-                                            <span className="text-slate-500">KP</span>
+                                            <span className="text-slate-500">{t('performance.kp')}</span>
                                             <span className="font-mono text-slate-300">{formatNumber(row.kp)}</span>
                                         </div>
                                         {(row.note && row.note.trim() !== '' && row.note !== '-') && (
                                             <div className="col-span-2 flex flex-col bg-slate-900/30 border border-[var(--border-flat)]/30 p-2 rounded gap-1">
-                                                <span className="text-slate-500 text-[10px]">Notes</span>
+                                                <span className="text-slate-500 text-[10px]">{t('common.notes')}</span>
                                                 <span className="text-slate-300 line-clamp-2">{row.note}</span>
                                             </div>
                                         )}
@@ -218,8 +218,8 @@ const DeadweightPage = () => {
                                     <TableRow>
                                         <TableHead className="w-[80px] text-xs">ID</TableHead>
                                         <TableHead className="text-xs">{t('war.governor')}</TableHead>
-                                        <TableHead className="text-xs">Power</TableHead>
-                                        <TableHead className="text-xs">Kill Points</TableHead>
+                                        <TableHead className="text-xs">{t('deadweight.power')}</TableHead>
+                                        <TableHead className="text-xs">{t('player_panel.kill_points')}</TableHead>
                                         <TableHead className="text-xs">{t('war.status')}</TableHead>
                                         <TableHead className="text-xs">{t('common.notes')}</TableHead>
                                     </TableRow>

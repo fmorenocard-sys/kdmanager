@@ -39,7 +39,9 @@
     "no_data": "Keine Daten verfügbar.",
     "notes": "Notizen",
     "min_chars": "Mindestens 3 Zeichen eingeben...",
-    "toggle_theme": "Helles/dunkles Design umschalten"
+    "toggle_theme": "Helles/dunkles Design umschalten",
+    "light": "Hell",
+    "dark": "Dunkel"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -196,7 +198,11 @@
     "total_deposits": "Gesamte Einzahlungen",
     "total_withdrawals": "Gesamte Auszahlungen",
     "net_balance": "Nettoguthaben",
-    "search_placeholder": "Spieler oder Notizen suchen..."
+    "search_placeholder": "Spieler oder Notizen suchen...",
+    "food": "Nahrung",
+    "wood": "Holz",
+    "stone": "Stein",
+    "gold": "Gold"
   },
   "profile": {
     "title": "Benutzerprofil",
@@ -231,7 +237,9 @@
     "uploading": "Hochladen...",
     "upload_xlsx": "XLSX hochladen",
     "sync_success": "Daten erfolgreich synchronisiert",
-    "sync_error": "Synchronisierung fehlgeschlagen"
+    "sync_error": "Synchronisierung fehlgeschlagen",
+    "syncing": "Synchronisiere…",
+    "no_data": "Keine Daten geladen"
   },
   "player_detail": {
     "title": "Spielerdetails",
@@ -269,5 +277,28 @@
     "archived_success": "„{{title}}“ wurde archiviert.",
     "title_required": "Kampagnentitel ist erforderlich.",
     "no_current_data": "Keine aktuellen KvK-Daten zum Archivieren."
+  },
+  "ratings": {
+    "excellent": "Exzellent",
+    "good": "Gut",
+    "improve": "Verbesserung nötig",
+    "improve_short": "Verb. nötig",
+    "dead": "Ballast"
+  },
+  "player_panel": {
+    "power": "Macht",
+    "kill_points": "Kill Points",
+    "combat": "Kampfdetails",
+    "economy": "Wirtschaft & Wachstum",
+    "dead_troops": "Gefallene Truppen",
+    "t4_kills": "T4-Kills",
+    "t5_kills": "T5-Kills",
+    "t1_kills": "T1-Kills",
+    "ranged": "Fernkampf",
+    "rss_assistance": "RSS-Hilfe",
+    "rss_gathered": "RSS gesammelt",
+    "helps": "Hilfen",
+    "city_hall": "Rathaus-Level",
+    "no_alliance": "Keine Allianz"
   }
 }

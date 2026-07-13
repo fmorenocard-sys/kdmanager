@@ -39,7 +39,9 @@
     "no_data": "No data available.",
     "notes": "Notes",
     "min_chars": "Type at least 3 characters...",
-    "toggle_theme": "Toggle light/dark theme"
+    "toggle_theme": "Toggle light/dark theme",
+    "light": "Light",
+    "dark": "Dark"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -196,7 +198,11 @@
     "total_deposits": "Total Deposits",
     "total_withdrawals": "Total Withdrawals",
     "net_balance": "Net Balance",
-    "search_placeholder": "Search player or notes..."
+    "search_placeholder": "Search player or notes...",
+    "food": "Food",
+    "wood": "Wood",
+    "stone": "Stone",
+    "gold": "Gold"
   },
   "profile": {
     "title": "User Profile",
@@ -231,7 +237,9 @@
     "uploading": "Uploading...",
     "upload_xlsx": "Upload XLSX",
     "sync_success": "Data synchronized successfully",
-    "sync_error": "Sync failed"
+    "sync_error": "Sync failed",
+    "syncing": "Syncing…",
+    "no_data": "No data loaded"
   },
   "player_detail": {
     "title": "Player Details",
@@ -269,5 +277,28 @@
     "archived_success": "\"{{title}}\" has been archived.",
     "title_required": "Campaign title is required.",
     "no_current_data": "No current KvK data to archive."
+  },
+  "ratings": {
+    "excellent": "Excellent",
+    "good": "Good",
+    "improve": "Need Improvement",
+    "improve_short": "Need Imp.",
+    "dead": "Dead Weight"
+  },
+  "player_panel": {
+    "power": "Power",
+    "kill_points": "Kill Points",
+    "combat": "Combat Details",
+    "economy": "Economy & Growth",
+    "dead_troops": "Dead Troops",
+    "t4_kills": "T4 Kills",
+    "t5_kills": "T5 Kills",
+    "t1_kills": "T1 Kills",
+    "ranged": "Ranged",
+    "rss_assistance": "RSS Assistance",
+    "rss_gathered": "RSS Gathered",
+    "helps": "Helps",
+    "city_hall": "City Hall Level",
+    "no_alliance": "No Alliance"
   }
 }

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     X, Activity, Shield, Trophy, MapPin,
     Swords, Skull, Users, Hammer, ScrollText,
@@ -10,6 +11,7 @@ import Button from './ui/Button';
 import Avatar from './ui/Avatar';
 
 const PlayerDetailPanel = ({ player, onClose }) => {
+    const { t } = useTranslation();
     // Close on escape key
     useEffect(() => {
         const handleEsc = (e) => {
@@ -37,13 +39,13 @@ const PlayerDetailPanel = ({ player, onClose }) => {
                             <h2 className="text-2xl font-bold text-white">{player.name}</h2>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="v2-pill neutral">
-                                    {player.alliance || 'No Alliance'}
+                                    {player.alliance || t('player_panel.no_alliance')}
                                 </span>
                                 <span className="text-xs text-slate-500 font-mono">ID: {player.id}</span>
                             </div>
                         </div>
                     </div>
-                    <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px]" onClick={onClose} aria-label="Close">
+                    <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px]" onClick={onClose} aria-label={t('common.close')}>
                         <X size={24} />
                     </Button>
                 </div>
@@ -56,7 +58,7 @@ const PlayerDetailPanel = ({ player, onClose }) => {
                         <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
                             <div className="flex items-center gap-2 text-blue-400 mb-2">
                                 <TrendingUp size={18} />
-                                <span className="text-xs font-bold uppercase tracking-wider">Power</span>
+                                <span className="text-xs font-bold uppercase tracking-wider">{t('player_panel.power')}</span>
                             </div>
                             <div className="text-xl font-bold text-white">{format(player.power)}</div>
                             {player.powerDiff !== 0 && (
@@ -68,7 +70,7 @@ const PlayerDetailPanel = ({ player, onClose }) => {
                         <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
                             <div className="flex items-center gap-2 text-red-400 mb-2">
                                 <Swords size={18} />
-                                <span className="text-xs font-bold uppercase tracking-wider">Kill Points</span>
+                                <span className="text-xs font-bold uppercase tracking-wider">{t('player_panel.kill_points')}</span>
                             </div>
                             <div className="text-xl font-bold text-white">{format(player.kp)}</div>
                         </div>
@@ -77,28 +79,28 @@ const PlayerDetailPanel = ({ player, onClose }) => {
                     {/* Combat Stats */}
                     <div>
                         <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <Skull size={16} /> Combat Details
+                            <Skull size={16} /> {t('player_panel.combat')}
                         </h3>
                         <div className="space-y-3">
-                            <StatRow label="Dead Troops" value={player.deads} icon={<Skull size={14} />} color="text-slate-400" />
-                            <StatRow label="T4 Kills" value={player.t4Kills} icon={<Target size={14} />} color="text-purple-400" />
-                            <StatRow label="T5 Kills" value={player.t5Kills} icon={<Target size={14} />} color="text-amber-400" />
-                            <StatRow label="T1 Kills" value={player.t1Kills} icon={<Target size={14} />} color="text-slate-500" />
-                            <StatRow label="Ranged" value={player.ranged} icon={<Target size={14} />} color="text-blue-400" />
+                            <StatRow label={t('player_panel.dead_troops')} value={player.deads} icon={<Skull size={14} />} color="text-slate-400" />
+                            <StatRow label={t('player_panel.t4_kills')} value={player.t4Kills} icon={<Target size={14} />} color="text-purple-400" />
+                            <StatRow label={t('player_panel.t5_kills')} value={player.t5Kills} icon={<Target size={14} />} color="text-amber-400" />
+                            <StatRow label={t('player_panel.t1_kills')} value={player.t1Kills} icon={<Target size={14} />} color="text-slate-500" />
+                            <StatRow label={t('player_panel.ranged')} value={player.ranged} icon={<Target size={14} />} color="text-blue-400" />
                         </div>
                     </div>
 
                     {/* Economy & Growth */}
                     <div>
                         <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <Hammer size={16} /> Economy & Growth
+                            <Hammer size={16} /> {t('player_panel.economy')}
                         </h3>
                         <div className="space-y-3">
-                            <StatRow label="RSS Assistance" value={player.rssAssistance} />
-                            <StatRow label="RSS Gathered" value={player.rssGathered} />
-                            <StatRow label="Helps" value={player.helps} />
+                            <StatRow label={t('player_panel.rss_assistance')} value={player.rssAssistance} />
+                            <StatRow label={t('player_panel.rss_gathered')} value={player.rssGathered} />
+                            <StatRow label={t('player_panel.helps')} value={player.helps} />
                             <div className="flex justify-between items-center p-3 rounded-lg bg-[var(--border-flat)] border border-transparent">
-                                <span className="text-slate-400 text-sm">City Hall Level</span>
+                                <span className="text-slate-400 text-sm">{t('player_panel.city_hall')}</span>
                                 <span className="text-white font-mono font-bold">{player.cityHall}</span>
                             </div>
                         </div>
@@ -108,7 +110,7 @@ const PlayerDetailPanel = ({ player, onClose }) => {
                     {(player.notes || player.location) && (
                         <div>
                             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <ScrollText size={16} /> Notes
+                                <ScrollText size={16} /> {t('common.notes')}
                             </h3>
                             <div className="p-4 rounded-xl bg-[var(--border-flat)] space-y-3">
                                 {player.location && (

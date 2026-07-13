@@ -39,7 +39,9 @@
     "no_data": "Không có dữ liệu.",
     "notes": "Ghi chú",
     "min_chars": "Nhập ít nhất 3 ký tự...",
-    "toggle_theme": "Chuyển giao diện sáng/tối"
+    "toggle_theme": "Chuyển giao diện sáng/tối",
+    "light": "Sáng",
+    "dark": "Tối"
   },
   "dashboard": {
     "title": "Bảng điều khiển",
@@ -196,7 +198,11 @@
     "total_deposits": "Tổng nạp vào",
     "total_withdrawals": "Tổng rút ra",
     "net_balance": "Số dư ròng",
-    "search_placeholder": "Tìm người chơi hoặc ghi chú..."
+    "search_placeholder": "Tìm người chơi hoặc ghi chú...",
+    "food": "Lương thực",
+    "wood": "Gỗ",
+    "stone": "Đá",
+    "gold": "Vàng"
   },
   "profile": {
     "title": "Hồ sơ người dùng",
@@ -231,7 +237,9 @@
     "uploading": "Đang tải lên...",
     "upload_xlsx": "Tải lên XLSX",
     "sync_success": "Dữ liệu đã đồng bộ thành công",
-    "sync_error": "Đồng bộ thất bại"
+    "sync_error": "Đồng bộ thất bại",
+    "syncing": "Đang đồng bộ…",
+    "no_data": "Chưa tải dữ liệu"
   },
   "player_detail": {
     "title": "Chi tiết người chơi",
@@ -269,5 +277,28 @@
     "archived_success": "\"{{title}}\" đã được lưu trữ.",
     "title_required": "Cần nhập tên chiến dịch.",
     "no_current_data": "Không có dữ liệu KvK hiện tại để lưu trữ."
+  },
+  "ratings": {
+    "excellent": "Xuất sắc",
+    "good": "Tốt",
+    "improve": "Cần cải thiện",
+    "improve_short": "Cải thiện",
+    "dead": "Gánh nặng"
+  },
+  "player_panel": {
+    "power": "Lực chiến",
+    "kill_points": "Kill Points",
+    "combat": "Chi tiết chiến đấu",
+    "economy": "Kinh tế & Phát triển",
+    "dead_troops": "Quân đã chết",
+    "t4_kills": "Kill T4",
+    "t5_kills": "Kill T5",
+    "t1_kills": "Kill T1",
+    "ranged": "Tầm xa",
+    "rss_assistance": "Hỗ trợ RSS",
+    "rss_gathered": "RSS thu thập",
+    "helps": "Trợ giúp",
+    "city_hall": "Cấp tòa thị chính",
+    "no_alliance": "Không liên minh"
   }
 }

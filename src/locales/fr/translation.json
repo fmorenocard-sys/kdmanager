@@ -39,7 +39,9 @@
     "no_data": "Aucune donnée disponible.",
     "notes": "Notes",
     "min_chars": "Tapez au moins 3 caractères...",
-    "toggle_theme": "Basculer thème clair/sombre"
+    "toggle_theme": "Basculer thème clair/sombre",
+    "light": "Clair",
+    "dark": "Sombre"
   },
   "dashboard": {
     "title": "Tableau de Bord",
@@ -196,7 +198,11 @@
     "total_deposits": "Total Dépôts",
     "total_withdrawals": "Total Retraits",
     "net_balance": "Solde Net",
-    "search_placeholder": "Rechercher joueur ou notes..."
+    "search_placeholder": "Rechercher joueur ou notes...",
+    "food": "Nourriture",
+    "wood": "Bois",
+    "stone": "Pierre",
+    "gold": "Or"
   },
   "profile": {
     "title": "Profil Utilisateur",
@@ -231,7 +237,9 @@
     "uploading": "Téléchargement...",
     "upload_xlsx": "Uploader XLSX",
     "sync_success": "Données synchronisées avec succès",
-    "sync_error": "Échec de la synchro"
+    "sync_error": "Échec de la synchro",
+    "syncing": "Synchronisation…",
+    "no_data": "Aucune donnée chargée"
   },
   "player_detail": {
     "title": "Détails du Joueur",
@@ -269,5 +277,28 @@
     "archived_success": "« {{title}} » a été archivée.",
     "title_required": "Le titre de la campagne est requis.",
     "no_current_data": "Aucune donnée KvK courante à archiver."
+  },
+  "ratings": {
+    "excellent": "Excellent",
+    "good": "Bon",
+    "improve": "À améliorer",
+    "improve_short": "À amél.",
+    "dead": "Poids mort"
+  },
+  "player_panel": {
+    "power": "Puissance",
+    "kill_points": "Kill Points",
+    "combat": "Détails de combat",
+    "economy": "Économie & Croissance",
+    "dead_troops": "Troupes mortes",
+    "t4_kills": "Kills T4",
+    "t5_kills": "Kills T5",
+    "t1_kills": "Kills T1",
+    "ranged": "À distance",
+    "rss_assistance": "Assistance RSS",
+    "rss_gathered": "RSS récoltées",
+    "helps": "Aides",
+    "city_hall": "Niveau Hôtel de Ville",
+    "no_alliance": "Sans alliance"
   }
 }

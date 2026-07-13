@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.16 - 2026-07-12
+### Fixed
+- **i18n — libellés codés en dur (F-009/TC-016)** : de nombreuses clés existaient dans les 9 locales depuis février mais le code ne les appelait pas. Branchés sur t() : colonnes KvK (Init/Final KP, KP Gained, % Goal, T4/T5/Pass/KL Dead), **ratings traduits à l'affichage** (nouveau ns ratings ×9 ; la valeur brute reste la clé de filtre), DataRefreshControl (Data Management, Sync Cloud, Upload File, états), PlayerDetailPanel (ns player_panel ×9, 14 clés), ressources Banque (Food/Wood/Stone/Gold ×9), libellés Deadweight, ThemeToggle (Clair/Sombre ×9), en-têtes de la vue Progression. Vérifié en polonais : zéro chaîne anglaise résiduelle sur la page KvK, tableau 100 % traduit.
+
 ## v2.15 - 2026-07-12
 ### Fixed
 - **Avatars de la page Trophées (F-016)** : les gagnants des trophées sont saisis à la main dans la sheet (« Helios », « Pisontje »…) avec id:null — la cascade avatars n'avait aucune clé et affichait le logo partout. Nouveau résolveur `resolveGovernorId` (lib partagée) : normalisation NFKD (replie les préfixes unicode ᵁᴺ), matching exact → inclusion → distance d'édition ≤ 2 pour les typos, jointure avec la liste players. Vérifié : 10 avatars Lilith frais + 5 locaux sur la page, 4 non-résolus restent en logo (fallback normal).

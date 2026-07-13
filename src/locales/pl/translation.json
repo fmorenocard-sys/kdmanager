@@ -39,7 +39,9 @@
     "no_data": "Brak danych.",
     "notes": "Notatki",
     "min_chars": "Wpisz co najmniej 3 znaki...",
-    "toggle_theme": "Przełącz jasny/ciemny motyw"
+    "toggle_theme": "Przełącz jasny/ciemny motyw",
+    "light": "Jasny",
+    "dark": "Ciemny"
   },
   "dashboard": {
     "title": "Panel",
@@ -196,7 +198,11 @@
     "total_deposits": "Łączne wpłaty",
     "total_withdrawals": "Łączne wypłaty",
     "net_balance": "Saldo netto",
-    "search_placeholder": "Szukaj gracza lub notatek..."
+    "search_placeholder": "Szukaj gracza lub notatek...",
+    "food": "Żywność",
+    "wood": "Drewno",
+    "stone": "Kamień",
+    "gold": "Złoto"
   },
   "profile": {
     "title": "Profil użytkownika",
@@ -231,7 +237,9 @@
     "uploading": "Przesyłanie...",
     "upload_xlsx": "Prześlij XLSX",
     "sync_success": "Dane zsynchronizowane pomyślnie",
-    "sync_error": "Synchronizacja nieudana"
+    "sync_error": "Synchronizacja nieudana",
+    "syncing": "Synchronizacja…",
+    "no_data": "Brak wczytanych danych"
   },
   "player_detail": {
     "title": "Szczegóły gracza",
@@ -269,5 +277,28 @@
     "archived_success": "„{{title}}” została zarchiwizowana.",
     "title_required": "Tytuł kampanii jest wymagany.",
     "no_current_data": "Brak bieżących danych KvK do archiwizacji."
+  },
+  "ratings": {
+    "excellent": "Znakomity",
+    "good": "Dobry",
+    "improve": "Do poprawy",
+    "improve_short": "Do popr.",
+    "dead": "Balast"
+  },
+  "player_panel": {
+    "power": "Moc",
+    "kill_points": "Kill Points",
+    "combat": "Szczegóły walki",
+    "economy": "Ekonomia i rozwój",
+    "dead_troops": "Martwe wojska",
+    "t4_kills": "Zabójstwa T4",
+    "t5_kills": "Zabójstwa T5",
+    "t1_kills": "Zabójstwa T1",
+    "ranged": "Dystansowe",
+    "rss_assistance": "Pomoc RSS",
+    "rss_gathered": "Zebrane RSS",
+    "helps": "Pomoce",
+    "city_hall": "Poziom ratusza",
+    "no_alliance": "Brak sojuszu"
   }
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useState } from 'react';
 import { useData } from '../context/DataContext';
 import { Upload, RefreshCw, FileSpreadsheet, CheckCircle, AlertCircle } from './ui/icons';
@@ -5,6 +6,7 @@ import { useRole, ROLES } from '../context/RoleContext';
 
 const DataRefreshControl = () => {
     const { refreshData, triggerSync, loading, lastUpdated, error } = useData();
+    const { t } = useTranslation();
     const { role } = useRole();
     const fileInputRef = useRef(null);
     const [uploadStatus, setUploadStatus] = useState('idle');
@@ -42,13 +44,13 @@ const DataRefreshControl = () => {
             <div className="flex items-center gap-3 px-4 pt-3 pb-2">
                 <div className="flex-shrink-0">{statusIcon}</div>
                 <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium text-slate-300 leading-tight">Data Management</p>
+                    <p className="text-xs font-medium text-slate-300 leading-tight">{t('datarefresh.title')}</p>
                     <p className="text-xs text-slate-500 leading-tight truncate">
                         {loading
-                            ? 'Loading…'
+                            ? t('common.loading')
                             : lastUpdated
                                 ? `Updated: ${lastUpdated.toLocaleTimeString()}`
-                                : 'No data loaded'}
+                                : t('datarefresh.no_data')}
                     </p>
                 </div>
                 {loading && <RefreshCw size={14} className="animate-spin text-slate-500 flex-shrink-0" />}
@@ -69,7 +71,7 @@ const DataRefreshControl = () => {
                             className="flex-1 flex items-center justify-center gap-2 px-4 min-h-[44px] text-[13px] font-bold rounded-xl btn-grad-primary text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-                            {loading ? 'Syncing…' : 'Sync Cloud'}
+                            {loading ? t('datarefresh.syncing') : t('datarefresh.refresh')}
                         </button>
                     )}
                     <button
@@ -78,7 +80,7 @@ const DataRefreshControl = () => {
                         className="flex-1 flex items-center justify-center gap-2 px-4 min-h-[44px] text-[13px] font-bold rounded-xl border border-[var(--border-flat)] bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-flat)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Upload size={16} />
-                        {loading ? 'Processing…' : 'Upload File'}
+                        {loading ? t('datarefresh.uploading') : t('datarefresh.upload_xlsx')}
                     </button>
                     <input
                         type="file"

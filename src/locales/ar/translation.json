@@ -39,7 +39,9 @@
     "no_data": "لا توجد بيانات.",
     "notes": "ملاحظات",
     "min_chars": "اكتب 3 أحرف على الأقل...",
-    "toggle_theme": "تبديل السمة الفاتحة/الداكنة"
+    "toggle_theme": "تبديل السمة الفاتحة/الداكنة",
+    "light": "فاتح",
+    "dark": "داكن"
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -196,7 +198,11 @@
     "total_deposits": "إجمالي الودائع",
     "total_withdrawals": "إجمالي السحوبات",
     "net_balance": "الرصيد الصافي",
-    "search_placeholder": "ابحث عن لاعب أو ملاحظات..."
+    "search_placeholder": "ابحث عن لاعب أو ملاحظات...",
+    "food": "طعام",
+    "wood": "خشب",
+    "stone": "حجر",
+    "gold": "ذهب"
   },
   "profile": {
     "title": "ملف المستخدم",
@@ -231,7 +237,9 @@
     "uploading": "جاري الرفع...",
     "upload_xlsx": "رفع XLSX",
     "sync_success": "تمت المزامنة بنجاح",
-    "sync_error": "فشلت المزامنة"
+    "sync_error": "فشلت المزامنة",
+    "syncing": "جارٍ المزامنة…",
+    "no_data": "لا توجد بيانات"
   },
   "player_detail": {
     "title": "تفاصيل اللاعب",
@@ -269,5 +277,28 @@
     "archived_success": "تمت أرشفة \"{{title}}\".",
     "title_required": "عنوان الحملة مطلوب.",
     "no_current_data": "لا توجد بيانات KvK حالية للأرشفة."
+  },
+  "ratings": {
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "improve": "يحتاج تحسين",
+    "improve_short": "تحسين",
+    "dead": "عبء ميت"
+  },
+  "player_panel": {
+    "power": "القوة",
+    "kill_points": "Kill Points",
+    "combat": "تفاصيل القتال",
+    "economy": "الاقتصاد والنمو",
+    "dead_troops": "القوات الميتة",
+    "t4_kills": "قتلى T4",
+    "t5_kills": "قتلى T5",
+    "t1_kills": "قتلى T1",
+    "ranged": "بعيد المدى",
+    "rss_assistance": "مساعدة RSS",
+    "rss_gathered": "RSS مجمعة",
+    "helps": "مساعدات",
+    "city_hall": "مستوى القاعة",
+    "no_alliance": "بدون تحالف"
   }
 }

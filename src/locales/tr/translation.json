@@ -39,7 +39,9 @@
     "no_data": "Veri yok.",
     "notes": "Notlar",
     "min_chars": "En az 3 karakter girin...",
-    "toggle_theme": "Açık/koyu temayı değiştir"
+    "toggle_theme": "Açık/koyu temayı değiştir",
+    "light": "Açık",
+    "dark": "Koyu"
   },
   "dashboard": {
     "title": "Panel",
@@ -196,7 +198,11 @@
     "total_deposits": "Toplam Yatırma",
     "total_withdrawals": "Toplam Çekme",
     "net_balance": "Net Bakiye",
-    "search_placeholder": "Oyuncu veya not ara..."
+    "search_placeholder": "Oyuncu veya not ara...",
+    "food": "Yiyecek",
+    "wood": "Odun",
+    "stone": "Taş",
+    "gold": "Altın"
   },
   "profile": {
     "title": "Kullanıcı Profili",
@@ -231,7 +237,9 @@
     "uploading": "Yükleniyor...",
     "upload_xlsx": "XLSX Yükle",
     "sync_success": "Veri başarıyla senkronize edildi",
-    "sync_error": "Senkronizasyon başarısız"
+    "sync_error": "Senkronizasyon başarısız",
+    "syncing": "Eşitleniyor…",
+    "no_data": "Yüklü veri yok"
   },
   "player_detail": {
     "title": "Oyuncu Detayları",
@@ -269,5 +277,28 @@
     "archived_success": "\"{{title}}\" arşivlendi.",
     "title_required": "Kampanya başlığı gereklidir.",
     "no_current_data": "Arşivlenecek güncel KvK verisi yok."
+  },
+  "ratings": {
+    "excellent": "Mükemmel",
+    "good": "İyi",
+    "improve": "Geliştirilmeli",
+    "improve_short": "Geliştir.",
+    "dead": "Ölü Ağırlık"
+  },
+  "player_panel": {
+    "power": "Güç",
+    "kill_points": "Kill Points",
+    "combat": "Savaş Detayları",
+    "economy": "Ekonomi ve Büyüme",
+    "dead_troops": "Ölen Birlikler",
+    "t4_kills": "T4 Kill",
+    "t5_kills": "T5 Kill",
+    "t1_kills": "T1 Kill",
+    "ranged": "Menzilli",
+    "rss_assistance": "RSS Yardımı",
+    "rss_gathered": "Toplanan RSS",
+    "helps": "Yardımlar",
+    "city_hall": "Belediye Seviyesi",
+    "no_alliance": "İttifaksız"
   }
 }

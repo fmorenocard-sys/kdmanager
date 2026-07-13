@@ -135,19 +135,19 @@ const BankPage = () => {
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 text-xs">
                                             <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
-                                                <span className="text-amber-500/80">Food</span>
+                                                <span className="text-amber-500/80">{t('bank.food')}</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.food)}</span>
                                             </div>
                                             <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
-                                                <span className="text-emerald-500/80">Wood</span>
+                                                <span className="text-emerald-500/80">{t('bank.wood')}</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.wood)}</span>
                                             </div>
                                             <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
-                                                <span className="text-stone-500/80">Stone</span>
+                                                <span className="text-stone-500/80">{t('bank.stone')}</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.stone)}</span>
                                             </div>
                                             <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
-                                                <span className="text-yellow-500/80">Gold</span>
+                                                <span className="text-yellow-500/80">{t('bank.gold')}</span>
                                                 <span className="font-mono text-slate-300">{formatNumber(row.gold)}</span>
                                             </div>
                                             <div className="col-span-2 flex justify-between bg-white/5 border border-white/10 p-2 rounded">
@@ -166,10 +166,10 @@ const BankPage = () => {
                                         <TableRow>
                                             <TableHead className="w-[60px] text-xs text-center">{t('dashboard.rank')}</TableHead>
                                             <TableHead className="text-xs">{t('war.governor')}</TableHead>
-                                            <TableHead className="text-right text-amber-500/80 text-xs">Food</TableHead>
-                                            <TableHead className="text-right text-emerald-500/80 text-xs">Wood</TableHead>
-                                            <TableHead className="text-right text-stone-500/80 text-xs">Stone</TableHead>
-                                            <TableHead className="text-right text-yellow-500/80 text-xs">Gold</TableHead>
+                                            <TableHead className="text-right text-amber-500/80 text-xs">{t('bank.food')}</TableHead>
+                                            <TableHead className="text-right text-emerald-500/80 text-xs">{t('bank.wood')}</TableHead>
+                                            <TableHead className="text-right text-stone-500/80 text-xs">{t('bank.stone')}</TableHead>
+                                            <TableHead className="text-right text-yellow-500/80 text-xs">{t('bank.gold')}</TableHead>
                                             <TableHead className="text-right font-bold text-white text-xs">{t('bank.week_total')}</TableHead>
                                         </TableRow>
                                     </TableHeader>

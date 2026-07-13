@@ -108,6 +108,16 @@ const KvKPerformancePage = () => {
         }), { totalDead: 0, totalPowerDiff: 0, totalKpGained: 0 });
     }, [activeData]);
 
+    const rateLabel = (rate) => {
+        if (!rate) return t('common.unknown');
+        const r = rate.toLowerCase();
+        if (r === 'excellent') return t('ratings.excellent');
+        if (r === 'good' || r === 'great') return t('ratings.good');
+        if (r === 'need improvement' || r === 'average' || r === 'ok') return t('ratings.improve');
+        if (r === 'dead weight' || r === 'bad' || r === 'poor') return t('ratings.dead');
+        return rate;
+    };
+
     const getRateClass = (rate) => {
         if (!rate) return 'v2-pill neutral';
         const r = rate.toLowerCase();
@@ -137,10 +147,10 @@ const KvKPerformancePage = () => {
 
         // Define specific order and colors based on actual data
         const predefined = [
-            { value: 'Excellent', label: 'Excellent', colorClass: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
-            { value: 'Good', label: 'Good', colorClass: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-            { value: 'Need Improvement', label: 'Need Imp.', colorClass: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' },
-            { value: 'Dead Weight', label: 'Dead Weight', colorClass: 'text-red-400 bg-red-500/10 border-red-500/20' },
+            { value: 'Excellent', label: t('ratings.excellent'), colorClass: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
+            { value: 'Good', label: t('ratings.good'), colorClass: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+            { value: 'Need Improvement', label: t('ratings.improve_short'), colorClass: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' },
+            { value: 'Dead Weight', label: t('ratings.dead'), colorClass: 'text-red-400 bg-red-500/10 border-red-500/20' },
             // Keeping fallbacks just in case
             { value: 'Great', label: 'Great', colorClass: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
             { value: 'Average', label: 'Average', colorClass: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
@@ -206,11 +216,11 @@ const KvKPerformancePage = () => {
         { k: 'name', L: t('dashboard.name') },
         { k: 'initialPower', L: t('performance.init_power') },
         { k: 'finalPower', L: t('performance.final_power') },
-        { k: 'initialKp', L: 'Init KP' },
-        { k: 'finalKp', L: 'Final KP' },
+        { k: 'initialKp', L: t('performance.init_kp') },
+        { k: 'finalKp', L: t('performance.final_kp') },
         { k: 'totalDead', L: t('performance.total_dead') },
-        { k: 'totalKpGained', L: 'KP Gained' },
-        { k: 'goalPercent', L: '% Goal' },
+        { k: 'totalKpGained', L: t('performance.kp_gained') },
+        { k: 'goalPercent', L: t('performance.goal_percent') },
         { k: 'rate', L: t('performance.rate') },
     ];
 
@@ -219,14 +229,14 @@ const KvKPerformancePage = () => {
         { k: 'name', L: t('dashboard.name') },
         { k: 'initialPower', L: t('performance.init_power') },
         { k: 'finalPower', L: t('performance.final_power') },
-        { k: 'kp', L: 'KP' },
-        { k: 't4Dead', L: 'T4 Dead' },
-        { k: 't5Dead', L: 'T5 Dead' },
-        { k: 'pass4Dead', L: 'Pass 4 Dead' },
-        { k: 'pass7Dead', L: 'Pass 7 Dead' },
-        { k: 'klDead', L: 'KL Dead' },
+        { k: 'kp', L: t('performance.kp') },
+        { k: 't4Dead', L: t('performance.t4_dead') },
+        { k: 't5Dead', L: t('performance.t5_dead') },
+        { k: 'pass4Dead', L: t('performance.pass4_dead') },
+        { k: 'pass7Dead', L: t('performance.pass7_dead') },
+        { k: 'klDead', L: t('performance.kl_dead') },
         { k: 'totalDead', L: t('performance.total_dead') },
-        { k: 'goalPercent', L: '% Goal' },
+        { k: 'goalPercent', L: t('performance.goal_percent') },
     ];
 
     const columns = activeTab === 'main' ? mainColumns : fillerColumns;
@@ -396,7 +406,7 @@ const KvKPerformancePage = () => {
                                     </div>
                                     {activeTab === 'main' && row.rate && (
                                         <span className={`shrink-0 ${getRateClass(row.rate)}`}>
-                                            {row.rate}
+                                            {rateLabel(row.rate)}
                                         </span>
                                     )}
                                 </div>
@@ -468,7 +478,7 @@ const KvKPerformancePage = () => {
                                                     </span>
                                                 ) : k === 'rate' ? (
                                                     <span className={getRateClass(row.rate)}>
-                                                        {row.rate}
+                                                        {rateLabel(row.rate)}
                                                     </span>
                                                 ) : k.toLowerCase().includes('dead') ? (
                                                     <span className="text-red-400 font-bold">{formatNumber(row[k])}</span>
@@ -548,13 +558,13 @@ const KvKPerformancePage = () => {
                                             <span className="font-bold text-white text-sm truncate">{e.campaignTitle}</span>
                                             <span className="flex gap-1 shrink-0">
                                                 {e.isFiller && <span className="px-2 py-0.5 rounded-full text-[10px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
-                                                {e.rate && <span className={getRateClass(e.rate)}>{e.rate}</span>}
+                                                {e.rate && <span className={getRateClass(e.rate)}>{rateLabel(e.rate)}</span>}
                                             </span>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 text-xs">
                                             <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.init_power')}</span><span className="font-mono text-white">{formatNumber(e.initialPower)}</span></div>
                                             <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.final_power')}</span><span className="font-mono text-white">{formatNumber(e.finalPower)}</span></div>
-                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">KP</span><span className="font-mono text-emerald-400">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</span></div>
+                                            <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.kp')}</span><span className="font-mono text-emerald-400">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</span></div>
                                             <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.total_dead')}</span><span className="font-mono text-red-400">{formatNumber(e.totalDead)}</span></div>
                                         </div>
                                         {typeof e.goalPercent === 'number' && (
@@ -580,9 +590,9 @@ const KvKPerformancePage = () => {
                                             <TableHead className="text-left text-xs">{t('kvk_history.campaign_col')}</TableHead>
                                             <TableHead className="text-left text-xs">{t('performance.init_power')}</TableHead>
                                             <TableHead className="text-left text-xs">{t('performance.final_power')}</TableHead>
-                                            <TableHead className="text-left text-xs">KP</TableHead>
+                                            <TableHead className="text-left text-xs">{t('performance.kp')}</TableHead>
                                             <TableHead className="text-left text-xs">{t('performance.total_dead')}</TableHead>
-                                            <TableHead className="text-left text-xs">% Goal</TableHead>
+                                            <TableHead className="text-left text-xs">{t('performance.goal_percent')}</TableHead>
                                             <TableHead className="text-left text-xs">{t('performance.rate')}</TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -613,7 +623,7 @@ const KvKPerformancePage = () => {
                                                 </TableCell>
                                                 <TableCell className="text-xs py-2 px-2">
                                                     {e.rate ? (
-                                                        <span className={getRateClass(e.rate)}>{e.rate}</span>
+                                                        <span className={getRateClass(e.rate)}>{rateLabel(e.rate)}</span>
                                                     ) : <span className="text-slate-600">—</span>}
                                                 </TableCell>
                                             </TableRow>

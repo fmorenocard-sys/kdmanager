@@ -39,7 +39,7 @@ const ThemeToggle = () => {
             className="inline-flex items-center gap-2 min-h-[44px] px-3 sm:px-4 rounded-xl border border-[var(--border-flat)] text-[var(--text-secondary)] text-[13px] font-bold hover:text-[var(--text-primary)] hover:bg-[var(--border-flat)] transition-colors"
         >
             {isLight ? <Moon size={20} /> : <Sun size={20} />}
-            <span className="hidden sm:inline">{isLight ? 'Dark' : 'Light'}</span>
+            <span className="hidden sm:inline">{isLight ? t('common.dark') : t('common.light')}</span>
         </button>
     );
 };

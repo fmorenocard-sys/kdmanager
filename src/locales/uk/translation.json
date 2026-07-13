@@ -39,7 +39,9 @@
     "no_data": "Дані відсутні.",
     "notes": "Нотатки",
     "min_chars": "Введіть щонайменше 3 символи...",
-    "toggle_theme": "Перемкнути світлу/темну тему"
+    "toggle_theme": "Перемкнути світлу/темну тему",
+    "light": "Світла",
+    "dark": "Темна"
   },
   "dashboard": {
     "title": "Панель",
@@ -196,7 +198,11 @@
     "total_deposits": "Загальне поповнення",
     "total_withdrawals": "Загальне зняття",
     "net_balance": "Чистий баланс",
-    "search_placeholder": "Шукати гравця або нотатки..."
+    "search_placeholder": "Шукати гравця або нотатки...",
+    "food": "Їжа",
+    "wood": "Дерево",
+    "stone": "Камінь",
+    "gold": "Золото"
   },
   "profile": {
     "title": "Профіль користувача",
@@ -231,7 +237,9 @@
     "uploading": "Завантаження...",
     "upload_xlsx": "Завантажити XLSX",
     "sync_success": "Дані успішно синхронізовано",
-    "sync_error": "Синхронізація не вдалася"
+    "sync_error": "Синхронізація не вдалася",
+    "syncing": "Синхронізація…",
+    "no_data": "Дані не завантажено"
   },
   "player_detail": {
     "title": "Деталі гравця",
@@ -269,5 +277,28 @@
     "archived_success": "«{{title}}» архівовано.",
     "title_required": "Назва кампанії обов'язкова.",
     "no_current_data": "Немає поточних даних KvK для архівування."
+  },
+  "ratings": {
+    "excellent": "Відмінно",
+    "good": "Добре",
+    "improve": "Потребує покращення",
+    "improve_short": "Покращити",
+    "dead": "Баласт"
+  },
+  "player_panel": {
+    "power": "Сила",
+    "kill_points": "Kill Points",
+    "combat": "Деталі бою",
+    "economy": "Економіка та розвиток",
+    "dead_troops": "Загиблі війська",
+    "t4_kills": "Вбивства T4",
+    "t5_kills": "Вбивства T5",
+    "t1_kills": "Вбивства T1",
+    "ranged": "Дальні",
+    "rss_assistance": "Допомога RSS",
+    "rss_gathered": "Зібрані RSS",
+    "helps": "Допомоги",
+    "city_hall": "Рівень ратуші",
+    "no_alliance": "Без альянсу"
   }
 }
