@@ -1,6 +1,8 @@
 # QA Changelog
 
 ## v2.17 - 2026-07-13
+### Added
+- **BR-009 — Deadweight réservé au leadership (F-004)** : page accessible uniquement aux rôles King/Officer (synchronisés depuis Discord) ; entrées de navigation (sidebar + bottom nav) masquées pour les autres ; carte « Accès Restreint » avec message explicatif (clé ×9 langues) pour un accès direct par URL. Vérifié en invité (nav filtrée + page restreinte). *Limite connue : le document Firestore static_data/deadweight reste lisible publiquement — gating UI uniquement ; durcissement des rules possible en suivi.*
 ### Fixed
 - **Deadweight branché sur la nouvelle liste (F-004)** : la page était techniquement saine (sheet → sync 05:00 → Firestore → listeners) mais la sheet configurée « KD 97 Deadweight » était figée au 28/02. Un officier a créé « KD 2997 DW List 13/07/2026 » (format différent : onglet unique Arkusz1, colonnes décalées, sans Power Diff/Reason, avec Highest Acclaim). Config repointée, mapping adapté, syncDeadweight robustifié : repli sur le premier onglet quand le nom ne matche pas, parsing des nombres formatés avec espaces, Ready booléen. Vérifié : 19 entrées fraîches sur la page, anciennes purgées.
 ### Note

@@ -174,7 +174,8 @@
     "power": "Moc",
     "reason": "Powód",
     "search_placeholder": "Szukaj gracza...",
-    "total": "Łączny ciężar"
+    "total": "Łączny ciężar",
+    "restricted_hint": "Lista balastu jest zarezerwowana dla władz królestwa (Król i Oficerowie). Zaloguj się przez Discord, aby zsynchronizować swoją rolę."
   },
   "bank": {
     "title": "Skarbiec Królestwa",

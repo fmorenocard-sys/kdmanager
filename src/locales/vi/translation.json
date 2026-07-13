@@ -174,7 +174,8 @@
     "power": "Sức mạnh",
     "reason": "Lý do",
     "search_placeholder": "Tìm người chơi...",
-    "total": "Tổng thành viên ì"
+    "total": "Tổng thành viên ì",
+    "restricted_hint": "Danh sách gánh nặng chỉ dành cho lãnh đạo vương quốc (Vua và Sĩ quan). Đăng nhập bằng Discord để đồng bộ vai trò."
   },
   "bank": {
     "title": "Kho bạc vương quốc",

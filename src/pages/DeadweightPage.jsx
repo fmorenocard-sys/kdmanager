@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
+import { useRole, ROLES } from '../context/RoleContext';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Users, AlertTriangle, CheckCircle, Plane, Search, XCircle, ShieldAlert, UserX , Skull } from '../components/ui/icons';
 import DataRefreshControl from '../components/DataRefreshControl';
@@ -14,6 +15,7 @@ import PageHeader from '../components/ui/PageHeader';
 
 const DeadweightPage = () => {
     const { deadweight, loading, error } = useData();
+    const { isAuthorized, loading: roleLoading } = useRole();
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -101,6 +103,16 @@ const DeadweightPage = () => {
 
     if (loading) return <div className="p-8 text-center text-muted">{t('common.loading')}</div>;
     if (error) return <div className="p-8 text-center text-red-400">{error}</div>;
+
+    // BR-009: leadership-only page
+    if (!roleLoading && !isAuthorized([ROLES.KING, ROLES.OFFICER])) {
+        return (
+            <div className="v2-glass p-8 max-w-lg mx-auto mt-12 text-center">
+                <h2 className="text-xl font-bold mb-2">{t('common.restricted')}</h2>
+                <p className="text-sm text-[var(--text-secondary)]">{t('deadweight.restricted_hint')}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 animate-fade-in">

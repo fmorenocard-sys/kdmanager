@@ -174,7 +174,8 @@
     "power": "Güç",
     "reason": "Sebep",
     "search_placeholder": "Oyuncu ara...",
-    "total": "Toplam Yük"
+    "total": "Toplam Yük",
+    "restricted_hint": "Ölü ağırlık listesi krallık yönetimine ayrılmıştır (Kral ve Subaylar). Rolünüzü eşitlemek için Discord ile giriş yapın."
   },
   "bank": {
     "title": "Krallık Hazinesi",

@@ -3,7 +3,7 @@ import { HashRouter, Routes, Route, Link, useLocation, Navigate } from 'react-ro
 import { useTranslation } from 'react-i18next';
 import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { RoleProvider } from './context/RoleContext';
+import { RoleProvider, useRole, ROLES } from './context/RoleContext';
 import { LangProvider } from './context/LangContext';
 import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
@@ -23,12 +23,14 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
   const { t } = useTranslation();
 
   // v2 domain iconography (Claude Design v2/foundations/iconography.html)
+  const { isAuthorized } = useRole();
   const menuItems = [
     { id: 'dashboard', path: '/', icon: CastleTurret, label: t('nav.dashboard') },
     { id: 'war-tracker', path: '/war-tracker', icon: Shield, label: t('nav.war_tracker') },
     { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.performance') },
     { id: 'trophies', path: '/trophies', icon: Trophy, label: t('nav.trophies') },
-    { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
+    // BR-009: deadweight is leadership-only (roles come from Discord sync)
+    ...(isAuthorized([ROLES.KING, ROLES.OFFICER]) ? [{ id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') }] : []),
     { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
   ];
 

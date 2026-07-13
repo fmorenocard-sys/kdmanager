@@ -32,6 +32,7 @@
 | **BR-006** | **KvK Archive Immutability** | `kvk_history` documents are create-only: only the King can create them, and no client can update or delete an archived campaign (enforced by Firestore rules). |
 | **BR-007** | **Governor ID Join Key** | Cross-campaign player progression joins on the governor ID, never on the display name (names change between seasons). |
 | **BR-008** | **Discord-gated KvK views** | The Comptes Secondaires (fillers) and Progression tabs on the KvK Performance page are only rendered for Discord-verified users (SSO login discord: uid, or a linked discordId on the profile). Guests and unlinked Google users only see the main accounts table. |
+| **BR-009** | **Leadership-only Deadweight** | The Deadweight page and its navigation entries (sidebar, bottom nav) are only available to King and Officer roles (roles are granted via Discord sync). Other users see a Restricted Access card with a hint to log in via Discord. Note: the underlying static_data/deadweight document remains publicly readable at the Firestore level — UI-level gating only. |
 
 ## 3. Pages / Screens (P)
 

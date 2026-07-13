@@ -174,7 +174,8 @@
     "power": "Macht",
     "reason": "Grund",
     "search_placeholder": "Spieler suchen...",
-    "total": "Ballast gesamt"
+    "total": "Ballast gesamt",
+    "restricted_hint": "Die Ballast-Beobachtungsliste ist der Königreichsführung vorbehalten (König und Offiziere). Melde dich mit Discord an, um deine Rolle zu synchronisieren."
   },
   "bank": {
     "title": "Königreichs-Schatzkammer",

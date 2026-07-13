@@ -174,7 +174,8 @@
     "power": "Puissance",
     "reason": "Raison",
     "search_placeholder": "Rechercher joueur...",
-    "total": "Total Poids Mort"
+    "total": "Total Poids Mort",
+    "restricted_hint": "La liste de surveillance du poids mort est réservée au leadership du royaume (Roi et Officiers). Connectez-vous via Discord pour synchroniser votre rôle."
   },
   "bank": {
     "title": "Trésorerie du Royaume",

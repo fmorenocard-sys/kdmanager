@@ -174,7 +174,8 @@
     "power": "Poder",
     "reason": "Motivo",
     "search_placeholder": "Buscar jugador...",
-    "total": "Total lastre"
+    "total": "Total lastre",
+    "restricted_hint": "La lista de peso muerto está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión con Discord para sincronizar tu rol."
   },
   "bank": {
     "title": "Tesoro del Reino",

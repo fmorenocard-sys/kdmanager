@@ -174,7 +174,8 @@
     "power": "Power",
     "reason": "Reason",
     "search_placeholder": "Search player...",
-    "total": "Total Deadweight"
+    "total": "Total Deadweight",
+    "restricted_hint": "The deadweight watchlist is reserved for kingdom leadership (King and Officers). Log in with Discord to sync your role."
   },
   "bank": {
     "title": "Kingdom Treasury",
