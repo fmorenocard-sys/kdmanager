@@ -31,6 +31,7 @@
         "refresh": "Refresh",
         "loading_data": "Loading Kingdom Data...",
         "restricted": "Restricted Access",
+        "restricted_desc": "This section is reserved for kingdom leadership (King and Officers). Log in with Discord to sync your role.",
         "error": "Error",
         "success": "Saved!",
         "unknown": "Unknown"

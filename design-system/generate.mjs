@@ -316,6 +316,32 @@ const FILES = {
     </div>`
   ),
 
+  'components/access-gate.html': card(
+    '<!-- @dsCard group="Système" name="AccessGate" subtitle="Carte accès restreint / auth requise (BR-009)" width="560" -->',
+    'AccessGate — KD Manager',
+    `
+    <style>
+      .gate { position:relative; background:rgba(15,23,42,.45); backdrop-filter:blur(14px); border-radius:14px; box-shadow:0 20px 40px -12px rgba(0,0,0,.4); padding:32px; text-align:center; max-width:512px; }
+      .gate::before { content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(255,255,255,.04) 40%,rgba(245,158,11,.18)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+      .bubble { width:64px; height:64px; border-radius:999px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; color:#ef4444; background:rgba(239,68,68,.14); border:1px solid rgba(239,68,68,.4); }
+      .gate h3 { font-size:24px; font-weight:700; color:#f8fafc; margin-bottom:12px; }
+      .gate .desc { color:#a8b6ca; font-size:15px; line-height:1.6; margin-bottom:24px; }
+      .gate .hint { color:#8494ab; font-size:13px; }
+    </style>
+    <h2>AccessGate (src/components/ui/AccessGate.jsx)</h2>
+    <div class="gate">
+      <div class="bubble">🛡️</div>
+      <h3>Accès Restreint</h3>
+      <div class="desc">Cette section est réservée au leadership du royaume (Roi et Officiers). Connectez-vous via Discord pour synchroniser votre rôle.</div>
+      <div class="hint">Veuillez utiliser le bouton de connexion en haut à droite pour vous authentifier.</div>
+    </div>
+    <div class="note" style="margin-top:10px;line-height:1.7">
+      Base .v2-glass + tokens ; bulle d'icône 64px teintée <span class="mono">--action-danger</span> (color-mix 14 % fond / 40 % bordure).<br>
+      Props : icon, title, description, hint (optionnel). Utilisé par : AvailabilityForm (auth Discord),<br>
+      DeadweightPage (BR-009), WarDashboard (leadership). S'adapte au mode clair via les tokens.
+    </div>`
+  ),
+
   'components/navigation.html': card(
     '<!-- @dsCard group="Navigation" name="Tabs, sidebar & bottom nav" subtitle="Pills d’onglets, item sidebar, nav mobile" width="620" -->',
     'Navigation — KD Manager',

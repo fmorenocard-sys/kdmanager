@@ -31,6 +31,7 @@
         "refresh": "Yenile",
         "loading_data": "Krallık Verileri Yükleniyor...",
         "restricted": "Erişim Kısıtlı",
+        "restricted_desc": "Bu bölüm krallık liderliğine ayrılmıştır (Kral ve Subaylar). Rolünüzü senkronize etmek için Discord ile giriş yapın.",
         "error": "Hata",
         "success": "Kaydedildi!",
         "unknown": "Bilinmiyor"

@@ -32,6 +32,7 @@
     "refresh": "Làm mới",
     "loading_data": "Đang tải dữ liệu vương quốc...",
     "restricted": "Truy cập bị hạn chế",
+    "restricted_desc": "Mục này chỉ dành cho ban lãnh đạo vương quốc (Vua và Sĩ quan). Đăng nhập bằng Discord để đồng bộ vai trò của bạn.",
     "error": "Lỗi",
     "success": "Đã lưu!",
     "unknown": "Không xác định",

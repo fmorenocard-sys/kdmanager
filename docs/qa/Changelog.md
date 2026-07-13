@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.18 - 2026-07-13
+### Changed
+- **AccessGate — portes d'accès unifiées (charte v2)** : les trois variantes de refus d'accès (carte « Authentification Requise » du formulaire de disponibilité en styles v1 codés en dur, encart minimal Deadweight BR-009, texte rouge nu du WarDashboard) sont remplacées par un composant unique `src/components/ui/AccessGate.jsx` : carte .v2-glass centrée, bulle d'icône 64px teintée `--action-danger`, titre / description / hint optionnel via tokens (s'adapte nativement au mode clair, l'ancienne carte dépendait du shim). Nouvelle clé i18n `common.restricted_desc` (9 langues src + 6 public) pour le message leadership du WarDashboard. Carte « Système / AccessGate » ajoutée au design system et synchronisée sur Claude Design. Vérifié en invité (dev server) : gate war-tracker et gate deadweight rendus par le composant, tokens corrects dans les deux modes.
+
 ## v2.17 - 2026-07-13
 ### Added
 - **BR-009 — Deadweight réservé au leadership (F-004)** : page accessible uniquement aux rôles King/Officer (synchronisés depuis Discord) ; entrées de navigation (sidebar + bottom nav) masquées pour les autres ; carte « Accès Restreint » avec message explicatif (clé ×9 langues) pour un accès direct par URL. Vérifié en invité (nav filtrée + page restreinte). *Limite connue : le document Firestore static_data/deadweight reste lisible publiquement — gating UI uniquement ; durcissement des rules possible en suivi.*

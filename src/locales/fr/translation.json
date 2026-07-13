@@ -32,6 +32,7 @@
     "refresh": "Actualiser",
     "loading_data": "Chargement des données du Royaume...",
     "restricted": "Accès Restreint",
+    "restricted_desc": "Cette section est réservée au leadership du royaume (Roi et Officiers). Connectez-vous via Discord pour synchroniser votre rôle.",
     "error": "Erreur",
     "success": "Enregistré !",
     "unknown": "Inconnu",

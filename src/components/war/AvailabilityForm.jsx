@@ -8,6 +8,7 @@ import { useData } from '../../context/DataContext';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
+import AccessGate from '../ui/AccessGate';
 import CommanderSelector from './CommanderSelector';
 import ActiveHoursPickerUTC from './ActiveHoursPickerUTC';
 import { COMMANDERS } from '../../data/commanders';
@@ -236,16 +237,12 @@ const AvailabilityForm = () => {
 
     if (!currentUser) {
         return (
-            <div className="w-full flex items-center justify-center p-8">
-                <div className="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-rose-500/30 text-center max-w-lg w-full shadow-2xl shadow-rose-900/20">
-                    <div className="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/50">
-                        <User className="text-rose-400" size={32} />
-                    </div>
-                    <h2 className="text-2xl font-bold text-white mb-3">{t("war.auth_required_title")}</h2>
-                    <p className="text-slate-300 mb-6">{t("war.auth_required_desc")}</p>
-                    <p className="text-sm text-slate-400">{t("war.auth_required_hint")}</p>
-                </div>
-            </div>
+            <AccessGate
+                icon={User}
+                title={t('war.auth_required_title')}
+                description={t('war.auth_required_desc')}
+                hint={t('war.auth_required_hint')}
+            />
         );
     }
 

@@ -12,6 +12,7 @@ import StatusFilter from '../components/ui/StatusFilter';
 import Avatar from '../components/ui/Avatar';
 
 import PageHeader from '../components/ui/PageHeader';
+import AccessGate from '../components/ui/AccessGate';
 
 const DeadweightPage = () => {
     const { deadweight, loading, error } = useData();
@@ -107,10 +108,11 @@ const DeadweightPage = () => {
     // BR-009: leadership-only page
     if (!roleLoading && !isAuthorized([ROLES.KING, ROLES.OFFICER])) {
         return (
-            <div className="v2-glass p-8 max-w-lg mx-auto mt-12 text-center">
-                <h2 className="text-xl font-bold mb-2">{t('common.restricted')}</h2>
-                <p className="text-sm text-[var(--text-secondary)]">{t('deadweight.restricted_hint')}</p>
-            </div>
+            <AccessGate
+                icon={ShieldAlert}
+                title={t('common.restricted')}
+                description={t('deadweight.restricted_hint')}
+            />
         );
     }
 

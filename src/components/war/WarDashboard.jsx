@@ -6,7 +6,8 @@ import { useRole, ROLES } from '../../context/RoleContext';
 import { useData } from '../../context/DataContext';
 import Card from '../ui/Card';
 import StatCard from '../ui/StatCard';
-import { Database, Swords, Zap, Shield } from '../ui/icons';
+import { Database, Swords, Zap, Shield, ShieldAlert } from '../ui/icons';
+import AccessGate from '../ui/AccessGate';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../ui/Table';
 
 const WarDashboard = () => {
@@ -175,7 +176,13 @@ const WarDashboard = () => {
     };
 
 
-    if (!authorized) return <div className="p-4 text-red-400">{t('common.restricted')}</div>;
+    if (!authorized) return (
+        <AccessGate
+            icon={ShieldAlert}
+            title={t('common.restricted')}
+            description={t('common.restricted_desc')}
+        />
+    );
     if (loading) return <div className="p-8 text-center text-slate-400">{t('common.loading')}</div>;
 
     // New data is stored in Billions directly — no division needed

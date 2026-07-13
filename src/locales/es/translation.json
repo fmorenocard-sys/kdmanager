@@ -32,6 +32,7 @@
     "refresh": "Actualizar",
     "loading_data": "Cargando datos del Reino...",
     "restricted": "Acceso restringido",
+    "restricted_desc": "Esta sección está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión con Discord para sincronizar tu rol.",
     "error": "Error",
     "success": "¡Guardado!",
     "unknown": "Desconocido",
