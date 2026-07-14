@@ -2,6 +2,9 @@
 
 Ce fichier logue les évolutions majeures et décisions stratégiques modifiant le cap du produit.
 
+## 2026-07-14
+* **Étude produit — Fusion KvK Manager (E-005, proposée)** : étude complète de la fusion du dashboard Python/Streamlit « KvK Manager » (suivi de compétition SoC 4 : 32 royaumes, DKP net multi-scans, duel East-Anglia vs Wessex, exclusions anti-triche) et des classeurs Excel de scouting dans le Kingdom Manager, sous forme d'un module « KvK Race » (page P-008). Recommandation : absorption dans la web app (ingestion Cloud Storage + Function, documents Firestore pré-agrégés), phasée en 3 temps (course → analytique/intégrité → scouting). Nouveaux IDs : E-005, F-018 → F-021, US-015 → US-022, A-009 → A-012. **Point bloquant identifié : trois formules DKP coexistent** (BRIEF KvK Manager, code `metrics.py`, A-005/F-014) — arbitrage du Roi requis avant tout développement. Étude : `Etude_Fusion_KvK_Manager.md` (5 décisions demandées en §9).
+
 ## 2026-07-11
 * **Nouvelle donnée live** : Ingestion de la campagne « SoC 4 : King of All Britain (2026) » directement depuis Google Sheets (47 mains + 23 fillers). Le pipeline `digest-data.js` télécharge désormais le classeur live — première brique de la dé-rigidification de F-008 (BUG-001).
 * **Déploiement** : Release hosting du 2026-07-11 publiant l'ensemble des travaux de février (RTL/arabe, locale FR, cartes mobiles, footer) + titre SoC 4.

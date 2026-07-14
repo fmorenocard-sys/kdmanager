@@ -14,6 +14,10 @@
   * *Objectif*: Conserver et consulter les données de toutes les campagnes KvK passées (aujourd'hui écrasées à chaque cycle), avec vue de progression par joueur.
   * *Valeur*: Décisions leadership multi-campagnes (deadweight, promotions), mémoire du royaume, engagement joueurs.
   * *Métrique d'impact*: Nombre de campagnes archivées ; consultations de la vue historique/progression.
+* **E-005 [PROPOSÉ — arbitrage Roi requis]**: Fusion KvK Manager — module « KvK Race » centralisé (voir `Etude_Fusion_KvK_Manager.md`)
+  * *Objectif*: Absorber le dashboard Python/Streamlit local de suivi de compétition (32 royaumes, DKP net multi-scans, duel de camps) et les classeurs Excel de scouting dans le Kingdom Manager — un seul outil, multi-utilisateurs, capitalisé de saison en saison.
+  * *Valeur*: La course à l'étoile lisible par tout le leadership (aujourd'hui : le poste du Roi uniquement) ; DKP unique et paramétrable ; fin de la re-création de l'outil à chaque saison.
+  * *Métrique d'impact*: Utilisateurs distincts de la vue course ; délai scan→visible ; abandon des classeurs Excel.
 
 ## User Stories
 * **US-001 (E-001)**: En tant qu'officier, je veux pouvoir uploader les fichiers XLSX directement sur la page "Config" ou "Data" pour mettre à jour la BDD, afin de ne pas lancer de script local.
@@ -30,6 +34,14 @@
 * **US-012 (E-004) [LIVE 2026-07-11]**: En tant que Roi ou joueur, je veux voir la progression d'un joueur à travers les campagnes (KP gagnés, morts, % objectif, note), afin d'évaluer sa trajectoire long-terme.
 * **US-013 (E-004) [DONE 2026-07-11]**: En tant que Roi, je veux que les campagnes SoC 1 (Tides of War), SoC 2 (Storm of Stratagems) et SoC 3 (Heroic Anthem) soient importées dans l'historique, afin de démarrer avec la mémoire complète du royaume.
 * **US-014 (E-004) [V2]**: En tant que joueur, je veux `/mykvk <campagne>` sur Discord, afin de consulter mes performances passées sans ouvrir l'app.
+* **US-015 (E-005)**: En tant qu'officier, je veux déposer un scan KvK dans l'app et le voir digéré automatiquement, afin que la course soit à jour sans manipulation locale.
+* **US-016 (E-005)**: En tant que Roi, je veux configurer la campagne de course (camps, duel hero, royaumes épinglés, poids DKP, base scan), afin d'adapter l'outil à chaque saison sans code.
+* **US-017 (E-005)**: En tant que membre, je veux voir le duel de camps (DKP net, écart, variation) et le classement des 32 royaumes, afin de suivre la course à l'étoile en temps quasi réel.
+* **US-018 (E-005)**: En tant que membre, je veux les courbes d'évolution multi-scans du duel, afin de voir si l'écart se creuse ou se réduit.
+* **US-019 (E-005)**: En tant qu'officier, je veux le top N joueurs de la compétition avec recherche et carte joueur, croisé avec les profils 2997, afin d'identifier qui porte l'effort.
+* **US-020 (E-005)**: En tant que Roi, je veux définir des exclusions anti-triche (gel d'un royaume entre deux scans), afin que les classements restent crédibles.
+* **US-021 (E-005)**: En tant qu'officier, je veux que le snapshot du duel soit publié sur Discord après chaque ingestion, afin de remplacer les copies d'écran manuelles.
+* **US-022 (E-005)**: En tant que Roi, je veux des fiches de scouting persistantes par royaume adverse (tier, notes, statut), afin de préparer les saisons sans classeur Excel.
 
 ## Bugs / Dette
 * **BUG-001 [CLOS 2026-07-12]**: Dette du parsing XLSX local : `digest-data.js` est sorti du build (E-001) — l'app ne dépend plus d'aucun fichier local (script conservé comme outil d'archivage manuel). Le parsing des Sheets vit uniquement dans les Cloud Functions.
