@@ -1,7 +1,7 @@
 # Étude — Fusion Kingdom Manager × KvK Manager en un outil centralisé (E-005)
 
 > Date : 2026-07-14
-> Statut : **Proposée — en attente d'arbitrage du Roi** (décisions à rendre en §9)
+> Statut : **Proposée — en attente d'arbitrage du Roi** (décisions à rendre en §9 ; la décision §9.2 — cadre DKP — a été rendue le 2026-07-14)
 > Sources : inventaire complet des deux outils (repo `kdmanager` + dossier `2026_06_KingOfAllBritain`), `BRIEF.md` du KvK Manager, règles `.agent/rules/product-manager.md` et `.agent/rules/designer.md`
 
 ---
@@ -19,7 +19,7 @@ Le leadership de KD 2997 pilote aujourd'hui la communauté avec **trois outils d
 Conséquences concrètes observées pendant SoC 4 « King of All Britain » (11/6 → 7/7 2026) :
 
 - La lecture n°1 du leadership (**East-Anglia est-il devant Wessex dans la course à l'étoile ?**) n'est accessible qu'au Roi, sur son poste, après dépôt manuel du scan.
-- **Trois définitions du DKP coexistent** sans arbitrage (voir §5) — un même joueur peut avoir trois scores selon l'outil qui le calcule.
+- **Trois définitions du DKP coexistent** sans cadre explicite — clarifié en §5 : elles relèvent en réalité de **deux domaines distincts** (DKP interne 2997 vs DKP de course/coalition), qui ne doivent jamais être mélangés.
 - Le pivot joueur existe des deux côtés (`governor_id`) mais **rien ne relie** la perf individuelle du War Tracker (objectifs F-014, historique F-015) aux données de course du KvK Manager.
 - À chaque saison, le KvK Manager est reconstruit (dossier daté, config par saison) alors que le Kingdom Manager, lui, capitalise (archives `kvk_history`).
 
@@ -85,19 +85,25 @@ kvk_race/{campaignId}/kd2997/{seq}       → détail complet des gouverneurs de 
 
 Lecture d'une vue = 1 à 2 reads (vs 8 300). Les séries temporelles se construisent en lisant les docs `scans/*` de la campagne (≤ ~30 scans/saison). Le scan brut reste dans Storage (audit, recalcul si les poids DKP changent). À la clôture (F-015), le résumé de course s'archive avec la campagne.
 
-## 5. Point d'arbitrage majeur — unifier le DKP (BR à créer)
+## 5. Cadre DKP — deux domaines distincts, chacun paramétrable par campagne (arbitré le 2026-07-14)
 
-Trois définitions coexistent aujourd'hui :
+**Décision du Roi (2026-07-14)** : il n'y a pas UN DKP à unifier, mais **deux domaines séparés qui ne doivent jamais être mélangés** :
 
-| Source | Formule | Unité |
+1. **DKP interne 2997** — appliqué aux scans internes du royaume (Performance KvK F-002, objectifs individuels F-014). Formule propre au royaume, définie par le leadership 2997.
+2. **DKP de course / coalition** — appliqué aux scans de compétition (KvK Race F-018/F-019). Formule convenue avec les alliés, **susceptible d'évoluer à chaque KvK** : elle doit être paramétrable par campagne, jamais codée en dur.
+
+Inventaire des formules existantes, reclassées par domaine :
+
+| Source | Formule | Domaine |
 | :--- | :--- | :--- |
-| `BRIEF.md` §5.1 (« formule officielle KD 2997 ») | `T4×4 + T5×10 + deads×6` | poids exprimés en équivalent kill points |
-| Code `metrics.py` (implémentée, alignée « Classic DKP » ~99 %) | `T4×40 + T5×200 + deads×6` | poids effectifs par kill (T4 = 10 KP × 4 ; T5 = 20 KP × 10) — même formule que ci-dessus, unité différente |
-| `Assumptions_Log` A-005 / Étude F-014 (score « in-game ») | `T4 kills×2 + T5 kills×4 + T4 dead×4 + T5 dead×5` | formule distincte, utilisée comme référence des objectifs individuels |
+| `BRIEF.md` §5.1 | `T4×4 + T5×10 + deads×6` (équivalent kill points) | **Course/coalition** (saison SoC 4) |
+| Code `metrics.py` (alignée « Classic DKP » ~99 %) | `T4×40 + T5×200 + deads×6` (poids effectifs par kill : T4 = 10 KP × 4 ; T5 = 20 KP × 10) — même formule que ci-dessus, unité différente | **Course/coalition** (implémentation SoC 4) |
+| `Assumptions_Log` A-005 / Étude F-014 (score « in-game ») | `T4 kills×2 + T5 kills×4 + T4 dead×4 + T5 dead×5` | **Interne 2997** (objectifs individuels) |
 
-Les deux premières sont réconciliables (documentation d'unité). La troisième ne l'est pas : **F-014 (objectifs individuels) et la course de camps utiliseraient deux DKP différents dans la même app** — inacceptable en l'état.
-
-**Proposition** : un service unique `dkpService` avec **poids par campagne** stockés dans `kvk_race/{campaignId}` (le KvK Manager le fait déjà via `config/camp_labels.json`), et une règle métier **BR-010** : « tout affichage de DKP référence explicitement la formule de sa campagne ; une campagne a une et une seule formule ». L'arbitrage de la formule par défaut appartient au Roi (lié au blocage A-005 de F-014).
+**Traduction en implémentation** :
+- Un service de calcul commun (`dkpService`) mais **deux configurations étanches** : les poids de course vivent dans `kvk_race/{campaignId}` (le KvK Manager le fait déjà via `config/camp_labels.json`), les poids internes dans la config de campagne interne (`kvk_config`).
+- **BR-010 (proposée)** : « Le DKP interne 2997 et le DKP de course/coalition sont deux scores distincts, chacun défini par campagne. Ils ne sont jamais agrégés, comparés ou substitués l'un à l'autre ; tout affichage de DKP indique explicitement son domaine et sa campagne. »
+- Reste ouvert (inchangé) : la formule « Required DKP » de A-005, qui **ne bloque que F-014** (domaine interne) — elle ne bloque plus F-019.
 
 ## 6. Périmètre proposé & phasage
 
@@ -142,7 +148,7 @@ Conformément à `.agent/rules/designer.md` : **rationaliser, ne pas refondre** 
 ## 9. Décisions demandées au Roi
 
 1. **Go/No-Go** sur la cible « absorption dans le Kingdom Manager » (vs statu quo outil local par saison).
-2. **Formule DKP de référence** et résolution conjointe de A-005 (conditionne F-014 ET F-019 — voir §5).
+2. ✅ **Rendue le 2026-07-14 — Cadre DKP** : deux domaines distincts (interne 2997 vs course/coalition), chacun paramétrable par campagne, jamais mélangés (voir §5, BR-010). Reste ouvert : la formule « Required DKP » (A-005), qui ne concerne que F-014.
 3. **Priorité relative** vs le reste du moyen terme : F-013 (pings Missing Forms) et F-014 (objectifs) restent-ils devant ? Proposition : Phase 1 planifiée **entre deux saisons**, prête avant le prochain KvK (SoC 4 clôturé le 7/7 ; prochaine saison estimée ~oct.–nov. 2026 sur le rythme observé).
 4. **Visibilité** : la vue course est-elle publique (recommandé, cohérent A-003) ou réservée aux membres connectés ?
 5. **Phase 3 scouting** : le workflow Excel doit-il vraiment être digitalisé, ou reste-t-il un outil personnel du Roi ? (Ne pas construire si l'usage est solitaire.)
@@ -156,7 +162,7 @@ Conformément à `.agent/rules/designer.md` : **rationaliser, ne pas refondre** 
 | Docs agrégés > 1 Mo (tops trop larges) | Écriture impossible | N borné (top 200), tableau royaumes ≤ 32 lignes, monitoring taille à l'ingestion |
 | Structure de la compétition différente à la prochaine saison (≠ 4 camps × 8) | Modèle trop rigide | Config par campagne (nb de camps, labels, duel) — le KvK Manager l'a déjà prouvé faisable |
 | Effort de portage sous-estimé (Python → JS, parité des calculs) | Retard, écarts de calcul | Jeu de tests de non-régression : mêmes scans SoC 4 en entrée, sorties comparées au Streamlit (tolérance 0) |
-| Trois formules DKP non arbitrées | Perte de confiance des joueurs dans les chiffres | Blocage assumé : pas de Phase 1 sans décision §9.2 |
+| Confusion entre DKP interne et DKP de course (deux scores pour un même joueur) | Perte de confiance des joueurs dans les chiffres | BR-010 : séparation stricte des deux domaines, configs étanches, libellé explicite du domaine + de la campagne sur chaque affichage |
 
 ## 11. Hypothèses (→ Assumptions_Log)
 
