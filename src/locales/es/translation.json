@@ -259,6 +259,14 @@
     "save": "Guardar configuración"
   },
   "kvk_history": {
+    "kingdom_tab": "Progresión del Reino",
+    "outcome_label": "Resultado",
+    "outcome_victory_star": "Victoria con estrella",
+    "outcome_victory": "Victoria",
+    "outcome_defeat": "Derrota",
+    "outcome_unset": "Resultado sin definir",
+    "accounts_count": "Cuentas",
+    "avg_goal": "% objetivo medio",
     "archived_badge": "Archivada",
     "current_badge": "Actual",
     "selector_label": "Campaña",

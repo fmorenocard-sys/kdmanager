@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/ui/Avatar';
-import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive } from '../components/ui/icons';
+import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive, Flag } from '../components/ui/icons';
 import { useKvkHistory } from '../hooks/useKvkHistory';
+import { useRole, ROLES } from '../context/RoleContext';
+import KingdomProgression from '../components/kvk/KingdomProgression';
 import Card from '../components/ui/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
 import Input from '../components/ui/Input';
@@ -17,7 +19,11 @@ import PageHeader from '../components/ui/PageHeader';
 const KvKPerformancePage = () => {
     const { kvkStats, kvkFillerStats, loading, error } = useData();
     const { isDiscordUser } = useAuth();
+    const { isAuthorized } = useRole();
     const { campaigns: historyCampaigns } = useKvkHistory();
+    // BR-011: the kingdom progression tab is leadership-only
+    const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
+    const isKing = isAuthorized([ROLES.KING]);
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState([]); // [] = All, array of values = multi-select
@@ -26,10 +32,16 @@ const KvKPerformancePage = () => {
     const [selectedCampaignId, setSelectedCampaignId] = useState('current'); // F-015 campaign selector
     const [selectedPlayerId, setSelectedPlayerId] = useState(null); // F-015 progression view
 
-    // BR-008: if the Discord-only tabs become unavailable (logout), fall back to main
+    // BR-008: if the Discord-only tabs become unavailable (logout), fall back to main.
+    // The kingdom tab (BR-011) is role-gated, not Discord-gated — excluded here.
     React.useEffect(() => {
-        if (!isDiscordUser && activeTab !== 'main') setActiveTab('main');
+        if (!isDiscordUser && ['filler', 'progression'].includes(activeTab)) setActiveTab('main');
     }, [isDiscordUser, activeTab]);
+
+    // BR-011: same fallback if leadership access is lost
+    React.useEffect(() => {
+        if (!isLeadership && activeTab === 'kingdom') setActiveTab('main');
+    }, [isLeadership, activeTab]);
 
     // Reset/Set Sort when Tab Changes
     React.useEffect(() => {
@@ -161,7 +173,7 @@ const KvKPerformancePage = () => {
             ...opt,
             count: counts[opt.value] || 0
         })).filter(opt => opt.count > 0); // Only show statuses that exist in current view
-    }, [searchedData]);
+    }, [searchedData, t]);
 
     // 3. Filter by Status & Sort
     const filteredAndSortedData = useMemo(() => {
@@ -265,7 +277,7 @@ const KvKPerformancePage = () => {
             </PageHeader>
 
             {/* F-015: campaign selector */}
-            {historyCampaigns.length > 0 && activeTab !== 'progression' && (
+            {historyCampaigns.length > 0 && ['main', 'filler'].includes(activeTab) && (
                 <div className="flex items-center gap-2 flex-wrap">
                     <label htmlFor="kvk-campaign-select" className="text-sm text-slate-400 flex items-center gap-1.5">
                         <History size={14} />
@@ -295,6 +307,10 @@ const KvKPerformancePage = () => {
                     ...(isDiscordUser ? [
                         { id: 'filler', label: t('performance.filler_accounts'), icon: Users },
                         { id: 'progression', label: t('kvk_history.progression_tab'), icon: History }
+                    ] : []),
+                    // BR-011 / F-022: kingdom timeline is leadership-only
+                    ...(isLeadership ? [
+                        { id: 'kingdom', label: t('kvk_history.kingdom_tab'), icon: Flag }
                     ] : [])
                 ].map(tab => {
                     const isActive = activeTab === tab.id;
@@ -313,7 +329,7 @@ const KvKPerformancePage = () => {
                 })}
             </div>
 
-            {activeTab !== 'progression' && (<>
+            {['main', 'filler'].includes(activeTab) && (<>
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <StatCard
@@ -497,6 +513,11 @@ const KvKPerformancePage = () => {
                 </div>
             </Card>
             </>)}
+
+            {/* F-022 / US-023: kingdom timeline across campaigns (BR-011) */}
+            {activeTab === 'kingdom' && isLeadership && (
+                <KingdomProgression campaigns={allCampaigns} isKing={isKing} />
+            )}
 
             {/* F-015 / US-012: player progression across campaigns */}
             {activeTab === 'progression' && (

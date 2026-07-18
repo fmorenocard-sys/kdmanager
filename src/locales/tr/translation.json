@@ -259,6 +259,14 @@
     "save": "Yapılandırmayı Kaydet"
   },
   "kvk_history": {
+    "kingdom_tab": "Krallık Gelişimi",
+    "outcome_label": "Sonuç",
+    "outcome_victory_star": "Yıldızlı zafer",
+    "outcome_victory": "Zafer",
+    "outcome_defeat": "Yenilgi",
+    "outcome_unset": "Sonuç girilmedi",
+    "accounts_count": "Hesaplar",
+    "avg_goal": "Ort. % hedef",
     "archived_badge": "Arşivlendi",
     "current_badge": "Güncel",
     "selector_label": "Kampanya",

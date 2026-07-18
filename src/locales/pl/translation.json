@@ -259,6 +259,14 @@
     "save": "Zapisz konfigurację"
   },
   "kvk_history": {
+    "kingdom_tab": "Postęp Królestwa",
+    "outcome_label": "Wynik",
+    "outcome_victory_star": "Zwycięstwo z gwiazdą",
+    "outcome_victory": "Zwycięstwo",
+    "outcome_defeat": "Porażka",
+    "outcome_unset": "Wynik nieustawiony",
+    "accounts_count": "Konta",
+    "avg_goal": "Śr. % celu",
     "archived_badge": "Zarchiwizowana",
     "current_badge": "Bieżąca",
     "selector_label": "Kampania",

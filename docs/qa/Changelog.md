@@ -1,5 +1,13 @@
 # QA Changelog
 
+## v2.20 - 2026-07-18
+### Added
+- **F-016 (SSOT) / F-022 (PM) — Timeline du Royaume** : nouvel onglet « Progression du Royaume » sur Performance KvK, **réservé King/Officer (BR-011)** : frise chronologique des 4 campagnes (courante + archivées) avec agrégats royaume par campagne (KP gagnés — mains, morts totaux — mains+fillers, comptes, % objectif moyen ; champs absents des vieux formats affichés « — », jamais 0) et badge de résultat officiel. **Saisie du résultat (BR-012)** : sélecteur King-only sur les campagnes archivées (victoire avec étoile / victoire / défaite), persisté dans `kvk_history.outcome` ; règles Firestore amendées (BR-006) pour autoriser un update King limité au seul champ `outcome`, déployées sur les deux bases. 8 clés i18n ×9 langues.
+### Fixed
+- **BR-008 vs BR-011** : l'effet de repli Discord réinitialisait *tout* onglet non-main — un Roi authentifié Google aurait été éjecté du nouvel onglet. Le repli BR-008 ne cible plus que `filler`/`progression`. Dépendance `t` manquante dans le useMemo `statusOptions` corrigée au passage (erreur react-compiler préexistante).
+### Notes
+- Script `scripts/deploy-rules.js` cassé depuis le passage ESM du package → renommé `deploy-rules.cjs` (CLAUDE.md mis à jour). Vérifié : invité sans onglet ni timeline ; rendu leadership contrôlé en dev (bypass local temporaire, retiré avant commit) — agrégats réels : SoC 4 +11.9B/70 comptes, SoC 3 +20.2B/81, SoC 2 +16.1B/194, SoC 1 +14.8B/148 ; pas de scroll horizontal. Reste à couvrir : TC authentifiés King/Officer (la suite Playwright ne couvre que l'invité).
+
 ## v2.19 - 2026-07-13
 ### Changed
 - **Dashboard — layout maquette « Dashboard Home B » (Claude Design v2/pages)** : Player List passe en pleine largeur avec recherche + filtre alliance intégrés dans la carte (l'ancienne carte de filtres séparée disparaît) ; nouvelle ligne 50/50 en dessous : **Trésorerie du Royaume** (4 ressources avec bulle d'icône duotone, barre de progression proportionnelle au max, valeur mono ; pied de carte « Dernière synchro » + lien « Ouvrir la Banque » → /bank, nouvelle clé `dashboard.open_bank` ×15 locales) et **graphique Puissance Totale** (carte v2-indigo, Recharts inchangé). `DataRefreshControl` compacté en bandeau horizontal une ligne (v2-glass, bulle 40px, boutons à droite) — impacte les 5 pages qui l'utilisent. Icônes Phosphor ajoutées : Grains, Cube, Coin, ArrowRight. Fix responsive : `min-w-0` sur les items de la grille 50/50 (le graphe Recharts forçait un scroll horizontal à 375px — règle « no horizontal page scroll »). Vérifié : desktop 1440 (50/50 à 588px chacun), mobile 375 sans scroll horizontal, mode clair via tokens, zéro erreur console.

@@ -1,8 +1,21 @@
 # Étude — Timeline du Royaume (F-022 / E-004)
 
 > Date : 2026-07-18
-> Statut : Proposée (idée du Roi du 2026-07-18 — décisions §6 à arbitrer)
+> Statut : **Cadrée & livrée le 2026-07-18** (décisions D1–D4 arbitrées par le Roi le jour même — voir encadré)
 > Origine : « On pourrait avoir une timeline du royaume avec les performances KvK. »
+
+---
+
+## ⚖️ Décisions du Roi (2026-07-18)
+
+| Décision | Arbitrage |
+| :--- | :--- |
+| **D1 — Emplacement** | Onglet « **Progression du Royaume** » dans Performance KvK (variante de l'option A). **Accès réservé King/Officer pour le moment** (BR-011) — invalide A-014. |
+| **D2 — Résultat officiel** | **Oui** : victoire ou défaite par campagne, la victoire pouvant être **avec ou sans étoile** → 3 valeurs (`victory_star`, `victory`, `defeat`) + non renseigné. Saisie King-only sur les campagnes archivées (BR-012), rétro-saisie SoC 1–3 dans l'onglet lui-même. |
+| **D3 — Périmètre** | **Strictement KvK.** |
+| **D4 — Priorité** | **🔴 Priorité immédiate** — livrée le jour même. |
+
+Implémentation : `KingdomProgression.jsx`, règles Firestore amendées (update King limité au champ `outcome`, BR-006/BR-012), 8 clés i18n ×9 langues. Entrées QA : SSOT F-016, BR-011, BR-012 ; Changelog QA v2.20.
 
 ---
 

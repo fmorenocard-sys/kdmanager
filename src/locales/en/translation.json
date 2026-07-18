@@ -259,6 +259,14 @@
     "save": "Save Config"
   },
   "kvk_history": {
+    "kingdom_tab": "Kingdom Progression",
+    "outcome_label": "Outcome",
+    "outcome_victory_star": "Victory with star",
+    "outcome_victory": "Victory",
+    "outcome_defeat": "Defeat",
+    "outcome_unset": "Outcome not set",
+    "accounts_count": "Accounts",
+    "avg_goal": "Avg % goal",
     "archived_badge": "Archived",
     "current_badge": "Current",
     "selector_label": "Campaign",

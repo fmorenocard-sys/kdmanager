@@ -259,6 +259,14 @@
     "save": "Konfiguration speichern"
   },
   "kvk_history": {
+    "kingdom_tab": "Fortschritt des Königreichs",
+    "outcome_label": "Ergebnis",
+    "outcome_victory_star": "Sieg mit Stern",
+    "outcome_victory": "Sieg",
+    "outcome_defeat": "Niederlage",
+    "outcome_unset": "Ergebnis nicht erfasst",
+    "accounts_count": "Konten",
+    "avg_goal": "Ø % Ziel",
     "archived_badge": "Archiviert",
     "current_badge": "Aktuell",
     "selector_label": "Kampagne",

@@ -31,10 +31,14 @@ service cloud.firestore {
 
     // Archived KvK campaigns (F-015). Public read like static_data;
     // only the King archives, and never over an existing campaign.
+    // BR-012 (F-022): the King may set the official outcome afterwards —
+    // update restricted to that single field so archives stay immutable.
     match /kvk_history/{kvkId} {
       allow read: if true;
       allow create: if isKing();
-      allow update, delete: if false;
+      allow update: if isKing()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['outcome']);
+      allow delete: if false;
     }
 
     match /roles/{userId} {

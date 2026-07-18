@@ -2,6 +2,9 @@
 
 Ce fichier logue les évolutions majeures et décisions stratégiques modifiant le cap du produit.
 
+## 2026-07-18 (suite)
+* **Décisions & livraison — Timeline du Royaume (F-022 / US-023, Live)** : le Roi a arbitré les 4 décisions le jour même — D1 : onglet « Progression du Royaume » dans Performance KvK, **réservé King/Officer pour le moment** (BR-011, invalide A-014) ; D2 : résultat officiel par campagne, victoire **avec ou sans étoile** ou défaite, saisi par le Roi sur les archives (BR-012, champ `outcome`, règles Firestore amendées en update mono-champ) ; D3 : périmètre strictement KvK ; D4 : 🔴 priorité immédiate. Livrée et déployée le 2026-07-18. La valeur « engagement Warriors » de l'étude (§2) reste en réserve — réévaluer l'ouverture de l'onglet plus tard.
+
 ## 2026-07-18
 * **Nouvelle idée produit — Timeline du Royaume (F-022 / US-023, proposée)** : sur idée du Roi, frise chronologique des campagnes KvK avec les performances agrégées du royaume (KP, morts, participants, % objectif, résultat officiel optionnel). Concrétise le « hors périmètre V2+ » de F-015 (statistiques agrégées royaume par campagne) en s'appuyant sur `kvk_history` déjà Live — effort faible, classée 🟢 Opportunité inter-saisons. Étude : `Etude_Timeline_Royaume.md` (4 décisions demandées : emplacement, résultat officiel, périmètre de la frise, priorité). Synergie identifiée avec F-020 (archivage du résumé de course E-005 à la clôture).
 

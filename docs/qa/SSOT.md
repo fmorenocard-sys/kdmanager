@@ -19,6 +19,7 @@
 | **F-013** | **KvK Configuration** | Define the Active Campaign (name, start/end dates). Archiving previous campaigns. | Leadership (King) |
 | **F-014** | **Multi-Language (i18n)** | UI localized in 9 languages (EN, FR, ES, DE, PL, TR, UK, AR, VI). | All Users |
 | **F-015** | **KvK History** | Archive of past KvK campaigns (`kvk_history` collection). Campaign selector on the Performance page, per-player progression view across campaigns, manual closure by the King. | All Users (read), King (closure) |
+| **F-016** | **Kingdom Progression Timeline** | "Progression du Royaume" tab on the KvK Performance page (PM ID: F-022 / US-023). Chronological timeline of all campaigns (current + archived) with kingdom aggregates (KP gained, total dead, accounts, avg % goal — null-safe for old formats) and the official outcome badge (victory with star / victory / defeat). | King, Officers (view) · King (set outcome) |
 
 ## 2. Business Rules (BR)
 
@@ -29,10 +30,13 @@
 | **BR-003** | **Discord Role Priority** | Sync gives Priority: King > Officer > Warrior. If a user is not in the discord server or has no matching role, they default to Guest. |
 | **BR-004** | **KvK Campaign Isolation** | War Tracker forms strictly post to the campaign matching `kvk_config/current`. Historic campaign data is saved but only accessible via Dashboard filtering. |
 | **BR-005** | **Cloud Function Extraction** | The `syncData` Cloud Function expects specific `.xlsx` structures and names (Bank Ledger, Deadweight, Top 300) sent as base64 buffers. |
-| **BR-006** | **KvK Archive Immutability** | `kvk_history` documents are create-only: only the King can create them, and no client can update or delete an archived campaign (enforced by Firestore rules). |
+| **BR-006** | **KvK Archive Immutability** | `kvk_history` documents are create-only: only the King can create them, and no client can update or delete an archived campaign (enforced by Firestore rules). *Amended 2026-07-18*: single exception — the King may update the `outcome` field alone (see BR-012); any update touching other fields is rejected by the rules. |
 | **BR-007** | **Governor ID Join Key** | Cross-campaign player progression joins on the governor ID, never on the display name (names change between seasons). |
 | **BR-008** | **Discord-gated KvK views** | The Comptes Secondaires (fillers) and Progression tabs on the KvK Performance page are only rendered for Discord-verified users (SSO login discord: uid, or a linked discordId on the profile). Guests and unlinked Google users only see the main accounts table. |
 | **BR-009** | **Leadership-only Deadweight** | The Deadweight page and its navigation entries (sidebar, bottom nav) are only available to King and Officer roles (roles are granted via Discord sync). Other users see a Restricted Access card with a hint to log in via Discord. Note: the underlying static_data/deadweight document remains publicly readable at the Firestore level — UI-level gating only. |
+| **BR-010** | **Dual DKP Domains (proposed, E-005)** | Two DKP formulas must never be mixed: the internal 2997 DKP (internal scans: F-008 performance, goals) and the race/coalition DKP (KvK Race module, formula agreed with allies). Each is configurable per campaign; every display labels its domain explicitly. Decided by the King 2026-07-14; enforcement lands with E-005. |
+| **BR-011** | **Leadership-only Kingdom Timeline** | The "Progression du Royaume" tab (F-016) is only rendered for King and Officer roles. It is role-gated, not Discord-gated: it must remain accessible to a Google-authenticated King, and must not be reset by the BR-008 Discord fallback. Losing the role falls back to the main tab. |
+| **BR-012** | **Outcome — King-only, single-field** | The official campaign outcome (`victory_star` \| `victory` \| `defeat` \| null) is set by the King only, on archived campaigns only (never on the current one). Firestore rules allow the update solely when the changed key set is exactly `['outcome']`. |
 
 ## 3. Pages / Screens (P)
 
@@ -40,7 +44,7 @@
 | :--- | :--- | :--- | :--- |
 | **P-001** | **Dashboard** | `/` | `DashboardPage.jsx`, `PlayerDetailPanel.jsx` |
 | **P-002** | **War Tracker** | `/war-tracker` | `WarTrackerPage.jsx`, `AvailabilityForm`, `WarDashboard`, `KvKConfigForm` |
-| **P-003** | **KvK Performance** | `/kvk` | `KvKPerformancePage.jsx` |
+| **P-003** | **KvK Performance** | `/kvk` | `KvKPerformancePage.jsx`, `KingdomProgression.jsx` |
 | **P-004** | **Trophies** | `/trophies` | `KingdomTrophiesPage.jsx` |
 | **P-005** | **Deadweight** | `/deadweight` | `DeadweightPage.jsx` |
 | **P-006** | **Bank** | `/bank` | `BankPage.jsx` |

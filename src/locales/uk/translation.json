@@ -259,6 +259,14 @@
     "save": "Зберегти"
   },
   "kvk_history": {
+    "kingdom_tab": "Прогрес Королівства",
+    "outcome_label": "Результат",
+    "outcome_victory_star": "Перемога із зіркою",
+    "outcome_victory": "Перемога",
+    "outcome_defeat": "Поразка",
+    "outcome_unset": "Результат не вказано",
+    "accounts_count": "Акаунти",
+    "avg_goal": "Сер. % цілі",
     "archived_badge": "Архівована",
     "current_badge": "Поточна",
     "selector_label": "Кампанія",

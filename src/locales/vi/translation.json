@@ -259,6 +259,14 @@
     "save": "Lưu cấu hình"
   },
   "kvk_history": {
+    "kingdom_tab": "Tiến trình Vương quốc",
+    "outcome_label": "Kết quả",
+    "outcome_victory_star": "Chiến thắng có sao",
+    "outcome_victory": "Chiến thắng",
+    "outcome_defeat": "Thất bại",
+    "outcome_unset": "Chưa có kết quả",
+    "accounts_count": "Tài khoản",
+    "avg_goal": "% mục tiêu TB",
     "archived_badge": "Đã lưu trữ",
     "current_badge": "Hiện tại",
     "selector_label": "Chiến dịch",

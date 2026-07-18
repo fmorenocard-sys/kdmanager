@@ -19,7 +19,7 @@
   * F-014: Moteur de calcul des objectifs individuels KvK (KP, Deads, DKP) intégré au War Tracker et via `/mykvkgoals` sur Discord.
   * Firestore Rules consolidées & Audit de Sécurité.
   * Rétrodocumentation terminée.
-  * **F-022 / US-023 : Timeline du Royaume (🟢 Opportunité — proposée 2026-07-18, décisions D1–D4 à arbitrer)** — frise chronologique des campagnes avec agrégats royaume, adossée à `kvk_history` (E-004 déjà Live, effort faible). Voir `Etude_Timeline_Royaume.md`. *Dépendances : F-015. Risques : champs null SoC 1/2 ; résultat officiel non stocké (D2).*
+  * **[DONE 2026-07-18] F-022 / US-023 : Timeline du Royaume** — arbitrée 🔴 priorité immédiate par le Roi (D1–D4) et livrée le jour même : onglet « Progression du Royaume » (King/Officer) sur Performance KvK, agrégats par campagne + résultat officiel saisi par le Roi. Voir `Etude_Timeline_Royaume.md`.
 * **Dépendances :** Storage ou traitement Cloud Functions, API Discord (Bot Token déjà configuré).
 
 ### Long terme (3–6 mois)

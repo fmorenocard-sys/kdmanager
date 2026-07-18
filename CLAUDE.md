@@ -16,7 +16,7 @@ Community management dashboard for a Rise of Kingdoms kingdom: war attendance (W
 - `npm run lint` — eslint
 - `npm run test:e2e` — Playwright suite inside `firebase emulators:exec` (specs in `tests/`)
 - `npm run test:serve` — dev server pointed at the Firebase emulator (port 5174)
-- `node scripts/deploy-rules.js` — deploy `firestore.rules` to BOTH Firestore databases (plain `firebase deploy` only covers what `firebase.json` lists)
+- `node scripts/deploy-rules.cjs` — deploy `firestore.rules` to BOTH Firestore databases (plain `firebase deploy` only covers what `firebase.json` lists; renamed from `.js` when the package went ESM)
 
 ## Shared brain with Antigravity (READ THIS FIRST)
 

@@ -259,6 +259,14 @@
     "save": "حفظ التكوين"
   },
   "kvk_history": {
+    "kingdom_tab": "تقدّم المملكة",
+    "outcome_label": "النتيجة",
+    "outcome_victory_star": "انتصار مع نجمة",
+    "outcome_victory": "انتصار",
+    "outcome_defeat": "هزيمة",
+    "outcome_unset": "النتيجة غير محددة",
+    "accounts_count": "الحسابات",
+    "avg_goal": "متوسط % الهدف",
     "archived_badge": "مؤرشفة",
     "current_badge": "الحالية",
     "selector_label": "الحملة",
