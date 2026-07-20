@@ -167,7 +167,7 @@ Conformément à `.agent/rules/designer.md` : **rationaliser, ne pas refondre** 
 ## 11. Hypothèses (→ Assumptions_Log)
 
 - **A-009** : le tracker public utilisé pour produire les scans restera disponible et au même format pour la prochaine saison.
-- **A-010** : les scans sont produits/déposés par le leadership uniquement (pas de dépôt par les Warriors) — dimensionne BR-011.
+- **A-010** : les scans sont produits/déposés par le leadership uniquement (pas de dépôt par les Warriors) — dimensionne la règle d'upload Storage (BR à créer avec F-018 ; NB : « BR-011 » a depuis été attribué à la timeline F-022 dans le SSOT — ne pas réutiliser).
 - **A-011** : la structure « camps configurables » couvre les formats de KvK à venir (SoC et suivants).
 - **A-012** : le besoin scouting (Phase 3) est réel au-delà d'un usage personnel du Roi — à confirmer avant tout développement.
 
