@@ -2,6 +2,9 @@
 
 Ce fichier logue les évolutions majeures et décisions stratégiques modifiant le cap du produit.
 
+## 2026-07-20
+* **Clôture de SoC 4 & décisions inter-saison (Roi)** : première clôture in-app d'une campagne (US-010) — elle a révélé que l'étape « marquer la campagne clôturée » (étude E-004 §5.4) n'avait pas été livrée : SoC 4 apparaissait en double (En cours + Archivée) et le War Tracker la croyait active. Arbitrages rendus : masquage automatique de la pseudo-campagne courante déjà archivée (l'archive fait foi — **BR-013**) ; statut `closed` écrit dans `kvk_config` à la clôture, gelant le formulaire de disponibilité jusqu'à la saison suivante ; **résultat SoC 4 = victoire sans étoile** ; fin officielle **25/07** confirmée (A-008 amendée). Le royaume est désormais formellement **en inter-saison** — fenêtre d'exécution idéale pour E-005 Phase 1 si le Go est donné.
+
 ## 2026-07-18 (suite)
 * **Décisions & livraison — Timeline du Royaume (F-022 / US-023, Live)** : le Roi a arbitré les 4 décisions le jour même — D1 : onglet « Progression du Royaume » dans Performance KvK, **réservé King/Officer pour le moment** (BR-011, invalide A-014) ; D2 : résultat officiel par campagne, victoire **avec ou sans étoile** ou défaite, saisi par le Roi sur les archives (BR-012, champ `outcome`, règles Firestore amendées en update mono-champ) ; D3 : périmètre strictement KvK ; D4 : 🔴 priorité immédiate. Livrée et déployée le 2026-07-18. La valeur « engagement Warriors » de l'étude (§2) reste en réserve — réévaluer l'ouverture de l'onglet plus tard.
 

@@ -104,6 +104,7 @@
     "dashboard_title": "Tableau de Bord de Guerre (Officiers)",
     "declaration_form": "Déclarer ma Disponibilité",
     "form_description": "Fournissez des données précises pour aider la direction à planifier.",
+    "no_active_campaign": "Aucune campagne KvK active — les déclarations rouvriront à la prochaine saison.",
     "form_required": "Le nom et l'ID sont requis.",
     "availability": "Disponibilité",
     "time_range_utc": "Plage Horaire (UTC)",

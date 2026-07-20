@@ -93,7 +93,8 @@ const AvailabilityForm = () => {
                         id: data.id,
                         name: data.name,
                         startDate: startDateStr,
-                        endDate: endDateStr
+                        endDate: endDateStr,
+                        status: data.status || null // BR-013: 'closed' hors saison
                     };
                     setKvkConfig(configData);
                     currentKvkId = data.id || `${configData.name}_${configData.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
@@ -161,6 +162,7 @@ const AvailabilityForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (kvkConfig?.status === 'closed') return; // BR-013
         setLoading(true);
         setErrorMsg('');
         setSuccessMsg('');
@@ -235,6 +237,9 @@ const AvailabilityForm = () => {
     const getCmdImage = (id) => COMMANDERS.find(c => c.id === id)?.image || null;
     const getCmdName = (id) => COMMANDERS.find(c => c.id === id)?.name || id;
 
+    // BR-013: campagne clôturée par le Roi — déclarations gelées jusqu'à la prochaine saison
+    const isClosedSeason = kvkConfig?.status === 'closed';
+
     if (!currentUser) {
         return (
             <AccessGate
@@ -259,7 +264,16 @@ const AvailabilityForm = () => {
                     </p>
                 </div>
 
-                {kvkConfig && (
+                {isClosedSeason && (
+                    <div className="bg-slate-800/40 border border-[var(--border-flat)] p-4 rounded-xl flex items-center gap-4">
+                        <div className="bg-[var(--border-flat)] p-3 rounded-lg text-slate-400">
+                            <Calendar size={24} />
+                        </div>
+                        <p className="text-sm text-slate-300">{t('war.no_active_campaign')}</p>
+                    </div>
+                )}
+
+                {kvkConfig && !isClosedSeason && (
                     <div className="bg-gradient-to-r from-indigo-900/40 via-slate-800/40 to-slate-900/40 border border-indigo-500/30 p-4 rounded-xl flex items-center gap-4 relative overflow-hidden shadow-lg">
                         {/* Decorative glow */}
                         <div className="absolute top-0 start-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full"></div>
@@ -445,7 +459,7 @@ const AvailabilityForm = () => {
 
             {/* Submit */}
             <div className="flex justify-end pt-4">
-                <Button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto bg-green-600 hover:bg-green-700">
+                <Button onClick={handleSubmit} disabled={loading || isClosedSeason} className="w-full md:w-auto bg-green-600 hover:bg-green-700">
                     <Save size={18} className="me-2" />
                     {loading ? t('common.loading') : t('war.save_declaration')}
                 </Button>

@@ -62,7 +62,7 @@ Un document par campagne : `kvk_history/{kvkId}` contenant `{ title, startDate, 
 1. Le Roi ouvre la config KvK (`KvKConfigForm`) → bouton **« Clôturer la campagne »** sur la campagne active.
 2. Confirmation explicite (récapitulatif : titre, dates, nombre de comptes).
 3. Archive : copie des documents courants vers `kvk_history/{kvkId}` (idempotente — une campagne déjà archivée ne peut pas être écrasée sans confirmation renforcée).
-4. La campagne est marquée `closed` dans `kvk_config` (registre existant des campagnes du War Tracker — dépendance F-006).
+4. La campagne est marquée `closed` dans `kvk_config` (registre existant des campagnes du War Tracker — dépendance F-006). *Note 2026-07-20 : cette étape avait été omise du MVP livré le 2026-07-11 ; l'omission a créé un doublon « En cours »/« Archivée » à la clôture de SoC 4. Implémentée depuis, avec masquage automatique de la pseudo-campagne courante déjà archivée (BR-013).*
 
 **Garde-fous** : règles Firestore `kvk_history` en écriture réservée au rôle King ; lecture publique (cohérent avec A-003 : les dashboards sont lisibles par tous).
 

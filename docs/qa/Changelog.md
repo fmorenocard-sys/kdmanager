@@ -1,5 +1,11 @@
 # QA Changelog
 
+## v2.21 - 2026-07-20
+### Fixed
+- **BR-013 — état inter-saison (incohérence révélée par la clôture de SoC 4)** : la clôture étant une pure copie, SoC 4 apparaissait en double (« En cours » via le titre codé en dur `DATA_CONFIG.KVK` + `static_data/kvk` réécrit chaque matin par `scheduledSync`, et « Archivée » via `kvk_history`) et le War Tracker la considérait toujours active (l'étape 4 de l'étude E-004 — marquer `kvk_config` clôturée — n'avait jamais été implémentée). Correctifs, arbitrés par le Roi : **masquage automatique** de la pseudo-campagne courante quand une archive porte le même slug de titre (sélecteur + timeline — l'archive fait foi) ; la clôture écrit désormais `status: 'closed'` dans `kvk_config/current` ; le formulaire de disponibilité affiche « Aucune campagne KvK active » et bloque la soumission tant que c'est clôturé (clé i18n ×15) ; la config de la saison suivante (setDoc sans merge) efface le statut automatiquement.
+### Data
+- Rattrapage via script d'administration (la clôture du Roi a précédé le correctif) : `kvk_history/soc_4…` → `outcome: victory` (victoire **sans étoile**, décision du Roi) ; `kvk_config/current` → `status: closed`. Date de fin 25/07 **conservée** (fin officielle de saison, arbitrage Roi — A-008 amendée). Vérifié en dev : sélecteur sans « En cours » (SoC 4 Archivée par défaut), timeline 4 cartes avec badges de résultat (V/D/V/D), zéro erreur console.
+
 ## v2.20 - 2026-07-18
 ### Added
 - **F-016 (SSOT) / F-022 (PM) — Timeline du Royaume** : nouvel onglet « Progression du Royaume » sur Performance KvK, **réservé King/Officer (BR-011)** : frise chronologique des 4 campagnes (courante + archivées) avec agrégats royaume par campagne (KP gagnés — mains, morts totaux — mains+fillers, comptes, % objectif moyen ; champs absents des vieux formats affichés « — », jamais 0) et badge de résultat officiel. **Saisie du résultat (BR-012)** : sélecteur King-only sur les campagnes archivées (victoire avec étoile / victoire / défaite), persisté dans `kvk_history.outcome` ; règles Firestore amendées (BR-006) pour autoriser un update King limité au seul champ `outcome`, déployées sur les deux bases. 8 clés i18n ×9 langues.

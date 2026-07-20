@@ -16,6 +16,9 @@ import StatusFilter from '../components/ui/StatusFilter';
 import { DATA_CONFIG } from '../config/data-mapping';
 import PageHeader from '../components/ui/PageHeader';
 
+// Même normalisation que CampaignArchiveControl (identité d'une campagne = slug du titre)
+const slugify = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+
 const KvKPerformancePage = () => {
     const { kvkStats, kvkFillerStats, loading, error } = useData();
     const { isDiscordUser } = useAuth();
@@ -64,8 +67,19 @@ const KvKPerformancePage = () => {
         fillerList: Array.isArray(kvkFillerStats) ? kvkFillerStats : []
     }), [kvkStats, kvkFillerStats]);
 
-    const allCampaigns = useMemo(() => [currentCampaign, ...historyCampaigns], [currentCampaign, historyCampaigns]);
-    const selectedCampaign = allCampaigns.find(c => c.docId === selectedCampaignId) || currentCampaign;
+    // BR-013 (décision du 2026-07-20) : si la campagne « courante » (titre DATA_CONFIG)
+    // a déjà été archivée, l'archive fait foi — la pseudo-campagne courante est masquée
+    // (sélecteur + timeline) jusqu'à la configuration de la saison suivante.
+    const currentIsArchived = useMemo(
+        () => historyCampaigns.some(c => slugify(c.title) === slugify(currentCampaign.title)),
+        [historyCampaigns, currentCampaign.title]
+    );
+
+    const allCampaigns = useMemo(
+        () => (currentIsArchived ? [...historyCampaigns] : [currentCampaign, ...historyCampaigns]),
+        [currentIsArchived, currentCampaign, historyCampaigns]
+    );
+    const selectedCampaign = allCampaigns.find(c => c.docId === selectedCampaignId) || allCampaigns[0] || currentCampaign;
 
     // F-015: per-player index across all campaigns (governor ID is the stable join key)
     const playerIndex = useMemo(() => {
@@ -285,11 +299,13 @@ const KvKPerformancePage = () => {
                     </label>
                     <select
                         id="kvk-campaign-select"
-                        value={selectedCampaignId}
+                        value={selectedCampaign.docId}
                         onChange={(e) => { setSelectedCampaignId(e.target.value); setStatusFilter([]); setSearchTerm(''); }}
                         className="bg-slate-900/80 border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[44px]"
                     >
-                        <option value="current">{currentCampaign.title} — {t('kvk_history.current_badge')}</option>
+                        {!currentIsArchived && (
+                            <option value="current">{currentCampaign.title} — {t('kvk_history.current_badge')}</option>
+                        )}
                         {historyCampaigns.map(c => (
                             <option key={c.docId} value={c.docId}>{c.title}</option>
                         ))}

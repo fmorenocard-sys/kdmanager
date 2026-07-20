@@ -104,6 +104,7 @@
     "dashboard_title": "Kriegs-Dashboard (Offiziere)",
     "declaration_form": "Verfügbarkeit erklären",
     "form_description": "Gib genaue Daten an, um die Führung für den KvK zu planen. Ressourcen in Millionen angeben.",
+    "no_active_campaign": "Keine aktive KvK-Kampagne — Erklärungen öffnen zur nächsten Saison wieder.",
     "form_required": "Name und ID sind erforderlich.",
     "availability": "Verfügbarkeit",
     "time_range_utc": "Zeitraum (UTC)",

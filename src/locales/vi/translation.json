@@ -104,6 +104,7 @@
     "dashboard_title": "Bảng điều khiển chiến tranh (Sĩ quan)",
     "declaration_form": "Khai báo tình trạng của tôi",
     "form_description": "Cung cấp dữ liệu chính xác để lãnh đạo lên kế hoạch cho KvK sắp tới. Nhập tài nguyên theo triệu (ví dụ: 100 = 100M).",
+    "no_active_campaign": "Không có chiến dịch KvK đang diễn ra — khai báo sẽ mở lại vào mùa sau.",
     "form_required": "Tên và ID bắt buộc.",
     "availability": "Tình trạng",
     "time_range_utc": "Khung giờ (UTC)",

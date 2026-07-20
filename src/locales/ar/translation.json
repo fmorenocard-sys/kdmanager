@@ -104,6 +104,7 @@
     "dashboard_title": "لوحة الحرب (الضباط)",
     "declaration_form": "الإعلان عن التوفر",
     "form_description": "أدخل بيانات دقيقة لتخطيط KvK.",
+    "no_active_campaign": "لا توجد حملة KvK نشطة — سيُعاد فتح التصريحات في الموسم القادم.",
     "form_required": "الاسم والمعرف مطلوبان.",
     "availability": "التوفر",
     "time_range_utc": "النطاق الزمني (UTC)",

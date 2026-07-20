@@ -104,6 +104,7 @@
     "dashboard_title": "Panel Wojenny (Oficerowie)",
     "declaration_form": "Zgłoś dostępność",
     "form_description": "Podaj dokładne dane do planowania KvK.",
+    "no_active_campaign": "Brak aktywnej kampanii KvK — deklaracje zostaną otwarte w przyszłym sezonie.",
     "form_required": "Nazwa i ID są wymagane.",
     "availability": "Dostępność",
     "time_range_utc": "Zakres czasu (UTC)",

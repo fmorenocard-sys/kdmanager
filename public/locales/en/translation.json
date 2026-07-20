@@ -94,6 +94,7 @@
         "tracker_title": "War Tracker",
         "dashboard_title": "War Dashboard (Officers)",
         "declaration_form": "Declare My Availability",
+        "no_active_campaign": "No active KvK campaign — declarations will reopen next season.",
         "availability": "Availability",
         "time_range_utc": "Time Range (UTC)",
         "crystal_tech": "Crystal Tech",

@@ -83,6 +83,15 @@ const CampaignArchiveControl = () => {
                 archivedAt: new Date().toISOString(),
                 source: 'in-app closure (CampaignArchiveControl)'
             });
+            // BR-013 (étape 4 de l'étude E-004, décidée le 2026-07-20) : la campagne
+            // active du War Tracker est marquée clôturée jusqu'à la saison suivante.
+            try {
+                await setDoc(doc(db, 'kvk_config', 'current'),
+                    { status: 'closed', closedAt: new Date().toISOString() },
+                    { merge: true });
+            } catch (e) {
+                console.warn('kvk_config close flag failed (archive itself succeeded):', e);
+            }
             invalidateKvkHistoryCache();
             setConfirming(false);
             setMessage({ type: 'ok', text: t('kvk_history.archived_success', { title }) });
