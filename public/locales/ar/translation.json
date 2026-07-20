@@ -95,6 +95,7 @@
         "dashboard_title": "لوحة الحرب (الضباط)",
         "declaration_form": "الإعلان عن التوفر",
         "no_active_campaign": "لا توجد حملة KvK نشطة — سيُعاد فتح التصريحات في الموسم القادم.",
+        "campaign_closed": "الحملة مُغلقة — بين المواسم",
         "availability": "التوفر",
         "time_range_utc": "النطاق الزمني (UTC)",
         "crystal_tech": "Crystal Tech",

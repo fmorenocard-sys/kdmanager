@@ -105,6 +105,7 @@
     "declaration_form": "Declarar disponibilidad",
     "form_description": "Proporciona datos precisos para planificar el KvK.",
     "no_active_campaign": "No hay campaña KvK activa — las declaraciones se reabrirán la próxima temporada.",
+    "campaign_closed": "Campaña cerrada — entre temporadas",
     "form_required": "El nombre y el ID son obligatorios.",
     "availability": "Disponibilidad",
     "time_range_utc": "Horario (UTC)",

@@ -95,6 +95,7 @@
         "dashboard_title": "Панель Війни (Офіцери)",
         "declaration_form": "Заявити доступність",
         "no_active_campaign": "Немає активної кампанії KvK — декларації відкриються наступного сезону.",
+        "campaign_closed": "Кампанію закрито — міжсезоння",
         "availability": "Доступність",
         "time_range_utc": "Часовий діапазон (UTC)",
         "crystal_tech": "Crystal Tech",

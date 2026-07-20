@@ -105,6 +105,7 @@
     "declaration_form": "Müsaitlik Bildir",
     "form_description": "Liderliğin KvK için planlama yapmasına yardımcı olmak için doğru veri girin.",
     "no_active_campaign": "Aktif KvK kampanyası yok — beyanlar gelecek sezon yeniden açılacak.",
+    "campaign_closed": "Kampanya kapatıldı — sezon arası",
     "form_required": "Ad ve ID gereklidir.",
     "availability": "Müsaitlik",
     "time_range_utc": "Saat Aralığı (UTC)",

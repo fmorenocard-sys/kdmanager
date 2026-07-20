@@ -1,16 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { db } from '../../config/firebase';
 import { doc, getDoc, setDoc, Timestamp, collection, getDocs, writeBatch, query, where } from 'firebase/firestore';
 import { useRole, ROLES } from '../../context/RoleContext';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
-import { Save, Calendar, Shield, CheckCircle2, ChevronDown, ChevronUp, History, Users } from '../ui/icons';
+import { Save, Calendar, Shield, CheckCircle2, ChevronDown, ChevronUp, History, Users, Archive } from '../ui/icons';
 import CampaignArchiveControl from './CampaignArchiveControl';
 
 const KvKConfigForm = () => {
     const { role, isAuthorized } = useRole();
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [savedConfig, setSavedConfig] = useState(null); // tracks what's actually in Firestore
@@ -53,7 +55,12 @@ const KvKConfigForm = () => {
                         endDate: endDateStr
                     };
                     setFormData(fd);
-                    setSavedConfig({ ...fd, updatedAt: updatedAtStr, updatedBy: data.updatedBy || null });
+                    setSavedConfig({
+                        ...fd,
+                        updatedAt: updatedAtStr,
+                        updatedBy: data.updatedBy || null,
+                        status: data.status || null // BR-013: 'closed' hors saison
+                    });
                 }
             } catch (err) {
                 console.error("Error loading KvK config:", err);
@@ -107,12 +114,12 @@ const KvKConfigForm = () => {
                 updatedBy: role
             });
             setFormData(prev => ({ ...prev, id: generatedId }));
-            setSavedConfig(prev => ({
+            setSavedConfig({
                 ...formData,
                 id: generatedId,
                 updatedAt: new Date().toLocaleString(),
                 updatedBy: role
-            }));
+            });
             setMessage('Active Campaign saved successfully!');
             setTimeout(() => setMessage(''), 3000);
         } catch (err) {
@@ -243,17 +250,27 @@ const KvKConfigForm = () => {
 
     return (
         <div className="space-y-6">
-            {/* Active Campaign Status Banner */}
+            {/* Active Campaign Status Banner — BR-013: reflects the closed (inter-season) state */}
             {savedConfig && (
-                <div className="relative overflow-hidden rounded-xl border border-green-500/30 bg-gradient-to-br from-green-950/40 via-slate-900/60 to-slate-900/80 p-4">
+                <div className={`relative overflow-hidden rounded-xl border p-4 ${savedConfig.status === 'closed'
+                    ? 'border-amber-500/30 bg-gradient-to-br from-amber-950/30 via-slate-900/60 to-slate-900/80'
+                    : 'border-green-500/30 bg-gradient-to-br from-green-950/40 via-slate-900/60 to-slate-900/80'}`}>
                     {/* Glow effect */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 blur-3xl rounded-full pointer-events-none" />
+                    {savedConfig.status !== 'closed' && (
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 blur-3xl rounded-full pointer-events-none" />
+                    )}
                     <div className="flex items-start gap-3">
-                        <div className="shrink-0 mt-0.5 bg-green-500/20 ring-1 ring-green-500/40 p-2 rounded-lg">
-                            <CheckCircle2 size={18} className="text-green-400" />
+                        <div className={`shrink-0 mt-0.5 p-2 rounded-lg ${savedConfig.status === 'closed'
+                            ? 'bg-amber-500/15 ring-1 ring-amber-500/40'
+                            : 'bg-green-500/20 ring-1 ring-green-500/40'}`}>
+                            {savedConfig.status === 'closed'
+                                ? <Archive size={18} className="text-amber-400" />
+                                : <CheckCircle2 size={18} className="text-green-400" />}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-0.5">Active Campaign — Currently Live</p>
+                            <p className={`text-[10px] font-bold uppercase tracking-widest mb-0.5 ${savedConfig.status === 'closed' ? 'text-amber-400' : 'text-green-400'}`}>
+                                {savedConfig.status === 'closed' ? t('war.campaign_closed') : 'Active Campaign — Currently Live'}
+                            </p>
                             <h3 className="text-lg font-bold text-white truncate">{savedConfig.name}</h3>
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5">
                                 {savedConfig.startDate && (
@@ -268,6 +285,9 @@ const KvKConfigForm = () => {
                                     ID: {savedConfig.id}
                                 </span>
                             </div>
+                            {savedConfig.status === 'closed' && (
+                                <p className="text-xs text-slate-400 mt-1.5">{t('war.no_active_campaign')}</p>
+                            )}
                             {savedConfig.updatedAt && (
                                 <p className="text-[10px] text-slate-500 mt-1.5">
                                     Last saved {savedConfig.updatedAt}{savedConfig.updatedBy ? ` by ${savedConfig.updatedBy}` : ''}

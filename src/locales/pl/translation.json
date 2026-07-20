@@ -105,6 +105,7 @@
     "declaration_form": "Zgłoś dostępność",
     "form_description": "Podaj dokładne dane do planowania KvK.",
     "no_active_campaign": "Brak aktywnej kampanii KvK — deklaracje zostaną otwarte w przyszłym sezonie.",
+    "campaign_closed": "Kampania zamknięta — przerwa między sezonami",
     "form_required": "Nazwa i ID są wymagane.",
     "availability": "Dostępność",
     "time_range_utc": "Zakres czasu (UTC)",

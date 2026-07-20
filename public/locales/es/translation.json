@@ -95,6 +95,7 @@
         "dashboard_title": "Panel de Guerra (Oficiales)",
         "declaration_form": "Declarar disponibilidad",
         "no_active_campaign": "No hay campaña KvK activa — las declaraciones se reabrirán la próxima temporada.",
+        "campaign_closed": "Campaña cerrada — entre temporadas",
         "availability": "Disponibilidad",
         "time_range_utc": "Horario (UTC)",
         "crystal_tech": "Crystal Tech",

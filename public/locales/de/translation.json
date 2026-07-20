@@ -95,6 +95,7 @@
         "dashboard_title": "Kriegs-Dashboard (Offiziere)",
         "declaration_form": "Verfügbarkeit erklären",
         "no_active_campaign": "Keine aktive KvK-Kampagne — Erklärungen öffnen zur nächsten Saison wieder.",
+        "campaign_closed": "Kampagne abgeschlossen — Zwischensaison",
         "availability": "Verfügbarkeit",
         "time_range_utc": "Zeitraum (UTC)",
         "crystal_tech": "Crystal Tech",
