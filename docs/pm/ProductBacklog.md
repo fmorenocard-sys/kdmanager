@@ -14,7 +14,7 @@
   * *Objectif*: Conserver et consulter les données de toutes les campagnes KvK passées (aujourd'hui écrasées à chaque cycle), avec vue de progression par joueur.
   * *Valeur*: Décisions leadership multi-campagnes (deadweight, promotions), mémoire du royaume, engagement joueurs.
   * *Métrique d'impact*: Nombre de campagnes archivées ; consultations de la vue historique/progression.
-* **E-005 [PROPOSÉ — arbitrage Roi requis]**: Fusion KvK Manager — module « KvK Race » centralisé (voir `Etude_Fusion_KvK_Manager.md`)
+* **E-005 [GO — décision Roi 2026-07-21 ; Phase 3 scouting abandonnée ; restent §9.3 priorité relative et §9.4 visibilité]**: Fusion KvK Manager — module « KvK Race » centralisé (voir `Etude_Fusion_KvK_Manager.md`)
   * *Objectif*: Absorber le dashboard Python/Streamlit local de suivi de compétition (32 royaumes, DKP net multi-scans, duel de camps) et les classeurs Excel de scouting dans le Kingdom Manager — un seul outil, multi-utilisateurs, capitalisé de saison en saison.
   * *Valeur*: La course à l'étoile lisible par tout le leadership (aujourd'hui : le poste du Roi uniquement) ; DKP unique et paramétrable ; fin de la re-création de l'outil à chaque saison.
   * *Métrique d'impact*: Utilisateurs distincts de la vue course ; délai scan→visible ; abandon des classeurs Excel.
@@ -41,7 +41,7 @@
 * **US-019 (E-005)**: En tant qu'officier, je veux le top N joueurs de la compétition avec recherche et carte joueur, croisé avec les profils 2997, afin d'identifier qui porte l'effort.
 * **US-020 (E-005)**: En tant que Roi, je veux définir des exclusions anti-triche (gel d'un royaume entre deux scans), afin que les classements restent crédibles.
 * **US-021 (E-005)**: En tant qu'officier, je veux que le snapshot du duel soit publié sur Discord après chaque ingestion, afin de remplacer les copies d'écran manuelles.
-* **US-022 (E-005)**: En tant que Roi, je veux des fiches de scouting persistantes par royaume adverse (tier, notes, statut), afin de préparer les saisons sans classeur Excel.
+* **US-022 (E-005) [ABANDONNÉE 2026-07-21]**: ~~En tant que Roi, je veux des fiches de scouting persistantes par royaume adverse (tier, notes, statut), afin de préparer les saisons sans classeur Excel.~~ *(Décision Roi : le scouting reste un outil personnel — pas de digitalisation.)*
 * **US-023 (E-004) [LIVE 2026-07-18]**: En tant que membre du leadership, je veux une timeline chronologique des campagnes KvK avec les performances agrégées du royaume et leur résultat officiel, afin de visualiser notre trajectoire collective et entretenir la mémoire du royaume. *(Décisions D1–D4 arbitrées et livrées le 2026-07-18 — onglet « Progression du Royaume », réservé King/Officer ; voir `Etude_Timeline_Royaume.md`.)*
 
 ## Bugs / Dette

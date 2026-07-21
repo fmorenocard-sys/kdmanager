@@ -2,6 +2,9 @@
 
 Ce fichier logue les évolutions majeures et décisions stratégiques modifiant le cap du produit.
 
+## 2026-07-21
+* **GO E-005 — Fusion KvK Manager (décisions Roi §9.1 et §9.5)** : feu vert à l'absorption du KvK Manager Python dans l'app (module « KvK Race », page P-008) ; la **Phase 3 scouting est abandonnée** — le garde-fou A-012 a joué (usage personnel du Roi, on ne digitalise pas) : F-021 et US-022 sorties du périmètre. E-005 se recentre sur Phase 1 (ingestion scans + dashboard de course, fenêtre inter-saison en cours) puis Phase 2 (analytique/intégrité). Restent à trancher avant exécution : §9.3 (priorité relative vs pings Discord US-008 et objectifs F-014) et §9.4 (visibilité de la vue course — publique ou membres).
+
 ## 2026-07-20
 * **Clôture de SoC 4 & décisions inter-saison (Roi)** : première clôture in-app d'une campagne (US-010) — elle a révélé que l'étape « marquer la campagne clôturée » (étude E-004 §5.4) n'avait pas été livrée : SoC 4 apparaissait en double (En cours + Archivée) et le War Tracker la croyait active. Arbitrages rendus : masquage automatique de la pseudo-campagne courante déjà archivée (l'archive fait foi — **BR-013**) ; statut `closed` écrit dans `kvk_config` à la clôture, gelant le formulaire de disponibilité jusqu'à la saison suivante ; **résultat SoC 4 = victoire sans étoile** ; fin officielle **25/07** confirmée (A-008 amendée). Le royaume est désormais formellement **en inter-saison** — fenêtre d'exécution idéale pour E-005 Phase 1 si le Go est donné.
 
