@@ -1,7 +1,7 @@
 # Étude — Fusion Kingdom Manager × KvK Manager en un outil centralisé (E-005)
 
 > Date : 2026-07-14
-> Statut : **GO — actée le 2026-07-21** (§9.1 Go et §9.5 scouting abandonné rendus le 2026-07-21 ; §9.2 cadre DKP rendu le 2026-07-14 ; **restent ouvertes : §9.3 priorité relative, §9.4 visibilité**)
+> Statut : **GO — 5/5 décisions rendues** (§9.1 Go, §9.3 Phase 1 immédiate, §9.4 visibilité leadership et §9.5 scouting abandonné rendus le 2026-07-21 ; §9.2 cadre DKP rendu le 2026-07-14). Prochaine étape : exécution de la Phase 1 (fenêtre inter-saison).
 > Sources : inventaire complet des deux outils (repo `kdmanager` + dossier `2026_06_KingOfAllBritain`), `BRIEF.md` du KvK Manager, règles `.agent/rules/product-manager.md` et `.agent/rules/designer.md`
 
 ---
@@ -149,8 +149,8 @@ Conformément à `.agent/rules/designer.md` : **rationaliser, ne pas refondre** 
 
 1. ✅ **Rendue le 2026-07-21 — GO** : absorption du KvK Manager dans le Kingdom Manager (module « KvK Race », Phases 1–2 ; la Phase 3 scouting est abandonnée, voir §9.5).
 2. ✅ **Rendue le 2026-07-14 — Cadre DKP** : deux domaines distincts (interne 2997 vs course/coalition), chacun paramétrable par campagne, jamais mélangés (voir §5, BR-010). Reste ouvert : la formule « Required DKP » (A-005), qui ne concerne que F-014.
-3. **Priorité relative** vs le reste du moyen terme : F-013 (pings Missing Forms) et F-014 (objectifs) restent-ils devant ? Proposition : Phase 1 planifiée **entre deux saisons**, prête avant le prochain KvK (SoC 4 clôturé le 7/7 ; prochaine saison estimée ~oct.–nov. 2026 sur le rythme observé).
-4. **Visibilité** : la vue course est-elle publique (recommandé, cohérent A-003) ou réservée aux membres connectés ?
+3. ✅ **Rendue le 2026-07-21 — Phase 1 maintenant** : exécution immédiate pendant l'inter-saison en cours (SoC 4 clôturée le 20/07), prête avant la prochaine saison (~oct.–nov. 2026). F-013 (pings Missing Forms) et F-014 (objectifs) passent après.
+4. ✅ **Rendue le 2026-07-21 — Leadership seulement** : la vue course est réservée aux rôles King/Officer (même modèle de gating que la timeline F-022 / BR-011 ; ouverture plus large réévaluable ensuite). La recommandation « publique » n'est pas retenue à ce stade.
 5. ✅ **Rendue le 2026-07-21 — Pas de digitalisation** : le scouting reste l'outil personnel du Roi (A-012 confirmée dans son garde-fou : usage solitaire → on ne construit pas). F-021 et US-022 abandonnées ; la Phase 3 est retirée du périmètre E-005.
 
 ## 10. Risques

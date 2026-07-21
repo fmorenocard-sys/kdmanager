@@ -14,7 +14,7 @@
   * *Objectif*: Conserver et consulter les données de toutes les campagnes KvK passées (aujourd'hui écrasées à chaque cycle), avec vue de progression par joueur.
   * *Valeur*: Décisions leadership multi-campagnes (deadweight, promotions), mémoire du royaume, engagement joueurs.
   * *Métrique d'impact*: Nombre de campagnes archivées ; consultations de la vue historique/progression.
-* **E-005 [GO — décision Roi 2026-07-21 ; Phase 3 scouting abandonnée ; restent §9.3 priorité relative et §9.4 visibilité]**: Fusion KvK Manager — module « KvK Race » centralisé (voir `Etude_Fusion_KvK_Manager.md`)
+* **E-005 [GO — 5/5 décisions rendues au 2026-07-21 : Phase 1 immédiate (inter-saison), vue course réservée King/Officer, Phase 3 scouting abandonnée]**: Fusion KvK Manager — module « KvK Race » centralisé (voir `Etude_Fusion_KvK_Manager.md`)
   * *Objectif*: Absorber le dashboard Python/Streamlit local de suivi de compétition (32 royaumes, DKP net multi-scans, duel de camps) et les classeurs Excel de scouting dans le Kingdom Manager — un seul outil, multi-utilisateurs, capitalisé de saison en saison.
   * *Valeur*: La course à l'étoile lisible par tout le leadership (aujourd'hui : le poste du Roi uniquement) ; DKP unique et paramétrable ; fin de la re-création de l'outil à chaque saison.
   * *Métrique d'impact*: Utilisateurs distincts de la vue course ; délai scan→visible ; abandon des classeurs Excel.
