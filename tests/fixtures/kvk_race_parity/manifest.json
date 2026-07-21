@@ -1,0 +1,104 @@
+{
+  "generated_from": "2026_06_KingOfAllBritain (moteur Python, 6 scans reels SoC 4)",
+  "base_seq": 1,
+  "scans": [
+    {
+      "seq": 1,
+      "file": "001_BASE_SCAN_1249539_06_11_2026,_09_02_17_AM.xlsx",
+      "ts": "2026-06-11 09:02:17",
+      "is_base": true
+    },
+    {
+      "seq": 2,
+      "file": "002_1249539_06_16_2026,_11_07_14_AM.xlsx",
+      "ts": "2026-06-16 11:07:14",
+      "is_base": false
+    },
+    {
+      "seq": 3,
+      "file": "003_1249539_06_24_2026,_04_01_45_PM.xlsx",
+      "ts": "2026-06-24 16:01:45",
+      "is_base": false
+    },
+    {
+      "seq": 4,
+      "file": "004_1249539_07_03_2026,_12_05_22_PM.xlsx",
+      "ts": "2026-07-03 12:05:22",
+      "is_base": false
+    },
+    {
+      "seq": 5,
+      "file": "005_1249539_07_06_2026,_09_24_23_AM.xlsx",
+      "ts": "2026-07-06 09:24:23",
+      "is_base": false
+    },
+    {
+      "seq": 6,
+      "file": "006_1249539_07_07_2026,_12_47_54_PM.xlsx",
+      "ts": "2026-07-07 12:47:54",
+      "is_base": false
+    }
+  ],
+  "dkp_weights": {
+    "kills_iv_diff": 40.0,
+    "kills_v_diff": 200.0,
+    "dead_diff": 6.0
+  },
+  "exclusions_applied": [
+    {
+      "scope_type": "kingdom",
+      "ids": [
+        3567
+      ],
+      "from_seq": 2,
+      "to_seq": 4,
+      "active": true,
+      "reason": "Guerre civile KD 3567 sur la periode scan 2 -> scan 4 (stats gonflees)"
+    }
+  ],
+  "config": {
+    "labels": {
+      "1": "Northumbria",
+      "2": "East-Anglia",
+      "3": "Wessex",
+      "4": "Mercia"
+    },
+    "roles": {
+      "1": "adversaire",
+      "2": "nous",
+      "3": "allie_concurrent_etoile",
+      "4": "adversaire"
+    },
+    "hero_duel": [
+      2,
+      3
+    ],
+    "pinned_kingdoms": [
+      2997,
+      1523
+    ],
+    "our_camp": "2",
+    "base_scan_override": null,
+    "dkp": {
+      "_comment": "Aligne sur le Classic DKP de l'outil public : T4_KP*4 + T5_KP*10 + Deads*6, avec T4=10 KP/kill et T5=20 KP/kill => poids effectifs 40/200/6 sur les compteurs de kills.",
+      "kp_per_t4_kill": 10,
+      "kp_per_t5_kill": 20,
+      "mult_t4": 4,
+      "mult_t5": 10,
+      "weight_deads": 6
+    },
+    "exclusions": [
+      {
+        "scope_type": "kingdom",
+        "ids": [
+          3567
+        ],
+        "from_seq": 2,
+        "to_seq": 4,
+        "active": true,
+        "reason": "Guerre civile KD 3567 sur la periode scan 2 -> scan 4 (stats gonflees)"
+      }
+    ]
+  },
+  "note": "Cible de parite du portage JS (F-018) : memes entrees => memes sorties, tolerance 0."
+}

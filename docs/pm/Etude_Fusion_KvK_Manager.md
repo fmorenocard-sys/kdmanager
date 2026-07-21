@@ -1,7 +1,7 @@
 # Étude — Fusion Kingdom Manager × KvK Manager en un outil centralisé (E-005)
 
 > Date : 2026-07-14
-> Statut : **GO — 5/5 décisions rendues** (§9.1 Go, §9.3 Phase 1 immédiate, §9.4 visibilité leadership et §9.5 scouting abandonné rendus le 2026-07-21 ; §9.2 cadre DKP rendu le 2026-07-14). Prochaine étape : exécution de la Phase 1 (fenêtre inter-saison).
+> Statut : **GO — 5/5 décisions rendues** (§9.1 Go, §9.3 Phase 1 immédiate, §9.4 visibilité leadership et §9.5 scouting abandonné rendus le 2026-07-21 ; §9.2 cadre DKP rendu le 2026-07-14). Prochaine étape : exécution de la Phase 1 (fenêtre inter-saison) — **plan de chantier : `Plan_Execution_E005_Phase1.md`** (cadrage technique du 2026-07-21, jeu de parité versionné).
 > Sources : inventaire complet des deux outils (repo `kdmanager` + dossier `2026_06_KingOfAllBritain`), `BRIEF.md` du KvK Manager, règles `.agent/rules/product-manager.md` et `.agent/rules/designer.md`
 
 ---
