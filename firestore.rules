@@ -41,9 +41,23 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // KvK Race (E-005 / F-018-F-019). Lecture leadership uniquement (décision §9.4) ;
+    // les agrégats sont écrits par les Cloud Functions (bypass rules). Le Roi édite
+    // la config de campagne sur le document racine (US-016).
+    match /kvk_race/{campaignId} {
+      allow read: if isKingOrOfficer();
+      allow create, update: if isKing();
+      allow delete: if false;
+
+      match /{document=**} {
+        allow read: if isKingOrOfficer();
+        allow write: if false;
+      }
+    }
+
     match /roles/{userId} {
       allow read: if true;
-      allow write: if false; 
+      allow write: if false;
     }
 
     match /user_profiles/{userId} {

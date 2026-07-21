@@ -1,5 +1,13 @@
 # QA Changelog
 
+## v2.24 - 2026-07-21
+### Added
+- **E-005 jalon 2 — pipeline cloud KvK Race (F-018)** : bucket dédié privé `kd-97-manager-kvk-race` (créé us-central1, uniform IAM, public access prevention), callable `getRaceScanUploadUrl` (URL signée V4 15 min, rôle vérifié dans `roles/{uid}` — **BR-014**), trigger `digestRaceScan` (onObjectFinalized, 1 GiB/300 s) : parse du scan → fichier dérivé léger par gouverneur (`derived/gov_values_{seq}.json`, ré-audit possible) → **recompute complet de la campagne** depuis les dérivés avec la config Firestore du moment (poids DKP, exclusions, duel) → documents pré-agrégés `kvk_race/{cid}` (scans+duel, kingdoms, players_top 200, racine avec latestDuel). Rules Firestore `kvk_race` (lecture King/Officer — décision §9.4 ; config racine éditable King — US-016 ; agrégats functions-only) déployées sur les deux bases ; 4 bindings IAM Eventarc/pubsub ajoutés (premier trigger Storage du projet).
+### Fixed
+- Premier run : les dérivés omettaient `scan_seq`/`scan_ts` → recompute à 0 scans (filtre `>= base`). Corrigé (LIGHT_COLS), redéployé, rejoué.
+### Verified
+- Rejeu de bout en bout des 6 scans SoC 4 via le bucket (campagne `soc4_race_2026`, ~10 s/scan) : Firestore **identique aux fixtures Python** — camps 24/24, royaumes 192/192, duel 6/6 (écart final +84 254 692 368), players_top : multisets par scan + 1 200 gouverneurs communs aux valeurs exactes. La campagne replay est conservée comme jeu de données de dev pour le jalon 4 (UI).
+
 ## v2.23 - 2026-07-21
 ### Added
 - **E-005 jalon 1 — moteur KvK Race porté en JS (F-018)** : `functions/kvkRace/` (`metrics.js` poids DKP configurables 40/200/6, `parse.js` lecture xlsx 4-feuilles + cast strict texte→nombre (''→null, jamais 0) + mapping royaume→camp majoritaire, `engine.js` nets base-scan par gouverneur → exclusions à fenêtres composables → agrégats royaume/camp → duel → vitesse). **Test de parité `runParity.mjs`** contre les fixtures générées par le moteur Python (`tests/fixtures/kvk_race_parity/`) : **parité totale à tolérance 0 au premier run** sur les 6 scans réels SoC 4 — camps 24/24, royaumes 192/192, duel 6/6, top 200 joueurs 1200/1200 (valeurs exactes + multisets par scan pour neutraliser l'ordre des ex æquo), exclusion KD 3567 (433 gouverneurs) identique. Dépendance `xlsx` ajoutée aux functions (lecture Buffer, prête pour le trigger Storage du jalon 2).
