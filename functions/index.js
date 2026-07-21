@@ -574,4 +574,4 @@ export { discordLogin, discordCallback, confirmDiscordLink, forceRoleSync } from
 export { discordInteractionHandler } from "./discordBot.js";
 
 // Export KvK Race pipeline (E-005 / F-018 : digestion des scans + upload signé BR-014)
-export { digestRaceScan, getRaceScanUploadUrl } from "./kvkRace/digest.js";
+export { digestRaceScan, getRaceScanUploadUrl, recomputeRaceCampaign } from "./kvkRace/digest.js";

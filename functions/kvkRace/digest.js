@@ -160,6 +160,38 @@ export const digestRaceScan = onObjectFinalized(
     },
 );
 
+/** Vérifie que l'appelant est King/Officer (roles/{uid}). Renvoie le rôle. */
+async function requireLeadership(request) {
+    const uid = request.auth && request.auth.uid;
+    if (!uid) throw new HttpsError("unauthenticated", "Login required.");
+    const roleSnap = await db().doc(`roles/${uid}`).get();
+    const role = roleSnap.exists ? roleSnap.data().role : null;
+    if (role !== "King" && role !== "Officer") {
+        throw new HttpsError("permission-denied", "Leadership role required (BR-014).");
+    }
+    return {uid, role};
+}
+
+/**
+ * Callable : recalcul immédiat d'une campagne (US-016) — après un changement de
+ * config (poids DKP, exclusions, duel), sans attendre le prochain scan.
+ */
+export const recomputeRaceCampaign = onCall(
+    {region: "us-central1", memory: "1GiB", timeoutSeconds: 300},
+    async (request) => {
+        const {uid, role} = await requireLeadership(request);
+        const campaignId = String((request.data || {}).campaignId || "");
+        if (!/^[a-z0-9_-]+$/i.test(campaignId)) {
+            throw new HttpsError("invalid-argument", "Invalid campaignId.");
+        }
+        logger.info(`Recompute demandé pour ${campaignId} (par ${uid}, rôle ${role})`);
+        await recomputeRace(campaignId, getStorage().bucket(RACE_BUCKET));
+        const snap = await db().doc(`kvk_race/${campaignId}`).get();
+        const d = snap.exists ? snap.data() : {};
+        return {"ok": true, "scanCount": d.scanCount ?? 0, "latestSeq": d.latestSeq ?? null};
+    },
+);
+
 /**
  * Callable : URL d'upload signée pour un scan (BR-014 — leadership uniquement).
  * Le rôle est vérifié dans Firestore roles/{uid} (King ou Officer).
@@ -167,14 +199,7 @@ export const digestRaceScan = onObjectFinalized(
 export const getRaceScanUploadUrl = onCall(
     {region: "us-central1"},
     async (request) => {
-        const uid = request.auth && request.auth.uid;
-        if (!uid) throw new HttpsError("unauthenticated", "Login required.");
-        const roleSnap = await db().doc(`roles/${uid}`).get();
-        const role = roleSnap.exists ? roleSnap.data().role : null;
-        if (role !== "King" && role !== "Officer") {
-            throw new HttpsError("permission-denied", "Leadership role required (BR-014).");
-        }
-
+        const {uid, role} = await requireLeadership(request);
         const campaignId = String((request.data || {}).campaignId || "");
         const filename = String((request.data || {}).filename || "");
         if (!/^[a-z0-9_-]+$/i.test(campaignId)) {

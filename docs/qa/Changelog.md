@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.25 - 2026-07-21
+### Added
+- **E-005 jalon 3 — configuration de campagne KvK Race (US-016)** : `RaceConfigForm` dans l'onglet KvK Config (King uniquement) — sélection/création de campagne, libellés et rôles des 4 camps, duel principal, notre camp, royaumes épinglés, base scan forcé, poids DKP de course (affichage des poids effectifs calculés, hint BR-010) et éditeur d'exclusions anti-triche (actif/périmètre/IDs/fenêtre/raison). Sauvegarde merge sur `kvk_race/{id}` (rules : King) ; nouvelle callable **`recomputeRaceCampaign`** (leadership, déployée) pour recalculer les agrégats immédiatement après un changement de config. Namespace i18n `kvk_race` ×9 locales (42 clés). Vérifié en dev via mock local (retiré avant commit) : hydratation complète de la config seedée, poids effectifs ×40/×200/×6, pas de scroll horizontal ; invité : ni onglet ni formulaire. *Reste à valider par le Roi : une sauvegarde réelle + un recalcul en prod.*
+
 ## v2.24 - 2026-07-21
 ### Added
 - **E-005 jalon 2 — pipeline cloud KvK Race (F-018)** : bucket dédié privé `kd-97-manager-kvk-race` (créé us-central1, uniform IAM, public access prevention), callable `getRaceScanUploadUrl` (URL signée V4 15 min, rôle vérifié dans `roles/{uid}` — **BR-014**), trigger `digestRaceScan` (onObjectFinalized, 1 GiB/300 s) : parse du scan → fichier dérivé léger par gouverneur (`derived/gov_values_{seq}.json`, ré-audit possible) → **recompute complet de la campagne** depuis les dérivés avec la config Firestore du moment (poids DKP, exclusions, duel) → documents pré-agrégés `kvk_race/{cid}` (scans+duel, kingdoms, players_top 200, racine avec latestDuel). Rules Firestore `kvk_race` (lecture King/Officer — décision §9.4 ; config racine éditable King — US-016 ; agrégats functions-only) déployées sur les deux bases ; 4 bindings IAM Eventarc/pubsub ajoutés (premier trigger Storage du projet).

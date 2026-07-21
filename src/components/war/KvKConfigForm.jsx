@@ -9,6 +9,7 @@ import Input from '../ui/Input';
 import Card from '../ui/Card';
 import { Save, Calendar, Shield, CheckCircle2, ChevronDown, ChevronUp, History, Users, Archive } from '../ui/icons';
 import CampaignArchiveControl from './CampaignArchiveControl';
+import RaceConfigForm from '../kvk/RaceConfigForm';
 
 const KvKConfigForm = () => {
     const { role, isAuthorized } = useRole();
@@ -510,6 +511,9 @@ const KvKConfigForm = () => {
 
             {/* F-015: archive the current KvK performance data into kvk_history */}
             <CampaignArchiveControl />
+
+            {/* F-018 / US-016: KvK Race campaign configuration (King only) */}
+            <RaceConfigForm />
         </div>
     );
 };
