@@ -5,6 +5,7 @@
     "performance": "Leistung",
     "trophies": "Trophäen",
     "deadweight": "Ballast",
+    "kvk_race": "KvK Race",
     "bank": "Bank",
     "war": "Krieg"
   },
@@ -261,6 +262,20 @@
     "save": "Konfiguration speichern"
   },
   "kvk_race": {
+    "page_subtitle": "Sternrennen — Lagerduell, Königreiche und Verlauf",
+    "scan_label": "Scan",
+    "gap": "Abstand",
+    "gap_variation": "Veränderung",
+    "coverage": "Abdeckung",
+    "kingdoms_title": "Königreiche",
+    "evolution_title": "Verlauf des Duells",
+    "dkp_col": "Netto-DKP",
+    "kp_col": "Kill Points",
+    "deads_col": "Deads",
+    "t4_col": "T4-Kills",
+    "t5_col": "T5-Kills",
+    "pinned_badge": "Angepinnt",
+    "no_data": "Noch keine Renndaten. Lade einen Scan hoch oder prüfe die Konfiguration.",
     "config_title": "KvK Race — Kampagnen-Konfiguration",
     "config_desc": "Parameter des Sternrennens: Lager, Hauptduell, Renn-DKP-Gewichte und Ausschlüsse. Kein Code-Änderungsbedarf zwischen Saisons.",
     "campaign_label": "Kampagne",

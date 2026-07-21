@@ -5,6 +5,7 @@
     "performance": "Performance",
     "trophies": "Trophées",
     "deadweight": "Poids Mort",
+    "kvk_race": "KvK Race",
     "bank": "Banque",
     "war": "Guerre"
   },
@@ -261,6 +262,20 @@
     "save": "Enregistrer Config"
   },
   "kvk_race": {
+    "page_subtitle": "Course à l'étoile — duel de camps, royaumes et évolution",
+    "scan_label": "Scan",
+    "gap": "Écart",
+    "gap_variation": "Variation",
+    "coverage": "Couverture",
+    "kingdoms_title": "Royaumes",
+    "evolution_title": "Évolution du duel",
+    "dkp_col": "DKP net",
+    "kp_col": "Kill points",
+    "deads_col": "Deads",
+    "t4_col": "Kills T4",
+    "t5_col": "Kills T5",
+    "pinned_badge": "Épinglé",
+    "no_data": "Aucune donnée de course. Déposez un scan ou vérifiez la configuration.",
     "config_title": "KvK Race — Configuration de campagne",
     "config_desc": "Paramètres de la course à l'étoile : camps, duel principal, poids DKP de course et exclusions. Aucun code à modifier entre les saisons.",
     "campaign_label": "Campagne",

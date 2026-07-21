@@ -5,6 +5,7 @@
     "performance": "Performans",
     "trophies": "Kupalar",
     "deadweight": "Yük",
+    "kvk_race": "KvK Yarışı",
     "bank": "Banka",
     "war": "Savaş"
   },
@@ -261,6 +262,20 @@
     "save": "Yapılandırmayı Kaydet"
   },
   "kvk_race": {
+    "page_subtitle": "Yıldız yarışı — kamp düellosu, krallıklar ve gelişim",
+    "scan_label": "Scan",
+    "gap": "Fark",
+    "gap_variation": "Değişim",
+    "coverage": "Kapsam",
+    "kingdoms_title": "Krallıklar",
+    "evolution_title": "Düello gelişimi",
+    "dkp_col": "Net DKP",
+    "kp_col": "Kill points",
+    "deads_col": "Deads",
+    "t4_col": "T4 kill",
+    "t5_col": "T5 kill",
+    "pinned_badge": "Sabit",
+    "no_data": "Henüz yarış verisi yok. Bir scan yükleyin veya yapılandırmayı kontrol edin.",
     "config_title": "KvK Race — Kampanya Yapılandırması",
     "config_desc": "Yıldız yarışı parametreleri: kamplar, ana düello, yarış DKP ağırlıkları ve hariç tutmalar. Sezonlar arası kod değişikliği yok.",
     "campaign_label": "Kampanya",

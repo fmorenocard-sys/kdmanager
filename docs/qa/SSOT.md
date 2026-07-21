@@ -49,6 +49,7 @@
 | **P-003** | **KvK Performance** | `/kvk` | `KvKPerformancePage.jsx`, `KingdomProgression.jsx` |
 | **P-004** | **Trophies** | `/trophies` | `KingdomTrophiesPage.jsx` |
 | **P-005** | **Deadweight** | `/deadweight` | `DeadweightPage.jsx` |
+| **P-008** | **KvK Race** | `/kvk-race` | `KvKRacePage.jsx`, `useRaceData.js` — leadership-only (§9.4), nav sidebar masquée sinon ; duel hero, classement des royaumes (pins 2997/1523), évolution multi-scans |
 | **P-006** | **Bank** | `/bank` | `BankPage.jsx` |
 | **P-007** | **User Profile** | `/profile` | `ProfilePage.jsx` |
 

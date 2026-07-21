@@ -5,6 +5,7 @@
     "performance": "Hiệu suất",
     "trophies": "Cúp thưởng",
     "deadweight": "Thành viên ì",
+    "kvk_race": "Đua KvK",
     "bank": "Ngân hàng",
     "war": "Chiến tranh"
   },
@@ -261,6 +262,20 @@
     "save": "Lưu cấu hình"
   },
   "kvk_race": {
+    "page_subtitle": "Đua ngôi sao — đấu phe, vương quốc và diễn biến",
+    "scan_label": "Scan",
+    "gap": "Khoảng cách",
+    "gap_variation": "Biến động",
+    "coverage": "Độ phủ",
+    "kingdoms_title": "Vương quốc",
+    "evolution_title": "Diễn biến trận đấu",
+    "dkp_col": "DKP ròng",
+    "kp_col": "Kill points",
+    "deads_col": "Deads",
+    "t4_col": "Kill T4",
+    "t5_col": "Kill T5",
+    "pinned_badge": "Đã ghim",
+    "no_data": "Chưa có dữ liệu đua. Tải lên một scan hoặc kiểm tra cấu hình.",
     "config_title": "KvK Race — Cấu hình chiến dịch",
     "config_desc": "Tham số cuộc đua ngôi sao: phe, trận đấu chính, trọng số DKP đua và loại trừ. Không cần sửa code giữa các mùa.",
     "campaign_label": "Chiến dịch",

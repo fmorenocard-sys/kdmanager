@@ -5,6 +5,7 @@
     "performance": "Wydajność",
     "trophies": "Trofea",
     "deadweight": "Ciężar",
+    "kvk_race": "KvK Race",
     "bank": "Bank",
     "war": "Wojna"
   },
@@ -261,6 +262,20 @@
     "save": "Zapisz konfigurację"
   },
   "kvk_race": {
+    "page_subtitle": "Wyścig o gwiazdę — pojedynek obozów, królestwa i przebieg",
+    "scan_label": "Skan",
+    "gap": "Różnica",
+    "gap_variation": "Zmiana",
+    "coverage": "Pokrycie",
+    "kingdoms_title": "Królestwa",
+    "evolution_title": "Przebieg pojedynku",
+    "dkp_col": "DKP netto",
+    "kp_col": "Kill points",
+    "deads_col": "Deads",
+    "t4_col": "Kille T4",
+    "t5_col": "Kille T5",
+    "pinned_badge": "Przypięte",
+    "no_data": "Brak danych wyścigu. Wgraj skan lub sprawdź konfigurację.",
     "config_title": "KvK Race — Konfiguracja kampanii",
     "config_desc": "Parametry wyścigu o gwiazdę: obozy, główny pojedynek, wagi DKP wyścigu i wykluczenia. Bez zmian w kodzie między sezonami.",
     "campaign_label": "Kampania",

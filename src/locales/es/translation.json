@@ -5,6 +5,7 @@
     "performance": "Rendimiento",
     "trophies": "Trofeos",
     "deadweight": "Lastre",
+    "kvk_race": "KvK Race",
     "bank": "Banco",
     "war": "Guerra"
   },
@@ -261,6 +262,20 @@
     "save": "Guardar configuración"
   },
   "kvk_race": {
+    "page_subtitle": "Carrera por la estrella — duelo de campos, reinos y evolución",
+    "scan_label": "Scan",
+    "gap": "Diferencia",
+    "gap_variation": "Variación",
+    "coverage": "Cobertura",
+    "kingdoms_title": "Reinos",
+    "evolution_title": "Evolución del duelo",
+    "dkp_col": "DKP neto",
+    "kp_col": "Kill points",
+    "deads_col": "Deads",
+    "t4_col": "Kills T4",
+    "t5_col": "Kills T5",
+    "pinned_badge": "Fijado",
+    "no_data": "Sin datos de carrera. Sube un scan o revisa la configuración.",
     "config_title": "KvK Race — Configuración de campaña",
     "config_desc": "Parámetros de la carrera por la estrella: campos, duelo principal, pesos DKP de carrera y exclusiones. Sin cambios de código entre temporadas.",
     "campaign_label": "Campaña",

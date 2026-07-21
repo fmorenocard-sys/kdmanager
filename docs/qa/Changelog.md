@@ -1,5 +1,11 @@
 # QA Changelog
 
+## v2.26 - 2026-07-21
+### Added
+- **E-005 jalon 4 — page « KvK Race » (F-019 / US-017-018, P-008)** : route `/kvk-race` + entrée sidebar **réservées King/Officer** (§9.4 — AccessGate et nav masquée sinon, modèle BR-011) : bandeau **duel hero** (cartes des deux camps avec rôle et trophée du leader, écart signé + variation avec flèche), classement des 4 camps (DKP net, couverture, nb royaumes), **tableau des royaumes** trié DKP avec **2997/1523 épinglés en tête** (badge + surlignage, cartes en mobile — pas de scroll horizontal), **courbes d'évolution du duel** multi-scans (Recharts : camp A, camp B, écart en pointillés), sélecteurs campagne et scan. Hook `useRaceData` (lecture des pré-agrégés, 1 requête par sous-collection). i18n : `nav.kvk_race` ×15 + 15 clés page ×9. Vérifié en dev via mock des fixtures (retiré avant commit) : duel +84.3B / variation +35.1B, épinglés en tête, graphe rendu, mobile 375px sans scroll horizontal ; invité → AccessGate. **Phase 1 d'E-005 complète (jalons 1–4)** — restent en V2 : tri par colonne, bouton d'upload UI (US-015), vue Joueurs (F-020 Phase 2).
+### Notes
+- **UXA11Y-007** ajouté au backlog UX sur demande du Roi : passe designer à prévoir sur l'onglet KvK Config (empilement de 6 blocs hétérogènes, mélange legacy anglais / i18n, styles v1+v2).
+
 ## v2.25 - 2026-07-21
 ### Added
 - **E-005 jalon 3 — configuration de campagne KvK Race (US-016)** : `RaceConfigForm` dans l'onglet KvK Config (King uniquement) — sélection/création de campagne, libellés et rôles des 4 camps, duel principal, notre camp, royaumes épinglés, base scan forcé, poids DKP de course (affichage des poids effectifs calculés, hint BR-010) et éditeur d'exclusions anti-triche (actif/périmètre/IDs/fenêtre/raison). Sauvegarde merge sur `kvk_race/{id}` (rules : King) ; nouvelle callable **`recomputeRaceCampaign`** (leadership, déployée) pour recalculer les agrégats immédiatement après un changement de config. Namespace i18n `kvk_race` ×9 locales (42 clés). Vérifié en dev via mock local (retiré avant commit) : hydratation complète de la config seedée, poids effectifs ×40/×200/×6, pas de scroll horizontal ; invité : ni onglet ni formulaire. *Reste à valider par le Roi : une sauvegarde réelle + un recalcul en prod.*

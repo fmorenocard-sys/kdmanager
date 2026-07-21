@@ -5,7 +5,7 @@ import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RoleProvider, useRole, ROLES } from './context/RoleContext';
 import { LangProvider } from './context/LangContext';
-import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull } from './components/ui/icons';
+import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Flag } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
 import KvKPerformancePage from './pages/KvKPerformancePage';
 import KingdomTrophiesPage from './pages/KingdomTrophiesPage';
@@ -13,6 +13,7 @@ import DeadweightPage from './pages/DeadweightPage';
 import BankPage from './pages/BankPage';
 import ProfilePage from './pages/ProfilePage';
 import WarTrackerPage from './pages/WarTrackerPage';
+import KvKRacePage from './pages/KvKRacePage';
 import BottomNav from './components/BottomNav';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
 import ThemeToggle from './components/ui/ThemeToggle';
@@ -30,7 +31,11 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
     { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.performance') },
     { id: 'trophies', path: '/trophies', icon: Trophy, label: t('nav.trophies') },
     // BR-009: deadweight is leadership-only (roles come from Discord sync)
-    ...(isAuthorized([ROLES.KING, ROLES.OFFICER]) ? [{ id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') }] : []),
+    // §9.4 (E-005): KvK Race is leadership-only too
+    ...(isAuthorized([ROLES.KING, ROLES.OFFICER]) ? [
+        { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
+        { id: 'kvk-race', path: '/kvk-race', icon: Flag, label: t('nav.kvk_race') },
+    ] : []),
     { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
   ];
 
@@ -229,6 +234,7 @@ const MainContent = () => {
               <Route path="/war-tracker" element={<WarTrackerPage />} />
               <Route path="/trophies" element={<KingdomTrophiesPage />} />
               <Route path="/deadweight" element={<DeadweightPage />} />
+              <Route path="/kvk-race" element={<KvKRacePage />} />
               <Route path="/bank" element={<BankPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               {/* Fallback route */}
