@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.23 - 2026-07-21
+### Added
+- **E-005 jalon 1 — moteur KvK Race porté en JS (F-018)** : `functions/kvkRace/` (`metrics.js` poids DKP configurables 40/200/6, `parse.js` lecture xlsx 4-feuilles + cast strict texte→nombre (''→null, jamais 0) + mapping royaume→camp majoritaire, `engine.js` nets base-scan par gouverneur → exclusions à fenêtres composables → agrégats royaume/camp → duel → vitesse). **Test de parité `runParity.mjs`** contre les fixtures générées par le moteur Python (`tests/fixtures/kvk_race_parity/`) : **parité totale à tolérance 0 au premier run** sur les 6 scans réels SoC 4 — camps 24/24, royaumes 192/192, duel 6/6, top 200 joueurs 1200/1200 (valeurs exactes + multisets par scan pour neutraliser l'ordre des ex æquo), exclusion KD 3567 (433 gouverneurs) identique. Dépendance `xlsx` ajoutée aux functions (lecture Buffer, prête pour le trigger Storage du jalon 2).
+
 ## v2.22 - 2026-07-20
 ### Added
 - **US-014 — `/mykvk <campagne>` sur Discord (F-015/F-012)** : option `campaign` (autocomplete dynamique — « Current KvK » + campagnes de `kvk_history` triées par saison, cache 5 min, gestion du type 4) ; l'embed d'une campagne archivée affiche titre, dates, **résultat officiel** (🏆⭐/🏆/☠️), badge filler le cas échéant et footer « Archived » daté de l'archivage. Cas gérés : gouverneur absent de la campagne (« did not take part »), campagne inconnue. Sans option, comportement actuel inchangé. Requêtes validées sur données réelles (Lord Guineapig SoC 4 ✓, absent SoC 1 ✓, campagne inexistante ✓) ; function `discordInteractionHandler` redéployée et commandes ré-enregistrées (guild, effet immédiat). *À faire vérifier par le Roi in-Discord (l'endpoint signé n'est pas testable hors Discord).*
