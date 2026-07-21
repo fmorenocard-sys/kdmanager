@@ -1,5 +1,9 @@
 # QA Changelog
 
+## v2.22 - 2026-07-20
+### Added
+- **US-014 — `/mykvk <campagne>` sur Discord (F-015/F-012)** : option `campaign` (autocomplete dynamique — « Current KvK » + campagnes de `kvk_history` triées par saison, cache 5 min, gestion du type 4) ; l'embed d'une campagne archivée affiche titre, dates, **résultat officiel** (🏆⭐/🏆/☠️), badge filler le cas échéant et footer « Archived » daté de l'archivage. Cas gérés : gouverneur absent de la campagne (« did not take part »), campagne inconnue. Sans option, comportement actuel inchangé. Requêtes validées sur données réelles (Lord Guineapig SoC 4 ✓, absent SoC 1 ✓, campagne inexistante ✓) ; function `discordInteractionHandler` redéployée et commandes ré-enregistrées (guild, effet immédiat). *À faire vérifier par le Roi in-Discord (l'endpoint signé n'est pas testable hors Discord).*
+
 ## v2.21 - 2026-07-20
 ### Fixed
 - **BR-013 — état inter-saison (incohérence révélée par la clôture de SoC 4)** : la clôture étant une pure copie, SoC 4 apparaissait en double (« En cours » via le titre codé en dur `DATA_CONFIG.KVK` + `static_data/kvk` réécrit chaque matin par `scheduledSync`, et « Archivée » via `kvk_history`) et le War Tracker la considérait toujours active (l'étape 4 de l'étude E-004 — marquer `kvk_config` clôturée — n'avait jamais été implémentée). Correctifs, arbitrés par le Roi : **masquage automatique** de la pseudo-campagne courante quand une archive porte le même slug de titre (sélecteur + timeline — l'archive fait foi) ; la clôture écrit désormais `status: 'closed'` dans `kvk_config/current` ; le formulaire de disponibilité affiche « Aucune campagne KvK active » et bloque la soumission tant que c'est clôturé (clé i18n ×15) ; la config de la saison suivante (setDoc sans merge) efface le statut automatiquement.

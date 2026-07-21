@@ -33,7 +33,7 @@
 * **US-011 (E-004) [LIVE 2026-07-11]**: En tant qu'utilisateur, je veux un sélecteur de campagne sur la page Performance KvK, afin de consulter le tableau complet de n'importe quelle campagne passée.
 * **US-012 (E-004) [LIVE 2026-07-11]**: En tant que Roi ou joueur, je veux voir la progression d'un joueur à travers les campagnes (KP gagnés, morts, % objectif, note), afin d'évaluer sa trajectoire long-terme.
 * **US-013 (E-004) [DONE 2026-07-11]**: En tant que Roi, je veux que les campagnes SoC 1 (Tides of War), SoC 2 (Storm of Stratagems) et SoC 3 (Heroic Anthem) soient importées dans l'historique, afin de démarrer avec la mémoire complète du royaume.
-* **US-014 (E-004) [V2]**: En tant que joueur, je veux `/mykvk <campagne>` sur Discord, afin de consulter mes performances passées sans ouvrir l'app.
+* **US-014 (E-004) [LIVE 2026-07-20]**: En tant que joueur, je veux `/mykvk <campagne>` sur Discord, afin de consulter mes performances passées sans ouvrir l'app. *(Option `campaign` avec autocomplete dynamique depuis `kvk_history` — titre, dates et résultat officiel affichés dans l'embed.)*
 * **US-015 (E-005)**: En tant qu'officier, je veux déposer un scan KvK dans l'app et le voir digéré automatiquement, afin que la course soit à jour sans manipulation locale.
 * **US-016 (E-005)**: En tant que Roi, je veux configurer la campagne de course (camps, duel hero, royaumes épinglés, poids DKP, base scan), afin d'adapter l'outil à chaque saison sans code.
 * **US-017 (E-005)**: En tant que membre, je veux voir le duel de camps (DKP net, écart, variation) et le classement des 32 royaumes, afin de suivre la course à l'étoile en temps quasi réel.

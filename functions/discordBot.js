@@ -156,6 +156,65 @@ async function loadKvKData(governorId, db) {
 }
 
 /**
+ * US-014 — Archived campaigns (kvk_history). Small module-level cache: the
+ * autocomplete fires on every keystroke and Discord expects a <3s answer.
+ */
+let campaignIndexCache = { at: 0, list: [] };
+
+async function loadCampaignIndex(db) {
+    if (Date.now() - campaignIndexCache.at < 5 * 60 * 1000 && campaignIndexCache.list.length) {
+        return campaignIndexCache.list;
+    }
+    const snap = await db.collection("kvk_history")
+        .select("title", "order", "startDate", "endDate", "outcome")
+        .get();
+    const list = snap.docs
+        .map((d) => {
+            const x = d.data();
+            const year = x.startDate ? String(x.startDate).slice(0, 4) : null;
+            return {
+                docId: d.id,
+                title: x.title || d.id,
+                order: x.order || 0,
+                outcome: x.outcome || null,
+                label: `${x.title || d.id}${year && !(x.title || "").includes(year) ? ` (${year})` : ""}`,
+            };
+        })
+        .sort((a, b) => b.order - a.order);
+    campaignIndexCache = { at: Date.now(), list };
+    return list;
+}
+
+const outcomeLabel = (o) =>
+    o === "victory_star" ? "🏆⭐ Victory (with star)"
+        : o === "victory" ? "🏆 Victory"
+            : o === "defeat" ? "☠️ Defeat"
+                : null;
+
+/**
+ * Load a governor's entry from an archived campaign (US-014).
+ * Returns null if the campaign doc does not exist.
+ */
+async function loadKvKHistoryData(governorId, campaignId, db) {
+    const doc = await db.collection("kvk_history").doc(campaignId).get();
+    if (!doc.exists) return null;
+    const data = doc.data();
+    const main = (data.list || []).find((p) => String(p.id) === String(governorId)) || null;
+    const filler = (data.fillerList || []).find((p) => String(p.id) === String(governorId)) || null;
+    return {
+        campaign: {
+            title: data.title || campaignId,
+            startDate: data.startDate || null,
+            endDate: data.endDate || null,
+            outcome: data.outcome || null,
+            archivedAt: data.archivedAt || null,
+        },
+        kvk: main || filler,
+        isFiller: !main && !!filler,
+    };
+}
+
+/**
  * Load the freshest known avatar URL for a governor (static_data/avatars,
  * maintained by syncAvatars — lilith CDN first, Discord fallback).
  */
@@ -316,9 +375,11 @@ async function buildMyStatsEmbed(discordId, db) {
 }
 
 /**
- * Build the /mykvk embed — KvK-focused view
+ * Build the /mykvk embed — KvK-focused view.
+ * US-014: an optional campaignId targets an archived campaign from kvk_history
+ * instead of the live static_data documents.
  */
-async function buildMyKvKEmbed(discordId, db) {
+async function buildMyKvKEmbed(discordId, db, campaignId = null) {
     const profile = await resolvePlayer(discordId, db);
 
     if (!profile) {
@@ -326,17 +387,50 @@ async function buildMyKvKEmbed(discordId, db) {
     }
 
     const { governorId } = profile;
-    const { kvk, updatedAt: kvkUpdatedAt } = await loadKvKData(governorId, db);
+
+    let kvk, kvkUpdatedAt, campaign = null, isFiller = false;
+    if (campaignId && campaignId !== "current") {
+        const hist = await loadKvKHistoryData(governorId, campaignId, db);
+        if (!hist) {
+            return {
+                embeds: [{
+                    color: 0xf59e0b,
+                    title: "⚠️ Campaign Not Found",
+                    description: `No archived campaign matches \`${campaignId}\`. Use the autocomplete suggestions.`,
+                    footer: { text: "KD 2997 — Kingdom Manager" },
+                }],
+                flags: 64,
+            };
+        }
+        ({ kvk, campaign, isFiller } = hist);
+        kvkUpdatedAt = hist.campaign.archivedAt;
+    } else {
+        ({ kvk, updatedAt: kvkUpdatedAt } = await loadKvKData(governorId, db));
+    }
+
+    // Campaign context lines shown under the Governor ID (archived lookups only)
+    const campaignDesc = campaign
+        ? [
+            `📜 **${campaign.title}**${isFiller ? "  ·  _filler account_" : ""}`,
+            (campaign.startDate || campaign.endDate)
+                ? `🗓️ ${campaign.startDate || "…"} → ${campaign.endDate || "…"}`
+                : null,
+            outcomeLabel(campaign.outcome),
+        ].filter(Boolean).join("\n")
+        : null;
 
     if (!kvk) {
         // Still show who the player is, but no data
         const { player } = await loadPlayerData(governorId, db);
+        const reason = campaign
+            ? `_No data for this governor in **${campaign.title}** — the account did not take part in that campaign (or was not scanned)._`
+            : "_No KvK data available. Data is uploaded by officers after each KvK._";
         return {
             embeds: [
                 {
                     color: 0x6366f1,
                     title: `⚔️ KvK Stats — ${player?.name || "Player"}`,
-                    description: `Governor ID: \`${governorId}\`\n\n_No KvK data available. Data is uploaded by officers after each KvK._`,
+                    description: `Governor ID: \`${governorId}\`\n\n${reason}`,
                     footer: { text: "KD 2997 — Kingdom Manager" },
                     timestamp: new Date().toISOString(),
                 },
@@ -356,7 +450,7 @@ async function buildMyKvKEmbed(discordId, db) {
             {
                 color,
                 title: `⚔️ KvK Stats — ${kvk.name || "Unknown Player"}`,
-                description: `Governor ID: \`${governorId}\``,
+                description: `Governor ID: \`${governorId}\`` + (campaignDesc ? `\n${campaignDesc}` : ""),
                 fields: [
                     {
                         name: "📈 POWER",
@@ -392,7 +486,7 @@ async function buildMyKvKEmbed(discordId, db) {
                         inline: false,
                     },
                 ],
-                footer: { text: dataFooter([["KvK data", kvkUpdatedAt]]) },
+                footer: { text: dataFooter([[campaign ? "Archived" : "KvK data", kvkUpdatedAt]]) },
                 timestamp: new Date().toISOString(),
             },
         ],
@@ -447,6 +541,28 @@ export const discordInteractionHandler = onRequest(
             return res.json({ type: 1 });
         }
 
+        // 2b. Handle Autocomplete (type 4) — US-014: campaign picker for /mykvk
+        if (body.type === 4) {
+            try {
+                if (body.data?.name === "mykvk") {
+                    const db = getFirestore("kdmanagerdb");
+                    const focused = (body.data.options || []).find((o) => o.focused);
+                    const q = String(focused?.value || "").toLowerCase();
+                    const campaigns = await loadCampaignIndex(db);
+                    const choices = [
+                        { name: "Current KvK (live data)", value: "current" },
+                        ...campaigns.map((c) => ({ name: c.label, value: c.docId })),
+                    ]
+                        .filter((c) => !q || c.name.toLowerCase().includes(q))
+                        .slice(0, 25);
+                    return res.json({ type: 8, data: { choices } });
+                }
+            } catch (error) {
+                logger.error("Autocomplete error:", error);
+            }
+            return res.json({ type: 8, data: { choices: [] } });
+        }
+
         // 3. Handle Slash Commands (type 2)
         if (body.type === 2) {
             const commandName = body.data?.name;
@@ -473,7 +589,9 @@ export const discordInteractionHandler = onRequest(
                 if (commandName === "mystats") {
                     responseData = await buildMyStatsEmbed(discordId, db);
                 } else if (commandName === "mykvk") {
-                    responseData = await buildMyKvKEmbed(discordId, db);
+                    // US-014: optional "campaign" option targets an archived KvK
+                    const campaignOpt = (body.data?.options || []).find((o) => o.name === "campaign");
+                    responseData = await buildMyKvKEmbed(discordId, db, campaignOpt?.value || null);
                 } else {
                     responseData = {
                         content: `❓ Unknown command \`/${commandName}\`.`,

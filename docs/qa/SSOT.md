@@ -18,7 +18,7 @@
 | **F-012** | **War Dashboard** | Aggregate view for Officers of all declared availabilities, tech levels, and troops for the active campaign. | Leadership, Officers |
 | **F-013** | **KvK Configuration** | Define the Active Campaign (name, start/end dates). Archiving previous campaigns. | Leadership (King) |
 | **F-014** | **Multi-Language (i18n)** | UI localized in 9 languages (EN, FR, ES, DE, PL, TR, UK, AR, VI). | All Users |
-| **F-015** | **KvK History** | Archive of past KvK campaigns (`kvk_history` collection). Campaign selector on the Performance page, per-player progression view across campaigns, manual closure by the King. | All Users (read), King (closure) |
+| **F-015** | **KvK History** | Archive of past KvK campaigns (`kvk_history` collection). Campaign selector on the Performance page, per-player progression view across campaigns, manual closure by the King. Discord: `/mykvk campaign:<archived>` (US-014) with dynamic autocomplete from `kvk_history` (5-min in-memory cache); the embed shows campaign title, dates, official outcome, filler flag, and an "Archived" data footer. | All Users (read), King (closure) |
 | **F-016** | **Kingdom Progression Timeline** | "Progression du Royaume" tab on the KvK Performance page (PM ID: F-022 / US-023). Chronological timeline of all campaigns (current + archived) with kingdom aggregates (KP gained, total dead, accounts, avg % goal — null-safe for old formats) and the official outcome badge (victory with star / victory / defeat). | King, Officers (view) · King (set outcome) |
 
 ## 2. Business Rules (BR)

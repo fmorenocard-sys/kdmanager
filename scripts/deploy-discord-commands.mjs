@@ -34,7 +34,16 @@ const commands = [
     },
     {
         name: "mykvk",
-        description: "View your last KvK performance (KP, Deaths, Goal %, Rating)",
+        description: "View your KvK performance — current campaign or a past one (US-014)",
+        options: [
+            {
+                type: 3, // STRING
+                name: "campaign",
+                description: "Past campaign to look up (default: current KvK)",
+                required: false,
+                autocomplete: true,
+            },
+        ],
     },
 ];
 
