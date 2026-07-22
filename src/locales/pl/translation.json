@@ -345,7 +345,18 @@
     "recompute": "Przelicz agregaty",
     "recompute_done": "Przeliczono ({{count}} skanów).",
     "recompute_error": "Przeliczanie nie powiodło się.",
-    "digest_state": "{{count}} skanów przetworzonych — ostatni: {{seq}}"
+    "digest_state": "{{count}} skanów przetworzonych — ostatni: {{seq}}",
+    "players_title": "Gracze",
+    "player_col": "Gracz",
+    "kingdom_col": "Królestwo",
+    "power_col": "Moc",
+    "eff_col": "DKP / M mocy",
+    "member_badge": "2997",
+    "players_search": "Szukaj gracza",
+    "players_search_placeholder": "Nazwa, ID gubernatora lub królestwo…",
+    "players_only_ours": "Tylko 2997",
+    "players_count": "{{shown}} / {{total}} · {{members}} naszych",
+    "players_empty": "Brak najlepszych graczy dla tego skanu."
   },
   "kvk_history": {
     "kingdom_tab": "Postęp Królestwa",

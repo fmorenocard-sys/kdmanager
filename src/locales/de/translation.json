@@ -345,7 +345,18 @@
     "recompute": "Aggregate neu berechnen",
     "recompute_done": "Neuberechnung abgeschlossen ({{count}} Scans).",
     "recompute_error": "Neuberechnung fehlgeschlagen.",
-    "digest_state": "{{count}} Scans verarbeitet — letzter: {{seq}}"
+    "digest_state": "{{count}} Scans verarbeitet — letzter: {{seq}}",
+    "players_title": "Spieler",
+    "player_col": "Spieler",
+    "kingdom_col": "Königreich",
+    "power_col": "Macht",
+    "eff_col": "DKP / M Macht",
+    "member_badge": "2997",
+    "players_search": "Spieler suchen",
+    "players_search_placeholder": "Name, Gouverneurs-ID oder Königreich…",
+    "players_only_ours": "Nur 2997",
+    "players_count": "{{shown}} / {{total}} · {{members}} von uns",
+    "players_empty": "Keine Top-Spieler für diesen Scan."
   },
   "kvk_history": {
     "kingdom_tab": "Fortschritt des Königreichs",

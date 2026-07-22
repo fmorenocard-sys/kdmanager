@@ -345,7 +345,18 @@
     "recompute": "Toplamları yeniden hesapla",
     "recompute_done": "Yeniden hesaplama tamam ({{count}} scan).",
     "recompute_error": "Yeniden hesaplama başarısız.",
-    "digest_state": "{{count}} scan işlendi — son: {{seq}}"
+    "digest_state": "{{count}} scan işlendi — son: {{seq}}",
+    "players_title": "Oyuncular",
+    "player_col": "Oyuncu",
+    "kingdom_col": "Krallık",
+    "power_col": "Güç",
+    "eff_col": "DKP / M güç",
+    "member_badge": "2997",
+    "players_search": "Oyuncu ara",
+    "players_search_placeholder": "İsim, vali kimliği veya krallık…",
+    "players_only_ours": "Sadece 2997",
+    "players_count": "{{shown}} / {{total}} · {{members}} bizden",
+    "players_empty": "Bu tarama için en iyi oyuncu yok."
   },
   "kvk_history": {
     "kingdom_tab": "Krallık Gelişimi",

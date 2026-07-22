@@ -345,7 +345,18 @@
     "recompute": "Recompute aggregates",
     "recompute_done": "Recompute done ({{count}} scans).",
     "recompute_error": "Recompute failed.",
-    "digest_state": "{{count}} scans digested — latest: {{seq}}"
+    "digest_state": "{{count}} scans digested — latest: {{seq}}",
+    "players_title": "Players",
+    "player_col": "Player",
+    "kingdom_col": "Kingdom",
+    "power_col": "Power",
+    "eff_col": "DKP / M power",
+    "member_badge": "2997",
+    "players_search": "Search a player",
+    "players_search_placeholder": "Name, governor ID or kingdom…",
+    "players_only_ours": "2997 only",
+    "players_count": "{{shown}} / {{total}} · {{members}} of ours",
+    "players_empty": "No top players for this scan."
   },
   "kvk_history": {
     "kingdom_tab": "Kingdom Progression",

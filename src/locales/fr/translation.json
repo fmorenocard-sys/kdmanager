@@ -345,7 +345,18 @@
     "recompute": "Recalculer les agrégats",
     "recompute_done": "Recalcul terminé ({{count}} scans).",
     "recompute_error": "Échec du recalcul.",
-    "digest_state": "{{count}} scans digérés — dernier : {{seq}}"
+    "digest_state": "{{count}} scans digérés — dernier : {{seq}}",
+    "players_title": "Joueurs",
+    "player_col": "Joueur",
+    "kingdom_col": "Royaume",
+    "power_col": "Puissance",
+    "eff_col": "DKP / M puiss.",
+    "member_badge": "2997",
+    "players_search": "Rechercher un joueur",
+    "players_search_placeholder": "Nom, ID de gouverneur ou royaume…",
+    "players_only_ours": "2997 seulement",
+    "players_count": "{{shown}} / {{total}} · {{members}} des nôtres",
+    "players_empty": "Aucun top joueur pour ce scan."
   },
   "kvk_history": {
     "kingdom_tab": "Progression du Royaume",

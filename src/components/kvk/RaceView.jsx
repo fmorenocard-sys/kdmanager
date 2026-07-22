@@ -5,6 +5,7 @@ import { functions } from '../../config/firebase';
 import { useRole, ROLES } from '../../context/RoleContext';
 import { useRaceData } from '../../hooks/useRaceData';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
+import RacePlayersView from './RacePlayersView';
 import { Trophy, Users, History, TrendingUp, TrendingDown, Upload, CheckCircle2, AlertTriangle } from '../ui/icons';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
@@ -32,6 +33,7 @@ const RaceView = () => {
     const { campaigns, loading } = useRaceData();
     const [campaignId, setCampaignId] = useState(null);
     const [scanSeq, setScanSeq] = useState(null);
+    const [rankView, setRankView] = useState('kingdoms'); // F-020 : classement royaumes ou joueurs
     const fileRef = useRef(null);
     const [uploadState, setUploadState] = useState(null); // {type:'ok'|'err', text}
     const [uploading, setUploading] = useState(false);
@@ -63,6 +65,12 @@ const RaceView = () => {
         return [...list.filter((k) => pinned.includes(Number(k.kingdom))),
             ...list.filter((k) => !pinned.includes(Number(k.kingdom)))];
     }, [campaign, scan, pinned]);
+
+    // F-020 / US-019 — top joueurs du scan courant, déjà pré-agrégé par la Function.
+    const players = useMemo(
+        () => campaign?.playersBySeq?.[scan?.seq] || [],
+        [campaign, scan]
+    );
 
     const evolution = useMemo(() => scans.map((s) => ({
         seq: s.seq,
@@ -252,13 +260,40 @@ const RaceView = () => {
                 </div>
             </section>
 
-            {/* Royaumes */}
+            {/* Classement — Royaumes (F-019) ou Joueurs (F-020 / US-019) */}
             <section className="v2-glass overflow-hidden">
-                <div className="flex items-center justify-between gap-3 px-4 md:px-6 pt-4">
-                    <h3 className="text-lg font-semibold text-white">{t('kvk_race.kingdoms_title')}</h3>
-                    <span className="text-sm text-slate-400">{kingdoms.length}</span>
+                <div className="flex flex-wrap items-center justify-between gap-3 px-4 md:px-6 pt-4 pb-3">
+                    <div className="flex items-center gap-1.5">
+                        {[
+                            { id: 'kingdoms', label: t('kvk_race.kingdoms_title') },
+                            { id: 'players', label: t('kvk_race.players_title') }
+                        ].map(({ id, label }) => (
+                            <button
+                                key={id}
+                                type="button"
+                                onClick={() => setRankView(id)}
+                                aria-pressed={rankView === id}
+                                className={`v2-tab ${rankView === id ? 'on' : 'off'} text-sm`}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                    <span className="text-sm text-slate-400">
+                        {rankView === 'kingdoms' ? kingdoms.length : players.length}
+                    </span>
                 </div>
 
+                {rankView === 'players' ? (
+                    <RacePlayersView
+                        players={players}
+                        pinned={pinned}
+                        labels={labels}
+                        roles={roles}
+                        roleClass={roleClass}
+                    />
+                ) : (
+                <>
                 {/* Mobile cards */}
                 <div className="md:hidden flex flex-col gap-3 p-4">
                     {kingdoms.map((k) => (
@@ -322,6 +357,8 @@ const RaceView = () => {
                         </TableBody>
                     </Table>
                 </div>
+                </>
+                )}
             </section>
         </div>
     );

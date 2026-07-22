@@ -345,7 +345,18 @@
     "recompute": "Recalcular agregados",
     "recompute_done": "Recálculo terminado ({{count}} scans).",
     "recompute_error": "Error en el recálculo.",
-    "digest_state": "{{count}} scans procesados — último: {{seq}}"
+    "digest_state": "{{count}} scans procesados — último: {{seq}}",
+    "players_title": "Jugadores",
+    "player_col": "Jugador",
+    "kingdom_col": "Reino",
+    "power_col": "Poder",
+    "eff_col": "DKP / M poder",
+    "member_badge": "2997",
+    "players_search": "Buscar un jugador",
+    "players_search_placeholder": "Nombre, ID de gobernador o reino…",
+    "players_only_ours": "Solo 2997",
+    "players_count": "{{shown}} / {{total}} · {{members}} de los nuestros",
+    "players_empty": "No hay jugadores destacados para este escaneo."
   },
   "kvk_history": {
     "kingdom_tab": "Progresión del Reino",

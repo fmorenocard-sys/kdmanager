@@ -345,7 +345,18 @@
     "recompute": "Перерахувати агрегати",
     "recompute_done": "Перерахунок завершено ({{count}} сканів).",
     "recompute_error": "Помилка перерахунку.",
-    "digest_state": "{{count}} сканів оброблено — останній: {{seq}}"
+    "digest_state": "{{count}} сканів оброблено — останній: {{seq}}",
+    "players_title": "Гравці",
+    "player_col": "Гравець",
+    "kingdom_col": "Королівство",
+    "power_col": "Сила",
+    "eff_col": "DKP / М сили",
+    "member_badge": "2997",
+    "players_search": "Пошук гравця",
+    "players_search_placeholder": "Ім'я, ID губернатора або королівство…",
+    "players_only_ours": "Лише 2997",
+    "players_count": "{{shown}} / {{total}} · {{members}} наших",
+    "players_empty": "Немає топ-гравців для цього сканування."
   },
   "kvk_history": {
     "kingdom_tab": "Прогрес Королівства",
