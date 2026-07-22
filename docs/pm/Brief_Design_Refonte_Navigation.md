@@ -55,7 +55,28 @@ L'app a grossi vite (E-004 Historique, F-022 Timeline, E-005 KvK Race) et l'agen
 - Position de l'onglet *Progressions* dans le hub (2e ou 3e position ?), et sort du sélecteur de campagnes archivées (dans Performance ou onglet propre ?).
 - Sur mobile, l'Admin est-elle accessible depuis le drawer uniquement, ou aussi via une tuile sur le Dashboard du Roi ?
 
-## 7. Hors périmètre
+## 7. Suivi d'implémentation — validation staging (2026-07-22)
+
+Branche `feat/refonte-navigation`, déployée sur https://kd-97-manager--staging-7dmagnyt.web.app
+(prod `main` non touchée). Constats de la passe de validation Roi et corrections apportées :
+
+| # | Constat | Cause | Correctif | Commit |
+|---|---|---|---|---|
+| 1 | Page Admin desktop : au scroll, le haut du rail interne disparaît, l'item *Data* devient incliquable | Rail collé à `top-6` (24px) alors que le header global est `h-16 sticky top-0 z-40` → il passe sous le header | Rail calé à 88px (64 + 24) ; `scroll-mt` des 4 sections aligné sur le même offset | `538149b` |
+| 2 | Page Admin mobile : l'item *Maintenance* déborde de la bordure du rail | Le `<nav>` est un grid item : `min-width:auto` le laisse s'étendre à la largeur de son contenu au lieu de scroller | `min-w-0 max-w-full` sur le nav | `538149b` |
+| 3 | **Administration invisible en mobile** — page atteignable seulement en tapant `/admin` | Le drawer porte bien la zone Admin (M4), mais son unique déclencheur (hamburger) était en `hidden md:flex` : aucun point d'entrée sous 768px | Hamburger visible à tous les breakpoints, groupé avec le logo mobile ; `aria-label` (`nav.menu`, 9 locales) + `aria-expanded` | `247f2ce` |
+
+**Effet de bord assumé du correctif 3** : le drawer mobile expose désormais tout le rail de
+navigation (Dashboard, War, KvK…) en doublon de la bottom nav. C'est le comportement décrit
+en M4 ; à revoir si l'on préfère un drawer mobile réduit à la seule zone Admin.
+
+**Question ouverte §6 toujours non tranchée** — accès mobile à l'Administration. L'état livré
+répond à la variante « drawer uniquement ». Elle fonctionne (2 taps : hamburger → Administration)
+mais reste peu découvrable pour le Roi, aucun affordance ne signalant que le drawer contient
+autre chose que la bottom nav. La variante « tuile sur le Dashboard du Roi » reste à arbitrer ;
+elle n'est pas implémentée.
+
+## 8. Hors périmètre
 
 - Aucune nouvelle fonctionnalité, aucun changement de charte graphique, pas de refonte des pages Dashboard/Banque/Trophées (déjà v2).
 - L'implémentation suivra maquette par maquette, comme pour Dashboard Home B — ne pas produire de code React.
