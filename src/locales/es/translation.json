@@ -5,7 +5,8 @@
     "performance": "Rendimiento",
     "trophies": "Trofeos",
     "deadweight": "Lastre",
-    "kvk_race": "KvK Race",
+    "kvk": "KvK",
+    "admin": "Administración",
     "bank": "Banco",
     "war": "Guerra"
   },
@@ -260,6 +261,34 @@
     "kp_goal": "Objetivo KP",
     "dead_goal": "Objetivo de bajas",
     "save": "Guardar configuración"
+  },
+  "kvk_hub": {
+    "subtitle": "Un solo hub — rendimiento interno, progresiones y carrera de coalición",
+    "tab_performance": "Rendimiento",
+    "tab_progressions": "Progresiones",
+    "tab_course": "Carrera",
+    "domain_internal": "DKP interno — dominio 2997",
+    "domain_internal_note": "Mains + fillers del reino · no comparable con el DKP de carrera",
+    "domain_race": "DKP de carrera — dominio de coalición",
+    "domain_race_note": "Basado en scans de campos · no comparable con el DKP interno 2997",
+    "chip_mains": "Cuentas principales",
+    "chip_fillers": "Fillers",
+    "chip_player": "Jugador",
+    "chip_kingdom": "Reino",
+    "upload_title": "Subir un scan",
+    "upload_desc": "Importa el último scan de la competición: el duelo y los 32 reinos se recalcularán automáticamente.",
+    "upload_button": "Subir un scan",
+    "upload_ok": "Scan subido — procesando (~10 s), recarga en un momento.",
+    "upload_err": "Error al subir.",
+    "upload_bad_name": "Nombre de archivo no conforme (ej.: 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
+  },
+  "admin": {
+    "subtitle": "Solo Rey — datos, campaña KvK, carrera de coalición y mantenimiento",
+    "rail_data": "Datos",
+    "rail_campaign": "Campaña KvK",
+    "rail_race": "Config Carrera",
+    "rail_maintenance": "Mantenimiento",
+    "maintenance_desc": "Operaciones sensibles sobre las declaraciones. Cada acción requiere confirmación explícita."
   },
   "kvk_race": {
     "page_subtitle": "Carrera por la estrella — duelo de campos, reinos y evolución",

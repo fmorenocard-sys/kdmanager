@@ -5,7 +5,8 @@
         "performance": "Performans",
         "trophies": "Kupalar",
         "deadweight": "Yük",
-        "kvk_race": "KvK Yarışı",
+        "kvk": "KvK",
+        "admin": "Yönetim",
         "bank": "Banka",
         "war": "Savaş"
     },

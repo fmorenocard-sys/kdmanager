@@ -5,7 +5,8 @@
     "performance": "Performance",
     "trophies": "Trophies",
     "deadweight": "Deadweight",
-    "kvk_race": "KvK Race",
+    "kvk": "KvK",
+    "admin": "Administration",
     "bank": "Bank",
     "war": "War"
   },
@@ -260,6 +261,34 @@
     "kp_goal": "KP Goal",
     "dead_goal": "Dead Goal",
     "save": "Save Config"
+  },
+  "kvk_hub": {
+    "subtitle": "One hub — internal performance, progressions and coalition race",
+    "tab_performance": "Performance",
+    "tab_progressions": "Progressions",
+    "tab_course": "Race",
+    "domain_internal": "Internal DKP — 2997 domain",
+    "domain_internal_note": "Kingdom mains + fillers · not comparable to the race DKP",
+    "domain_race": "Race DKP — coalition domain",
+    "domain_race_note": "Based on camp scans · not comparable to the internal 2997 DKP",
+    "chip_mains": "Main accounts",
+    "chip_fillers": "Fillers",
+    "chip_player": "Player",
+    "chip_kingdom": "Kingdom",
+    "upload_title": "Upload a scan",
+    "upload_desc": "Import the latest competition scan: the duel and the 32 kingdoms will be recomputed automatically.",
+    "upload_button": "Upload a scan",
+    "upload_ok": "Scan uploaded — digesting (~10s), reload shortly.",
+    "upload_err": "Upload failed.",
+    "upload_bad_name": "Filename does not match the scan convention (e.g. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
+  },
+  "admin": {
+    "subtitle": "King only — data, KvK campaign, coalition race and maintenance",
+    "rail_data": "Data",
+    "rail_campaign": "KvK Campaign",
+    "rail_race": "Race Config",
+    "rail_maintenance": "Maintenance",
+    "maintenance_desc": "Sensitive operations on war declarations. Every action requires an explicit confirmation."
   },
   "kvk_race": {
     "page_subtitle": "Star race — camp duel, kingdoms and evolution",

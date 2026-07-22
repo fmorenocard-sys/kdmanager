@@ -5,7 +5,8 @@
         "performance": "Performance",
         "trophies": "Trophies",
         "deadweight": "Deadweight",
-        "kvk_race": "KvK Race",
+        "kvk": "KvK",
+        "admin": "Administration",
         "bank": "Bank",
         "war": "War"
     },

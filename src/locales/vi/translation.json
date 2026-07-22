@@ -5,7 +5,8 @@
     "performance": "Hiệu suất",
     "trophies": "Cúp thưởng",
     "deadweight": "Thành viên ì",
-    "kvk_race": "Đua KvK",
+    "kvk": "KvK",
+    "admin": "Quản trị",
     "bank": "Ngân hàng",
     "war": "Chiến tranh"
   },
@@ -260,6 +261,34 @@
     "kp_goal": "Mục tiêu KP",
     "dead_goal": "Mục tiêu tử trận",
     "save": "Lưu cấu hình"
+  },
+  "kvk_hub": {
+    "subtitle": "Một trung tâm — hiệu suất nội bộ, tiến trình và cuộc đua liên minh",
+    "tab_performance": "Hiệu suất",
+    "tab_progressions": "Tiến trình",
+    "tab_course": "Cuộc đua",
+    "domain_internal": "DKP nội bộ — miền 2997",
+    "domain_internal_note": "Tài khoản chính + filler · không so sánh với DKP đua",
+    "domain_race": "DKP đua — miền liên minh",
+    "domain_race_note": "Dựa trên scan các phe · không so sánh với DKP nội bộ 2997",
+    "chip_mains": "Tài khoản chính",
+    "chip_fillers": "Filler",
+    "chip_player": "Người chơi",
+    "chip_kingdom": "Vương quốc",
+    "upload_title": "Tải lên scan",
+    "upload_desc": "Nhập scan mới nhất của cuộc thi: trận đấu và 32 vương quốc sẽ được tính lại tự động.",
+    "upload_button": "Tải lên scan",
+    "upload_ok": "Đã tải scan — đang xử lý (~10 giây), tải lại sau giây lát.",
+    "upload_err": "Tải lên thất bại.",
+    "upload_bad_name": "Tên tệp không đúng quy ước (vd: 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
+  },
+  "admin": {
+    "subtitle": "Chỉ Vua — dữ liệu, chiến dịch KvK, cuộc đua liên minh và bảo trì",
+    "rail_data": "Dữ liệu",
+    "rail_campaign": "Chiến dịch KvK",
+    "rail_race": "Cấu hình đua",
+    "rail_maintenance": "Bảo trì",
+    "maintenance_desc": "Các thao tác nhạy cảm trên khai báo. Mỗi hành động cần xác nhận rõ ràng."
   },
   "kvk_race": {
     "page_subtitle": "Đua ngôi sao — đấu phe, vương quốc và diễn biến",

@@ -5,7 +5,8 @@
     "performance": "Wydajność",
     "trophies": "Trofea",
     "deadweight": "Ciężar",
-    "kvk_race": "KvK Race",
+    "kvk": "KvK",
+    "admin": "Administracja",
     "bank": "Bank",
     "war": "Wojna"
   },
@@ -260,6 +261,34 @@
     "kp_goal": "Cel KP",
     "dead_goal": "Cel zabitych",
     "save": "Zapisz konfigurację"
+  },
+  "kvk_hub": {
+    "subtitle": "Jeden hub — wydajność wewnętrzna, postępy i wyścig koalicji",
+    "tab_performance": "Wydajność",
+    "tab_progressions": "Postępy",
+    "tab_course": "Wyścig",
+    "domain_internal": "DKP wewnętrzne — domena 2997",
+    "domain_internal_note": "Mains + fillery królestwa · nieporównywalne z DKP wyścigu",
+    "domain_race": "DKP wyścigu — domena koalicji",
+    "domain_race_note": "Oparte na skanach obozów · nieporównywalne z wewnętrznym DKP 2997",
+    "chip_mains": "Konta główne",
+    "chip_fillers": "Fillery",
+    "chip_player": "Gracz",
+    "chip_kingdom": "Królestwo",
+    "upload_title": "Wgraj skan",
+    "upload_desc": "Zaimportuj najnowszy skan rywalizacji: pojedynek i 32 królestwa zostaną przeliczone automatycznie.",
+    "upload_button": "Wgraj skan",
+    "upload_ok": "Skan wgrany — przetwarzanie (~10 s), odśwież za chwilę.",
+    "upload_err": "Wgrywanie nie powiodło się.",
+    "upload_bad_name": "Nazwa pliku niezgodna z konwencją (np. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
+  },
+  "admin": {
+    "subtitle": "Tylko Król — dane, kampania KvK, wyścig koalicji i konserwacja",
+    "rail_data": "Dane",
+    "rail_campaign": "Kampania KvK",
+    "rail_race": "Konfig. wyścigu",
+    "rail_maintenance": "Konserwacja",
+    "maintenance_desc": "Wrażliwe operacje na deklaracjach. Każda akcja wymaga wyraźnego potwierdzenia."
   },
   "kvk_race": {
     "page_subtitle": "Wyścig o gwiazdę — pojedynek obozów, królestwa i przebieg",

@@ -5,7 +5,8 @@
         "performance": "Ефективність",
         "trophies": "Трофеї",
         "deadweight": "Баласт",
-        "kvk_race": "Гонка KvK",
+        "kvk": "KvK",
+        "admin": "Адміністрація",
         "bank": "Банк",
         "war": "Війна"
     },
