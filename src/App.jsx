@@ -66,7 +66,8 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
         </div>
         <nav className="px-3 space-y-2">
           {menuItems.map((item) => {
-            const isActive = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path));
+            // Match exact ou sous-route ('/kvk' ne doit pas matcher '/kvk-race')
+            const isActive = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path + '/'));
             return (
               <Link
                 key={item.id}

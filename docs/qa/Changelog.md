@@ -1,5 +1,12 @@
 # QA Changelog
 
+## v2.27 - 2026-07-21
+### Fixed (remontées Roi post-déploiement jalon 4)
+- **Double surbrillance de nav** : `startsWith('/kvk')` matchait aussi `/kvk-race` — Performance et KvK Race apparaissaient actifs ensemble (sidebar et bottom nav). Le match n'accepte plus que l'égalité exacte ou une vraie sous-route (`path + '/'`).
+- **KvK Race inaccessible en mobile** : la bottom nav n'avait pas d'entrée. Ajout de l'entrée 🏁 (leadership-only, comme Deadweight/BR-009) et la barre devient **défilable horizontalement** quand les entrées leadership dépassent la largeur (scroll confiné à la nav via `overflow-x-auto hide-scrollbar`, `min-w-[58px]` par item — la page ne scrolle jamais en X). Vérifié à 375px : 7 entrées leadership scrollables (442px/377px), KvK Race atteignable et active seule ; invité : 5 entrées sans scroll.
+### Notes
+- **UXA11Y-008** ajouté (préexistant, découvert pendant la vérification) : les boutons de connexion du header débordent de ~2px à 375px — sans effet visible (`overflow-x-hidden` du body) mais mesurable.
+
 ## v2.26 - 2026-07-21
 ### Added
 - **E-005 jalon 4 — page « KvK Race » (F-019 / US-017-018, P-008)** : route `/kvk-race` + entrée sidebar **réservées King/Officer** (§9.4 — AccessGate et nav masquée sinon, modèle BR-011) : bandeau **duel hero** (cartes des deux camps avec rôle et trophée du leader, écart signé + variation avec flèche), classement des 4 camps (DKP net, couverture, nb royaumes), **tableau des royaumes** trié DKP avec **2997/1523 épinglés en tête** (badge + surlignage, cartes en mobile — pas de scroll horizontal), **courbes d'évolution du duel** multi-scans (Recharts : camp A, camp B, écart en pointillés), sélecteurs campagne et scan. Hook `useRaceData` (lecture des pré-agrégés, 1 requête par sous-collection). i18n : `nav.kvk_race` ×15 + 15 clés page ×9. Vérifié en dev via mock des fixtures (retiré avant commit) : duel +84.3B / variation +35.1B, épinglés en tête, graphe rendu, mobile 375px sans scroll horizontal ; invité → AccessGate. **Phase 1 d'E-005 complète (jalons 1–4)** — restent en V2 : tri par colonne, bouton d'upload UI (US-015), vue Joueurs (F-020 Phase 2).
