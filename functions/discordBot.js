@@ -69,49 +69,76 @@ function verifyDiscordSignature(publicKey, signature, timestamp, body) {
 
 /**
  * Lookup a player profile from Firestore by Discord ID.
- * Returns { governorId, role } or null if the user is not found / not linked.
+ * Returns { governorId } or null if the user is not found / not linked.
  * Warrior+ check: the user must have a user_profiles document with a governorId.
+ *
+ * Sécurité (audit BUG-002, constat H-1) : `discordId` et `discordUid` sont des
+ * champs de document, pas des identités prouvées. Ils ne sont plus écrivables par
+ * le client depuis le durcissement des règles (Functions uniquement), mais des
+ * valeurs antérieures peuvent subsister. Deux garde-fous :
+ *
+ *   1. l'ID de document `discord:<id>` est la seule identité que Discord ait
+ *      réellement signée — il est consulté en premier ;
+ *   2. les recherches par champ refusent de répondre si plusieurs documents
+ *      correspondent, au lieu de renvoyer le premier venu dans un ordre non
+ *      spécifié : c'est exactement ce qu'exploitait le scénario d'usurpation.
+ *
+ * Le champ `role` n'est plus renvoyé : il était lu depuis un document autrefois
+ * écrivable par le client, et aucun appelant ne l'utilisait.
  */
 async function resolvePlayer(discordId, db) {
     logger.info(`[resolvePlayer] Looking up discordId: ${discordId}`);
     const discordUid = `discord:${discordId}`;
 
-    // Run all 3 queries concurrently to save time (Discord has a 3s timeout)
-    const [snap, snap2, ssoDocRef] = await Promise.all([
-        db.collection("user_profiles").where("discordId", "==", discordId).limit(1).get(),
-        db.collection("user_profiles").where("discordUid", "==", discordUid).limit(1).get(),
-        db.collection("user_profiles").doc(discordUid).get()
+    const governorOf = (data) => {
+        const governorId = data.governorId || data.governor_id || null;
+        return governorId ? String(governorId) : null;
+    };
+
+    // Une seule correspondance attendue : limit(2) sert à détecter l'ambiguïté.
+    const single = (snap, field) => {
+        if (snap.empty) return null;
+        if (snap.size > 1) {
+            logger.error(
+                `[resolvePlayer] AMBIGU : ${snap.size} profils portent ${field}=${discordId}. ` +
+                `Résolution refusée (usurpation possible — voir BUG-002 / H-1). ` +
+                `Documents : ${snap.docs.map((d) => d.id).join(", ")}`
+            );
+            return null;
+        }
+        return governorOf(snap.docs[0].data());
+    };
+
+    // Run all 3 lookups concurrently to save time (Discord has a 3s timeout)
+    const [ssoDocRef, snap, snap2] = await Promise.all([
+        db.collection("user_profiles").doc(discordUid).get(),
+        db.collection("user_profiles").where("discordId", "==", discordId).limit(2).get(),
+        db.collection("user_profiles").where("discordUid", "==", discordUid).limit(2).get()
     ]);
 
-    // Primary lookup: discordId field stores the raw numeric Discord ID string
-    if (!snap.empty) {
-        const data = snap.docs[0].data();
-        const governorId = data.governorId || data.governor_id || null;
-        if (governorId) {
-            logger.info(`[resolvePlayer] Found via discordId. governorId=${governorId}`);
-            return { governorId: String(governorId), role: data.role || "Warrior" };
-        }
-    }
-
-    // Fallback: some profiles may store "discord:ID" format in discordUid
-    if (!snap2.empty) {
-        const data = snap2.docs[0].data();
-        const governorId = data.governorId || data.governor_id || null;
-        if (governorId) {
-            logger.info(`[resolvePlayer] Found via discordUid. governorId=${governorId}`);
-            return { governorId: String(governorId), role: data.role || "Warrior" };
-        }
-    }
-
-    // Fallback 3: Look up by document ID directly!
-    // Standalone Discord SSO users have UID = discordUid
+    // 1. Identité de confiance : l'ID du document EST l'UID Firebase émis par le
+    // SSO Discord. Les comptes Discord natifs passent tous par là.
     if (ssoDocRef.exists) {
-        const data = ssoDocRef.data();
-        const governorId = data.governorId || data.governor_id || null;
+        const governorId = governorOf(ssoDocRef.data());
         if (governorId) {
             logger.info(`[resolvePlayer] Found via document ID (discordUid). governorId=${governorId}`);
-            return { governorId: String(governorId), role: data.role || "Warrior" };
+            return { governorId };
         }
+    }
+
+    // 2. Comptes Google liés à Discord : l'ID du document est l'UID Google, la
+    // correspondance passe donc par un champ écrit par confirmDiscordLink.
+    const byField = single(snap, "discordId");
+    if (byField) {
+        logger.info(`[resolvePlayer] Found via discordId. governorId=${byField}`);
+        return { governorId: byField };
+    }
+
+    // 3. Même cas, ancien format "discord:ID" stocké dans discordUid.
+    const byLegacyField = single(snap2, "discordUid");
+    if (byLegacyField) {
+        logger.info(`[resolvePlayer] Found via discordUid. governorId=${byLegacyField}`);
+        return { governorId: byLegacyField };
     }
 
     // Still not found or no governor linked
