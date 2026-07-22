@@ -1,0 +1,71 @@
+<!-- @dsCard group="Briefs" name="Refonte navigation & agencement" subtitle="Hub KvK · page Administration · nav mobile ≤ 6 — maquettes M1–M4 attendues" width="760" -->
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brief — Refonte navigation & agencement</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #0f172a;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(59,130,246,.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245,158,11,.05), transparent 25%);
+    color: #f8fafc; padding: 26px; -webkit-font-smoothing: antialiased; font-size: 13px; line-height: 1.55;
+  }
+  h1 { font-size: 18px; margin-bottom: 2px; background: linear-gradient(90deg,#fbbf24,#f97316); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .meta { font-size: 11px; color: #8494ab; margin-bottom: 18px; }
+  h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin: 18px 0 8px; }
+  p, li { color: #cbd5e1; }
+  ul { padding-left: 18px; margin: 6px 0; }
+  strong { color: #f8fafc; }
+  code { font-family: "JetBrains Mono", monospace; font-size: 11px; background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 4px; color: #a5b4fc; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; margin: 8px 0; }
+  th, td { text-align: left; padding: 7px 9px; border-top: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+  th { color: #8494ab; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+  .lvl { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid transparent; margin-right: 4px; }
+  .pub  { color: #34d399; background: rgba(52,211,153,.12); border-color: rgba(52,211,153,.3); }
+  .auth { color: #60a5fa; background: rgba(96,165,250,.12); border-color: rgba(96,165,250,.3); }
+  .lead { color: #fb923c; background: rgba(251,146,60,.12); border-color: rgba(251,146,60,.3); }
+  .king { color: #f87171; background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.3); }
+  .warn { background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.25); border-radius: 10px; padding: 10px 12px; margin: 10px 0; }
+  a { color: #f59e0b; }
+</style></head><body>
+  <h1>Brief — Refonte navigation &amp; agencement</h1>
+  <div class="meta">2026-07-21 · demande du Roi · arborescence de référence : <a href="https://whimsical.com/PW4Ur8XVhVgidzh49wjiMc">Whimsical — actuelle vs cible</a> · tickets UXA11Y-007/008</div>
+
+  <h2>1 · Contexte — architecture de l'information, pas de nouvelle DA</h2>
+  <p>L'app a grossi vite (Historique KvK, Timeline, module KvK Race) : deux entrées de nav « KvK » qui se ressemblent, un onglet <strong>KvK Config devenu un empilement de 6 blocs</strong> (anglais legacy + i18n, styles v1 + v2), une bottom nav mobile à 7 entrées avec scroll de dépannage, et le Data Management du Roi en tête du Dashboard de tous. <strong>La charte v2 (tokens, glass, gradients) ne change pas.</strong></p>
+
+  <h2>2 · Cible arbitrée</h2>
+  <ul>
+    <li><strong>Hub KvK</strong> (une entrée nav) : onglets <em>Performance</em> <span class="lvl pub">public</span> (domaine <strong>DKP interne 2997</strong>), <em>Progressions</em> <span class="lvl auth">connecté</span>/<span class="lvl lead">leadership</span>, <em>Course</em> <span class="lvl lead">leadership</span> (domaine <strong>DKP coalition</strong>, duel + 32 royaumes + évolution + bouton « Déposer un scan »). <strong>BR-010 : afficher le domaine DKP sur chaque onglet</strong> — les deux scores ne doivent jamais sembler comparables.</li>
+    <li><strong>Page Administration</strong> <span class="lvl king">Roi</span> (sidebar seule) : Data Management, Campagne KvK (config + clôture + résultat), Config Course (camps/DKP/exclusions), Maintenance (merge/danger zone). Le War Tracker redevient préparation pure.</li>
+    <li><strong>Nav</strong> : sidebar avec zone Admin séparée ; bottom nav mobile <strong>≤ 6 entrées sans scroll</strong> ; actif exclusif.</li>
+  </ul>
+
+  <h2>3 · Maquettes demandées (pages HTML autonomes → <code>v2/pages/</code>)</h2>
+  <table>
+    <tr><th>#</th><th>Fichier</th><th>Contenu</th><th>Largeur</th></tr>
+    <tr><td>M1</td><td><code>Hub KvK.html</code></td><td>Hub desktop, onglet <strong>Course</strong> ouvert : bandeau campagne, 3 pills <code>v2-tab</code>, duel hero, royaumes épinglés 2997/1523, bouton dépôt de scan, badge de domaine DKP</td><td>1360</td></tr>
+    <tr><td>M2</td><td><code>Hub KvK — Performance.html</code></td><td>Option B : même hub, onglet Performance ouvert (continuité avec l'existant)</td><td>1360</td></tr>
+    <tr><td>M3</td><td><code>Administration.html</code></td><td>Rail latéral interne <em>ou</em> accordéons (proposer) ; 4 sections ; <strong>un seul CTA ambre par bloc</strong></td><td>1360</td></tr>
+    <tr><td>M4</td><td><code>Navigation mobile.html</code></td><td>Bottom nav 6 entrées + drawer sidebar avec zone Admin ; états actifs</td><td>390</td></tr>
+  </table>
+
+  <h2>4 · Contraintes</h2>
+  <ul>
+    <li>Tokens <code>v2/tokens.css</code> : CTA = <code>--grad-primary</code> ambre 2b ; actifs onglets/nav = <code>--grad-accent</code> indigo ; cartes <code>v2-glass</code> hairline.</li>
+    <li>Réutiliser <code>v2-tab</code>, <code>v2-nav-item</code>, StatCards, badges, carte <code>Système / AccessGate</code> pour les vues non-leadership.</li>
+    <li>Breakpoints 360/768/1024 · tap targets ≥ 44px · propriétés logiques (RTL) · textes en <strong>français</strong>.</li>
+    <li>Badges de niveau sur les zones : <span class="lvl pub">Public</span> <span class="lvl auth">Connecté</span> <span class="lvl lead">Leadership</span> <span class="lvl king">Roi</span>.</li>
+    <li>Données réelles : duel SoC 4 <strong>East-Anglia 1 075,6 Md</strong> vs <strong>Wessex 991,3 Md</strong> (écart +84,3 Md, variation +35,1 Md), campagnes SoC 1→4, joueurs réels (Lord Guineapig, ᵁᴺPisontije…).</li>
+  </ul>
+
+  <h2>5 · Références projet</h2>
+  <p><code>v2/pages/Dashboard Home B.html</code> (précédent : maquette adoptée puis implémentée telle quelle) · <code>v2/components/navigation.html</code> · <code>v2/foundations/*</code>.</p>
+
+  <div class="warn"><strong>Questions ouvertes (proposer, ne pas trancher)</strong> : fusion du niveau « Discord vérifié » (BR-008) dans « Connecté » (montrer les 2 variantes si impact) · position de l'onglet Progressions (2ᵉ ou 3ᵉ) et sort du sélecteur d'archives · accès Admin mobile : drawer seul ou aussi tuile Dashboard du Roi ?</div>
+
+  <h2>6 · Hors périmètre</h2>
+  <p>Pas de nouvelle fonctionnalité, pas de refonte des pages déjà v2 (Dashboard, Banque, Trophées), pas de code React — l'implémentation suivra maquette par maquette.</p>
+</body></html>
