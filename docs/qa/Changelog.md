@@ -1,5 +1,16 @@
 # QA Changelog
 
+## v2.28 - 2026-07-21 (branche feat/refonte-navigation — EN STAGING, non mergée)
+### Added
+- **Refonte navigation (maquettes Claude Design M1–M4, brief `Brief_Design_Refonte_Navigation.md`)** :
+  - **Hub KvK** (`/kvk`) : une entrée nav, 3 onglets `v2-tab` — *Performance* (domaine DKP interne, chips Mains/Fillers avec BR-008 sur les fillers), *Progressions* (chips Joueur BR-008 / Royaume-timeline BR-011), *Course* (leadership §9.4, contenu `RaceView`). **Badge de domaine DKP (BR-010)** sous les onglets, avec mention « non comparable ».
+  - **`RaceView`** extrait de KvKRacePage (partagé hub + route compat `/kvk-race`) et doté du **panneau de dépôt de scan (US-015)** : sélection de fichier → contrôle de la convention de nommage → callable `getRaceScanUploadUrl` → PUT signé vers le bucket privé.
+  - **Page Administration** (`/admin`, Roi) : rail interne sticky (Données / Campagne KvK / Config Course / Maintenance) à ancres ; compose DataRefreshControl, KvKConfigForm allégé (campagne + historique), CampaignArchiveControl, RaceConfigForm et le nouveau `MaintenanceTools` (merge + danger zone extraits). **Le War Tracker perd son onglet config** (préparation pure).
+  - **Nav** : sidebar avec zone « Administration » séparée (badge King, Roi uniquement) ; bottom nav revenue en disposition fixe sans scroll, ≤ 6 entrées (Course absorbée par le hub, Admin via drawer seul — M4).
+  - i18n : ns `kvk_hub` + `admin` ×9, `nav.kvk`/`nav.admin` ×15 (remplacent `nav.kvk_race`).
+### Verified (dev + staging)
+- Invité : hub à 1 onglet + badge domaine interne + 47 lignes réelles, sidebar 5 entrées sans zone Admin, bottom nav 5, AccessGate sur `/admin` et `/kvk-race`. Smoke test leadership (bypass locaux retirés) : 3 onglets, chips gatés, timeline, rail admin 4 sections, zéro scroll horizontal. **Déployé sur le canal staging uniquement** — validation Roi/officiers attendue avant merge dans main : parcours complet (hub 3 onglets avec données Course réelles, dépôt de scan réel, page Admin, mobile).
+
 ## v2.27 - 2026-07-21
 ### Fixed (remontées Roi post-déploiement jalon 4)
 - **Double surbrillance de nav** : `startsWith('/kvk')` matchait aussi `/kvk-race` — Performance et KvK Race apparaissaient actifs ensemble (sidebar et bottom nav). Le match n'accepte plus que l'égalité exacte ou une vraie sous-route (`path + '/'`).
