@@ -43,7 +43,7 @@ const AdminPage = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-[216px_1fr] gap-5 items-start">
                 {/* Rail interne (sticky en desktop, horizontal en mobile) */}
-                <nav className="v2-glass p-2 flex lg:flex-col flex-row gap-1 overflow-x-auto hide-scrollbar lg:sticky lg:top-6" aria-label={t('nav.admin')}>
+                <nav className="v2-glass p-2 flex lg:flex-col flex-row gap-1 overflow-x-auto hide-scrollbar min-w-0 max-w-full lg:sticky lg:top-[88px]" aria-label={t('nav.admin')}>
                     {rail.map(({ id, label, icon: Icon }) => (
                         <button
                             key={id}
@@ -59,7 +59,7 @@ const AdminPage = () => {
 
                 {/* Sections */}
                 <div className="flex flex-col gap-8 min-w-0">
-                    <section id="admin-data" className="scroll-mt-6">
+                    <section id="admin-data" className="scroll-mt-[88px]">
                         <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-3">
                             <Database size={20} weight="duotone" className="text-indigo-400" />
                             {t('admin.rail_data')}
@@ -67,7 +67,7 @@ const AdminPage = () => {
                         <DataRefreshControl />
                     </section>
 
-                    <section id="admin-campaign" className="scroll-mt-6">
+                    <section id="admin-campaign" className="scroll-mt-[88px]">
                         <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-3">
                             <Shield size={20} weight="duotone" className="text-amber-400" />
                             {t('admin.rail_campaign')}
@@ -79,7 +79,7 @@ const AdminPage = () => {
                         </div>
                     </section>
 
-                    <section id="admin-race" className="scroll-mt-6">
+                    <section id="admin-race" className="scroll-mt-[88px]">
                         <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-3">
                             <Flag size={20} weight="duotone" className="text-cyan-400" />
                             {t('admin.rail_race')}
@@ -87,7 +87,7 @@ const AdminPage = () => {
                         <RaceConfigForm />
                     </section>
 
-                    <section id="admin-maintenance" className="scroll-mt-6">
+                    <section id="admin-maintenance" className="scroll-mt-[88px]">
                         <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-3">
                             <Hammer size={20} weight="duotone" className="text-orange-400" />
                             {t('admin.rail_maintenance')}
