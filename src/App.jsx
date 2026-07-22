@@ -121,7 +121,12 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
 const UserProfile = () => {
   const { currentUser, loginWithGoogle, loginWithDiscord, logout } = useAuth();
   const { t } = useTranslation();
+  const { isAuthorized } = useRole();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  // Raccourci Admin dans le menu de compte : le drawer reste l'accès canonique
+  // (M4), mais il n'a aucune affordance en mobile — cf. question ouverte §6 du
+  // brief refonte navigation.
+  const isKing = isAuthorized([ROLES.KING]);
 
   if (!currentUser) {
     return (
@@ -185,7 +190,7 @@ const UserProfile = () => {
           ) : null}
         </div>
         {/* Dropdown Menu */}
-        <div className={`absolute end-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-xl transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+        <div className={`absolute end-0 mt-2 w-56 bg-slate-900 border border-slate-700 rounded-lg shadow-xl transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
           <div className="p-2">
             <Link
               to="/profile"
@@ -195,6 +200,18 @@ const UserProfile = () => {
               <User size={16} />
               {t('auth.my_profile')}
             </Link>
+            {isKing && (
+              <Link
+                to="/admin"
+                onClick={() => setDropdownOpen(false)}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+              >
+                <Hammer size={16} />
+                <span className="truncate">{t('nav.admin')}</span>
+                <span className="ms-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/30">King</span>
+              </Link>
+            )}
+            <div className="my-1 border-t border-slate-700/60" />
             <button
               onClick={() => { setDropdownOpen(false); logout(); }}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-red-400 hover:bg-white/5 rounded-md transition-colors"
