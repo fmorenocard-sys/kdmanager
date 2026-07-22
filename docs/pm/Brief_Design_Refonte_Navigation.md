@@ -70,11 +70,13 @@ Branche `feat/refonte-navigation`, déployée sur https://kd-97-manager--staging
 navigation (Dashboard, War, KvK…) en doublon de la bottom nav. C'est le comportement décrit
 en M4 ; à revoir si l'on préfère un drawer mobile réduit à la seule zone Admin.
 
-**Question ouverte §6 toujours non tranchée** — accès mobile à l'Administration. L'état livré
-répond à la variante « drawer uniquement ». Elle fonctionne (2 taps : hamburger → Administration)
-mais reste peu découvrable pour le Roi, aucun affordance ne signalant que le drawer contient
-autre chose que la bottom nav. La variante « tuile sur le Dashboard du Roi » reste à arbitrer ;
-elle n'est pas implémentée.
+**Question ouverte §6 — tranchée (Roi, 2026-07-22) : ni drawer seul, ni tuile Dashboard, mais
+le menu de compte.** Le drawer reste l'accès canonique décrit en M4, mais il n'offre aucune
+affordance signalant qu'il contient l'Administration. Plutôt qu'une tuile sur le Dashboard du
+Roi — visible par lui seul, et un point d'entrée de plus à maintenir — le menu profil gagne une
+entrée *Administration* (King only, badge rouge) : `Mon profil / Administration / Déconnexion`.
+Il est présent à tous les breakpoints, donc la découvrabilité est réglée en mobile comme en
+desktop avec un seul ajout. Commit `6f1a810`.
 
 ## 8. Hors périmètre
 
