@@ -17,6 +17,7 @@ Community management dashboard for a Rise of Kingdoms kingdom: war attendance (W
 - `npm run test:e2e` — Playwright suite inside `firebase emulators:exec` (specs in `tests/`)
 - `npm run test:serve` — dev server pointed at the Firebase emulator (port 5174)
 - `node scripts/deploy-rules.cjs` — deploy `firestore.rules` to BOTH Firestore databases (plain `firebase deploy` only covers what `firebase.json` lists; renamed from `.js` when the package went ESM)
+- `firebase hosting:channel:deploy staging --expires 30d` — deploy the current build to the **staging preview channel** instead of prod (see `docs/DEVOPS.md` §Branching & Staging). `main` = prod; big evolutions go on `feat/*` branches (current: `feat/refonte-navigation`) and are validated on a channel before merge. Channels only stage the FRONT — Firestore/Functions/Rules stay prod. Never push `backup/pre-secret-scrub-20260711`.
 
 ## Shared brain with Antigravity (READ THIS FIRST)
 
