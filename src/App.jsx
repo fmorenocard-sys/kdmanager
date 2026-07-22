@@ -210,6 +210,7 @@ const UserProfile = () => {
 };
 
 const MainContent = () => {
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { loading: dataLoading } = useData();
   const { loading: authLoading } = useAuth(); // Wait for auth check
@@ -235,17 +236,22 @@ const MainContent = () => {
 
       <main className={`flex-1 transition-all duration-300 ms-0 ${sidebarOpen ? 'md:ms-64' : 'md:ms-20'} min-h-screen flex flex-col min-w-0`}>
         <header className="h-16 border-b border-white/5 bg-slate-900/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-6 min-w-0">
-          {/* Hamburger — desktop only */}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="hidden md:flex p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
-          >
-            <Menu size={20} />
-          </button>
-          {/* Logo placeholder on mobile */}
-          <div className="md:hidden flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-full border border-primary/40" />
-            <span className="font-semibold text-sm text-white">KD Manager</span>
+          <div className="flex items-center gap-2 min-w-0">
+            {/* Hamburger — desktop : replie/déplie le rail ; mobile : ouvre le drawer
+                (seul accès à la zone Administration, cf. M4) */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label={t('nav.menu')}
+              aria-expanded={sidebarOpen}
+              className="flex p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors shrink-0"
+            >
+              <Menu size={20} />
+            </button>
+            {/* Logo placeholder on mobile */}
+            <div className="md:hidden flex items-center gap-2 min-w-0">
+              <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-full border border-primary/40 shrink-0" />
+              <span className="font-semibold text-sm text-white truncate">KD Manager</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">

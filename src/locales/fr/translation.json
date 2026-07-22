@@ -1,5 +1,6 @@
 {
   "nav": {
+    "menu": "Menu",
     "dashboard": "Tableau de Bord",
     "war_tracker": "Suivi de Guerre",
     "performance": "Performance",
