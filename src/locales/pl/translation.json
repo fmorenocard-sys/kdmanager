@@ -356,7 +356,11 @@
     "players_search_placeholder": "Nazwa, ID gubernatora lub królestwo…",
     "players_only_ours": "Tylko 2997",
     "players_count": "{{shown}} / {{total}} · {{members}} naszych",
-    "players_empty": "Brak najlepszych graczy dla tego skanu."
+    "players_empty": "Brak najlepszych graczy dla tego skanu.",
+    "snapshot_title": "Snapshot Discord",
+    "snapshot_hint": "Publikuje pojedynek na kanale po każdym przetworzeniu skanu. Zmiana konfiguracji nie publikuje ponownie: tylko nowy skan wyzwala ogłoszenie.",
+    "snapshot_channel_label": "ID kanału Discord",
+    "snapshot_enabled_label": "Włącz"
   },
   "kvk_history": {
     "kingdom_tab": "Postęp Królestwa",

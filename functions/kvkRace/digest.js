@@ -22,9 +22,15 @@ import * as logger from "firebase-functions/logger";
 import {getStorage} from "firebase-admin/storage";
 import {getFirestore} from "firebase-admin/firestore";
 
+import {defineSecret} from "firebase-functions/params";
+
 import {parseScanFilename, readScanWorkbook} from "./parse.js";
 import {buildAll} from "./engine.js";
 import {resolveDkpWeights, DIFF_METRIC_COLS} from "./metrics.js";
+import {postDuelSnapshot} from "./snapshot.js";
+
+// US-021 : le snapshot Discord réutilise le jeton du bot déjà en Secret Manager.
+const DISCORD_BOT_TOKEN = defineSecret("DISCORD_BOT_TOKEN");
 
 export const RACE_BUCKET = "kd-97-manager-kvk-race";
 const DB_NAME = "kdmanagerdb";
@@ -47,8 +53,13 @@ const LIGHT_COLS = [
  * Recompute complet d'une campagne depuis les fichiers dérivés + config Firestore.
  * @param {string} campaignId
  * @param {object} bucket
+ * @param {object} [opts] options
+ * @param {boolean} [opts.postSnapshot] publier le duel sur Discord (US-021).
+ *   Réservé à l'ingestion d'un scan : un simple changement de config ne doit pas
+ *   republier un snapshot identique dans le salon.
+ * @param {string} [opts.botToken] jeton du bot Discord
  */
-export async function recomputeRace(campaignId, bucket) {
+export async function recomputeRace(campaignId, bucket, opts = {}) {
     const [files] = await bucket.getFiles({prefix: `kvk_race/${campaignId}/derived/`});
     const metas = [];
     const players = [];
@@ -121,13 +132,31 @@ export async function recomputeRace(campaignId, bucket) {
     await batch.commit();
     logger.info(`recomputeRace(${campaignId}) : ${seqs.length} scans agrégés, ` +
         `base=${data.baseSeq}, latest=${seqs[seqs.length - 1]}`);
+
+    // US-021 — snapshot Discord, après commit : on n'annonce que ce qui est écrit.
+    if (opts.postSnapshot) {
+        const res = await postDuelSnapshot({
+            campaignId,
+            cfg,
+            data,
+            metas,
+            botToken: opts.botToken,
+            markPosted: (seq) => root.set({"lastSnapshotSeq": seq}, {merge: true}),
+        });
+        if (!res.posted && res.reason !== "no-channel" && res.reason !== "disabled") {
+            logger.warn(`[${campaignId}] snapshot Discord non publié : ${res.reason}`);
+        }
+    }
 }
 
 /**
  * Trigger : un scan .xlsx déposé dans le bucket → dérivé + recompute campagne.
  */
 export const digestRaceScan = onObjectFinalized(
-    {bucket: RACE_BUCKET, region: "us-central1", memory: "1GiB", timeoutSeconds: 300},
+    {
+        bucket: RACE_BUCKET, region: "us-central1", memory: "1GiB", timeoutSeconds: 300,
+        secrets: [DISCORD_BOT_TOKEN],
+    },
     async (event) => {
         const objectName = event.data.name || "";
         const m = SCAN_PATH_RE.exec(objectName);
@@ -156,7 +185,10 @@ export const digestRaceScan = onObjectFinalized(
             .save(JSON.stringify({meta, "rows": light}), {contentType: "application/json"});
         logger.info(`Dérivé écrit : seq ${meta.scanSeq}, ${light.length} gouverneurs`);
 
-        await recomputeRace(campaignId, bucket);
+        await recomputeRace(campaignId, bucket, {
+            postSnapshot: true,
+            botToken: DISCORD_BOT_TOKEN.value(),
+        });
     },
 );
 

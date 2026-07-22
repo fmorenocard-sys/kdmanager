@@ -356,7 +356,11 @@
     "players_search_placeholder": "Tên, ID thống đốc hoặc vương quốc…",
     "players_only_ours": "Chỉ 2997",
     "players_count": "{{shown}} / {{total}} · {{members}} của chúng ta",
-    "players_empty": "Không có người chơi hàng đầu cho lần quét này."
+    "players_empty": "Không có người chơi hàng đầu cho lần quét này.",
+    "snapshot_title": "Ảnh chụp Discord",
+    "snapshot_hint": "Đăng trận đấu vào một kênh sau mỗi lần nạp bản quét. Thay đổi cấu hình không đăng lại: chỉ bản quét mới mới kích hoạt thông báo.",
+    "snapshot_channel_label": "ID kênh Discord",
+    "snapshot_enabled_label": "Bật"
   },
   "kvk_history": {
     "kingdom_tab": "Tiến trình Vương quốc",

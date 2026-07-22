@@ -356,7 +356,11 @@
     "players_search_placeholder": "Nombre, ID de gobernador o reino…",
     "players_only_ours": "Solo 2997",
     "players_count": "{{shown}} / {{total}} · {{members}} de los nuestros",
-    "players_empty": "No hay jugadores destacados para este escaneo."
+    "players_empty": "No hay jugadores destacados para este escaneo.",
+    "snapshot_title": "Snapshot de Discord",
+    "snapshot_hint": "Publica el duelo en un canal tras cada ingesta de escaneo. Un cambio de configuración no vuelve a publicar: solo un nuevo escaneo activa el anuncio.",
+    "snapshot_channel_label": "ID del canal de Discord",
+    "snapshot_enabled_label": "Activar"
   },
   "kvk_history": {
     "kingdom_tab": "Progresión del Reino",

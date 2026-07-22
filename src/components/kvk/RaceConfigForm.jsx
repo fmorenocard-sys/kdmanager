@@ -24,6 +24,8 @@ const DEFAULT_FORM = {
     our_camp: '2',
     pinnedText: '2997, 1523',
     base_scan_override: '',
+    discord_channel_id: '',
+    discord_snapshot_enabled: true,
     dkp: { kp_per_t4_kill: 10, kp_per_t5_kill: 20, mult_t4: 4, mult_t5: 10, weight_deads: 6 },
     exclusions: []
 };
@@ -71,6 +73,8 @@ const RaceConfigForm = () => {
             our_camp: String(c.our_camp || '2'),
             pinnedText: (c.pinned_kingdoms || []).join(', '),
             base_scan_override: c.base_scan_override == null ? '' : String(c.base_scan_override),
+            discord_channel_id: c.discord_channel_id || '',
+            discord_snapshot_enabled: c.discord_snapshot_enabled !== false,
             dkp: { ...DEFAULT_FORM.dkp, ...(c.dkp || {}) },
             exclusions: (c.exclusions || []).map((e) => ({
                 active: e.active !== false,
@@ -118,6 +122,8 @@ const RaceConfigForm = () => {
                 our_camp: String(form.our_camp),
                 pinned_kingdoms: pinned,
                 base_scan_override: form.base_scan_override === '' ? null : Number(form.base_scan_override),
+                discord_channel_id: form.discord_channel_id.trim(),
+                discord_snapshot_enabled: !!form.discord_snapshot_enabled,
                 dkp: Object.fromEntries(Object.entries(form.dkp).map(([k, v]) => [k, Number(v) || 0])),
                 exclusions: form.exclusions.map((e) => ({
                     active: !!e.active,
@@ -270,6 +276,29 @@ const RaceConfigForm = () => {
                 onChange={(e) => setForm((f) => ({ ...f, pinnedText: e.target.value }))}
                 placeholder="2997, 1523"
             />
+
+            {/* US-021 — snapshot Discord après chaque ingestion */}
+            <div className="mt-4 mb-4 bg-[var(--border-flat)] rounded-lg p-3">
+                <p className="text-sm font-semibold text-indigo-400 mb-1">{t('kvk_race.snapshot_title')}</p>
+                <p className="text-xs text-slate-500 mb-3">{t('kvk_race.snapshot_hint')}</p>
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 md:items-end">
+                    <Input
+                        label={t('kvk_race.snapshot_channel_label')}
+                        value={form.discord_channel_id}
+                        onChange={(e) => setForm((f) => ({ ...f, discord_channel_id: e.target.value }))}
+                        placeholder="123456789012345678"
+                    />
+                    <label className="flex items-center gap-2 text-sm text-slate-300 md:pb-2 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={form.discord_snapshot_enabled}
+                            onChange={(e) => setForm((f) => ({ ...f, discord_snapshot_enabled: e.target.checked }))}
+                            className="w-4 h-4 rounded border-[var(--border-flat)] bg-[var(--surface-input)] accent-indigo-500"
+                        />
+                        {t('kvk_race.snapshot_enabled_label')}
+                    </label>
+                </div>
+            </div>
 
             {/* DKP de course */}
             <div className="mt-4 mb-4 bg-[var(--border-flat)] rounded-lg p-3">

@@ -356,7 +356,11 @@
     "players_search_placeholder": "الاسم أو معرّف الحاكم أو المملكة…",
     "players_only_ours": "2997 فقط",
     "players_count": "{{shown}} / {{total}} · {{members}} منّا",
-    "players_empty": "لا يوجد لاعبون بارزون لهذا المسح."
+    "players_empty": "لا يوجد لاعبون بارزون لهذا المسح.",
+    "snapshot_title": "لقطة ديسكورد",
+    "snapshot_hint": "ينشر المبارزة في قناة بعد كل عملية استيعاب مسح. تغيير الإعدادات لا يعيد النشر: المسح الجديد وحده يطلق الإعلان.",
+    "snapshot_channel_label": "معرّف قناة ديسكورد",
+    "snapshot_enabled_label": "تفعيل"
   },
   "kvk_history": {
     "kingdom_tab": "تقدّم المملكة",

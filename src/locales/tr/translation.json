@@ -356,7 +356,11 @@
     "players_search_placeholder": "İsim, vali kimliği veya krallık…",
     "players_only_ours": "Sadece 2997",
     "players_count": "{{shown}} / {{total}} · {{members}} bizden",
-    "players_empty": "Bu tarama için en iyi oyuncu yok."
+    "players_empty": "Bu tarama için en iyi oyuncu yok.",
+    "snapshot_title": "Discord anlık görüntüsü",
+    "snapshot_hint": "Her tarama alımından sonra düelloyu bir kanala gönderir. Yapılandırma değişikliği yeniden göndermez: yalnızca yeni bir tarama duyuruyu tetikler.",
+    "snapshot_channel_label": "Discord kanal kimliği",
+    "snapshot_enabled_label": "Etkinleştir"
   },
   "kvk_history": {
     "kingdom_tab": "Krallık Gelişimi",

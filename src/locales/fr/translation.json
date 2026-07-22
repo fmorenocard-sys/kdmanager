@@ -356,7 +356,11 @@
     "players_search_placeholder": "Nom, ID de gouverneur ou royaume…",
     "players_only_ours": "2997 seulement",
     "players_count": "{{shown}} / {{total}} · {{members}} des nôtres",
-    "players_empty": "Aucun top joueur pour ce scan."
+    "players_empty": "Aucun top joueur pour ce scan.",
+    "snapshot_title": "Snapshot Discord",
+    "snapshot_hint": "Publie le duel dans un salon après chaque ingestion de scan. Un changement de configuration ne republie rien : seule l'arrivée d'un nouveau scan déclenche l'annonce.",
+    "snapshot_channel_label": "ID du salon Discord",
+    "snapshot_enabled_label": "Activer"
   },
   "kvk_history": {
     "kingdom_tab": "Progression du Royaume",

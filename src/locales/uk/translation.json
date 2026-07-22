@@ -356,7 +356,11 @@
     "players_search_placeholder": "Ім'я, ID губернатора або королівство…",
     "players_only_ours": "Лише 2997",
     "players_count": "{{shown}} / {{total}} · {{members}} наших",
-    "players_empty": "Немає топ-гравців для цього сканування."
+    "players_empty": "Немає топ-гравців для цього сканування.",
+    "snapshot_title": "Знімок у Discord",
+    "snapshot_hint": "Публікує дуель у каналі після кожного оброблення сканування. Зміна конфігурації нічого не публікує повторно: лише нове сканування запускає оголошення.",
+    "snapshot_channel_label": "ID каналу Discord",
+    "snapshot_enabled_label": "Увімкнути"
   },
   "kvk_history": {
     "kingdom_tab": "Прогрес Королівства",
