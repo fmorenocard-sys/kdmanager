@@ -2,25 +2,24 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRole, ROLES } from '../context/RoleContext';
-import KvKConfigForm from '../components/war/KvKConfigForm';
 import AvailabilityForm from '../components/war/AvailabilityForm';
 import WarDashboard from '../components/war/WarDashboard';
 import { Shield, Swords, LayoutDashboard } from '../components/ui/icons';
 
 import PageHeader from '../components/ui/PageHeader';
 
+// Refonte navigation : le War Tracker est recentré sur la préparation
+// (déclaration + War Dashboard). La config KvK vit désormais dans /admin (M3).
 const WarTrackerPage = () => {
-    const { role, isAuthorized } = useRole();
+    const { isAuthorized } = useRole();
     const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState('declaration'); // declaration, dashboard, config
+    const [activeTab, setActiveTab] = useState('declaration'); // declaration, dashboard
 
     const showDashboard = isAuthorized([ROLES.KING, ROLES.OFFICER]);
-    const showConfig = isAuthorized([ROLES.KING]);
 
     const tabs = [
         { id: 'declaration', label: t('war.declaration_form'), icon: Swords },
-        ...(showDashboard ? [{ id: 'dashboard', label: t('war.dashboard_title'), icon: LayoutDashboard }] : []),
-        ...(showConfig ? [{ id: 'config', label: 'KvK Config', icon: Shield }] : [])
+        ...(showDashboard ? [{ id: 'dashboard', label: t('war.dashboard_title'), icon: LayoutDashboard }] : [])
     ];
 
     return (
@@ -61,12 +60,6 @@ const WarTrackerPage = () => {
                 {activeTab === 'dashboard' && showDashboard && (
                     <div className="animate-in fade-in duration-300">
                         <WarDashboard />
-                    </div>
-                )}
-
-                {activeTab === 'config' && showConfig && (
-                    <div className="animate-in fade-in duration-300">
-                        <KvKConfigForm />
                     </div>
                 )}
             </div>

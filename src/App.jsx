@@ -5,7 +5,7 @@ import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RoleProvider, useRole, ROLES } from './context/RoleContext';
 import { LangProvider } from './context/LangContext';
-import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Flag } from './components/ui/icons';
+import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Hammer } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
 import KvKPerformancePage from './pages/KvKPerformancePage';
 import KingdomTrophiesPage from './pages/KingdomTrophiesPage';
@@ -14,6 +14,7 @@ import BankPage from './pages/BankPage';
 import ProfilePage from './pages/ProfilePage';
 import WarTrackerPage from './pages/WarTrackerPage';
 import KvKRacePage from './pages/KvKRacePage';
+import AdminPage from './pages/AdminPage';
 import BottomNav from './components/BottomNav';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
 import ThemeToggle from './components/ui/ThemeToggle';
@@ -28,16 +29,17 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
   const menuItems = [
     { id: 'dashboard', path: '/', icon: CastleTurret, label: t('nav.dashboard') },
     { id: 'war-tracker', path: '/war-tracker', icon: Shield, label: t('nav.war_tracker') },
-    { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.performance') },
+    { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.kvk') },
     { id: 'trophies', path: '/trophies', icon: Trophy, label: t('nav.trophies') },
-    // BR-009: deadweight is leadership-only (roles come from Discord sync)
-    // §9.4 (E-005): KvK Race is leadership-only too
+    // BR-009: deadweight is leadership-only (roles come from Discord sync).
+    // Refonte nav : la Course vit dans le Hub KvK (onglet), plus d'entrée dédiée.
     ...(isAuthorized([ROLES.KING, ROLES.OFFICER]) ? [
         { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
-        { id: 'kvk-race', path: '/kvk-race', icon: Flag, label: t('nav.kvk_race') },
     ] : []),
     { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
   ];
+  const isKing = isAuthorized([ROLES.KING]);
+  const adminActive = currentPath === '/admin' || currentPath.startsWith('/admin/');
 
   return (
     <>
@@ -84,6 +86,32 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
               </Link>
             );
           })}
+
+          {/* Zone Administration — Roi uniquement (maquettes M1/M4) */}
+          {isKing && (
+            <>
+              <div className="mt-4 pt-3 mx-2 border-t border-[var(--border-flat)] flex items-center gap-2">
+                {isOpen && (
+                  <>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{t('nav.admin')}</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/30">King</span>
+                  </>
+                )}
+              </div>
+              <Link
+                to="/admin"
+                aria-label={t('nav.admin')}
+                title={t('nav.admin')}
+                onClick={() => onNavigate && onNavigate()}
+                className={`v2-nav-item w-full px-3 ${adminActive ? 'act' : ''}`}
+              >
+                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                  <Hammer size={20} weight={adminActive ? 'fill' : 'regular'} />
+                </div>
+                {isOpen && <span className="font-medium truncate whitespace-nowrap">{t('nav.admin')}</span>}
+              </Link>
+            </>
+          )}
         </nav>
       </aside>
     </>
@@ -236,6 +264,7 @@ const MainContent = () => {
               <Route path="/trophies" element={<KingdomTrophiesPage />} />
               <Route path="/deadweight" element={<DeadweightPage />} />
               <Route path="/kvk-race" element={<KvKRacePage />} />
+              <Route path="/admin" element={<AdminPage />} />
               <Route path="/bank" element={<BankPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               {/* Fallback route */}
