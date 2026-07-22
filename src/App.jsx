@@ -5,7 +5,7 @@ import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RoleProvider, useRole, ROLES } from './context/RoleContext';
 import { LangProvider } from './context/LangContext';
-import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Flag } from './components/ui/icons';
+import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Hammer } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
 import KvKPerformancePage from './pages/KvKPerformancePage';
 import KingdomTrophiesPage from './pages/KingdomTrophiesPage';
@@ -14,6 +14,7 @@ import BankPage from './pages/BankPage';
 import ProfilePage from './pages/ProfilePage';
 import WarTrackerPage from './pages/WarTrackerPage';
 import KvKRacePage from './pages/KvKRacePage';
+import AdminPage from './pages/AdminPage';
 import BottomNav from './components/BottomNav';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
 import ThemeToggle from './components/ui/ThemeToggle';
@@ -28,16 +29,17 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
   const menuItems = [
     { id: 'dashboard', path: '/', icon: CastleTurret, label: t('nav.dashboard') },
     { id: 'war-tracker', path: '/war-tracker', icon: Shield, label: t('nav.war_tracker') },
-    { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.performance') },
+    { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.kvk') },
     { id: 'trophies', path: '/trophies', icon: Trophy, label: t('nav.trophies') },
-    // BR-009: deadweight is leadership-only (roles come from Discord sync)
-    // §9.4 (E-005): KvK Race is leadership-only too
+    // BR-009: deadweight is leadership-only (roles come from Discord sync).
+    // Refonte nav : la Course vit dans le Hub KvK (onglet), plus d'entrée dédiée.
     ...(isAuthorized([ROLES.KING, ROLES.OFFICER]) ? [
         { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
-        { id: 'kvk-race', path: '/kvk-race', icon: Flag, label: t('nav.kvk_race') },
     ] : []),
     { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
   ];
+  const isKing = isAuthorized([ROLES.KING]);
+  const adminActive = currentPath === '/admin' || currentPath.startsWith('/admin/');
 
   return (
     <>
@@ -84,6 +86,32 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
               </Link>
             );
           })}
+
+          {/* Zone Administration — Roi uniquement (maquettes M1/M4) */}
+          {isKing && (
+            <>
+              <div className="mt-4 pt-3 mx-2 border-t border-[var(--border-flat)] flex items-center gap-2">
+                {isOpen && (
+                  <>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{t('nav.admin')}</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/30">King</span>
+                  </>
+                )}
+              </div>
+              <Link
+                to="/admin"
+                aria-label={t('nav.admin')}
+                title={t('nav.admin')}
+                onClick={() => onNavigate && onNavigate()}
+                className={`v2-nav-item w-full px-3 ${adminActive ? 'act' : ''}`}
+              >
+                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                  <Hammer size={20} weight={adminActive ? 'fill' : 'regular'} />
+                </div>
+                {isOpen && <span className="font-medium truncate whitespace-nowrap">{t('nav.admin')}</span>}
+              </Link>
+            </>
+          )}
         </nav>
       </aside>
     </>
@@ -93,7 +121,12 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
 const UserProfile = () => {
   const { currentUser, loginWithGoogle, loginWithDiscord, logout } = useAuth();
   const { t } = useTranslation();
+  const { isAuthorized } = useRole();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  // Raccourci Admin dans le menu de compte : le drawer reste l'accès canonique
+  // (M4), mais il n'a aucune affordance en mobile — cf. question ouverte §6 du
+  // brief refonte navigation.
+  const isKing = isAuthorized([ROLES.KING]);
 
   if (!currentUser) {
     return (
@@ -157,7 +190,7 @@ const UserProfile = () => {
           ) : null}
         </div>
         {/* Dropdown Menu */}
-        <div className={`absolute end-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-xl transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+        <div className={`absolute end-0 mt-2 w-56 bg-slate-900 border border-slate-700 rounded-lg shadow-xl transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
           <div className="p-2">
             <Link
               to="/profile"
@@ -167,6 +200,18 @@ const UserProfile = () => {
               <User size={16} />
               {t('auth.my_profile')}
             </Link>
+            {isKing && (
+              <Link
+                to="/admin"
+                onClick={() => setDropdownOpen(false)}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+              >
+                <Hammer size={16} />
+                <span className="truncate">{t('nav.admin')}</span>
+                <span className="ms-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/30">King</span>
+              </Link>
+            )}
+            <div className="my-1 border-t border-slate-700/60" />
             <button
               onClick={() => { setDropdownOpen(false); logout(); }}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:text-red-400 hover:bg-white/5 rounded-md transition-colors"
@@ -182,6 +227,7 @@ const UserProfile = () => {
 };
 
 const MainContent = () => {
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { loading: dataLoading } = useData();
   const { loading: authLoading } = useAuth(); // Wait for auth check
@@ -207,17 +253,22 @@ const MainContent = () => {
 
       <main className={`flex-1 transition-all duration-300 ms-0 ${sidebarOpen ? 'md:ms-64' : 'md:ms-20'} min-h-screen flex flex-col min-w-0`}>
         <header className="h-16 border-b border-white/5 bg-slate-900/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-6 min-w-0">
-          {/* Hamburger — desktop only */}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="hidden md:flex p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
-          >
-            <Menu size={20} />
-          </button>
-          {/* Logo placeholder on mobile */}
-          <div className="md:hidden flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-full border border-primary/40" />
-            <span className="font-semibold text-sm text-white">KD Manager</span>
+          <div className="flex items-center gap-2 min-w-0">
+            {/* Hamburger — desktop : replie/déplie le rail ; mobile : ouvre le drawer
+                (seul accès à la zone Administration, cf. M4) */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label={t('nav.menu')}
+              aria-expanded={sidebarOpen}
+              className="flex p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors shrink-0"
+            >
+              <Menu size={20} />
+            </button>
+            {/* Logo placeholder on mobile */}
+            <div className="md:hidden flex items-center gap-2 min-w-0">
+              <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-full border border-primary/40 shrink-0" />
+              <span className="font-semibold text-sm text-white truncate">KD Manager</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -236,6 +287,7 @@ const MainContent = () => {
               <Route path="/trophies" element={<KingdomTrophiesPage />} />
               <Route path="/deadweight" element={<DeadweightPage />} />
               <Route path="/kvk-race" element={<KvKRacePage />} />
+              <Route path="/admin" element={<AdminPage />} />
               <Route path="/bank" element={<BankPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               {/* Fallback route */}

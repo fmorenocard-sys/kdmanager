@@ -1,11 +1,13 @@
 {
   "nav": {
+    "menu": "Menu",
     "dashboard": "Tableau de Bord",
     "war_tracker": "Suivi de Guerre",
     "performance": "Performance",
     "trophies": "Trophées",
     "deadweight": "Poids Mort",
-    "kvk_race": "KvK Race",
+    "kvk": "KvK",
+    "admin": "Administration",
     "bank": "Banque",
     "war": "Guerre"
   },
@@ -260,6 +262,34 @@
     "kp_goal": "Objectif KP",
     "dead_goal": "Objectif Morts",
     "save": "Enregistrer Config"
+  },
+  "kvk_hub": {
+    "subtitle": "Hub unique — performance interne, progressions et course de coalition",
+    "tab_performance": "Performance",
+    "tab_progressions": "Progressions",
+    "tab_course": "Course",
+    "domain_internal": "DKP interne — domaine 2997",
+    "domain_internal_note": "Mains + fillers du royaume · non comparable au DKP de course",
+    "domain_race": "DKP de course — domaine coalition",
+    "domain_race_note": "Basé sur les scans de camps · non comparable au DKP interne 2997",
+    "chip_mains": "Comptes principaux",
+    "chip_fillers": "Fillers",
+    "chip_player": "Joueur",
+    "chip_kingdom": "Royaume",
+    "upload_title": "Déposer un scan",
+    "upload_desc": "Importez le dernier scan de la compétition : le duel et les 32 royaumes seront recalculés automatiquement.",
+    "upload_button": "Déposer un scan",
+    "upload_ok": "Scan déposé — digestion en cours (~10 s), rechargez dans un instant.",
+    "upload_err": "Échec du dépôt.",
+    "upload_bad_name": "Nom de fichier non conforme (ex. attendu : 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
+  },
+  "admin": {
+    "subtitle": "Réservée au Roi — données, campagne KvK, course de coalition et maintenance",
+    "rail_data": "Données",
+    "rail_campaign": "Campagne KvK",
+    "rail_race": "Config Course",
+    "rail_maintenance": "Maintenance",
+    "maintenance_desc": "Opérations sensibles sur les déclarations de guerre. Chaque action demande une confirmation explicite."
   },
   "kvk_race": {
     "page_subtitle": "Course à l'étoile — duel de camps, royaumes et évolution",

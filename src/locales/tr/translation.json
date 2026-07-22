@@ -1,11 +1,13 @@
 {
   "nav": {
+    "menu": "Menü",
     "dashboard": "Panel",
     "war_tracker": "Savaş Takibi",
     "performance": "Performans",
     "trophies": "Kupalar",
     "deadweight": "Yük",
-    "kvk_race": "KvK Yarışı",
+    "kvk": "KvK",
+    "admin": "Yönetim",
     "bank": "Banka",
     "war": "Savaş"
   },
@@ -260,6 +262,34 @@
     "kp_goal": "KP Hedefi",
     "dead_goal": "Ölü Hedefi",
     "save": "Yapılandırmayı Kaydet"
+  },
+  "kvk_hub": {
+    "subtitle": "Tek merkez — iç performans, gelişimler ve koalisyon yarışı",
+    "tab_performance": "Performans",
+    "tab_progressions": "Gelişimler",
+    "tab_course": "Yarış",
+    "domain_internal": "İç DKP — 2997 alanı",
+    "domain_internal_note": "Krallık ana hesapları + filler · yarış DKP'siyle karşılaştırılamaz",
+    "domain_race": "Yarış DKP — koalisyon alanı",
+    "domain_race_note": "Kamp scan'lerine dayalı · iç 2997 DKP'siyle karşılaştırılamaz",
+    "chip_mains": "Ana hesaplar",
+    "chip_fillers": "Filler",
+    "chip_player": "Oyuncu",
+    "chip_kingdom": "Krallık",
+    "upload_title": "Scan yükle",
+    "upload_desc": "En son rekabet scan'ini içe aktarın: düello ve 32 krallık otomatik yeniden hesaplanır.",
+    "upload_button": "Scan yükle",
+    "upload_ok": "Scan yüklendi — işleniyor (~10 sn), birazdan yenileyin.",
+    "upload_err": "Yükleme başarısız.",
+    "upload_bad_name": "Dosya adı kurala uymuyor (ör. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
+  },
+  "admin": {
+    "subtitle": "Yalnızca Kral — veriler, KvK kampanyası, koalisyon yarışı ve bakım",
+    "rail_data": "Veriler",
+    "rail_campaign": "KvK Kampanyası",
+    "rail_race": "Yarış Ayarları",
+    "rail_maintenance": "Bakım",
+    "maintenance_desc": "Beyanlar üzerinde hassas işlemler. Her eylem açık onay gerektirir."
   },
   "kvk_race": {
     "page_subtitle": "Yıldız yarışı — kamp düellosu, krallıklar ve gelişim",

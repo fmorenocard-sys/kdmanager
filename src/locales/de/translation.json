@@ -1,11 +1,13 @@
 {
   "nav": {
+    "menu": "Menü",
     "dashboard": "Dashboard",
     "war_tracker": "Kriegs-Tracker",
     "performance": "Leistung",
     "trophies": "Trophäen",
     "deadweight": "Ballast",
-    "kvk_race": "KvK Race",
+    "kvk": "KvK",
+    "admin": "Verwaltung",
     "bank": "Bank",
     "war": "Krieg"
   },
@@ -260,6 +262,34 @@
     "kp_goal": "KP-Ziel",
     "dead_goal": "Tote-Ziel",
     "save": "Konfiguration speichern"
+  },
+  "kvk_hub": {
+    "subtitle": "Ein Hub — interne Leistung, Verläufe und Koalitionsrennen",
+    "tab_performance": "Leistung",
+    "tab_progressions": "Verläufe",
+    "tab_course": "Rennen",
+    "domain_internal": "Internes DKP — Domäne 2997",
+    "domain_internal_note": "Mains + Filler des Königreichs · nicht mit dem Renn-DKP vergleichbar",
+    "domain_race": "Renn-DKP — Koalitionsdomäne",
+    "domain_race_note": "Basiert auf Lager-Scans · nicht mit dem internen 2997-DKP vergleichbar",
+    "chip_mains": "Hauptaccounts",
+    "chip_fillers": "Filler",
+    "chip_player": "Spieler",
+    "chip_kingdom": "Königreich",
+    "upload_title": "Scan hochladen",
+    "upload_desc": "Importiere den neuesten Wettbewerbs-Scan: Duell und 32 Königreiche werden automatisch neu berechnet.",
+    "upload_button": "Scan hochladen",
+    "upload_ok": "Scan hochgeladen — Verarbeitung (~10 s), gleich neu laden.",
+    "upload_err": "Upload fehlgeschlagen.",
+    "upload_bad_name": "Dateiname entspricht nicht der Scan-Konvention (z. B. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
+  },
+  "admin": {
+    "subtitle": "Nur König — Daten, KvK-Kampagne, Koalitionsrennen und Wartung",
+    "rail_data": "Daten",
+    "rail_campaign": "KvK-Kampagne",
+    "rail_race": "Rennen-Konfig",
+    "rail_maintenance": "Wartung",
+    "maintenance_desc": "Sensible Operationen auf Kriegserklärungen. Jede Aktion erfordert eine explizite Bestätigung."
   },
   "kvk_race": {
     "page_subtitle": "Sternrennen — Lagerduell, Königreiche und Verlauf",

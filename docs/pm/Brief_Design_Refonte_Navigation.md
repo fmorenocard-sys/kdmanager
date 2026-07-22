@@ -55,7 +55,30 @@ L'app a grossi vite (E-004 Historique, F-022 Timeline, E-005 KvK Race) et l'agen
 - Position de l'onglet *Progressions* dans le hub (2e ou 3e position ?), et sort du sélecteur de campagnes archivées (dans Performance ou onglet propre ?).
 - Sur mobile, l'Admin est-elle accessible depuis le drawer uniquement, ou aussi via une tuile sur le Dashboard du Roi ?
 
-## 7. Hors périmètre
+## 7. Suivi d'implémentation — validation staging (2026-07-22)
+
+Branche `feat/refonte-navigation`, déployée sur https://kd-97-manager--staging-7dmagnyt.web.app
+(prod `main` non touchée). Constats de la passe de validation Roi et corrections apportées :
+
+| # | Constat | Cause | Correctif | Commit |
+|---|---|---|---|---|
+| 1 | Page Admin desktop : au scroll, le haut du rail interne disparaît, l'item *Data* devient incliquable | Rail collé à `top-6` (24px) alors que le header global est `h-16 sticky top-0 z-40` → il passe sous le header | Rail calé à 88px (64 + 24) ; `scroll-mt` des 4 sections aligné sur le même offset | `538149b` |
+| 2 | Page Admin mobile : l'item *Maintenance* déborde de la bordure du rail | Le `<nav>` est un grid item : `min-width:auto` le laisse s'étendre à la largeur de son contenu au lieu de scroller | `min-w-0 max-w-full` sur le nav | `538149b` |
+| 3 | **Administration invisible en mobile** — page atteignable seulement en tapant `/admin` | Le drawer porte bien la zone Admin (M4), mais son unique déclencheur (hamburger) était en `hidden md:flex` : aucun point d'entrée sous 768px | Hamburger visible à tous les breakpoints, groupé avec le logo mobile ; `aria-label` (`nav.menu`, 9 locales) + `aria-expanded` | `247f2ce` |
+
+**Effet de bord assumé du correctif 3** : le drawer mobile expose désormais tout le rail de
+navigation (Dashboard, War, KvK…) en doublon de la bottom nav. C'est le comportement décrit
+en M4 ; à revoir si l'on préfère un drawer mobile réduit à la seule zone Admin.
+
+**Question ouverte §6 — tranchée (Roi, 2026-07-22) : ni drawer seul, ni tuile Dashboard, mais
+le menu de compte.** Le drawer reste l'accès canonique décrit en M4, mais il n'offre aucune
+affordance signalant qu'il contient l'Administration. Plutôt qu'une tuile sur le Dashboard du
+Roi — visible par lui seul, et un point d'entrée de plus à maintenir — le menu profil gagne une
+entrée *Administration* (King only, badge rouge) : `Mon profil / Administration / Déconnexion`.
+Il est présent à tous les breakpoints, donc la découvrabilité est réglée en mobile comme en
+desktop avec un seul ajout. Commit `6f1a810`.
+
+## 8. Hors périmètre
 
 - Aucune nouvelle fonctionnalité, aucun changement de charte graphique, pas de refonte des pages Dashboard/Banque/Trophées (déjà v2).
 - L'implémentation suivra maquette par maquette, comme pour Dashboard Home B — ne pas produire de code React.
