@@ -9,6 +9,8 @@ import Card from '../ui/Card';
 import { Archive, AlertTriangle, CheckCircle2 } from '../ui/icons';
 import { DATA_CONFIG } from '../../config/data-mapping';
 import { invalidateKvkHistoryCache } from '../../hooks/useKvkHistory';
+import { useRaceData } from '../../hooks/useRaceData';
+import { buildRaceSummary } from '../../lib/raceSummary';
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 
@@ -28,6 +30,10 @@ const CampaignArchiveControl = () => {
     const [busy, setBusy] = useState(false);
     const [message, setMessage] = useState(null); // { type: 'ok'|'err', text }
     const [counts, setCounts] = useState(null);
+    // F-020 — résumé de course joint à l'archive (facultatif : une saison peut
+    // n'avoir aucune campagne de course digérée).
+    const { campaigns: raceCampaigns } = useRaceData();
+    const [raceId, setRaceId] = useState('');
 
     const authorized = isAuthorized([ROLES.KING]);
     const docId = slugify(title);
@@ -73,6 +79,9 @@ const CampaignArchiveControl = () => {
                 getDoc(doc(db, 'static_data', 'kvk')),
                 getDoc(doc(db, 'static_data', 'kvk_filler'))
             ]);
+            const raceSummary = raceId
+                ? buildRaceSummary(raceCampaigns.find((c) => c.id === raceId))
+                : null;
             await setDoc(doc(db, 'kvk_history', docId), {
                 title: title.trim(),
                 order: Number(order) || null,
@@ -81,7 +90,8 @@ const CampaignArchiveControl = () => {
                 list: kvkSnap.exists() ? kvkSnap.data().list || [] : [],
                 fillerList: fillerSnap.exists() ? fillerSnap.data().list || [] : [],
                 archivedAt: new Date().toISOString(),
-                source: 'in-app closure (CampaignArchiveControl)'
+                source: 'in-app closure (CampaignArchiveControl)',
+                ...(raceSummary ? { race_summary: raceSummary } : {})
             });
             // BR-013 (étape 4 de l'étude E-004, décidée le 2026-07-20) : la campagne
             // active du War Tracker est marquée clôturée jusqu'à la saison suivante.
@@ -139,6 +149,30 @@ const CampaignArchiveControl = () => {
                     onChange={(e) => setEndDate(e.target.value)}
                 />
             </div>
+
+            {/* F-020 — joindre le résumé de course. Facultatif : une saison peut
+                n'avoir aucune campagne digérée, et l'archive reste valable sans. */}
+            {raceCampaigns.length > 0 && (
+                <div className="mb-4">
+                    <label htmlFor="archive-race-select" className="block text-xs text-slate-400 mb-1.5">
+                        {t('kvk_history.race_summary_label')}
+                    </label>
+                    <select
+                        id="archive-race-select"
+                        value={raceId}
+                        onChange={(e) => setRaceId(e.target.value)}
+                        className="w-full bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[44px]"
+                    >
+                        <option value="">{t('kvk_history.race_summary_none')}</option>
+                        {raceCampaigns.map((c) => (
+                            <option key={c.id} value={c.id}>
+                                {c.name || c.id} — {c.scanCount ?? 0} scans
+                            </option>
+                        ))}
+                    </select>
+                    <p className="text-xs text-slate-500 mt-1.5">{t('kvk_history.race_summary_hint')}</p>
+                </div>
+            )}
 
             {!confirming ? (
                 <Button onClick={prepare} disabled={busy || !title.trim()}>

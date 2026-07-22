@@ -360,7 +360,12 @@
     "snapshot_title": "Snapshot Discord",
     "snapshot_hint": "Publikuje pojedynek na kanale po każdym przetworzeniu skanu. Zmiana konfiguracji nie publikuje ponownie: tylko nowy skan wyzwala ogłoszenie.",
     "snapshot_channel_label": "ID kanału Discord",
-    "snapshot_enabled_label": "Włącz"
+    "snapshot_enabled_label": "Włącz",
+    "efficiency_title": "Wydajność",
+    "efficiency_hint": "Powyżej przekątnej: daje więcej, niż sugerowała moc.",
+    "efficiency_over": "Ponad normę",
+    "efficiency_under": "Poniżej normy",
+    "efficiency_empty": "Za mało danych o mocy dla tego skanu."
   },
   "kvk_history": {
     "kingdom_tab": "Postęp Królestwa",
@@ -391,7 +396,10 @@
     "already_archived": "Kampania o tym tytule jest już zarchiwizowana.",
     "archived_success": "„{{title}}” została zarchiwizowana.",
     "title_required": "Tytuł kampanii jest wymagany.",
-    "no_current_data": "Brak bieżących danych KvK do archiwizacji."
+    "no_current_data": "Brak bieżących danych KvK do archiwizacji.",
+    "race_summary_label": "Dołącz podsumowanie wyścigu",
+    "race_summary_none": "Brak — archiwizuj bez wyścigu",
+    "race_summary_hint": "Utrwala finałowy pojedynek, klasyfikację obozów, nasze miejsce i czołowe królestwa w archiwum. Wagi DKP są zapisywane razem: bez nich liczby stają się nieczytelne po zmianie skali."
   },
   "ratings": {
     "excellent": "Znakomity",

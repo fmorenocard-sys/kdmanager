@@ -360,7 +360,12 @@
     "snapshot_title": "Discord anlık görüntüsü",
     "snapshot_hint": "Her tarama alımından sonra düelloyu bir kanala gönderir. Yapılandırma değişikliği yeniden göndermez: yalnızca yeni bir tarama duyuruyu tetikler.",
     "snapshot_channel_label": "Discord kanal kimliği",
-    "snapshot_enabled_label": "Etkinleştir"
+    "snapshot_enabled_label": "Etkinleştir",
+    "efficiency_title": "Verimlilik",
+    "efficiency_hint": "Çapraz çizginin üstünde: gücünün beklettiğinden fazlasını veriyor.",
+    "efficiency_over": "Beklentinin üstünde",
+    "efficiency_under": "Beklentinin altında",
+    "efficiency_empty": "Bu tarama için yeterli güç verisi yok."
   },
   "kvk_history": {
     "kingdom_tab": "Krallık Gelişimi",
@@ -391,7 +396,10 @@
     "already_archived": "Bu başlıkla arşivlenmiş bir kampanya zaten var.",
     "archived_success": "\"{{title}}\" arşivlendi.",
     "title_required": "Kampanya başlığı gereklidir.",
-    "no_current_data": "Arşivlenecek güncel KvK verisi yok."
+    "no_current_data": "Arşivlenecek güncel KvK verisi yok.",
+    "race_summary_label": "Yarış özetini ekle",
+    "race_summary_none": "Yok — yarış olmadan arşivle",
+    "race_summary_hint": "Final düellosunu, kamp sıralamasını, sıramızı ve en iyi krallıkları arşivde dondurur. DKP ağırlıkları da saklanır: onlarsız ölçek değişirse rakamlar okunamaz hale gelir."
   },
   "ratings": {
     "excellent": "Mükemmel",

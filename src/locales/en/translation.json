@@ -360,7 +360,12 @@
     "snapshot_title": "Discord snapshot",
     "snapshot_hint": "Posts the duel to a channel after each scan ingestion. A config change never re-posts: only a new scan triggers the announcement.",
     "snapshot_channel_label": "Discord channel ID",
-    "snapshot_enabled_label": "Enable"
+    "snapshot_enabled_label": "Enable",
+    "efficiency_title": "Efficiency",
+    "efficiency_hint": "Above the diagonal: delivering more than their power suggested.",
+    "efficiency_over": "Overperforming",
+    "efficiency_under": "Underperforming",
+    "efficiency_empty": "Not enough power data for this scan."
   },
   "kvk_history": {
     "kingdom_tab": "Kingdom Progression",
@@ -391,7 +396,10 @@
     "already_archived": "A campaign with this title is already archived.",
     "archived_success": "\"{{title}}\" has been archived.",
     "title_required": "Campaign title is required.",
-    "no_current_data": "No current KvK data to archive."
+    "no_current_data": "No current KvK data to archive.",
+    "race_summary_label": "Attach race summary",
+    "race_summary_none": "None — archive without the race",
+    "race_summary_hint": "Freezes the final duel, camp standings, our rank and the top kingdoms into the archive. DKP weights are stored alongside: without them the figures become unreadable if the scale changes next season."
   },
   "ratings": {
     "excellent": "Excellent",

@@ -360,7 +360,12 @@
     "snapshot_title": "Ảnh chụp Discord",
     "snapshot_hint": "Đăng trận đấu vào một kênh sau mỗi lần nạp bản quét. Thay đổi cấu hình không đăng lại: chỉ bản quét mới mới kích hoạt thông báo.",
     "snapshot_channel_label": "ID kênh Discord",
-    "snapshot_enabled_label": "Bật"
+    "snapshot_enabled_label": "Bật",
+    "efficiency_title": "Hiệu suất",
+    "efficiency_hint": "Trên đường chéo: đóng góp nhiều hơn mức sức mạnh gợi ý.",
+    "efficiency_over": "Vượt kỳ vọng",
+    "efficiency_under": "Dưới kỳ vọng",
+    "efficiency_empty": "Không đủ dữ liệu sức mạnh cho lần quét này."
   },
   "kvk_history": {
     "kingdom_tab": "Tiến trình Vương quốc",
@@ -391,7 +396,10 @@
     "already_archived": "Đã có chiến dịch được lưu trữ với tên này.",
     "archived_success": "\"{{title}}\" đã được lưu trữ.",
     "title_required": "Cần nhập tên chiến dịch.",
-    "no_current_data": "Không có dữ liệu KvK hiện tại để lưu trữ."
+    "no_current_data": "Không có dữ liệu KvK hiện tại để lưu trữ.",
+    "race_summary_label": "Đính kèm tóm tắt cuộc đua",
+    "race_summary_none": "Không — lưu trữ không kèm cuộc đua",
+    "race_summary_hint": "Cố định trận đấu cuối, bảng xếp hạng phe, thứ hạng của ta và các vương quốc dẫn đầu vào kho lưu trữ. Trọng số DKP được lưu kèm: thiếu chúng, các con số sẽ vô nghĩa nếu thang điểm thay đổi."
   },
   "ratings": {
     "excellent": "Xuất sắc",

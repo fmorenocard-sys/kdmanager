@@ -360,7 +360,12 @@
     "snapshot_title": "Snapshot de Discord",
     "snapshot_hint": "Publica el duelo en un canal tras cada ingesta de escaneo. Un cambio de configuración no vuelve a publicar: solo un nuevo escaneo activa el anuncio.",
     "snapshot_channel_label": "ID del canal de Discord",
-    "snapshot_enabled_label": "Activar"
+    "snapshot_enabled_label": "Activar",
+    "efficiency_title": "Eficiencia",
+    "efficiency_hint": "Por encima de la diagonal: rinde más de lo que su poder sugería.",
+    "efficiency_over": "Sobrerrendimiento",
+    "efficiency_under": "Bajo rendimiento",
+    "efficiency_empty": "No hay suficientes datos de poder para este escaneo."
   },
   "kvk_history": {
     "kingdom_tab": "Progresión del Reino",
@@ -391,7 +396,10 @@
     "already_archived": "Ya existe una campaña archivada con este título.",
     "archived_success": "«{{title}}» ha sido archivada.",
     "title_required": "El título de la campaña es obligatorio.",
-    "no_current_data": "No hay datos KvK actuales para archivar."
+    "no_current_data": "No hay datos KvK actuales para archivar.",
+    "race_summary_label": "Adjuntar resumen de la carrera",
+    "race_summary_none": "Ninguno — archivar sin la carrera",
+    "race_summary_hint": "Congela el duelo final, la clasificación de los bandos, nuestro puesto y los mejores reinos en el archivo. Los pesos DKP se guardan con ellos: sin ellos las cifras se vuelven ilegibles si cambia el baremo."
   },
   "ratings": {
     "excellent": "Excelente",

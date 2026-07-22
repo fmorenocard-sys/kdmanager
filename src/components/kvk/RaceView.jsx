@@ -6,6 +6,7 @@ import { useRole, ROLES } from '../../context/RoleContext';
 import { useRaceData } from '../../hooks/useRaceData';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
 import RacePlayersView from './RacePlayersView';
+import RaceEfficiencyView from './RaceEfficiencyView';
 import { Trophy, Users, History, TrendingUp, TrendingDown, Upload, CheckCircle2, AlertTriangle } from '../ui/icons';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
@@ -266,7 +267,8 @@ const RaceView = () => {
                     <div className="flex items-center gap-1.5">
                         {[
                             { id: 'kingdoms', label: t('kvk_race.kingdoms_title') },
-                            { id: 'players', label: t('kvk_race.players_title') }
+                            { id: 'players', label: t('kvk_race.players_title') },
+                            { id: 'efficiency', label: t('kvk_race.efficiency_title') }
                         ].map(({ id, label }) => (
                             <button
                                 key={id}
@@ -280,11 +282,19 @@ const RaceView = () => {
                         ))}
                     </div>
                     <span className="text-sm text-slate-400">
-                        {rankView === 'kingdoms' ? kingdoms.length : players.length}
+                        {rankView === 'players' ? players.length : kingdoms.length}
                     </span>
                 </div>
 
-                {rankView === 'players' ? (
+                {rankView === 'efficiency' ? (
+                    <RaceEfficiencyView
+                        kingdoms={kingdoms}
+                        players={players}
+                        pinned={pinned}
+                        labels={labels}
+                        roles={roles}
+                    />
+                ) : rankView === 'players' ? (
                     <RacePlayersView
                         players={players}
                         pinned={pinned}

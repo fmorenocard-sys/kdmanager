@@ -360,7 +360,12 @@
     "snapshot_title": "لقطة ديسكورد",
     "snapshot_hint": "ينشر المبارزة في قناة بعد كل عملية استيعاب مسح. تغيير الإعدادات لا يعيد النشر: المسح الجديد وحده يطلق الإعلان.",
     "snapshot_channel_label": "معرّف قناة ديسكورد",
-    "snapshot_enabled_label": "تفعيل"
+    "snapshot_enabled_label": "تفعيل",
+    "efficiency_title": "الكفاءة",
+    "efficiency_hint": "فوق القطر: يقدّم أكثر ممّا توحي به قوّته.",
+    "efficiency_over": "أداء فوق المتوقع",
+    "efficiency_under": "أداء دون المتوقع",
+    "efficiency_empty": "لا توجد بيانات قوة كافية لهذا المسح."
   },
   "kvk_history": {
     "kingdom_tab": "تقدّم المملكة",
@@ -391,7 +396,10 @@
     "already_archived": "توجد حملة مؤرشفة بهذا العنوان بالفعل.",
     "archived_success": "تمت أرشفة \"{{title}}\".",
     "title_required": "عنوان الحملة مطلوب.",
-    "no_current_data": "لا توجد بيانات KvK حالية للأرشفة."
+    "no_current_data": "لا توجد بيانات KvK حالية للأرشفة.",
+    "race_summary_label": "إرفاق ملخّص السباق",
+    "race_summary_none": "بدون — الأرشفة دون السباق",
+    "race_summary_hint": "يثبّت المبارزة النهائية وترتيب المعسكرات ومركزنا وأفضل الممالك في الأرشيف. تُحفظ أوزان DKP معها: بدونها تصبح الأرقام غير مفهومة إذا تغيّر المقياس."
   },
   "ratings": {
     "excellent": "ممتاز",

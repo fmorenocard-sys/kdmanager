@@ -360,7 +360,12 @@
     "snapshot_title": "Snapshot Discord",
     "snapshot_hint": "Publie le duel dans un salon après chaque ingestion de scan. Un changement de configuration ne republie rien : seule l'arrivée d'un nouveau scan déclenche l'annonce.",
     "snapshot_channel_label": "ID du salon Discord",
-    "snapshot_enabled_label": "Activer"
+    "snapshot_enabled_label": "Activer",
+    "efficiency_title": "Efficacité",
+    "efficiency_hint": "Au-dessus de la diagonale : rend plus que sa puissance ne le laissait attendre.",
+    "efficiency_over": "Surperformance",
+    "efficiency_under": "Sous-performance",
+    "efficiency_empty": "Pas assez de données de puissance pour ce scan."
   },
   "kvk_history": {
     "kingdom_tab": "Progression du Royaume",
@@ -391,7 +396,10 @@
     "already_archived": "Une campagne avec ce titre est déjà archivée.",
     "archived_success": "« {{title}} » a été archivée.",
     "title_required": "Le titre de la campagne est requis.",
-    "no_current_data": "Aucune donnée KvK courante à archiver."
+    "no_current_data": "Aucune donnée KvK courante à archiver.",
+    "race_summary_label": "Joindre le résumé de course",
+    "race_summary_none": "Aucun — archiver sans la course",
+    "race_summary_hint": "Fige le duel final, le classement des camps, notre rang et le haut du tableau des royaumes dans l'archive. Les poids DKP sont conservés avec : sans eux, les chiffres deviennent illisibles si le barème change la saison suivante."
   },
   "ratings": {
     "excellent": "Excellent",

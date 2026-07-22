@@ -360,7 +360,12 @@
     "snapshot_title": "Discord-Snapshot",
     "snapshot_hint": "Postet das Duell nach jeder Scan-Verarbeitung in einen Kanal. Eine Konfigurationsänderung postet nichts erneut: nur ein neuer Scan löst die Ankündigung aus.",
     "snapshot_channel_label": "Discord-Kanal-ID",
-    "snapshot_enabled_label": "Aktivieren"
+    "snapshot_enabled_label": "Aktivieren",
+    "efficiency_title": "Effizienz",
+    "efficiency_hint": "Über der Diagonale: liefert mehr, als die Macht erwarten ließ.",
+    "efficiency_over": "Überdurchschnittlich",
+    "efficiency_under": "Unterdurchschnittlich",
+    "efficiency_empty": "Nicht genug Machtdaten für diesen Scan."
   },
   "kvk_history": {
     "kingdom_tab": "Fortschritt des Königreichs",
@@ -391,7 +396,10 @@
     "already_archived": "Eine Kampagne mit diesem Titel ist bereits archiviert.",
     "archived_success": "„{{title}}“ wurde archiviert.",
     "title_required": "Kampagnentitel ist erforderlich.",
-    "no_current_data": "Keine aktuellen KvK-Daten zum Archivieren."
+    "no_current_data": "Keine aktuellen KvK-Daten zum Archivieren.",
+    "race_summary_label": "Rennzusammenfassung anhängen",
+    "race_summary_none": "Keine — ohne Rennen archivieren",
+    "race_summary_hint": "Friert das finale Duell, die Lagerwertung, unseren Rang und die besten Königreiche im Archiv ein. Die DKP-Gewichte werden mitgespeichert: ohne sie sind die Zahlen unlesbar, wenn sich die Skala ändert."
   },
   "ratings": {
     "excellent": "Exzellent",
