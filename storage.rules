@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// Règles Cloud Storage — créées par l'audit de sécurité BUG-002 (2026-07-22, constat H-2).
+// Rapport : docs/qa/Audit_Securite_Firestore_2026-07-22.md
+//
+// Refus total pour les SDK clients : aucun écran de l'app n'utilise le SDK Storage
+// (vérifié le 2026-07-22 — aucune occurrence de `getStorage` ni de `firebase/storage`
+// sous src/). Tous les accès légitimes passent par le serveur :
+//
+//   - dépôt d'un scan   → URL signée V4 de 15 min émise par `getRaceScanUploadUrl`
+//                          après vérification du rôle dans Firestore (BR-014) ;
+//   - lecture/digestion → Admin SDK dans `digestRaceScan` et `recomputeRace`.
+//
+// Ces deux chemins sont signés ou passent par l'Admin SDK : ils ne sont PAS soumis
+// à ces règles. Les durcir ne casse donc aucun parcours, et toute future écriture
+// depuis le navigateur devra être ajoutée ici explicitement.
+//
+// Portée : ce fichier ne gouverne que les buckets déclarés dans firebase.json.
+// Le bucket des scans `kd-97-manager-kvk-race` est un bucket GCS brut, hors Firebase
+// Storage : il est protégé par l'IAM du projet et par *public access prevention*, pas
+// par ces règles. Son état se vérifie en console GCP, pas ici.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

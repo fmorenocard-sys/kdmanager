@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:serve": "cross-env VITE_USE_FIREBASE_EMULATOR=true vite --port 5174",
+    "test:rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-rules.test.mjs\"",
     "test:e2e": "firebase emulators:exec \"playwright test\"",
     "test:e2e-ui": "firebase emulators:exec \"playwright test --ui\""
   },
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@firebase/rules-unit-testing": "^5.0.1",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.3.1",
