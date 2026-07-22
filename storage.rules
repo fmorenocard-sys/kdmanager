@@ -3,6 +3,16 @@ rules_version = '2';
 // Règles Cloud Storage — créées par l'audit de sécurité BUG-002 (2026-07-22, constat H-2).
 // Rapport : docs/qa/Audit_Securite_Firestore_2026-07-22.md
 //
+// ⚠ FICHIER DORMANT — volontairement absent de firebase.json.
+// Firebase Storage n'est pas activé sur le projet `kd-97-manager` (vérifié le
+// 2026-07-22 : `firebase deploy --only storage` répond « Firebase Storage has not
+// been set up on project »). Il n'existe donc aucun bucket Firebase Storage, et
+// déclarer ce fichier dans firebase.json ferait échouer tout déploiement global.
+//
+// À rebrancher le jour où Storage serait activé : ajouter à firebase.json
+//   "storage": { "rules": "storage.rules" }
+// puis `firebase deploy --only storage`.
+//
 // Refus total pour les SDK clients : aucun écran de l'app n'utilise le SDK Storage
 // (vérifié le 2026-07-22 — aucune occurrence de `getStorage` ni de `firebase/storage`
 // sous src/). Tous les accès légitimes passent par le serveur :

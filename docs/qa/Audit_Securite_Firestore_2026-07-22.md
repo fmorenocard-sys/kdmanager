@@ -18,7 +18,7 @@ traite comme vérifiées ; et les règles Storage ne sont ni versionnées ni dé
 | # | Sévérité | Constat |
 |---|---|---|
 | H-1 | **Haute** | `user_profiles` accepte n'importe quel champ écrit par son propriétaire, dont `discordId` / `discordUid` / `governorId` |
-| H-2 | **Haute** | Aucune règle Storage dans le dépôt ni dans `firebase.json` |
+| H-2 | ~~Haute~~ → **Sans objet** | Aucune règle Storage dans le dépôt — s'avère être l'absence totale de surface Firebase Storage (voir le constat révisé) |
 | M-1 | Moyenne | `war_availabilities` : la création n'exige aucun lien de propriété |
 | M-2 | Moyenne | `kvk_config` est écrivable par un Officier alors que l'UI est réservée au Roi |
 | M-3 | Moyenne | Aucune validation de forme ni de taille sur les collections écrivables |
@@ -89,7 +89,25 @@ document).
 
 ---
 
-## H-2 — Aucune règle Storage dans le dépôt
+## H-2 — Aucune règle Storage dans le dépôt → **sans objet, revu le 2026-07-22**
+
+> **Constat révisé après tentative de déploiement.** Firebase Storage n'a jamais été initialisé
+> sur `kd-97-manager` : `firebase deploy --only storage` répond *« Firebase Storage has not been
+> set up on project »*. Il n'existe donc **aucun bucket Firebase Storage**, et par conséquent
+> aucune règle manquante — il n'y a rien à gouverner.
+>
+> Le seul bucket réel, `kd-97-manager-kvk-race`, est un bucket **GCS brut** : les règles Firebase
+> Storage ne s'y appliquent pas, quoi qu'on écrive. Il est protégé par l'IAM du projet et par
+> *public access prevention*, et son état se vérifie en console GCP.
+>
+> `storage.rules` est conservé dans le dépôt en **fichier dormant**, volontairement absent de
+> `firebase.json` : l'y déclarer ferait échouer tout déploiement global. Il sera prêt le jour où
+> Storage serait activé.
+>
+> La sévérité tombe donc de Haute à sans objet. L'analyse ci-dessous est conservée pour mémoire :
+> elle reste valable si Firebase Storage venait à être activé.
+
+### Analyse d'origine (conservée pour mémoire)
 
 `firebase.json` ne déclare **aucun bloc `storage`**, et il n'existe pas de `storage.rules`. Les
 règles réellement appliquées sont donc celles saisies dans la console Firebase : non versionnées,
@@ -232,3 +250,69 @@ Restent à traiter hors fichier de règles :
    résoudre que par `user_profiles/{discord:<id>}` (document dont l'ID est l'identité) plutôt que par
    requête sur un champ écrit par le client, et supprimer le champ `role` renvoyé.
 3. **B-1** — arbitrage produit sur le Dashboard visiteur.
+
+---
+
+# Clôture — 2026-07-22
+
+## Ce qui a été livré
+
+| Constat | État | Où |
+|---|---|---|
+| H-1 (règles) | **Corrigé** | `user_profiles` : écriture propriétaire limitée à `governorId`/`updatedAt` ; `discordId`, `discordUid` et `role` deviennent Functions-only |
+| H-1 (bot) | **Corrigé** | `resolvePlayer` : ID de document d'abord, `limit(2)` + refus si ambiguïté, `role` retiré du retour |
+| H-2 | **Sans objet** | Firebase Storage non activé — aucune surface à protéger (voir constat révisé) |
+| M-1 | **Corrigé** | Création de déclaration liée à son propre `userId`, leadership excepté (outil de fusion) |
+| M-2 | **Corrigé** | `kvk_config` en écriture King only, aligné sur l'UI |
+| M-3 | **Corrigé** | Clés plafonnées sur `user_profiles` via `keys().hasOnly()` / `diff().affectedKeys()` |
+| B-1 | **Ouvert — arbitrage produit** | `static_data` et `kvk_history` restent en lecture publique |
+| B-2 | **Corrigé** | `roles` fermé au propriétaire et au leadership |
+| B-3 | **Corrigé** | `role()` : un `get()` par évaluation, défaut explicite |
+
+Déployé sur les deux bases le 2026-07-22 et vérifié par sonde anonyme sur l'API REST (voir
+« Vérification » ci-dessous). Commits : `cefe7f8` (règles), `bed6ad6` (bot).
+
+## Vérification par sonde
+
+Un document **inexistant** distingue les deux cas sans authentification : `404` signifie « lecture
+autorisée, document absent », `403` signifie « lecture refusée ». `roles` est le seul témoin qui
+sépare l'ancien et le nouveau jeu de règles — les autres collections fermées l'étaient déjà.
+
+```bash
+curl -s -o /dev/null -w "%{http_code}" \
+  https://firestore.googleapis.com/v1/projects/kd-97-manager/databases/kdmanagerdb/documents/roles/probe_audit
+# 404 = anciennes règles encore en place · 403 = durcissement actif
+```
+
+Résultat après déploiement : `403` sur `kdmanagerdb` **et** sur `(default)`. `static_data` et
+`kvk_history` restent en `404`, conformément à B-1 laissé ouvert.
+
+## Piège de déploiement à connaître
+
+**`firebase deploy --only firestore:rules` ne déploie rien sur ce projet** — et ne le dit pas.
+
+`firebase.json` déclare deux bases dans un tableau `firestore` (`(default)` et `kdmanagerdb`).
+Le filtre `firestore:rules` ne matche aucune des deux entrées : le CLI affiche `Deploy complete!`
+sans jamais imprimer de ligne `released rules`, et les anciennes règles restent en production.
+C'est un faux positif silencieux — le pire genre pour un correctif de sécurité.
+
+La commande correcte est :
+
+```bash
+npx firebase deploy --only firestore
+```
+
+Elle imprime `released rules firestore.rules to cloud.firestore` **deux fois**, une par base.
+Vérifier la présence de ces deux lignes, puis confirmer par la sonde ci-dessus. Compter environ
+une minute de propagation sur `kdmanagerdb` ; `(default)` bascule immédiatement.
+
+## Suite
+
+- **B-1** — seul constat encore ouvert. Fermer `static_data` et `kvk_history` suppose de décider du
+  sort du Dashboard visiteur, aujourd'hui servi sans authentification.
+- **Non-régression** — `npm run test:rules` (29 cas sur émulateur) est à lancer à chaque
+  modification de `firestore.rules`. À câbler en CI si un workflow GitHub Actions est mis en place.
+- **Données existantes** — le durcissement empêche d'écrire `discordId` depuis un client, mais ne
+  nettoie pas d'éventuelles valeurs antérieures. Le refus d'ambiguïté de `resolvePlayer` couvre le
+  risque d'exploitation ; un balayage de `user_profiles` à la recherche de `discordId` en doublon
+  confirmerait qu'aucun profil suspect n'existe.
