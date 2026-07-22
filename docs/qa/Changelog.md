@@ -1,6 +1,28 @@
 # QA Changelog
 
-## v2.28 - 2026-07-21 (branche feat/refonte-navigation — EN STAGING, non mergée)
+## v2.29 - 2026-07-22
+
+### Security — audit Firestore BUG-002 (rapport `docs/qa/Audit_Securite_Firestore_2026-07-22.md`)
+- **Règles Firestore durcies et déployées sur les deux bases** (`(default)` et `kdmanagerdb`) :
+  - `user_profiles` — l'écriture propriétaire est limitée à `governorId` / `updatedAt`. `discordId`, `discordUid` et `role` passent en **Functions only** : ils servaient de clés d'identité au gate BR-008 (`isDiscordUser`) et à `resolvePlayer` du bot alors que n'importe quel membre pouvait les écrire dans son propre profil. L'écriture par le leadership est retirée (inutilisée).
+  - `war_availabilities` — la **création** doit porter son propre `userId` (avant : n'importe quel membre authentifié pouvait déclarer à la place d'un autre n'ayant pas encore déclaré). Le leadership conserve l'écriture pour autrui, requise par l'outil de fusion de campagnes.
+  - `kvk_config` — écriture **King only**, alignée sur l'UI (page Administration). Un Officier pouvait repointer la campagne active par appel direct au SDK.
+  - `roles` — fin de la lecture publique (énumération des UID et du leadership) ; lecture propriétaire + leadership.
+  - `role()` — un seul `get()` par évaluation au lieu de deux, avec défaut explicite `'Guest'` si le document de rôle manque.
+- **Bot Discord `resolvePlayer`** : l'ID de document `discord:<id>` (seule identité signée par le SSO) est consulté en premier ; les recherches par champ passent en `limit(2)` et **refusent de répondre en cas d'ambiguïté** au lieu de renvoyer un document dans un ordre non spécifié — c'est ce que le scénario d'usurpation exploitait ; le champ `role` n'est plus renvoyé.
+- **H-2 requalifié sans objet** : Firebase Storage n'est pas activé sur le projet, il n'existe donc aucun bucket Firebase Storage ni règle manquante. Le bucket des scans est un bucket GCS brut (IAM + public access prevention), hors périmètre des règles Firebase. `storage.rules` est conservé en fichier dormant, hors `firebase.json`.
+- **Reste ouvert — B-1** : `static_data` et `kvk_history` demeurent en lecture publique non authentifiée (roster, puissance, kills, campagnes archivées). Arbitrage produit en attente sur le sort du Dashboard visiteur.
+
+### Added
+- **`tests/firestore-rules.test.mjs`** (`npm run test:rules`) : 29 cas sur émulateur, dépendance `@firebase/rules-unit-testing`. Les 6 scénarios d'attaque de l'audit ont d'abord été exécutés **contre les anciennes règles en les assertant en succès** — ils sont passés, confirmant les vulnérabilités par l'exécution et pas seulement par lecture. Ils sont désormais assertés en refus, aux côtés des parcours légitimes (liaison de gouverneur, déclaration, fusion de campagne, config de course, saisie du résultat officiel).
+
+### Verified
+- Sonde anonyme sur l'API REST Firestore : `roles/<inexistant>` passe de **404** (lecture autorisée) à **403** (refusée) sur les deux bases. `static_data` et `kvk_history` restent en 404, conformément à B-1 laissé ouvert.
+
+### Notes — piège de déploiement
+- **`firebase deploy --only firestore:rules` ne déploie rien sur ce projet et affiche pourtant `Deploy complete!`**. `firebase.json` déclare deux bases dans un tableau `firestore` ; le filtre ne matche aucune entrée et aucune ligne `released rules` n'est imprimée. Un correctif de sécurité peut ainsi sembler déployé sans l'être. **Commande correcte : `firebase deploy --only firestore`**, qui imprime `released rules` deux fois (une par base). Compter ~1 min de propagation sur `kdmanagerdb`.
+
+## v2.28 - 2026-07-21 (mergée dans main et déployée en prod le 2026-07-22 — merge `79af810`)
 ### Added
 - **Refonte navigation (maquettes Claude Design M1–M4, brief `Brief_Design_Refonte_Navigation.md`)** :
   - **Hub KvK** (`/kvk`) : une entrée nav, 3 onglets `v2-tab` — *Performance* (domaine DKP interne, chips Mains/Fillers avec BR-008 sur les fillers), *Progressions* (chips Joueur BR-008 / Royaume-timeline BR-011), *Course* (leadership §9.4, contenu `RaceView`). **Badge de domaine DKP (BR-010)** sous les onglets, avec mention « non comparable ».
@@ -9,7 +31,16 @@
   - **Nav** : sidebar avec zone « Administration » séparée (badge King, Roi uniquement) ; bottom nav revenue en disposition fixe sans scroll, ≤ 6 entrées (Course absorbée par le hub, Admin via drawer seul — M4).
   - i18n : ns `kvk_hub` + `admin` ×9, `nav.kvk`/`nav.admin` ×15 (remplacent `nav.kvk_race`).
 ### Verified (dev + staging)
-- Invité : hub à 1 onglet + badge domaine interne + 47 lignes réelles, sidebar 5 entrées sans zone Admin, bottom nav 5, AccessGate sur `/admin` et `/kvk-race`. Smoke test leadership (bypass locaux retirés) : 3 onglets, chips gatés, timeline, rail admin 4 sections, zéro scroll horizontal. **Déployé sur le canal staging uniquement** — validation Roi/officiers attendue avant merge dans main : parcours complet (hub 3 onglets avec données Course réelles, dépôt de scan réel, page Admin, mobile).
+- Invité : hub à 1 onglet + badge domaine interne + 47 lignes réelles, sidebar 5 entrées sans zone Admin, bottom nav 5, AccessGate sur `/admin` et `/kvk-race`. Smoke test leadership (bypass locaux retirés) : 3 onglets, chips gatés, timeline, rail admin 4 sections, zéro scroll horizontal.
+- **Validée par le Roi sur le canal staging le 2026-07-22** (hub 3 onglets avec données Course réelles, dépôt de scan, page Admin, mobile), puis mergée dans `main` et déployée en production le même jour.
+
+### Fixed (passe de validation Roi, avant merge)
+- **Page Admin, desktop** : le rail interne était collé à `top-6` alors que le header global est `h-16 sticky top-0 z-40` — au scroll il passait **sous** le header et la section *Data* devenait invisible et incliquable. Rail calé à 88px, `scroll-mt` des 4 sections aligné sur le même offset. *(`538149b`)*
+- **Page Admin, mobile** : l'item *Maintenance* débordait de la bordure du rail. Le `<nav>` est un grid item : son `min-width:auto` le laissait s'étendre à la largeur de son contenu au lieu de scroller. Ajout de `min-w-0 max-w-full`. *(`538149b`)*
+- **Administration injoignable en mobile** : le drawer porte bien la zone Admin (M4), mais son unique déclencheur — le hamburger — était en `hidden md:flex`. Sous 768px, **aucun point d'entrée n'ouvrait le drawer** : `/admin` n'était atteignable qu'en tapant l'URL. Hamburger rendu visible à tous les breakpoints, groupé avec le logo mobile, avec `aria-label` (`nav.menu`, 9 locales) et `aria-expanded`. *(`247f2ce`)*
+
+### Changed
+- **Question ouverte §6 du brief tranchée** : ni drawer seul, ni tuile sur le Dashboard du Roi — l'Administration entre dans le **menu de compte** (`Mon profil / Administration [King] / Déconnexion`), présent à tous les breakpoints, donc un seul point d'entrée à maintenir et la découvrabilité réglée en mobile comme en desktop. Le drawer conserve son entrée. *(`6f1a810`)*
 
 ## v2.27 - 2026-07-21
 ### Fixed (remontées Roi post-déploiement jalon 4)
