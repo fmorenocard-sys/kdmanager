@@ -27,8 +27,15 @@ const DISCORD_REDIRECT_URI = defineString('DISCORD_REDIRECT_URI', { default: 'ht
 export const discordLogin = onRequest({ secrets: [DISCORD_CLIENT_ID] }, async (req, res) => {
     // Read action parameter (default to 'login')
     const action = req.query.action === 'link' ? 'link' : 'login';
-    // Embed action into the state string
-    const state = `${action}_` + Math.random().toString(36).substring(7);
+
+    // Origine appelante (prod, canal de preview Hosting, ou dev local) — embarquée
+    // dans le state OAuth pour que le callback renvoie l'utilisateur là d'où il
+    // vient (le redirect_uri Discord, lui, reste fixe : celui du portail). Encodée
+    // en hex : pas de '_' possible, le séparateur du state reste sans ambiguïté.
+    const forwardedHost = String(req.headers['x-forwarded-host'] || req.hostname || '').split(',')[0].trim();
+    const isLocalOrigin = forwardedHost.startsWith('localhost') || forwardedHost.startsWith('127.0.0.1');
+    const origin = `${isLocalOrigin ? 'http' : 'https'}://${forwardedHost}`;
+    const state = `${action}_${Math.random().toString(36).substring(7)}_${Buffer.from(origin, 'utf8').toString('hex')}`;
 
     // Option: Encrypt the state or save it in a cookie for validation (skipped for basic implementation)
     // res.cookie('__session', state, { maxAge: 3600000, httpOnly: true, secure: true });
@@ -53,6 +60,40 @@ export const discordLogin = onRequest({ secrets: [DISCORD_CLIENT_ID] }, async (r
 
     res.redirect(discordAuthUrl);
 });
+
+const PROD_FRONTEND_URL = 'https://kd-97-manager.web.app';
+
+/**
+ * Base frontend à utiliser pour les redirections post-auth : l'origine embarquée
+ * dans le state par discordLogin (hex, 3e segment), validée contre une liste
+ * blanche — prod, domaines Firebase du projet, canaux de preview Hosting
+ * (kd-97-manager--<canal>-<hash>.web.app) et dev local. Sans origine valide
+ * (state legacy, valeur forgée), repli sur le comportement historique.
+ * @param {object} req
+ * @param {string} state
+ * @return {string} base URL sans slash final
+ */
+function resolveFrontendBase(req, state) {
+    try {
+        const parts = String(state).split('_');
+        if (parts.length >= 3) {
+            const origin = Buffer.from(parts[parts.length - 1], 'hex').toString('utf8');
+            const allowed =
+                origin === PROD_FRONTEND_URL ||
+                origin === 'https://kd-97-manager.firebaseapp.com' ||
+                /^https:\/\/kd-97-manager--[a-z0-9-]+\.web\.app$/.test(origin) ||
+                /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+            if (allowed) return origin;
+            if (origin) logger.warn(`Origine de state non autorisée, repli prod : ${origin}`);
+        }
+    } catch (e) {
+        logger.warn('State sans origine décodable, repli historique.', e?.message);
+    }
+    if (req.hostname === 'localhost' || req.hostname === '127.0.0.1') {
+        return 'http://localhost:5173';
+    }
+    return PROD_FRONTEND_URL;
+}
 
 /**
  * Step 2: Handle callback from Discord, exchange code for token, and mint Firebase Custom Token
@@ -81,11 +122,7 @@ export const discordCallback = onRequest({ cors: true, secrets: [DISCORD_CLIENT_
                 const cachedDoc = await codeDocRef.get();
                 if (cachedDoc.exists) {
                     isReplay = true;
-                    let frontendUrl = 'http://localhost:5173/#/profile'; // Link redirects to profile
-                    if (req.hostname !== 'localhost' && req.hostname !== '127.0.0.1') {
-                        // We are in production
-                        frontendUrl = 'https://kd-97-manager.web.app/#/profile';
-                    }
+                    const frontendUrl = `${resolveFrontendBase(req, state)}/#/profile`; // Link redirects to profile
 
                     if (cachedDoc.data().firebaseToken) {
                         logger.info("Anti-Replay Cache HIT! Returning cached token for code.");
@@ -186,10 +223,7 @@ export const discordCallback = onRequest({ cors: true, secrets: [DISCORD_CLIENT_
             // Save linkToken to anti-replay cache
             await codeDocRef.update({ linkToken: linkToken });
 
-            let frontendUrl = 'http://localhost:5173/#/profile';
-            if (req.hostname !== 'localhost' && req.hostname !== '127.0.0.1') {
-                frontendUrl = 'https://kd-97-manager.web.app/#/profile';
-            }
+            const frontendUrl = `${resolveFrontendBase(req, state)}/#/profile`;
             return res.redirect(`${frontendUrl}?linkToken=${linkToken}`);
         }
 
@@ -242,11 +276,8 @@ export const discordCallback = onRequest({ cors: true, secrets: [DISCORD_CLIENT_
             logger.error(`Failed to sync roles for ${targetUid} during login:`, err);
         });
 
-        // 5. Redirect back to frontend
-        let frontendAuthUrl = 'http://localhost:5173/#/discord-auth';
-        if (req.hostname !== 'localhost' && req.hostname !== '127.0.0.1') {
-            frontendAuthUrl = 'https://kd-97-manager.web.app/#/discord-auth';
-        }
+        // 5. Redirect back to frontend (origine du login : prod, canal de preview ou dev)
+        const frontendAuthUrl = `${resolveFrontendBase(req, state)}/#/discord-auth`;
 
         // Save token to anti-replay cache before redirecting
         await codeDocRef.update({ firebaseToken: firebaseToken });
