@@ -1,5 +1,20 @@
 # QA Changelog
 
+## v2.30 - 2026-07-22 — E-005 Phase 2 (F-020) en production
+
+### Added
+- **Vue « Joueurs » de la course (US-019)** — les tops joueurs (200 par scan) étaient écrits par `digestRaceScan` depuis le jalon 2 mais n'avaient jamais été lus par le front ; `useRaceData` charge désormais `players_top`. Recherche par nom / ID de gouverneur / royaume, tri par colonne, colonne **DKP par million de puissance** (définition `dkp_per_mpower` du moteur appliquée au gouverneur), croisement avec les profils 2997 (badge, ligne surlignée, filtre « 2997 seulement »), cartes en mobile.
+- **Vue « Efficacité »** — nuage puissance × DKP de course, au choix par royaume ou par joueur, avec la diagonale de la **moyenne de ligue** : au-dessus = rend plus que sa puissance ne le laissait attendre. La référence est un rapport de sommes (DKP total / puissance totale) et non une moyenne des rapports — sinon un petit royaume très efficace pèserait autant qu'un gros. Palmarès sur/sous-performance en multiples de cette moyenne.
+- **Snapshot Discord du duel (US-021)** — embed posté par `digestRaceScan` après chaque ingestion : DKP des deux camps, écart signé, leader, variation depuis le scan précédent. Couleur suivant **notre** camp et non le camp A. Idempotent (`lastSnapshotSeq`), jamais bloquant (une panne Discord n'échoue pas une digestion), silencieux sans salon configuré, scan de base ignoré. Le salon se règle par campagne dans la config de course (Roi) et non par variable d'environnement.
+- **Archivage du résumé de course** à la clôture F-015 — `buildRaceSummary` fige une **copie autonome** (duel final, classement des camps, rang de nos royaumes épinglés, top 10, poids DKP) dans `kvk_history`. Copie et non référence : les agrégats `kvk_race` sont réécrits à chaque recompute alors que l'archive est immuable. Les poids DKP sont conservés avec, sans quoi les chiffres deviennent illisibles si le barème change la saison suivante (BR-010).
+- **Tri par colonne sur les trois tables** — Royaumes rejoint Joueurs et Efficacité. Extraction de `src/lib/sortRows.js` (comparaison partagée, valeurs manquantes toujours en bas dans les deux sens) et `src/components/ui/SortHead.jsx` (`aria-sort`, icône visible sans survol). Sur les Royaumes, le rang affiché reste celui du DKP et les royaumes épinglés restent en tête, le tri s'appliquant à l'intérieur des groupes (décision M1).
+- i18n : 23 clés × 9 locales (`kvk_race`, `kvk_history`).
+
+### Notes
+- **US-020 était déjà livrée** depuis le jalon 3 (éditeur d'exclusions anti-triche dans la config de campagne) — la fiche F-020 la listait à tort comme restante. Statut corrigé.
+- **UXA11Y-004 partiellement traité** : l'icône de tri est désormais visible sans survol sur les tables de la course. Reste à porter sur les autres tables de l'app.
+- Déploiement : hosting en prod + `firebase deploy --only functions:digestRaceScan` (binding du secret `DISCORD_BOT_TOKEN`, réutilisé de la synchro des rôles). Le snapshot reste inerte tant qu'aucun ID de salon n'est renseigné, et le bot doit disposer de `SEND_MESSAGES` sur le salon visé.
+
 ## v2.29 - 2026-07-22
 
 ### Security — audit Firestore BUG-002 (rapport `docs/qa/Audit_Securite_Firestore_2026-07-22.md`)
