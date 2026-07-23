@@ -77,6 +77,7 @@
   --grad-primary-hover: linear-gradient(135deg, #b45309, #9a3412);
   --grad-accent: linear-gradient(135deg, #6366f1, #a855f7);
   --grad-title: linear-gradient(90deg, #fbbf24, #f97316);
+  --focus-ring: #a5b4fc; /* UXA11Y-002 : contraste AA sur les fonds sombres */
   --glass-blur: 14px;
   --shadow-card: 0 20px 40px -12px rgba(0, 0, 0, .4);
   --shadow-glow-accent: 0 4px 16px rgba(139, 92, 246, .35);
@@ -112,6 +113,7 @@
   --border-flat: rgba(15, 23, 42, .08);
   --border-gradient: linear-gradient(160deg, rgba(15, 23, 42, .14), rgba(15, 23, 42, .04) 40%, rgba(217, 119, 6, .22));
   --border-gradient-indigo: linear-gradient(160deg, rgba(99, 102, 241, .35), rgba(15, 23, 42, .04) 45%, rgba(168, 85, 247, .25));
+  --focus-ring: #4338ca; /* UXA11Y-002 : contraste AA sur les fonds clairs */
   --grad-primary-hover: linear-gradient(135deg, #b45309, #9a3412);
   --grad-title: linear-gradient(90deg, #d97706, #ea580c);
   --shadow-card: 0 12px 28px -8px rgba(15, 23, 42, .12);
@@ -141,13 +143,21 @@
     background-image: var(--page-bg-image);
   }
 
-  /* Global Accessibility Focus Rings */
+  /* UXA11Y-002 — repère de focus clavier global.
+     Outline et non `ring` : l'anneau Tailwind passe par box-shadow, et tout
+     composant qui pose sa propre ombre l'écrase silencieusement. C'était le cas
+     de `.v2-nav-item.act` (lueur indigo de l'état actif), qui ne montrait donc
+     aucun focus au clavier. Un outline ne peut pas entrer en conflit avec une
+     ombre, et l'offset suit le thème au lieu d'être figé sur slate-900. */
   button:focus-visible,
   a:focus-visible,
   input:focus-visible,
   select:focus-visible,
-  textarea:focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-slate-900 transition-shadow;
+  textarea:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: inherit;
   }
 }
 
