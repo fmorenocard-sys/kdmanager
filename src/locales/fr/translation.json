@@ -447,6 +447,18 @@
     "warn_fuzzy_rate": "Tu es dans la zone où Bon et Excellent se chevauchaient la saison dernière — le statut peut être arbitré à la main.",
     "footnote": "Barème interne 2997, indexé sur la puissance. Sans rapport avec le DKP de course de la coalition.",
     "link_governor": "Lie ton ID de gouverneur dans ton profil pour voir tes objectifs.",
-    "not_found": "L'ID {{id}} n'apparaît pas encore dans les données du royaume."
+    "not_found": "L'ID {{id}} n'apparaît pas encore dans les données du royaume.",
+    "campaign_label": "Campagne",
+    "search": "Rechercher un joueur",
+    "search_placeholder": "Nom ou ID de gouverneur…",
+    "declared_count": "{{count}} déclaration(s)",
+    "player": "Joueur",
+    "attainment": "Atteint",
+    "empty_campaign": "Personne n'a encore déclaré ses disponibilités pour cette campagne.",
+    "empty_self": "Tu n'as pas encore déclaré tes disponibilités pour cette campagne — remplis le formulaire pour voir ton objectif.",
+    "login_required": "Connecte-toi pour voir les objectifs de campagne.",
+    "load_error": "Impossible de charger les déclarations.",
+    "warn_missing_power": "{{count}} joueur(s) sans puissance connue : leur objectif ne peut pas être calculé tant que la synchro n'a pas remonté leur profil.",
+    "dead_points_note": "Les morts sont comptées en points (~{{points}} par mort T5) : une part de T4 coûte davantage de troupes pour le même total."
   }
 }

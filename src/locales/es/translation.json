@@ -447,6 +447,18 @@
     "warn_fuzzy_rate": "You are in the band where Good and Excellent overlapped last season — the status may be set by hand.",
     "footnote": "Internal 2997 scale, indexed on power. Unrelated to the coalition race DKP.",
     "link_governor": "Link your governor ID in your profile to see your goals.",
-    "not_found": "ID {{id}} does not appear in the kingdom data yet."
+    "not_found": "ID {{id}} does not appear in the kingdom data yet.",
+    "campaign_label": "Campaign",
+    "search": "Search a player",
+    "search_placeholder": "Name or governor ID…",
+    "declared_count": "{{count}} declaration(s)",
+    "player": "Player",
+    "attainment": "Reached",
+    "empty_campaign": "Nobody has declared availability for this campaign yet.",
+    "empty_self": "You have not declared availability for this campaign yet — fill the form to see your target.",
+    "login_required": "Log in to see campaign goals.",
+    "load_error": "Could not load declarations.",
+    "warn_missing_power": "{{count}} player(s) with unknown power: their target cannot be computed until the sync picks up their profile.",
+    "dead_points_note": "Deads are counted in points (~{{points}} per T5 dead): losing T4s costs more troops for the same total."
   }
 }
