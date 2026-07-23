@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useRole, ROLES } from '../context/RoleContext';
 import AvailabilityForm from '../components/war/AvailabilityForm';
 import WarDashboard from '../components/war/WarDashboard';
-import { Shield, Swords, LayoutDashboard } from '../components/ui/icons';
+import KvkGoalsPanel from '../components/war/KvkGoalsPanel';
+import { Shield, Swords, LayoutDashboard, Target } from '../components/ui/icons';
 
 import PageHeader from '../components/ui/PageHeader';
 
@@ -19,6 +20,9 @@ const WarTrackerPage = () => {
 
     const tabs = [
         { id: 'declaration', label: t('war.declaration_form'), icon: Swords },
+        // F-014 / US-009 : les objectifs vivent ici, au moment où le joueur déclare
+        // ses troupes — c'est là qu'il se demande ce qu'on attend de lui.
+        { id: 'goals', label: t('goals.tab_label'), icon: Target },
         ...(showDashboard ? [{ id: 'dashboard', label: t('war.dashboard_title'), icon: LayoutDashboard }] : [])
     ];
 
@@ -54,6 +58,12 @@ const WarTrackerPage = () => {
                 {activeTab === 'declaration' && (
                     <div className="animate-in fade-in duration-300">
                         <AvailabilityForm />
+                    </div>
+                )}
+
+                {activeTab === 'goals' && (
+                    <div className="animate-in fade-in duration-300">
+                        <KvkGoalsPanel />
                     </div>
                 )}
 

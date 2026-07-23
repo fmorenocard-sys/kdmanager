@@ -423,5 +423,30 @@
     "helps": "Aides",
     "city_hall": "Niveau Hôtel de Ville",
     "no_alliance": "Sans alliance"
+  },
+  "goals": {
+    "tab_label": "Objectifs",
+    "reference_power": "Puissance de référence",
+    "power_from_campaign": "Puissance de début de campagne — elle ne bouge plus une fois le KvK lancé.",
+    "power_from_profile": "Puissance actuelle du profil, faute de données de campagne.",
+    "status": "Statut",
+    "goal_attainment": "{{pct}} % de l'objectif KP",
+    "min_kp": "KP minimum",
+    "min_kp_hint": "En dessous, tu es sous le seuil attendu.",
+    "goal_kp": "Objectif KP",
+    "goal_kp_hint": "C'est lui qui détermine ton statut.",
+    "min_dead": "Morts minimum",
+    "dead_points_unit": "M pts",
+    "min_dead_hint": "≈ {{troops}} k troupes T5 ({{points}} pts par mort T5). Davantage si tu perds des T4.",
+    "rate_excellent": "Excellent",
+    "rate_good": "Bon",
+    "rate_need_improvement": "Peut mieux faire",
+    "rate_dead_weight": "Deadweight",
+    "warn_out_of_domain": "Ta puissance est sous le seuil de fiabilité du barème : ces chiffres sont indicatifs.",
+    "warn_extrapolated": "Ta puissance sort de la plage observée la saison dernière : chiffres extrapolés.",
+    "warn_fuzzy_rate": "Tu es dans la zone où Bon et Excellent se chevauchaient la saison dernière — le statut peut être arbitré à la main.",
+    "footnote": "Barème interne 2997, indexé sur la puissance. Sans rapport avec le DKP de course de la coalition.",
+    "link_governor": "Lie ton ID de gouverneur dans ton profil pour voir tes objectifs.",
+    "not_found": "L'ID {{id}} n'apparaît pas encore dans les données du royaume."
   }
 }

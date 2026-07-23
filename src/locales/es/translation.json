@@ -423,5 +423,30 @@
     "helps": "Ayudas",
     "city_hall": "Nivel de ayuntamiento",
     "no_alliance": "Sin alianza"
+  },
+  "goals": {
+    "tab_label": "Goals",
+    "reference_power": "Reference power",
+    "power_from_campaign": "Power at campaign start — it no longer moves once the KvK is running.",
+    "power_from_profile": "Current profile power, for lack of campaign data.",
+    "status": "Status",
+    "goal_attainment": "{{pct}} % of KP goal",
+    "min_kp": "Minimum KP",
+    "min_kp_hint": "Below this you are under the expected threshold.",
+    "goal_kp": "KP goal",
+    "goal_kp_hint": "This is what drives your status.",
+    "min_dead": "Minimum deads",
+    "dead_points_unit": "M pts",
+    "min_dead_hint": "≈ {{troops}}k T5 troops ({{points}} pts per T5 dead). More if you lose T4s.",
+    "rate_excellent": "Excellent",
+    "rate_good": "Good",
+    "rate_need_improvement": "Need improvement",
+    "rate_dead_weight": "Deadweight",
+    "warn_out_of_domain": "Your power is below the scale's reliable range: these figures are indicative.",
+    "warn_extrapolated": "Your power is outside last season's observed range: figures are extrapolated.",
+    "warn_fuzzy_rate": "You are in the band where Good and Excellent overlapped last season — the status may be set by hand.",
+    "footnote": "Internal 2997 scale, indexed on power. Unrelated to the coalition race DKP.",
+    "link_governor": "Link your governor ID in your profile to see your goals.",
+    "not_found": "ID {{id}} does not appear in the kingdom data yet."
   }
 }

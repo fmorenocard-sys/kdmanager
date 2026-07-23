@@ -1,5 +1,7 @@
 import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
+
+import {computeKvkGoals, rateFromGoalPct, DEAD_POINTS_PER_T5} from "./kvkGoals.js";
 import { getFirestore } from "firebase-admin/firestore";
 import { defineSecret } from "firebase-functions/params";
 import nacl from "tweetnacl";
@@ -282,6 +284,102 @@ function buildPlayerNotFoundEmbed(governorId) {
         title: "⚠️ Player Not Found",
         description: `Your Governor ID \`${governorId}\` is linked to your account, but does not appear in the database yet.\n\nData is synced from Google Sheets. Make sure your profile is in the Top 300 or contact an officer.`,
         footer: { text: "KD 2997 — Kingdom Manager" },
+    };
+}
+
+/**
+ * Build the /mykvkgoals embed — F-014 / US-009.
+ *
+ * Affiche le statut ABSOLU (seuils fixes sur le taux d'atteinte du KP Goal) et non
+ * la note relative de fin de campagne : un objectif qui dépendrait des performances
+ * des autres n'aiderait personne à savoir quoi faire aujourd'hui.
+ *
+ * @param {string} discordId identifiant Discord de l'appelant
+ * @param {object} db Firestore
+ * @return {Promise<object>} réponse d'interaction
+ */
+async function buildMyKvKGoalsEmbed(discordId, db) {
+    const profile = await resolvePlayer(discordId, db);
+    if (!profile) return {embeds: [buildAccessDeniedEmbed()], flags: 64};
+
+    const {governorId} = profile;
+    const [{player, updatedAt: playerUpdatedAt}, {kvk, updatedAt: kvkUpdatedAt}] = await Promise.all([
+        loadPlayerData(governorId, db),
+        loadKvKData(governorId, db),
+    ]);
+
+    if (!player && !kvk) return {embeds: [buildPlayerNotFoundEmbed(governorId)], flags: 64};
+
+    // Puissance de début de campagne : le barème est calé dessus, et elle ne bouge
+    // plus une fois le KvK lancé — sinon l'objectif baisserait à mesure des pertes.
+    const power = kvk?.initialPower || player?.power || 0;
+    const goals = computeKvkGoals(power);
+
+    const kpGained = kvk?.totalKpGained ?? null;
+    const goalPct = (kpGained !== null && goals.goalKp > 0) ?
+        kpGained / (goals.goalKp * 1e6) :
+        null;
+    const {rate, uncertain} = rateFromGoalPct(goalPct);
+
+    const RATE_COLORS = {
+        "Excellent": 0x10b981,
+        "Good": 0x6366f1,
+        "Need Improvement": 0xf59e0b,
+        "Dead Weight": 0xef4444,
+    };
+
+    const fields = [
+        {
+            name: "🎯 YOUR TARGETS",
+            value: [
+                `**Minimum KP**  •  \`${goals.minKp.toFixed(1)}M\``,
+                `**KP Goal**  •  \`${goals.goalKp.toFixed(1)}M\``,
+                `**Minimum deads**  •  \`${goals.minDead.toFixed(1)}M pts\`` +
+                    `  (≈ ${Math.round(goals.minDeadApproxTroops / 1000)}k T5 troops)`,
+            ].join("\n"),
+            inline: false,
+        },
+    ];
+
+    if (goalPct !== null) {
+        fields.push({
+            name: "📊 WHERE YOU STAND",
+            value: [
+                `**KP gained**  •  \`${fmt(kpGained)}\``,
+                `**Goal reached**  •  \`${(goalPct * 100).toFixed(0)}%\``,
+                rate ? `**Status**  •  \`${rate}\`` : null,
+            ].filter(Boolean).join("\n"),
+            inline: false,
+        });
+    } else {
+        fields.push({
+            name: "📊 WHERE YOU STAND",
+            value: "No campaign data yet — targets only.",
+            inline: false,
+        });
+    }
+
+    const notes = [];
+    if (goals.outOfDomain) {
+        notes.push("⚠️ Your power is below the scale's reliable range — figures are indicative.");
+    } else if (goals.outsideValidatedRange) {
+        notes.push("⚠️ Your power is outside last season's observed range — figures are extrapolated.");
+    }
+    if (uncertain) {
+        notes.push("⚠️ You are in the band where Good and Excellent overlapped last season.");
+    }
+    notes.push(`ℹ️ Deads are counted in points (~${DEAD_POINTS_PER_T5} per T5 dead). Losing T4s costs more troops for the same points.`);
+    fields.push({name: "​", value: notes.join("\n"), inline: false});
+
+    return {
+        embeds: [{
+            color: RATE_COLORS[rate] || 0x94a3b8,
+            title: "🎯 Your KvK Goals",
+            description: `Governor \`${governorId}\`  •  reference power \`${goals.powerM.toFixed(1)}M\``,
+            fields,
+            footer: {text: dataFooter([["players", playerUpdatedAt], ["kvk", kvkUpdatedAt]])},
+        }],
+        flags: 64,
     };
 }
 
@@ -615,6 +713,8 @@ export const discordInteractionHandler = onRequest(
 
                 if (commandName === "mystats") {
                     responseData = await buildMyStatsEmbed(discordId, db);
+                } else if (commandName === "mykvkgoals") {
+                    responseData = await buildMyKvKGoalsEmbed(discordId, db);
                 } else if (commandName === "mykvk") {
                     // US-014: optional "campaign" option targets an archived KvK
                     const campaignOpt = (body.data?.options || []).find((o) => o.name === "campaign");

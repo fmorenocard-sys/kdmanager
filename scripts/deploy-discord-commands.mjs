@@ -33,6 +33,10 @@ const commands = [
         description: "View your complete KD 2997 stats (Power, KP, Combat, Economy, last KvK)",
     },
     {
+        name: "mykvkgoals",
+        description: "View your individual KvK targets (Minimum KP, KP Goal, deads) and your status (US-009)",
+    },
+    {
         name: "mykvk",
         description: "View your KvK performance — current campaign or a past one (US-014)",
         options: [
