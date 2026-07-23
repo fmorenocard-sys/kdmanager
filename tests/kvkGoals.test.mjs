@@ -10,7 +10,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { computeKvkGoals, minDkpRatio, resolveReqDkp, DOMAIN_MIN_MPOWER } from '../src/lib/kvkGoals.js';
+import { computeKvkGoals, minDkpRatio, resolveReqDkp, DOMAIN_MIN_MPOWER, DEAD_POINTS_PER_T5 } from '../src/lib/kvkGoals.js';
 
 // Lord Guineapig — SoC 4, le joueur affiché sur l'onglet Dashboard du classeur.
 const GUINEAPIG = {
@@ -76,8 +76,16 @@ describe('garde-fous numériques', () => {
         assert.equal(computeKvkGoals(80e6).outsideValidatedRange, false);
     });
 
-    it('marque toujours les morts comme non vérifiées', () => {
-        assert.equal(computeKvkGoals(80e6).minDeadUnverified, true);
+    it('reproduit le % Min Dead du classeur (morts en points, pas en têtes)', () => {
+        // Lord Guineapig : 3 262 800 morts, % Min Dead affiché 2,4212
+        const g = computeKvkGoals(GUINEAPIG.initialPower);
+        const pct = (3262800 * DEAD_POINTS_PER_T5) / (g.minDead * 1e6);
+        closeTo(pct, 2.4212, 0.001, '% Min Dead');
+    });
+
+    it('convertit les points de morts en ordre de grandeur de troupes', () => {
+        const g = computeKvkGoals(GUINEAPIG.initialPower);
+        closeTo(g.minDeadApproxTroops, 1347700, 0.01, 'morts approximatives');
     });
 
     it('applique le plafond de puissance quand il est fourni', () => {

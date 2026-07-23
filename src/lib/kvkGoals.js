@@ -12,7 +12,7 @@
  *   - P est la puissance **initiale**, en millions ;
  *   - la sortie KP est en **millions** de KP.
  *
- * `minDead` en revanche **ne se vérifie pas** — voir la note sur DEAD_FORMULA_UNVERIFIED.
+ * `minDead` est validée aussi, mais son unité surprend — voir DEAD_POINTS_PER_T5.
  *
  * Domaine interne 2997 (BR-010) : ce DKP n'a rien à voir avec le DKP de course
  * de la coalition. Les deux ne doivent jamais être présentés côte à côte.
@@ -42,19 +42,33 @@ export const DOMAIN_MIN_MPOWER = 16.44;
 export const VALIDATED_RANGE_MPOWER = { min: 36.7, max: 119.9 };
 
 /**
- * `minDead` n'est pas fiable et ne doit pas être présenté comme une exigence ferme.
+ * `minDead` ne renvoie **pas un nombre de morts** mais des « points de morts »,
+ * en millions. C'est ce qui rendait la formule incompréhensible au premier abord :
+ * 269,5 pour un joueur de 118 M semble absurde comparé à ses 3,26 M de morts
+ * réelles, jusqu'à voir que le classeur compte ~200 points par mort T5.
  *
- * Les deux onglets du classeur SoC 4 se contredisent d'un facteur 200 :
- *   - Dashboard, « Dead Minimal Requirement » : 269,5 M pour un joueur de 118 M —
- *     c'est exactement la formule documentée, mais 269 millions de morts est
- *     impossible (le joueur en compte 3,26 M au total sur toute la campagne) ;
- *   - Performance Analysis, `morts / % Min Dead` : 1,35 M pour le même joueur —
- *     plausible, et cohérent avec un ratio réalisé de 2,42.
- * De plus les exigences reconstituées sont bruitées : à 71,2 M de puissance on
- * trouve 580 484 et 516 001 pour deux joueurs, signe d'ajustements manuels.
- * Un ajustement quadratique sur les 45 points donne 197 % d'erreur maximale.
+ * Vérifié sur le classeur SoC 4 : `% Min Dead = (morts × 200) / (minDead(P) × 1e6)`
+ * reproduit la colonne du classeur à **0,00 %** près pour 17 des 45 joueurs.
+ * Les 28 autres s'écartent toujours dans le même sens — la formule surestime —
+ * ce qui est cohérent avec des morts T4 valant moins de points que les T5 :
+ * l'écart est d'autant plus grand que la part de T4 est forte. Le classeur ne
+ * donne pas la répartition T4/T5 des morts, donc ce poids reste inconnu.
+ *
+ * Conséquence pratique : convertir en nombre de morts n'est exact que pour un
+ * joueur 100 % T5. `deadPointsToApproxTroops` le fait avec cette réserve.
  */
-export const DEAD_FORMULA_UNVERIFIED = true;
+export const DEAD_POINTS_PER_T5 = 200;
+
+/**
+ * Convertit une exigence en points de morts vers un ordre de grandeur en troupes.
+ * **Approximation** : exacte seulement si toutes les morts sont T5. Un joueur avec
+ * une part de T4 devra en réalité davantage de troupes pour le même nombre de points.
+ * @param {number} deadPointsM points de morts, en millions
+ * @returns {number} nombre de morts approximatif
+ */
+export function deadPointsToApproxTroops(deadPointsM) {
+    return (deadPointsM * 1e6) / DEAD_POINTS_PER_T5;
+}
 
 const rawMinKp = (P) => 0.0556843 * P * P - 1.83037 * P + 38.477;
 const rawMinDead = (P) => 0.5 * (0.0216159 * P * P + 3.06256 * P - 123.036);
@@ -118,11 +132,10 @@ export function computeKvkGoals(power, opts = {}) {
         // KP en millions — unité confirmée contre le classeur SoC 4.
         minKp,
         goalKp,
-        // Morts : formule non vérifiable, voir DEAD_FORMULA_UNVERIFIED. Renvoyée
-        // pour ne pas perdre l'information, mais accompagnée de son drapeau afin
-        // que l'appelant ne l'affiche pas comme une exigence ferme.
+        // Morts : en millions de POINTS de morts, pas en têtes (voir DEAD_POINTS_PER_T5).
         minDead,
-        minDeadUnverified: DEAD_FORMULA_UNVERIFIED,
+        // Ordre de grandeur en troupes, exact seulement pour un joueur 100 % T5.
+        minDeadApproxTroops: deadPointsToApproxTroops(minDead),
         // Hors de la plage réellement observée : le chiffre est une extrapolation.
         outsideValidatedRange: rawP > 0 && (rawP < VALIDATED_RANGE_MPOWER.min || rawP > VALIDATED_RANGE_MPOWER.max),
 
