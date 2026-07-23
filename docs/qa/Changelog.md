@@ -1,5 +1,26 @@
 # QA Changelog
 
+## v2.32 - 2026-07-22 — F-014 / US-009 : objectifs KvK, et A-005 résolue après quatre mois
+
+### Added
+- **Onglet « Objectifs » du War Tracker** — vue **de campagne** : tous les joueurs ayant déclaré leurs disponibilités, avec KP minimum, objectif KP, morts minimum et statut. Placé entre Déclaration et Dashboard, là où un joueur se demande ce qu'on attend de lui. Le leadership voit toute la campagne (recherche + tri par colonne) ; un joueur sans rôle ne voit que sa propre ligne, ces objectifs étant nominatifs. Cartes en mobile.
+- **Commande Discord `/mykvkgoals`** — personnelle et éphémère : les cibles du joueur qui la tape, avec son taux d'atteinte et son statut. Enregistrée en portée guilde (disponible immédiatement).
+- **`src/lib/kvkGoals.js` et `src/lib/kvkScoring.js`** — calcul des objectifs et notation, avec `functions/kvkGoals.js` en miroir pour le bot. 26 tests, dont un **test de parité** balayant 400 puissances et 250 taux d'atteinte : `functions/` ne pouvant pas importer depuis `src/`, il garantit qu'une correction appliquée d'un seul côté ne passe pas inaperçue.
+
+### Resolved — A-005, ouverte depuis le 2026-03-18
+Rétro-ingénierie du classeur SoC 4 sur suggestion du Roi. L'onglet « Performance Analysis » ne donne pas les exigences mais les **ratios réalisés** : les reconstituer par division les révèle.
+- **Min KP et KP Goal sont exactes** — rapport réel/formule de **1,0000** sur les 45 joueurs, confirmé au joueur près par l'onglet Dashboard. Deux ambiguïtés de l'étude tombent : `P` est la puissance **initiale** en millions, la sortie KP est en **millions de KP**.
+- **Min Dead est exacte aussi**, mais sa sortie est en **points de morts** (~200 par mort T5), pas en têtes. D'où l'apparente absurdité — 269,5 M pour un joueur comptant 3,26 M de morts. `(morts × 200) / (minDead(P) × 1e6)` reproduit la colonne `% Min Dead` à **0,00 %** près. Le poids des morts T4 reste inconnu, le classeur ne donnant pas la répartition.
+- **Le « Required DKP » n'existe pas.** Confirmé par le Roi : le « statut DKP » **est** le taux d'atteinte du KP Goal, et le `DKP STATUS` du Dashboard est au chiffre près le `% Goal` de Performance Analysis.
+- **Seuils de notation** relevés sur les 47 joueurs notés : Dead Weight 0-15 %, Need Improvement 17-25 %, Good 29-64 %, Excellent 56-201 %. Les bornes basses sont nettes ; la frontière Good/Excellent ne l'est pas — entre 56 % et 64 %, huit joueurs se répartissent dans les deux catégories sans règle apparente. 60 % retenu, zone signalée par un drapeau.
+- Les **morts ne discriminent pas** les catégories (recouvrement total) : la note est pilotée par le KP seul.
+
+### Notes
+- **Garde-fous mesurés** sur les courbes brutes : morts négatives sous 32,7 M, KP Goal négatif sous 14,5 M, et `minKp` non monotone sous 16,44 M — un joueur de 5 M devrait davantage qu'un joueur de 20 M. Plafonnement à zéro et gel au sommet, avec signalement des puissances hors de la plage réellement observée (36,7 – 119,9 M).
+- **Deux décisions de fond** : la puissance de référence est celle du **début de campagne** (sinon l'objectif baisserait à mesure des pertes), et le statut affiché est **absolu** et non la note relative de fin de campagne (qui ferait dépendre l'objectif d'un joueur des résultats des autres).
+- **Rattachement déclaration → joueur par ID de gouverneur**, comparé en chaîne des deux côtés (saisi en texte, stocké en nombre). Dédoublonnage quand un même gouverneur a déclaré en invité puis connecté. Les joueurs non rattachés sont **nommés** avec leur cause probable, un compteur seul n'étant pas actionnable. Mesuré en prod : 2 seulement.
+- i18n : 35 clés, fr et en traduits, 7 locales en repli anglais.
+
 ## v2.31 - 2026-07-22 — Accessibilité et responsive, sur mesure et non sur intuition
 
 ### Fixed
