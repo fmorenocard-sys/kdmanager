@@ -132,3 +132,56 @@ describe('paliers et Req DKP', () => {
         assert.equal(resolveReqDkp(null, 80), null);
     });
 });
+
+// ---------------------------------------------------------------------------
+// Notation (kvkScoring) — valeurs de référence relevées sur les 47 joueurs notés
+// de SoC 4 : Dead Weight 0–15 %, Need Improvement 17–25 %, Good 29–64 %,
+// Excellent 56–201 %.
+// ---------------------------------------------------------------------------
+
+import { rateFromGoalPct, scaleTo10, RATES, EXCELLENT_FUZZY_BAND } from '../src/lib/kvkScoring.js';
+
+describe('notation — statut absolu depuis le taux d\'atteinte du KP Goal', () => {
+
+    it('reproduit les catégories observées dans le classeur', () => {
+        assert.equal(rateFromGoalPct(0.00).rate, RATES.DEADWEIGHT);
+        assert.equal(rateFromGoalPct(0.14).rate, RATES.DEADWEIGHT);
+        assert.equal(rateFromGoalPct(0.17).rate, RATES.NEED_IMPROVEMENT);
+        assert.equal(rateFromGoalPct(0.25).rate, RATES.GOOD);
+        assert.equal(rateFromGoalPct(0.29).rate, RATES.GOOD);
+        assert.equal(rateFromGoalPct(1.00).rate, RATES.EXCELLENT);
+        assert.equal(rateFromGoalPct(2.01).rate, RATES.EXCELLENT);
+    });
+
+    it('signale la zone où le classement d\'origine était contradictoire', () => {
+        assert.equal(rateFromGoalPct(0.58).uncertain, true);
+        assert.equal(rateFromGoalPct(0.64).uncertain, true);
+        assert.equal(rateFromGoalPct(0.40).uncertain, false);
+        assert.equal(rateFromGoalPct(0.90).uncertain, false);
+    });
+
+    it('la zone floue encadre bien la frontière Good/Excellent', () => {
+        assert.ok(EXCELLENT_FUZZY_BAND.from < 0.60 && EXCELLENT_FUZZY_BAND.to > 0.60);
+    });
+
+    it('ne classe pas une valeur non numérique', () => {
+        assert.equal(rateFromGoalPct(null).rate, null);
+        assert.equal(rateFromGoalPct(undefined).rate, null);
+    });
+});
+
+describe('notation — rescaling 1 → 10 du royaume', () => {
+
+    it('place le minimum de la cohorte à 1', () => {
+        closeTo(scaleTo10(2, 2, 20), 1, 1e-9, 'minimum');
+    });
+
+    it('laisse de la marge en haut grâce au maximum à 110 %', () => {
+        const top = scaleTo10(20, 2, 20);
+        assert.ok(top > 8 && top < 10, `le meilleur joueur doit approcher 9, pas saturer à 10 (${top})`);
+    });
+
+    it('refuse une cohorte dégénérée', () => {
+        assert.equal(scaleTo10(5, 0, 0), null);
+    });
+});
