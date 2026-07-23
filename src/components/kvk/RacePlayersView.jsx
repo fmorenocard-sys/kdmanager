@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
+import SortHead from '../ui/SortHead';
 import { useData } from '../../context/DataContext';
-import { ChevronDown, ChevronUp, Search } from '../ui/icons';
+import { sortRows, nextSort } from '../../lib/sortRows';
+import { Search } from '../ui/icons';
 
 // F-020 / US-019 — vue « Joueurs » de la course : top 200 du scan courant, recherche,
 // tri par colonne, et croisement avec les profils 2997 (badge « membre »).
@@ -64,26 +66,10 @@ const RacePlayersView = ({ players, pinned = [], labels = {}, roleClass, roles =
                 || String(p.kingdom || '').includes(q);
         });
 
-        const { key, dir } = sort;
-        const factor = dir === 'asc' ? 1 : -1;
-        return [...filtered].sort((a, b) => {
-            const va = a[key];
-            const vb = b[key];
-            if (va == null && vb == null) return 0;
-            if (va == null) return 1;   // les valeurs manquantes finissent toujours en bas
-            if (vb == null) return -1;
-            if (typeof va === 'string' || typeof vb === 'string') {
-                return String(va).localeCompare(String(vb)) * factor;
-            }
-            return (va - vb) * factor;
-        });
+        return sortRows(filtered, sort);
     }, [players, search, sort, onlyOurs, memberIds]);
 
-    const toggleSort = (key) => {
-        setSort((prev) => prev.key === key
-            ? { key, dir: prev.dir === 'desc' ? 'asc' : 'desc' }
-            : { key, dir: 'desc' });
-    };
+    const toggleSort = (key) => setSort((prev) => nextSort(prev, key));
 
     const memberCount = useMemo(() => rows.filter((p) => p.isMember).length, [rows]);
 
@@ -168,29 +154,18 @@ const RacePlayersView = ({ players, pinned = [], labels = {}, roleClass, roles =
                 <Table>
                     <TableHeader className="bg-slate-900/80 sticky top-0 z-10">
                         <TableRow>
-                            {COLUMNS.map((col) => {
-                                const active = sort.key === col.key;
-                                const alignClass = col.align === 'end' ? 'text-right' : col.align === 'center' ? 'text-center' : '';
-                                if (!col.sortable) {
-                                    return <TableHead key={col.key} className={`w-12 text-xs ${alignClass}`}>#</TableHead>;
-                                }
-                                return (
-                                    <TableHead key={col.key} className={`text-xs ${alignClass}`}>
-                                        <button
-                                            type="button"
-                                            onClick={() => toggleSort(col.key)}
-                                            aria-label={t(col.labelKey)}
-                                            className={`inline-flex items-center gap-1 hover:text-white transition-colors ${active ? 'text-white' : ''}`}
-                                        >
-                                            {t(col.labelKey)}
-                                            {/* UXA11Y-004 : l'icône de tri reste visible sans survol */}
-                                            {active
-                                                ? (sort.dir === 'desc' ? <ChevronDown size={12} weight="fill" /> : <ChevronUp size={12} weight="fill" />)
-                                                : <ChevronDown size={12} className="opacity-40" />}
-                                        </button>
-                                    </TableHead>
-                                );
-                            })}
+                            {COLUMNS.map((col) => (col.sortable ? (
+                                <SortHead
+                                    key={col.key}
+                                    label={t(col.labelKey)}
+                                    sortKey={col.key}
+                                    sort={sort}
+                                    onSort={toggleSort}
+                                    align={col.align}
+                                />
+                            ) : (
+                                <TableHead key={col.key} className="w-12 text-xs text-center">#</TableHead>
+                            )))}
                         </TableRow>
                     </TableHeader>
                     <TableBody>

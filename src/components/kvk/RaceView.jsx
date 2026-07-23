@@ -5,6 +5,8 @@ import { functions } from '../../config/firebase';
 import { useRole, ROLES } from '../../context/RoleContext';
 import { useRaceData } from '../../hooks/useRaceData';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
+import SortHead from '../ui/SortHead';
+import { sortRows, nextSort } from '../../lib/sortRows';
 import RacePlayersView from './RacePlayersView';
 import RaceEfficiencyView from './RaceEfficiencyView';
 import { Trophy, Users, History, TrendingUp, TrendingDown, Upload, CheckCircle2, AlertTriangle } from '../ui/icons';
@@ -35,6 +37,7 @@ const RaceView = () => {
     const [campaignId, setCampaignId] = useState(null);
     const [scanSeq, setScanSeq] = useState(null);
     const [rankView, setRankView] = useState('kingdoms'); // F-020 : classement royaumes ou joueurs
+    const [kSort, setKSort] = useState({ key: 'dkp_net', dir: 'desc' });
     const fileRef = useRef(null);
     const [uploadState, setUploadState] = useState(null); // {type:'ok'|'err', text}
     const [uploading, setUploading] = useState(false);
@@ -60,12 +63,17 @@ const RaceView = () => {
     );
 
     const kingdoms = useMemo(() => {
+        // Le rang reste celui du DKP : c'est le classement de la course, il ne doit
+        // pas se renuméroter parce qu'on regarde la colonne des morts.
         const list = [...(campaign?.kingdomsBySeq?.[scan?.seq] || [])]
             .sort((a, b) => (b.dkp_net ?? 0) - (a.dkp_net ?? 0))
-            .map((k, i) => ({ ...k, rank: i + 1 }));
-        return [...list.filter((k) => pinned.includes(Number(k.kingdom))),
-            ...list.filter((k) => !pinned.includes(Number(k.kingdom)))];
-    }, [campaign, scan, pinned]);
+            .map((k, i) => ({ ...k, rank: i + 1, campLabel: labels[k.camp] || `Camp ${k.camp}` }));
+        // Le tri s'applique à l'intérieur des groupes : nos royaumes épinglés
+        // restent en tête quelle que soit la colonne (décision M1).
+        const sorted = sortRows(list, kSort);
+        return [...sorted.filter((k) => pinned.includes(Number(k.kingdom))),
+            ...sorted.filter((k) => !pinned.includes(Number(k.kingdom)))];
+    }, [campaign, scan, pinned, labels, kSort]);
 
     // F-020 / US-019 — top joueurs du scan courant, déjà pré-agrégé par la Function.
     const players = useMemo(
@@ -334,14 +342,25 @@ const RaceView = () => {
                         <TableHeader className="bg-slate-900/80 sticky top-0 z-10">
                             <TableRow>
                                 <TableHead className="w-12 text-xs text-center">#</TableHead>
-                                <TableHead className="text-xs">KD</TableHead>
-                                <TableHead className="text-xs">{t('kvk_race.camps_title')}</TableHead>
-                                <TableHead className="text-xs text-right">{t('kvk_race.dkp_col')}</TableHead>
-                                <TableHead className="text-xs text-right">{t('kvk_race.kp_col')}</TableHead>
-                                <TableHead className="text-xs text-right">{t('kvk_race.deads_col')}</TableHead>
-                                <TableHead className="text-xs text-right">{t('kvk_race.t4_col')}</TableHead>
-                                <TableHead className="text-xs text-right">{t('kvk_race.t5_col')}</TableHead>
-                                <TableHead className="text-xs text-right">{t('kvk_race.coverage')}</TableHead>
+                                {[
+                                    { key: 'kingdom', label: 'KD', align: 'start' },
+                                    { key: 'campLabel', label: t('kvk_race.camps_title'), align: 'start' },
+                                    { key: 'dkp_net', label: t('kvk_race.dkp_col'), align: 'end' },
+                                    { key: 'net_kill_points_diff', label: t('kvk_race.kp_col'), align: 'end' },
+                                    { key: 'net_dead_diff', label: t('kvk_race.deads_col'), align: 'end' },
+                                    { key: 'net_kills_iv_diff', label: t('kvk_race.t4_col'), align: 'end' },
+                                    { key: 'net_kills_v_diff', label: t('kvk_race.t5_col'), align: 'end' },
+                                    { key: 'coverage', label: t('kvk_race.coverage'), align: 'end' }
+                                ].map((col) => (
+                                    <SortHead
+                                        key={col.key}
+                                        label={col.label}
+                                        sortKey={col.key}
+                                        sort={kSort}
+                                        onSort={(key) => setKSort((prev) => nextSort(prev, key))}
+                                        align={col.align}
+                                    />
+                                ))}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
