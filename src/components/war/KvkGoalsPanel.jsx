@@ -153,6 +153,9 @@ const KvkGoalsPanel = () => {
                     minDead: goals.minDead,
                     minDeadTroops: goals.minDeadApproxTroops,
                     hasPower: power > 0,
+                    // L'ID est-il connu du royaume ? Sépare « ID introuvable » de
+                    // « joueur connu mais sans puissance remontée ».
+                    knownPlayer: !!kvk || powerById.has(gid),
                     outOfDomain: goals.outOfDomain,
                     kpGained,
                     goalPct,
@@ -173,7 +176,15 @@ const KvkGoalsPanel = () => {
         return sortRows(filtered, sort);
     }, [declarations, kvkId, statsById, powerById, governorId, isLeadership, search, sort]);
 
-    const missingPower = rows.filter((r) => !r.hasPower).length;
+    // Nommer les joueurs non rattachés : un simple compteur n'est pas actionnable,
+    // le Roi doit savoir quel ID vérifier. On distingue aussi les deux causes —
+    // l'ID ne correspond à personne (saisie erronée, ou joueur hors Top 300), ou il
+    // correspond mais la puissance est absente du profil.
+    const unresolved = useMemo(() => rows.filter((r) => !r.hasPower).map((r) => ({
+        name: r.name,
+        governorId: r.governorId,
+        cause: r.knownPlayer ? 'no_power' : 'unknown_id'
+    })), [rows]);
     const toggleSort = (key) => setSort((prev) => nextSort(prev, key));
 
     if (!currentUser) {
@@ -304,10 +315,20 @@ const KvkGoalsPanel = () => {
                 </Card>
             )}
 
-            {missingPower > 0 && (
+            {unresolved.length > 0 && (
                 <div className="flex items-start gap-2.5 text-xs text-amber-200/90 bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
                     <AlertTriangle size={16} className="shrink-0 mt-0.5 text-amber-400" />
-                    <p>{t('goals.warn_missing_power', { count: missingPower })}</p>
+                    <div className="min-w-0">
+                        <p className="mb-1.5">{t('goals.warn_missing_power', { count: unresolved.length })}</p>
+                        <ul className="flex flex-col gap-1">
+                            {unresolved.map((u) => (
+                                <li key={u.governorId} className="font-mono text-[11px] text-amber-100/80">
+                                    {u.name} — <span className="text-amber-300">{u.governorId || t('goals.no_governor_id')}</span>
+                                    <span className="text-amber-200/60 font-sans"> · {t(`goals.cause_${u.cause}`)}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             )}
 

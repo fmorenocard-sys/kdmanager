@@ -458,7 +458,10 @@
     "empty_self": "You have not declared availability for this campaign yet — fill the form to see your target.",
     "login_required": "Log in to see campaign goals.",
     "load_error": "Could not load declarations.",
-    "warn_missing_power": "{{count}} player(s) with unknown power: their target cannot be computed until the sync picks up their profile.",
-    "dead_points_note": "Deads are counted in points (~{{points}} per T5 dead): losing T4s costs more troops for the same total."
+    "warn_missing_power": "{{count}} player(s) with no computable target:",
+    "dead_points_note": "Deads are counted in points (~{{points}} per T5 dead): losing T4s costs more troops for the same total.",
+    "cause_unknown_id": "ID not found in kingdom data (typo, or player outside the Top 300)",
+    "cause_no_power": "player known, but no power picked up by the sync",
+    "no_governor_id": "no ID"
   }
 }

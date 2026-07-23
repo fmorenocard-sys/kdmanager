@@ -458,7 +458,10 @@
     "empty_self": "Tu n'as pas encore déclaré tes disponibilités pour cette campagne — remplis le formulaire pour voir ton objectif.",
     "login_required": "Connecte-toi pour voir les objectifs de campagne.",
     "load_error": "Impossible de charger les déclarations.",
-    "warn_missing_power": "{{count}} joueur(s) sans puissance connue : leur objectif ne peut pas être calculé tant que la synchro n'a pas remonté leur profil.",
-    "dead_points_note": "Les morts sont comptées en points (~{{points}} par mort T5) : une part de T4 coûte davantage de troupes pour le même total."
+    "warn_missing_power": "{{count}} joueur(s) sans objectif calculable :",
+    "dead_points_note": "Les morts sont comptées en points (~{{points}} par mort T5) : une part de T4 coûte davantage de troupes pour le même total.",
+    "cause_unknown_id": "ID introuvable dans les données du royaume (saisie erronée, ou joueur hors Top 300)",
+    "cause_no_power": "joueur connu, mais aucune puissance remontée par la synchro",
+    "no_governor_id": "aucun ID"
   }
 }
