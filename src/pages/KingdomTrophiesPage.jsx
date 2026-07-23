@@ -102,19 +102,21 @@ const KingdomTrophiesPage = () => {
             {/* Week Selector */}
             <Card className="p-3 flex justify-between items-center bg-white/5 backdrop-blur-sm border-white/10 mb-6">
                 <button
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors disabled:opacity-30"
+                    className="p-2 hover:bg-white/10 rounded-full transition-colors disabled:opacity-30 shrink-0"
                     disabled={selectedWeekIndex <= 0}
                     onClick={() => setSelectedWeekIndex(i => i - 1)}
                 >
                     <ChevronLeft size={20} />
                 </button>
 
-                <h2 className="text-lg font-bold text-center min-w-[200px] text-white">
+                {/* min-w-0 + truncate : un titre de semaine long poussait le bouton
+                    suivant hors du viewport à 375px (masqué par overflow-x-hidden) */}
+                <h2 className="text-lg font-bold text-center min-w-0 flex-1 truncate px-2 text-white">
                     {currentWeekData.title}
                 </h2>
 
                 <button
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors disabled:opacity-30"
+                    className="p-2 hover:bg-white/10 rounded-full transition-colors disabled:opacity-30 shrink-0"
                     disabled={selectedWeekIndex >= trophies.length - 1}
                     onClick={() => setSelectedWeekIndex(i => i + 1)}
                 >

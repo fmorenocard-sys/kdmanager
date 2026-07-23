@@ -1,5 +1,15 @@
 # QA Changelog
 
+## v2.31 - 2026-07-22 — Accessibilité et responsive, sur mesure et non sur intuition
+
+### Fixed
+- **UXA11Y-002 — focus clavier**. Le ticket disait « aucune indication de focus » ; la mesure en prod disait autre chose. Une règle `:focus-visible` globale existait et fonctionnait (anneau 4px slate-400 confirmé sur les boutons ordinaires). Deux défauts réels subsistaient : l'anneau Tailwind passe par `box-shadow`, donc **`.v2-nav-item.act`** — l'entrée de navigation active, sidebar et bottom nav — l'écrasait avec sa propre lueur indigo et n'affichait **rien** au clavier ; et l'offset était figé sur `ring-offset-slate-900`, faux en thème clair. Passage à un `outline`, qui ne peut pas entrer en conflit avec une ombre de composant, avec un token `--focus-ring` décliné par thème (`#a5b4fc` sombre, `#4338ca` clair). Vérifié au clavier sur staging dans les deux thèmes.
+- **UXA11Y-009 (nouveau) — deux débordements à 375px**, trouvés en vérifiant UXA11Y-001 et masqués par l'`overflow-x-hidden` du body, comme UXA11Y-008 : le `<select>` de campagne du hub KvK poussait la page à 399px (un `select` se dimensionne sur son option la plus large, et les titres de campagne archivée sont longs), et le titre de semaine des Trophées à 404px (`min-w-[200px]` sans `truncate`, poussant le bouton suivant hors cadre). La bottom nav mesurait elle aussi 399/404px : conséquence et non cause — elle s'étirait à la zone de scroll élargie. Après correctif, mesuré à 0 dépassement et `scrollWidth` exactement 375 sur `/`, `/kvk`, `/trophies`, `/bank`.
+
+### Notes
+- **UXA11Y-001 clos sans travail** : les vues en cartes mobiles ont été livrées entre-temps sur les quatre pages concernées. Mesuré à 375px : aucun `<table>` n'est rendu sur `/`, `/kvk`, `/bank`, `/trophies`, `/war-tracker`. Le ticket décrivait un état de l'app qui n'existe plus.
+- Trois tickets UX sur quatre examinés aujourd'hui étaient périmés en tout ou partie (UXA11Y-001, 002, 007). Les audits d'interface vieillissent vite : mieux vaut mesurer avant de corriger.
+
 ## v2.30 - 2026-07-22 — E-005 Phase 2 (F-020) en production
 
 ### Added

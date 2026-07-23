@@ -348,7 +348,7 @@ const KvKPerformancePage = () => {
 
                     {/* F-015: campaign selector */}
                     {historyCampaigns.length > 0 && (
-                        <div className="flex items-center gap-2 flex-wrap ms-auto">
+                        <div className="flex items-center gap-2 flex-wrap ms-auto w-full md:w-auto min-w-0">
                             <label htmlFor="kvk-campaign-select" className="text-sm text-slate-400 flex items-center gap-1.5">
                                 <History size={14} />
                                 {t('kvk_history.selector_label')}
@@ -357,7 +357,7 @@ const KvKPerformancePage = () => {
                                 id="kvk-campaign-select"
                                 value={selectedCampaign.docId}
                                 onChange={(e) => { setSelectedCampaignId(e.target.value); setStatusFilter([]); setSearchTerm(''); }}
-                                className="bg-slate-900/80 border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[44px]"
+                                className="bg-slate-900/80 border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[44px] w-full md:w-auto min-w-0 max-w-full"
                             >
                                 {!currentIsArchived && (
                                     <option value="current">{currentCampaign.title} — {t('kvk_history.current_badge')}</option>
