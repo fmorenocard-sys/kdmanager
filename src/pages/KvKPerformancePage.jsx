@@ -216,7 +216,9 @@ const KvKPerformancePage = () => {
     };
 
     const SortIcon = ({ columnKey }) => {
-        if (sortConfig.key !== columnKey) return <div className="w-4 h-4 opacity-40 xl:opacity-0 group-hover:opacity-60 transition-opacity ml-1"><ChevronDown size={14} /></div>;
+        {/* UXA11Y-004 : icône de tri visible sans survol, y compris en xl où elle
+            était masquée (opacity-0) — inutilisable au doigt et invisible au clavier. */}
+        if (sortConfig.key !== columnKey) return <div className="w-4 h-4 opacity-40 group-hover:opacity-70 transition-opacity ml-1"><ChevronDown size={14} /></div>;
         return sortConfig.direction === 'asc'
             ? <ChevronUp size={14} className="text-primary ml-1" />
             : <ChevronDown size={14} className="text-primary ml-1" />;

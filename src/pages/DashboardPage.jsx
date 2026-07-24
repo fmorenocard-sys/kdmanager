@@ -100,23 +100,29 @@ const DashboardPage = () => {
         }));
     };
 
+    // UXA11Y-002/004 : en-tête triable atteignable au clavier (vrai <button> +
+    // aria-sort) et dont l'icône reste visible sans survol — l'ancienne version
+    // posait le onClick sur la cellule (hors tabulation) et masquait l'icône
+    // jusqu'au survol (inutilisable au doigt).
     const renderSortHeader = (label, sortKey, align = 'right') => {
         const isActive = sortConfig.key === sortKey;
         return (
             <TableHead
-                className={`cursor-pointer hover:bg-white/5 hover:text-white transition-colors group select-none text-xs ${align === 'right' ? 'text-right' : 'text-left'}`}
-                onClick={() => handleSort(sortKey)}
+                className={`hover:bg-white/5 transition-colors group select-none text-xs ${align === 'right' ? 'text-right' : 'text-left'}`}
+                aria-sort={isActive ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
             >
-                <div className={`flex items-center gap-1 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
+                <button
+                    type="button"
+                    onClick={() => handleSort(sortKey)}
+                    className={`inline-flex items-center gap-1 hover:text-white transition-colors ${align === 'right' ? 'justify-end w-full' : 'justify-start'} ${isActive ? 'text-primary' : ''}`}
+                >
                     {label}
-                    <span className={`transition-colors ${isActive ? 'text-primary' : 'text-slate-600 group-hover:text-slate-400'}`}>
-                        {isActive ? (
-                            sortConfig.direction === 'desc' ? <ArrowDown size={14} /> : <ArrowUp size={14} />
-                        ) : (
-                            <ArrowUpDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                        )}
-                    </span>
-                </div>
+                    {isActive ? (
+                        sortConfig.direction === 'desc' ? <ArrowDown size={14} /> : <ArrowUp size={14} />
+                    ) : (
+                        <ArrowUpDown size={14} className="opacity-40 group-hover:opacity-70 transition-opacity" />
+                    )}
+                </button>
             </TableHead>
         );
     };

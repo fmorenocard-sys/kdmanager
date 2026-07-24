@@ -1,9 +1,11 @@
 
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { COMMANDERS } from '../../data/commanders';
 import { Search, X } from '../ui/icons';
 
 const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Select Commander" }) => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState('');
 
@@ -78,7 +80,8 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                 <input
                                     type="text"
-                                    placeholder="Search commander..."
+                                    aria-label={t('common.search')}
+                                    placeholder={t('common.search_placeholder')}
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     className="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 border border-[var(--border-flat)] focus:outline-none focus:border-primary transition-colors"
