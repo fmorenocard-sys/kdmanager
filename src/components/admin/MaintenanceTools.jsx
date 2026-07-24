@@ -52,7 +52,7 @@ const MaintenanceTools = () => {
         const campaign = availableCampaigns.find(c => c.id === selectedDeleteKvkId);
         if (!campaign) return;
         if (deleteConfirmation !== campaign.name) {
-            alert('Confirmation text does not match the campaign name.');
+            alert(t('admin.alert_confirm_mismatch'));
             return;
         }
         setDeleting(true);
@@ -71,13 +71,13 @@ const MaintenanceTools = () => {
                 }
             }
             if (ops > 0) await currentBatch.commit();
-            alert('Campaign data deleted successfully.');
+            alert(t('admin.alert_delete_ok'));
             setDeleteConfirmation('');
             setSelectedDeleteKvkId('');
             setAvailableCampaigns(prev => prev.filter(c => c.id !== selectedDeleteKvkId));
         } catch (err) {
             console.error('Delete error:', err);
-            alert('Failed to delete campaign: ' + err.message);
+            alert(t('admin.alert_delete_fail', { msg: err.message }));
         }
         setDeleting(false);
     };
@@ -85,14 +85,14 @@ const MaintenanceTools = () => {
     const mergeCampaign = async () => {
         const sourceCampaign = availableCampaigns.find(c => c.id === selectedMergeKvkId);
         if (!sourceCampaign || !target?.id) {
-            alert('Save the active campaign configuration first before merging.');
+            alert(t('admin.alert_save_first'));
             return;
         }
         if (selectedMergeKvkId === target.id) {
-            alert('Cannot merge a campaign into itself.');
+            alert(t('admin.alert_merge_self'));
             return;
         }
-        if (!window.confirm(`Merge all data from "${sourceCampaign.name}" INTO the current Active Campaign "${target.name}"? This will move all declarations over.`)) return;
+        if (!window.confirm(t('admin.merge_confirm', { source: sourceCampaign.name, target: target.name }))) return;
         setMerging(true);
         try {
             let ops = 0;
@@ -117,12 +117,12 @@ const MaintenanceTools = () => {
                 }
             }
             if (ops > 0) await currentBatch.commit();
-            alert('Campaign merged successfully!');
+            alert(t('admin.alert_merge_ok'));
             setSelectedMergeKvkId('');
             window.location.reload();
         } catch (err) {
             console.error('Merge error:', err);
-            alert('Failed to merge campaign: ' + err.message);
+            alert(t('admin.alert_merge_fail', { msg: err.message }));
         }
         setMerging(false);
     };
@@ -142,7 +142,7 @@ const MaintenanceTools = () => {
                     </p>
                     <div className="flex flex-col md:flex-row gap-4 items-end">
                         <div className="flex-1 w-full">
-                            <label className="block text-xs text-slate-400 mb-1.5">Select Origin Campaign</label>
+                            <label className="block text-xs text-slate-400 mb-1.5">{t('admin.merge_select_origin')}</label>
                             <select
                                 value={selectedMergeKvkId}
                                 onChange={(e) => setSelectedMergeKvkId(e.target.value)}
@@ -183,7 +183,7 @@ const MaintenanceTools = () => {
                     <div className="space-y-4">
                         <div className="flex flex-col md:flex-row gap-4">
                             <div className="flex-1">
-                                <label className="block text-xs text-slate-400 mb-1.5">Select Campaign to Delete</label>
+                                <label className="block text-xs text-slate-400 mb-1.5">{t('admin.delete_select')}</label>
                                 <select
                                     value={selectedDeleteKvkId}
                                     onChange={(e) => {
@@ -212,7 +212,7 @@ const MaintenanceTools = () => {
                                         className="w-full bg-slate-900/80 border border-[var(--border-flat)] rounded-md p-2 text-white outline-none focus:border-red-500/50 transition-colors"
                                         value={deleteConfirmation}
                                         onChange={(e) => setDeleteConfirmation(e.target.value)}
-                                        placeholder="Campaign Name"
+                                        placeholder={t('admin.campaign_name_ph')}
                                     />
                                 </div>
                                 <button

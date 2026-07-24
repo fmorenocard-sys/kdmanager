@@ -17,6 +17,7 @@ const KvKConfigForm = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [savedConfig, setSavedConfig] = useState(null); // tracks what's actually in Firestore
+    const [isError, setIsError] = useState(false);
     const [formData, setFormData] = useState({
         id: '',
         name: '',
@@ -93,7 +94,7 @@ const KvKConfigForm = () => {
     const handleSave = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setMessage('');
+        setMessage(''); setIsError(false);
 
         try {
             const docRef = doc(db, "kvk_config", "current");
@@ -113,11 +114,12 @@ const KvKConfigForm = () => {
                 updatedAt: new Date().toLocaleString(),
                 updatedBy: role
             });
-            setMessage('Active Campaign saved successfully!');
+            setMessage(t('admin.cfg_saved'));
             setTimeout(() => setMessage(''), 3000);
         } catch (err) {
             console.error("Error saving KvK config:", err);
-            setMessage('Error saving configuration.');
+            setMessage(t('admin.cfg_save_error'));
+            setIsError(true);
         }
         setLoading(false);
     };
@@ -126,7 +128,7 @@ const KvKConfigForm = () => {
         e.preventDefault();
         const newId = `kvk_${Date.now().toString(36)}`;
         setFormData({ id: newId, name: '', startDate: '', endDate: '' });
-        setMessage('Ready for a new campaign. Provide details and save.');
+        setMessage(t('admin.cfg_new_ready'));
     };
 
     if (!authorized) return null;
@@ -183,25 +185,25 @@ const KvKConfigForm = () => {
             <Card>
                 <div className="flex items-center gap-2 mb-2 text-amber-500">
                     <Shield size={20} />
-                    <h2 className="text-lg font-bold">Admin: Active Campaign Configuration</h2>
+                    <h2 className="text-lg font-bold">{t('admin.cfg_title')}</h2>
                 </div>
                 <p className="text-slate-400 text-sm mb-6">
-                    Updating this form modifies the <strong>Active Campaign</strong>. All newly submitted declarations are bound to this campaign's ID. You can freely change the name without losing data.
+                    <Trans i18nKey="admin.cfg_desc" components={[<strong key="0" />]} />
                 </p>
 
                 <form onSubmit={handleSave} className="space-y-4">
                     <Input
-                        label="KvK Name"
+                        label={t('admin.cfg_kvk_name')}
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder="e.g. SoC 3: Siege of Orléans"
+                        placeholder={t('admin.cfg_kvk_name_ph')}
                         required
                     />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
-                            label="Start Date"
+                            label={t('admin.cfg_start_date')}
                             name="startDate"
                             type="date"
                             value={formData.startDate}
@@ -210,7 +212,7 @@ const KvKConfigForm = () => {
                             required
                         />
                         <Input
-                            label="End Date"
+                            label={t('admin.cfg_end_date')}
                             name="endDate"
                             type="date"
                             value={formData.endDate}
@@ -221,16 +223,16 @@ const KvKConfigForm = () => {
                     </div>
 
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-6 gap-4">
-                        <span className={`text-sm w-full text-center md:text-left ${message.includes('Error') ? 'text-red-400' : 'text-green-400'}`}>
+                        <span className={`text-sm w-full text-center md:text-left ${isError ? 'text-red-400' : 'text-green-400'}`}>
                             {message}
                         </span>
                         <div className="flex gap-2 w-full md:w-auto">
                             <Button type="button" onClick={handleStartNew} variant="outline" className="w-full md:w-auto border-indigo-500/30 hover:bg-indigo-500/10 whitespace-nowrap">
-                                Start New
+                                {t('admin.cfg_start_new')}
                             </Button>
                             <Button type="submit" disabled={loading} className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 whitespace-nowrap text-center justify-center">
                                 <Save size={18} className="mr-2 hidden md:inline-block" />
-                                Save Active Campaign
+                                {t('admin.cfg_save')}
                             </Button>
                         </div>
                     </div>
@@ -247,7 +249,7 @@ const KvKConfigForm = () => {
                     >
                         <div className="flex items-center gap-2">
                             <History size={16} className="text-slate-400" />
-                            <span className="font-semibold text-slate-300 text-sm">Campaign History</span>
+                            <span className="font-semibold text-slate-300 text-sm">{t('admin.cfg_history')}</span>
                             <span className="text-xs text-slate-500 bg-slate-700/50 px-1.5 py-0.5 rounded-full">{availableCampaigns.length}</span>
                         </div>
                         {historyOpen ? <ChevronUp size={16} className="text-slate-500" /> : <ChevronDown size={16} className="text-slate-500" />}
@@ -274,7 +276,7 @@ const KvKConfigForm = () => {
                                             <div className="min-w-0">
                                                 <p className={`text-sm font-medium truncate ${isActive ? 'text-indigo-300' : 'text-slate-300'}`}>
                                                     {c.name}
-                                                    {isActive && <span className="ml-2 text-[10px] font-bold text-green-400 uppercase">Active</span>}
+                                                    {isActive && <span className="ml-2 text-[10px] font-bold text-green-400 uppercase">{t('admin.cfg_active')}</span>}
                                                 </p>
                                                 <p className="text-[10px] font-mono text-slate-500 truncate">{c.id}</p>
                                             </div>
@@ -282,7 +284,7 @@ const KvKConfigForm = () => {
                                         <div className="flex items-center gap-1.5 shrink-0 ml-3">
                                             <Users size={12} className="text-slate-500" />
                                             <span className="text-xs text-slate-400 font-medium">{count}</span>
-                                            <span className="text-[10px] text-slate-600">decl.</span>
+                                            <span className="text-[10px] text-slate-600">{t('admin.cfg_decl_short')}</span>
                                         </div>
                                     </div>
                                 );
