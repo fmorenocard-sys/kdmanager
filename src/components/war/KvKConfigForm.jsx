@@ -1,6 +1,6 @@
 ﻿
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { db } from '../../config/firebase';
 import { doc, getDoc, setDoc, Timestamp, collection, getDocs } from 'firebase/firestore';
 import { useRole, ROLES } from '../../context/RoleContext';
