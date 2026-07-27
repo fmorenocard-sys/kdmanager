@@ -61,7 +61,11 @@ export const discordLogin = onRequest({ secrets: [DISCORD_CLIENT_ID] }, async (r
     res.redirect(discordAuthUrl);
 });
 
-const PROD_FRONTEND_URL = 'https://kd-97-manager.web.app';
+// ID du projet Firebase courant, fourni par le runtime. Rend la marque blanche
+// possible : 2997 → kd-97-manager, pilote → kd-41-manager, sans config en dur.
+// eslint-disable-next-line no-undef
+const PROJECT_ID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'kd-97-manager';
+const PROD_FRONTEND_URL = `https://${PROJECT_ID}.web.app`;
 
 /**
  * Base frontend à utiliser pour les redirections post-auth : l'origine embarquée
@@ -80,8 +84,8 @@ function resolveFrontendBase(req, state) {
             const origin = Buffer.from(parts[parts.length - 1], 'hex').toString('utf8');
             const allowed =
                 origin === PROD_FRONTEND_URL ||
-                origin === 'https://kd-97-manager.firebaseapp.com' ||
-                /^https:\/\/kd-97-manager--[a-z0-9-]+\.web\.app$/.test(origin) ||
+                origin === `https://${PROJECT_ID}.firebaseapp.com` ||
+                new RegExp(`^https://${PROJECT_ID}--[a-z0-9-]+\\.web\\.app$`).test(origin) ||
                 /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
             if (allowed) return origin;
             if (origin) logger.warn(`Origine de state non autorisée, repli prod : ${origin}`);
