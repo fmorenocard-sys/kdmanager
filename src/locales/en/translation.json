@@ -154,7 +154,15 @@
     "total_stone": "Total Stone",
     "auth_required_title": "Authentication Required",
     "auth_required_desc": "To maintain data integrity and prevent fake declarations, you must be logged in via Discord to declare your KvK availability.",
-    "auth_required_hint": "Please use the login button in the top right header to authenticate."
+    "auth_required_hint": "Please use the login button in the top right header to authenticate.",
+    "active_campaign": "Active Campaign",
+    "crystal_f2p": "F2P (No Spend)",
+    "crystal_low": "Low Spend (Pop-ups)",
+    "crystal_mid": "Mid Spend (Max Tech)",
+    "crystal_high": "High / Whale",
+    "example": "e.g. {{v}}",
+    "speedups_total_label": "Total Speedups — Universal + Healing (days)",
+    "speedups_placeholder": "e.g. 45 (add universal + healing days together)"
   },
   "trophies": {
     "title": "Kingdom Trophies",

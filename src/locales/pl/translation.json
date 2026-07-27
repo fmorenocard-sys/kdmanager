@@ -154,7 +154,15 @@
     "total_stone": "Calkowity Kamien",
     "auth_required_title": "Wymagane uwierzytelnienie",
     "auth_required_desc": "Aby zachować spójność danych i zapobiec fałszywym deklaracjom, musisz zalogować się przez Discord, aby zadeklarować swoją dostępność w KvK.",
-    "auth_required_hint": "Użyj przycisku logowania w prawym górnym rogu, aby się uwierzytelnić."
+    "auth_required_hint": "Użyj przycisku logowania w prawym górnym rogu, aby się uwierzytelnić.",
+    "active_campaign": "Aktywna kampania",
+    "crystal_f2p": "F2P (bez wydatków)",
+    "crystal_low": "Niskie wydatki (pop-upy)",
+    "crystal_mid": "Średnie wydatki (max tech)",
+    "crystal_high": "Wysokie / Whale",
+    "example": "np. {{v}}",
+    "speedups_total_label": "Przyspieszenia łącznie — Uniwersalne + Leczenie (dni)",
+    "speedups_placeholder": "np. 45 (dodaj dni uniwersalne + leczenie)"
   },
   "trophies": {
     "title": "Trofea Królestwa",

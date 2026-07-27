@@ -154,7 +154,15 @@
     "total_stone": "Tong Da",
     "auth_required_title": "Yêu cầu xác thực",
     "auth_required_desc": "Để duy trì tính toàn vẹn của dữ liệu và ngăn chặn các khai báo giả mạo, bạn phải đăng nhập qua Discord để khai báo tình trạng sẵn sàng cho KvK.",
-    "auth_required_hint": "Vui lòng sử dụng nút đăng nhập ở góc trên cùng bên phải để xác thực."
+    "auth_required_hint": "Vui lòng sử dụng nút đăng nhập ở góc trên cùng bên phải để xác thực.",
+    "active_campaign": "Chiến dịch đang diễn ra",
+    "crystal_f2p": "F2P (không nạp)",
+    "crystal_low": "Nạp ít (pop-up)",
+    "crystal_mid": "Nạp vừa (tech tối đa)",
+    "crystal_high": "Cao / Whale",
+    "example": "vd. {{v}}",
+    "speedups_total_label": "Tổng tăng tốc — Chung + Hồi máu (ngày)",
+    "speedups_placeholder": "vd. 45 (cộng ngày chung + hồi máu)"
   },
   "trophies": {
     "title": "Cúp vương quốc",

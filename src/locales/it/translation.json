@@ -154,7 +154,15 @@
     "total_stone": "Pietra totale",
     "auth_required_title": "Autenticazione richiesta",
     "auth_required_desc": "Per mantenere l'integrità dei dati ed evitare dichiarazioni false, devi aver effettuato l'accesso tramite Discord per dichiarare la tua disponibilità al KvK.",
-    "auth_required_hint": "Usa il pulsante di accesso nell'intestazione in alto a destra per autenticarti."
+    "auth_required_hint": "Usa il pulsante di accesso nell'intestazione in alto a destra per autenticarti.",
+    "active_campaign": "Campagna attiva",
+    "crystal_f2p": "F2P (senza spesa)",
+    "crystal_low": "Spesa bassa (pop-up)",
+    "crystal_mid": "Spesa media (tech max)",
+    "crystal_high": "Alto / Whale",
+    "example": "es. {{v}}",
+    "speedups_total_label": "Acceleratori totali — Universale + Cura (giorni)",
+    "speedups_placeholder": "es. 45 (somma universale + cura)"
   },
   "trophies": {
     "title": "Trofei del Regno",

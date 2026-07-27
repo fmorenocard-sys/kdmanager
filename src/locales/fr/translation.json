@@ -154,7 +154,15 @@
     "total_stone": "Pierre totale",
     "auth_required_title": "Authentification Requise",
     "auth_required_desc": "Pour maintenir l'intégrité des données et éviter les fausses déclarations, vous devez être connecté via Discord pour déclarer votre disponibilité KvK.",
-    "auth_required_hint": "Veuillez utiliser le bouton de connexion en haut à droite pour vous authentifier."
+    "auth_required_hint": "Veuillez utiliser le bouton de connexion en haut à droite pour vous authentifier.",
+    "active_campaign": "Campagne active",
+    "crystal_f2p": "F2P (sans dépense)",
+    "crystal_low": "Petit budget (pop-ups)",
+    "crystal_mid": "Budget moyen (tech max)",
+    "crystal_high": "Gros / Whale",
+    "example": "ex. {{v}}",
+    "speedups_total_label": "Accélérations totales — Universel + Soin (jours)",
+    "speedups_placeholder": "ex. 45 (additionner universel + soin)"
   },
   "trophies": {
     "title": "Trophées du Royaume",

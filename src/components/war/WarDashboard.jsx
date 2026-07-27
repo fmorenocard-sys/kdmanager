@@ -10,6 +10,14 @@ import { Database, Swords, Zap, Shield, ShieldAlert } from '../ui/icons';
 import AccessGate from '../ui/AccessGate';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../ui/Table';
 
+// Fenêtre horaire UTC : la déclaration stocke activeHoursUTC {from,to} ; on la
+// formate ici. Repli sur l'ancien champ timeRange (déclarations antérieures).
+const formatActiveHours = (d) => {
+    const h = d.activeHoursUTC;
+    if (h && (h.from || h.to)) return `${h.from || '?'} – ${h.to || '?'}`;
+    return d.timeRange || '-';
+};
+
 const WarDashboard = () => {
     const { isAuthorized } = useRole();
     const { players } = useData();
@@ -282,7 +290,7 @@ const WarDashboard = () => {
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                         <span className="text-slate-500">{t('war.time_utc')}</span>
-                                        <span className="font-mono text-slate-300">{d.timeRange || '-'}</span>
+                                        <span className="font-mono text-slate-300">{formatActiveHours(d)}</span>
                                     </div>
                                     <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded">
                                         <span className="text-slate-500">{t('war.tech')}</span>
@@ -340,7 +348,7 @@ const WarDashboard = () => {
                                                 {d.availability}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-slate-300 text-xs">{d.timeRange || '-'}</TableCell>
+                                        <TableCell className="text-slate-300 text-xs">{formatActiveHours(d)}</TableCell>
                                         <TableCell className="text-slate-300 text-xs">{d.crystalTech}</TableCell>
                                         <TableCell className="text-slate-300 text-xs">
                                             {d.marches?.length || 0} <span className="text-slate-500">({d.marches?.map(m => m.type.substr(0, 1)).join(',')})</span>

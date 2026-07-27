@@ -154,7 +154,15 @@
     "total_stone": "Gesamter Stein",
     "auth_required_title": "Authentifizierung erforderlich",
     "auth_required_desc": "Um die Datenintegrität zu wahren und gefälschte Erklärungen zu vermeiden, müssen Sie über Discord angemeldet sein, um Ihre KvK-Verfügbarkeit zu erklären.",
-    "auth_required_hint": "Bitte verwenden Sie die Anmelde-Schaltfläche oben rechts, um sich zu authentifizieren."
+    "auth_required_hint": "Bitte verwenden Sie die Anmelde-Schaltfläche oben rechts, um sich zu authentifizieren.",
+    "active_campaign": "Aktive Kampagne",
+    "crystal_f2p": "F2P (keine Ausgaben)",
+    "crystal_low": "Wenig (Pop-ups)",
+    "crystal_mid": "Mittel (Max-Tech)",
+    "crystal_high": "Hoch / Whale",
+    "example": "z. B. {{v}}",
+    "speedups_total_label": "Beschleuniger gesamt — Universal + Heilung (Tage)",
+    "speedups_placeholder": "z. B. 45 (Universal- + Heilungstage addieren)"
   },
   "trophies": {
     "title": "Königreich-Trophäen",

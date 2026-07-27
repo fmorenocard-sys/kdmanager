@@ -282,7 +282,7 @@ const AvailabilityForm = () => {
                             <Calendar size={24} />
                         </div>
                         <div className="flex flex-col relative z-10">
-                            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-0.5">Active Campaign</span>
+                            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-0.5">{t('war.active_campaign')}</span>
                             <h3 className="text-lg md:text-xl font-bold text-white leading-tight">{kvkConfig.name}</h3>
                             {(kvkConfig.startDate || kvkConfig.endDate) && (
                                 <span className="text-slate-300 text-xs md:text-sm mt-1.5 flex items-center gap-2">
@@ -338,10 +338,10 @@ const AvailabilityForm = () => {
                         value={formData.crystalTech}
                         onChange={(e) => setFormData({ ...formData, crystalTech: e.target.value })}
                     >
-                        <option value="F2P">F2P (No Spend)</option>
-                        <option value="Low">Low Spend (Pop-ups)</option>
-                        <option value="Mid">Mid Spend (Max Tech)</option>
-                        <option value="High">High / Whale</option>
+                        <option value="F2P">{t('war.crystal_f2p')}</option>
+                        <option value="Low">{t('war.crystal_low')}</option>
+                        <option value="Mid">{t('war.crystal_mid')}</option>
+                        <option value="High">{t('war.crystal_high')}</option>
                     </select>
                 </div>
             </div>
@@ -359,10 +359,10 @@ const AvailabilityForm = () => {
                     <Database size={18} /> {t('war.resources')}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Input label="Food (B)" name="food" type="number" value={formData.resources.food === 0 ? '' : formData.resources.food} onChange={handleResourceChange} placeholder="e.g. 5.2" />
-                    <Input label="Wood (B)" name="wood" type="number" value={formData.resources.wood === 0 ? '' : formData.resources.wood} onChange={handleResourceChange} placeholder="e.g. 3.1" />
-                    <Input label="Stone (B)" name="stone" type="number" value={formData.resources.stone === 0 ? '' : formData.resources.stone} onChange={handleResourceChange} placeholder="e.g. 2.5" />
-                    <Input label="Gold (B)" name="gold" type="number" value={formData.resources.gold === 0 ? '' : formData.resources.gold} onChange={handleResourceChange} placeholder="e.g. 1.0" />
+                    <Input label={t('war.food')} name="food" type="number" value={formData.resources.food === 0 ? '' : formData.resources.food} onChange={handleResourceChange} placeholder={t('war.example', { v: '5.2' })} />
+                    <Input label={t('war.wood')} name="wood" type="number" value={formData.resources.wood === 0 ? '' : formData.resources.wood} onChange={handleResourceChange} placeholder={t('war.example', { v: '3.1' })} />
+                    <Input label={t('war.stone')} name="stone" type="number" value={formData.resources.stone === 0 ? '' : formData.resources.stone} onChange={handleResourceChange} placeholder={t('war.example', { v: '2.5' })} />
+                    <Input label={t('war.gold')} name="gold" type="number" value={formData.resources.gold === 0 ? '' : formData.resources.gold} onChange={handleResourceChange} placeholder={t('war.example', { v: '1.0' })} />
                 </div>
             </div>
 
@@ -372,12 +372,12 @@ const AvailabilityForm = () => {
                     <Zap size={18} /> {t('war.speedups')}
                 </h3>
                 <Input
-                    label="Total Speedups — Universal + Healing (days)"
+                    label={t('war.speedups_total_label')}
                     name="total"
                     type="number"
                     value={(formData.speedups?.total === 0 || formData.speedups?.total === undefined) ? '' : formData.speedups.total}
                     onChange={handleSpeedupChange}
-                    placeholder="e.g. 45 (add universal + healing days together)"
+                    placeholder={t('war.speedups_placeholder')}
                 />
             </div>
 

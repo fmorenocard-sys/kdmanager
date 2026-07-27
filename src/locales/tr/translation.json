@@ -154,7 +154,15 @@
     "total_stone": "Toplam Tas",
     "auth_required_title": "Kimlik Doğrulama Gerekli",
     "auth_required_desc": "Veri bütünlüğünü korumak ve sahte beyanları önlemek için KvK durumunuzu bildirmek üzere Discord üzerinden giriş yapmış olmalısınız.",
-    "auth_required_hint": "Lütfen kimliğinizi doğrulamak için sağ üstteki giriş butonunu kullanın."
+    "auth_required_hint": "Lütfen kimliğinizi doğrulamak için sağ üstteki giriş butonunu kullanın.",
+    "active_campaign": "Aktif Kampanya",
+    "crystal_f2p": "F2P (Harcama Yok)",
+    "crystal_low": "Düşük Harcama (Pop-up)",
+    "crystal_mid": "Orta Harcama (Maks Tekno)",
+    "crystal_high": "Yüksek / Whale",
+    "example": "örn. {{v}}",
+    "speedups_total_label": "Toplam Hızlandırma — Evrensel + İyileştirme (gün)",
+    "speedups_placeholder": "örn. 45 (evrensel + iyileştirme günlerini topla)"
   },
   "trophies": {
     "title": "Krallık Kupaları",
