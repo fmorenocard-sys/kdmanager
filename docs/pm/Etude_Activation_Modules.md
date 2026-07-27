@@ -1,6 +1,9 @@
 # Étude — Activation de modules par instance (marque blanche)
 
-> Date : 2026-07-27 · Statut : **cadrage, décisions à rendre par le Roi**
+> Date : 2026-07-27 · Statut : **arbitrée par le Roi le 2026-07-27** — épic
+> `E-006`, feature `F-023`, règle `BR-015`, user stories `US-024`/`US-025`
+> inscrites dans les référentiels (voir `ProductBacklog.md`,
+> `FeatureInventory.md`, `docs/qa/SSOT.md`).
 > Origine : sur le pilote KD 3341, plusieurs pages/onglets sont vides — pas
 > par manque de données à venir, mais parce que le module n'a **pas lieu
 > d'exister** pour ce royaume (ex. KvK Race : pas de course de coalition
@@ -12,6 +15,21 @@
 > événement) sont traités séparément comme hygiène UX. Ce document ne les
 > rediscute pas : il porte uniquement sur la question distincte de **savoir si
 > un module doit exister du tout** pour une instance donnée.
+
+---
+
+## ⚖️ Décisions du Roi (2026-07-27)
+
+| Décision | Arbitrage |
+| :--- | :--- |
+| **Classification des modules** | **Fixes** (jamais désactivables) : Dashboard, Profil, Admin, War Tracker, Hub KvK — onglets **Performance** et **Progressions**. **Optionnels** (activables/désactivables par instance) : Banque, Trophées, Deadweight, et l'onglet **Course (KvK Race)**. Tranche A-016 (ci-dessous, §6). |
+| **Granularité** | Confirmée à deux niveaux, comme proposé au §2/§3 : **page entière** pour Banque/Trophées/Deadweight, **onglet interne** pour Course (le conteneur Hub KvK reste fixe). |
+| **Cascade Dashboard** | Le Dashboard est fixe, mais il embarque un **bloc Banque** et un **bloc évolution de pouvoir**. Le bloc Banque doit **disparaître** si le module Banque est désactivé sur l'instance — le toggle se propage aux blocs embarqués, pas seulement à la nav/aux routes. Le bloc évolution de pouvoir est un cas d'**état vide** (pas d'historique) — hors périmètre de cette étude, traité ailleurs. |
+| **Contexte pilote KD 3341** *(note, pas une décision d'implémentation)* | Trophées : pas suivi régulièrement aujourd'hui, « mais ça peut évoluer ». Deadweight : doctrine active. KvK Race : non déployé. À traduire en configuration lors du déploiement du pilote, pas dans cette étude. |
+
+Ces décisions remplacent les hypothèses ouvertes du §6 initial (A-016 à A-018,
+désormais tranchées ou reformulées) et sont reflétées dans les sections
+ci-dessous.
 
 ---
 
@@ -54,25 +72,36 @@ blanche (`src/config/branding.js`, pilote KD 3341, voir `Plan_Pilote_KvK.md`) :
 
 Lu depuis `src/App.jsx`, `src/components/BottomNav.jsx`, `src/pages/`.
 
-| Module | Route(s) | Nav | ID(s) SSOT | Accès aujourd'hui | Candidat à l'activation ? |
+| Module | Route(s) | Nav | ID(s) SSOT | Accès aujourd'hui | Classification (Roi, 2026-07-27) |
 |---|---|---|---|---|---|
-| **Dashboard** | `/` | Sidebar + BottomNav | F-001 / P-001 | Tous | Non — page d'accueil, toujours présente |
-| **War Tracker** | `/war-tracker` (disponibilités, War Dashboard, onglet Objectifs F-014) | Sidebar + BottomNav | F-011/F-013/F-014 / P-002 | Warriors+ | Non — c'est le module « hook » gratuit identifié par l'étude commerciale (§5bis), le cœur du produit |
-| **KvK Performance** (onglets Performance / Comptes secondaires / Progressions / **Course**) | `/kvk` | Sidebar + BottomNav | F-008/F-015/F-016/F-022 / P-003 | Tous (onglets Fillers et Progressions Discord-gated BR-008, Timeline King/Officer BR-011) | Le conteneur non ; **son onglet Course, oui** (voir ligne KvK Race) |
-| **Trophées** | `/trophies` | Sidebar + BottomNav | F-004 / P-004 | Tous | **Oui** — un royaume qui ne suit pas MGE/Zenith n'a rien à y montrer |
-| **Deadweight** | `/deadweight` | Sidebar + BottomNav (King/Officer, BR-009) | F-002 / P-005 | King/Officer | **Oui** — suppose une doctrine de suivi des inactifs que tout royaume n'a pas forcément adoptée |
-| **Banque** | `/bank` | Sidebar + BottomNav | F-003 / P-006 | Tous | **Oui** — suppose une banque de royaume organisée ; tous les royaumes n'en tiennent pas une |
-| **KvK Race** (course de coalition) | `/kvk-race` (legacy, compat) + onglet **Course** dans le Hub KvK | Aucune entrée de nav dédiée depuis la refonte — vit comme onglet | F-018/F-019/F-020 / P-008 | King/Officer | **Oui — c'est le cas déclencheur.** Suppose une coalition et un moteur de scan de course déployés (E-005) ; KD 3341 n'a ni l'un ni l'autre aujourd'hui |
-| **Admin** | `/admin` | Sidebar (zone dédiée) | — *(non listé en P-xxx dans SSOT — écart mineur à signaler à la QA, hors périmètre ici)* | King | Non — c'est l'endroit où vivraient les interrupteurs de modules ; il doit rester présent tant qu'au moins un module a de la config |
-| **Profil** | `/profile` | Menu compte | P-007 | Tous | Non — personnel, pas un module métier |
+| **Dashboard** | `/` | Sidebar + BottomNav | F-001 / P-001 | Tous | **Fixe** — mais embarque un bloc Banque (cascade, voir plus bas) et un bloc évolution de pouvoir (état vide, hors périmètre) |
+| **War Tracker** | `/war-tracker` (disponibilités, War Dashboard, onglet Objectifs F-014) | Sidebar + BottomNav | F-011/F-013/F-014 / P-002 | Warriors+ | **Fixe** — module « hook » gratuit identifié par l'étude commerciale (§5bis), le cœur du produit |
+| **KvK Performance** (onglets Performance / Comptes secondaires / Progressions / **Course**) | `/kvk` | Sidebar + BottomNav | F-008/F-015/F-016/F-022 / P-003 | Tous (onglets Fillers et Progressions Discord-gated BR-008, Timeline King/Officer BR-011) | Conteneur + onglets **Performance** et **Progressions** = **fixes**. Onglet **Course = optionnel** (voir ligne KvK Race) |
+| **Trophées** | `/trophies` | Sidebar + BottomNav | F-004 / P-004 | Tous | **Optionnel** — un royaume qui ne suit pas MGE/Zenith n'a rien à y montrer (cas KD 3341 : pas suivi aujourd'hui, mais susceptible d'évoluer) |
+| **Deadweight** | `/deadweight` | Sidebar + BottomNav (King/Officer, BR-009) | F-002 / P-005 | King/Officer | **Optionnel** — suppose une doctrine de suivi des inactifs que tout royaume n'a pas forcément adoptée (KD 3341 : doctrine active — resterait activé) |
+| **Banque** | `/bank` | Sidebar + BottomNav | F-003 / P-006 | Tous | **Optionnel** — suppose une banque de royaume organisée ; désactiver ce module fait **cascader** la disparition du bloc Banque du Dashboard |
+| **KvK Race** (course de coalition) | `/kvk-race` (legacy, compat) + onglet **Course** dans le Hub KvK | Aucune entrée de nav dédiée depuis la refonte — vit comme onglet | F-018/F-019/F-020 / P-008 | King/Officer | **Optionnel, granularité onglet** — c'est le cas déclencheur. Suppose une coalition et un moteur de scan de course déployés (E-005) ; KD 3341 n'a ni l'un ni l'autre aujourd'hui |
+| **Admin** | `/admin` | Sidebar (zone dédiée) | — *(non listé en P-xxx dans SSOT — écart mineur à signaler à la QA, hors périmètre ici)* | King | **Fixe** — c'est l'endroit où vivraient les interrupteurs de modules ; il doit rester présent tant qu'au moins un module a de la config |
+| **Profil** | `/profile` | Menu compte | P-007 | Tous | **Fixe** — personnel, pas un module métier |
 
 **Lecture** : le module réellement déclencheur (KvK Race) n'est déjà **pas**
 un item de navigation de premier niveau — c'est un **onglet** à l'intérieur de
-la page KvK Performance. Le mécanisme d'activation doit donc opérer à deux
-granularités, pas une seule : **page complète** (Trophées, Deadweight,
-Banque) et **onglet interne** (Course dans le Hub KvK). Un registre par ID de
-module, consommé indépendamment à chaque endroit d'affichage, couvre les deux
-cas sans code spécifique par surface.
+la page KvK Performance. Le Roi confirme que le mécanisme d'activation opère
+donc à deux granularités, pas une seule : **page complète** (Trophées,
+Deadweight, Banque) et **onglet interne** (Course dans le Hub KvK — les
+onglets Performance et Progressions du même conteneur restent fixes). Un
+registre par ID de module, consommé indépendamment à chaque endroit
+d'affichage, couvre les deux cas sans code spécifique par surface.
+
+**Exigence ferme — cascade Dashboard.** Le Dashboard est fixe, mais n'est pas
+monolithique : il embarque un bloc « données Banque » qui dépend directement
+du module Banque. Si Banque est désactivé sur une instance, ce bloc doit
+disparaître du Dashboard — le registre de modules ne filtre donc pas
+seulement la nav/les routes de premier niveau, il doit aussi être consultable
+par un composant enfant (le bloc Banque du Dashboard) pour se masquer
+lui-même. Le second bloc du Dashboard, évolution de pouvoir, ne dépend
+d'aucun module optionnel : son absence de données relève d'un état vide, hors
+périmètre de cette étude (cf. encadré en tête de document).
 
 ---
 
@@ -109,15 +138,23 @@ des valeurs par défaut qui ne changent rien pour Unitas 2997.
 - Les `Route` correspondantes ne sont **pas** retirées du routeur (voir §5,
   risque des deep-links) : elles rendent un écran « module non disponible sur
   ce royaume » plutôt que de disparaître silencieusement.
-- **Modules concernés au MVP** : uniquement ceux dont la variation entre
-  instances est déjà prouvée par le cas réel (KvK Race, Trophées, Deadweight,
-  Banque). Dashboard, War Tracker, Profil et Admin restent le socle toujours
-  actif — ne pas construire un interrupteur pour des modules dont on n'a
-  aucune preuve qu'un royaume voudrait s'en passer.
+- **Modules concernés au MVP — classification tranchée par le Roi** :
+  **optionnels** (interrupteur) : Banque, Trophées, Deadweight, onglet Course
+  (KvK Race). **Fixes** (aucun interrupteur, socle toujours actif) :
+  Dashboard, Profil, Admin, War Tracker, et les onglets Performance +
+  Progressions du Hub KvK.
+- **Cascade Dashboard (exigence ferme du Roi).** `MODULES.bank` n'est pas
+  consommé que par Sidebar/BottomNav : le bloc Banque du Dashboard doit
+  l'importer aussi et se masquer lui-même si `false`. Le registre doit donc
+  être un module partagé et importable depuis n'importe quel composant, pas
+  seulement depuis les trois surfaces de navigation — c'est le seul écart par
+  rapport à un simple copier-coller du pattern `branding.js`, qui n'a jusqu'ici
+  jamais eu besoin d'être lu par un composant de contenu.
 - **Effort : S.** Même famille de changement que `branding.js` — un fichier de
-  config, un `.filter()` par surface d'affichage, pas de nouvelle collection
-  Firestore, pas de schéma. Compatible avec l'approche « instance clonée, zéro
-  refonte » déjà retenue pour KD 3341 (`Plan_Pilote_KvK.md`).
+  config, un `.filter()` par surface d'affichage plus une lecture directe dans
+  le bloc Banque du Dashboard, pas de nouvelle collection Firestore, pas de
+  schéma. Compatible avec l'approche « instance clonée, zéro refonte » déjà
+  retenue pour KD 3341 (`Plan_Pilote_KvK.md`).
 
 ### (b) Cible — runtime, doc Firestore + toggle admin (Roi)
 
@@ -197,33 +234,29 @@ l'anticipation non demandée, dans un projet où le multi-tenant lui-même
 
 ---
 
-## 6. Questions ouvertes / hypothèses à trancher
+## 6. Hypothèses
 
-Trois hypothèses nommées, à confirmer par le Roi avant tout développement :
+Statut au 2026-07-27, après l'arbitrage du Roi (voir encadré en tête de
+document) :
 
-- **A-016** — Les modules réellement instance-optionnels sont *KvK Race,
-  Trophées, Deadweight, Banque* ; Dashboard, War Tracker, Profil et Admin
-  restent le socle toujours actif. Classification proposée dans cette étude,
-  non confirmée.
-- **A-017** — L'activation de module est **purement présentationnelle** (pas
-  de fermeture de règles Firestore en plus) pour le MVP, symétrique au
-  traitement déjà appliqué aux gates de rôle (BR-009/BR-011). À confirmer :
-  le Roi pourrait attendre qu'« éteindre » la Banque, par exemple, bloque
-  aussi l'écriture (formulaires de contribution), pas seulement la navigation.
-- **A-018** — Le mécanisme d'activation par module est construit ici pour la
-  **propreté de la marque blanche uniquement**, pas comme brique de
-  tarification. Il devient réutilisable pour un futur tiering (frontière
-  gratuit/payant de `Etude_Commercialisation_SaaS.md` §8) sans travail
-  supplémentaire — mais cette étude ne décide **pas** de tiering, et la
-  terminologie choisie (« module non activé sur ce royaume ») ne doit pas être
-  écrite en dur d'une façon qui présupposerait un jour « pas inclus dans votre
-  offre » — à garder neutre.
-
-**Question factuelle à poser directement au Roi pour KD 3341** : au-delà de
-KvK Race (cas confirmé), le royaume pilote suit-il des Trophées (MGE/Zenith) ?
-Tient-il une Banque organisée ? Applique-t-il une doctrine Deadweight ? Sans
-réponse module par module, l'inventaire du §2 reste une hypothèse de PM, pas
-un fait confirmé.
+- **A-016 — ✅ Tranchée.** Classification confirmée : optionnels = Banque,
+  Trophées, Deadweight, onglet Course (KvK Race) ; fixes = Dashboard, Profil,
+  Admin, War Tracker, Hub KvK (onglets Performance + Progressions). Pour
+  KD 3341 spécifiquement : Trophées non suivi aujourd'hui (susceptible
+  d'évoluer — pas figé), Deadweight actif (doctrine en place), KvK Race non
+  déployé. Ces trois faits sont une **note contextuelle pour le pilote**, pas
+  une décision d'implémentation — la configuration réelle de l'instance
+  3341 se règle au déploiement, pas dans cette étude.
+- **A-017 — non retranchée, reste l'hypothèse de travail du MVP.** Le Roi n'a
+  pas demandé que désactiver un module ferme aussi les chemins d'écriture
+  (ex. formulaires de contribution Banque) — le MVP reste donc
+  présentationnel, symétrique au traitement déjà appliqué aux gates de rôle
+  (BR-009/BR-011). À rouvrir si un usage réel prouve le contraire.
+- **A-018 — non retranchée, reste l'hypothèse de travail.** Le mécanisme est
+  construit pour la propreté de la marque blanche, pas comme brique de
+  tarification ; il restera réutilisable pour un futur tiering sans travail
+  supplémentaire. Toujours vrai, toujours à garder en tête pour le choix de
+  copie UI (rester neutre, ne pas écrire « pas inclus dans votre offre »).
 
 ---
 
@@ -231,19 +264,48 @@ un fait confirmé.
 
 Construire la version **(a) build-time** maintenant — même famille de coût
 qu'une variable de `branding.js`, cohérente avec le traitement déjà réservé à
-KD 3341 (instance clonée, maintenue à la main). Ne pas construire la version
-runtime (b) tant qu'aucun des deux signaux de bascule (§3) ne s'est produit :
-ce serait investir dans une généralisation avant que la douleur qu'elle
-résout (redéploiement pour changer un module) se soit manifestée.
+KD 3341 (instance clonée, maintenue à la main), en intégrant l'exigence de
+cascade Dashboard (§3a) dès le MVP — ce n'est pas un lot séparé, c'est une
+conséquence directe de la classification tranchée par le Roi. Ne pas
+construire la version runtime (b) tant qu'aucun des deux signaux de bascule
+(§3) ne s'est produit : ce serait investir dans une généralisation avant que
+la douleur qu'elle résout (redéploiement pour changer un module) se soit
+manifestée.
 
-**Prochaines étapes**, si le Roi valide :
-1. Réponses aux questions du §6 (A-016 à confirmer module par module pour
-   KD 3341).
-2. Enregistrement dans les référentiels une fois arbitré : un épic (prochain
-   `E-006` libre), une feature (`F-023`), une règle métier proposée
-   (`BR-015`, sur le modèle de BR-010 « proposed »), deux user stories
-   (`US-024` MVP build-time, `US-025` cible runtime) — non créés dans ce
-   document pour ne pas préempter une décision non encore rendue.
-3. Implémentation MVP : `src/config/modules.js`, filtre dans Sidebar/
-   BottomNav/tabs du Hub KvK, écran « module non disponible » réutilisant
+**Références définitives**, inscrites dans les référentiels suite à
+l'arbitrage : épic `E-006`, feature `F-023`, règle métier `BR-015`, user
+stories `US-024` (MVP build-time, avec cascade Dashboard) et `US-025` (cible
+runtime + toggle Admin). Voir `ProductBacklog.md`, `FeatureInventory.md`,
+`docs/qa/SSOT.md`.
+
+**Prochaines étapes** :
+1. Configuration réelle du pilote KD 3341 (Trophées off, Deadweight on, Course
+   off) au moment du déploiement — pas un chantier de cette étude.
+2. Implémentation `US-024` : `src/config/modules.js`, filtre dans Sidebar/
+   BottomNav/tabs du Hub KvK, lecture directe dans le bloc Banque du
+   Dashboard (cascade), écran « module non disponible » réutilisant
    `AccessGate`.
+
+---
+
+## 8. Opportunité PM soulevée en marge — Deadweight croisé performance/progression
+
+Distincte de l'activation de modules : pendant l'arbitrage, le Roi a
+soulevé une évolution **fonctionnelle** du module Deadweight lui-même,
+indépendante de la question « ce module existe-t-il sur cette instance ».
+Enregistrée séparément pour ne pas polluer le périmètre de cette étude :
+
+- **Constat** : `Deadweight` (F-002) et les vues de performance/progression
+  (F-008, F-015 progression joueur) vivent aujourd'hui côte à côte sans se
+  croiser. Un joueur n'est marqué deadweight que sur des critères propres au
+  module Deadweight ; sa trajectoire de performance à travers les campagnes
+  (KvK Goals F-014, progression multi-campagnes F-015) n'alimente pas ce
+  statut.
+- **Piste** : qu'un joueur puisse devenir/sortir du statut « deadweight » sur
+  la base de critères de performance mesurés (ex. sous le seuil KP Goal sur
+  N campagnes consécutives), avec une vue croisée trajectoire ↔ statut
+  deadweight pour le leadership.
+- **Enregistrement** : `F-024` (voir `FeatureInventory.md`), `US-026` (voir
+  `ProductBacklog.md`) — non priorisé, non cadré en détail ; une étude dédiée
+  sera nécessaire avant tout développement (définition du/des critères, seuils,
+  fenêtre de campagnes, interaction avec le statut manuel existant).
