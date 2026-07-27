@@ -54,6 +54,8 @@ const WRITE = process.argv.includes('--write');
 // or 'threshold' (power >= --min-power).
 const ROSTER = String(arg('roster', 'detailed'));
 const MIN_POWER = Number(arg('min-power', 0)) || 0;
+// Keep only the top N governors by power (0 = no limit). e.g. --top 300 for the kingdom Top 300.
+const TOP = Number(arg('top', 0)) || 0;
 // A base scan is a starting point: no gains yet, so powerDiff defaults to 0.
 // Pass --keep-powerdiff to instead carry the previous KvK's power_difference.
 const KEEP_POWERDIFF = process.argv.includes('--keep-powerdiff');
@@ -166,6 +168,12 @@ console.log(`Roster scope "${ROSTER}"${ROSTER === 'threshold' ? ` (min-power ${M
 // Rank by power desc within the kingdom (leaderboard ordering)
 list.sort((a, b) => (b.power || 0) - (a.power || 0));
 list.forEach((p, i) => { p.rank = i + 1; });
+
+// Keep only the top N by power (e.g. kingdom Top 300)
+if (TOP > 0 && list.length > TOP) {
+    console.log(`Top limit: keeping ${TOP}/${list.length} governors by power`);
+    list = list.slice(0, TOP);
+}
 
 const doc = { list, updatedAt: new Date().toISOString(), source: `SoC scan ${path.basename(FILE)} (kingdom ${KINGDOM})` };
 
