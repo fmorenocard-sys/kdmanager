@@ -338,8 +338,18 @@ async function syncUserRolesFromDiscord(uid, discordId) {
         const memberData = await response.json();
         const memberRoles = memberData.roles || [];
 
+        // Épinglage Roi par ID utilisateur (marque blanche / amorçage pilote) :
+        // certains royaumes n'ont pas de rôle Discord « King » dédié. Les IDs listés
+        // dans ROLE_KING_USER_IDS (séparés par des virgules, env par projet) obtiennent
+        // le niveau Roi quels que soient leurs rôles Discord. Vide pour 2997 → sans effet.
+        // eslint-disable-next-line no-undef
+        const kingUserIds = String(process.env.ROLE_KING_USER_IDS || '')
+            .split(',').map((s) => s.trim()).filter(Boolean);
+
         let assignedRole = 'Guest';
-        if (memberRoles.includes(roleKing)) {
+        if (kingUserIds.includes(String(discordId))) {
+            assignedRole = 'King';
+        } else if (memberRoles.includes(roleKing)) {
             assignedRole = 'King';
         } else if (memberRoles.includes(roleOfficer)) {
             assignedRole = 'Officer';
