@@ -9,6 +9,7 @@ import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
 
 import PageHeader from '../components/ui/PageHeader';
+import EmptyState from '../components/ui/EmptyState';
 
 const BankPage = () => {
     const { bank, loading, error } = useData();
@@ -205,9 +206,7 @@ const BankPage = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-4">
-                            <p>{t('common.no_data')}</p>
-                        </div>
+                        <EmptyState icon={Database} title={t('common.no_data')} />
                     )}
                 </CardContent>
             </Card>

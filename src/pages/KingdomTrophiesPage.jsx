@@ -7,6 +7,7 @@ import DataRefreshControl from '../components/DataRefreshControl';
 import Avatar from '../components/ui/Avatar';
 
 import PageHeader from '../components/ui/PageHeader';
+import EmptyState from '../components/ui/EmptyState';
 import { resolveGovernorId } from '../lib/resolveGovernorId';
 
 const KingdomTrophiesPage = () => {
@@ -75,14 +76,17 @@ const KingdomTrophiesPage = () => {
     if (loading) return <div className="p-8 text-center text-muted">{t('common.loading')}</div>;
     if (error) return <div className="p-8 text-center text-red-400">{error}</div>;
     if (!currentWeekData) return (
-        <div className="p-8 text-center">
-            <h2 className="text-xl text-muted mb-4">{t('common.no_data')}</h2>
-            <DataRefreshControl
-                pageId="trophies"
-                title="Upload Trophies"
-                expectedFilePattern="List"
-            />
-        </div>
+        <EmptyState
+            icon={Trophy}
+            title={t('common.no_data')}
+            action={
+                <DataRefreshControl
+                    pageId="trophies"
+                    title="Upload Trophies"
+                    expectedFilePattern="List"
+                />
+            }
+        />
     );
 
     const legendaryGroup = processedGroups.find(g => g.type === 'Legendary');
