@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import SortHead from '../ui/SortHead';
 import { sortRows, nextSort } from '../../lib/sortRows';
 import RacePlayersView from './RacePlayersView';
+import EmptyState from '../ui/EmptyState';
+import { Flag } from '../ui/icons';
 import RaceEfficiencyView from './RaceEfficiencyView';
 import { Trophy, Users, History, TrendingUp, TrendingDown, Upload, CheckCircle2, AlertTriangle } from '../ui/icons';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
@@ -116,7 +118,7 @@ const RaceView = () => {
     if (loading) return <div className="p-8 text-center text-muted">{t('common.loading')}</div>;
 
     if (!campaign || !scans.length) {
-        return <div className="v2-glass p-8 text-center text-slate-400">{t('kvk_race.no_data')}</div>;
+        return <EmptyState icon={Flag} title={t('kvk_race.no_data')} />;
     }
 
     const duel = scan?.duel || null;

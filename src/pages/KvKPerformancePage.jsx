@@ -5,6 +5,7 @@ import { BRANDING } from '../config/branding';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/ui/Avatar';
 import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive, Flag, CastleTurret } from '../components/ui/icons';
+import EmptyState from '../components/ui/EmptyState';
 import { useKvkHistory } from '../hooks/useKvkHistory';
 import Card from '../components/ui/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
@@ -438,7 +439,10 @@ const KvKPerformancePage = () => {
                     </div>
                 </div>
 
-                {/* Table */}
+                {/* Table — état vide si aucune donnée KvK (hygiène UX marque blanche) */}
+                {filteredAndSortedData.length === 0 ? (
+                    <EmptyState icon={TrendingUp} title={t('common.no_data')} />
+                ) : (
                 <Card className="overflow-hidden">
                     <div className="overflow-auto custom-scrollbar relative max-h-[800px]">
                         {/* Mobile Card View */}
@@ -544,6 +548,7 @@ const KvKPerformancePage = () => {
                         </div>
                     </div>
                 </Card>
+                )}
             </>)}
 
             {/* ───────────── Onglet Progressions ───────────── */}
