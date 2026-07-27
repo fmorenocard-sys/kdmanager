@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
+import { BRANDING } from '../../config/branding';
 import SortHead from '../ui/SortHead';
 import { useData } from '../../context/DataContext';
 import { sortRows, nextSort } from '../../lib/sortRows';
@@ -104,7 +105,7 @@ const RacePlayersView = ({ players, pinned = [], labels = {}, roleClass, roles =
                         ? 'text-amber-300 bg-amber-500/15 border-amber-500/40'
                         : 'text-slate-400 bg-[var(--surface-input)] border-[var(--border-flat)] hover:text-white'}`}
                 >
-                    {t('kvk_race.players_only_ours')}
+                    {t('kvk_race.players_only_ours', { kingdom: BRANDING.kingdomNumber })}
                 </button>
                 <span className="text-xs text-slate-500 font-mono whitespace-nowrap">
                     {t('kvk_race.players_count', { shown: rows.length, total: players.length, members: memberCount })}
@@ -134,7 +135,7 @@ const RacePlayersView = ({ players, pinned = [], labels = {}, roleClass, roles =
                                 </span>
                                 {p.isMember && (
                                     <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold border text-amber-400 bg-amber-500/10 border-amber-500/30">
-                                        {t('kvk_race.member_badge')}
+                                        {t('kvk_race.member_badge', { kingdom: BRANDING.kingdomNumber })}
                                     </span>
                                 )}
                             </div>
@@ -180,7 +181,7 @@ const RacePlayersView = ({ players, pinned = [], labels = {}, roleClass, roles =
                                         <span className="font-semibold truncate">{p.name || `#${p.governor_id}`}</span>
                                         {p.isMember && (
                                             <span className="shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-bold border text-amber-400 bg-amber-500/10 border-amber-500/30">
-                                                {t('kvk_race.member_badge')}
+                                                {t('kvk_race.member_badge', { kingdom: BRANDING.kingdomNumber })}
                                             </span>
                                         )}
                                     </div>

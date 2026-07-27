@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
+import { BRANDING } from '../config/branding';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/ui/Avatar';
 import { Swords, Skull, TrendingUp, TrendingDown, Activity, ChevronUp, ChevronDown, Search, Users, History, Archive, Flag, CastleTurret } from '../components/ui/icons';
@@ -316,13 +317,13 @@ const KvKPerformancePage = () => {
                             <Flag size={14} weight="fill" />
                             {t('kvk_hub.domain_race')}
                         </span>
-                        <span className="text-xs text-slate-500">{t('kvk_hub.domain_race_note')}</span>
+                        <span className="text-xs text-slate-500">{t('kvk_hub.domain_race_note', { kingdom: BRANDING.kingdomNumber })}</span>
                     </>
                 ) : (
                     <>
                         <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/30">
                             <CastleTurret size={14} weight="fill" />
-                            {t('kvk_hub.domain_internal')}
+                            {t('kvk_hub.domain_internal', { kingdom: BRANDING.kingdomNumber })}
                         </span>
                         <span className="text-xs text-slate-500">{t('kvk_hub.domain_internal_note')}</span>
                     </>

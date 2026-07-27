@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { httpsCallable } from 'firebase/functions';
 import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 import { db, functions } from '../../config/firebase';
+import { BRANDING } from '../../config/branding';
 import { useRole, ROLES } from '../../context/RoleContext';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
@@ -22,7 +23,7 @@ const DEFAULT_FORM = {
     roles: { 1: 'adversaire', 2: 'nous', 3: 'allie_concurrent_etoile', 4: 'adversaire' },
     hero_duel: [2, 3],
     our_camp: '2',
-    pinnedText: '2997, 1523',
+    pinnedText: BRANDING.kingdomNumber,
     base_scan_override: '',
     discord_channel_id: '',
     discord_snapshot_enabled: true,
@@ -274,7 +275,7 @@ const RaceConfigForm = () => {
                 label={t('kvk_race.pinned_label')}
                 value={form.pinnedText}
                 onChange={(e) => setForm((f) => ({ ...f, pinnedText: e.target.value }))}
-                placeholder="2997, 1523"
+                placeholder={`${BRANDING.kingdomNumber}, 1523`}
             />
 
             {/* US-021 — snapshot Discord après chaque ingestion */}
@@ -303,7 +304,7 @@ const RaceConfigForm = () => {
             {/* DKP de course */}
             <div className="mt-4 mb-4 bg-[var(--border-flat)] rounded-lg p-3">
                 <p className="text-sm font-semibold text-amber-400 mb-1">{t('kvk_race.dkp_title')}</p>
-                <p className="text-xs text-slate-500 mb-3">{t('kvk_race.dkp_hint')}</p>
+                <p className="text-xs text-slate-500 mb-3">{t('kvk_race.dkp_hint', { kingdom: BRANDING.kingdomNumber })}</p>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                     <Input label={t('kvk_race.kp_t4')} type="number" value={form.dkp.kp_per_t4_kill} onChange={(e) => setDkp('kp_per_t4_kill', e.target.value)} />
                     <Input label={t('kvk_race.kp_t5')} type="number" value={form.dkp.kp_per_t5_kill} onChange={(e) => setDkp('kp_per_t5_kill', e.target.value)} />

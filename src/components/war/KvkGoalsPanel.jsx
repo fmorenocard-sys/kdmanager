@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { BRANDING } from '../../config/branding';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { useRole, ROLES } from '../../context/RoleContext';
@@ -335,7 +336,7 @@ const KvkGoalsPanel = () => {
             <p className="text-[11px] text-slate-500 flex items-start gap-1.5">
                 <Target size={12} className="shrink-0 mt-0.5" />
                 <span>
-                    {t('goals.footnote')} {t('goals.dead_points_note', { points: DEAD_POINTS_PER_T5 })}
+                    {t('goals.footnote', { kingdom: BRANDING.kingdomNumber })} {t('goals.dead_points_note', { points: DEAD_POINTS_PER_T5 })}
                 </span>
             </p>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRole, ROLES } from '../context/RoleContext';
+import { BRANDING } from '../config/branding';
 import AccessGate from '../components/ui/AccessGate';
 import PageHeader from '../components/ui/PageHeader';
 import RaceView from '../components/kvk/RaceView';
@@ -31,7 +32,7 @@ const KvKRacePage = () => {
                     <Flag size={14} weight="fill" />
                     {t('kvk_hub.domain_race')}
                 </span>
-                <span className="text-xs text-slate-500">{t('kvk_hub.domain_race_note')}</span>
+                <span className="text-xs text-slate-500">{t('kvk_hub.domain_race_note', { kingdom: BRANDING.kingdomNumber })}</span>
             </div>
             <RaceView />
         </div>
