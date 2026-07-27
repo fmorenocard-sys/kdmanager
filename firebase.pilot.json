@@ -23,7 +23,7 @@
   },
   "firestore": [
     {
-      "database": "kd3341",
+      "database": "kdmanagerdb",
       "rules": "firestore.rules",
       "indexes": "firestore.indexes.json"
     }
