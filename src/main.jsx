@@ -3,12 +3,19 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './i18n'
 import App from './App.jsx'
-import { pageTitle } from './config/branding'
+import { pageTitle, BRANDING } from './config/branding'
 
 // Marque blanche : le titre d'onglet suit le royaume configuré. Défini en JS
 // plutôt que dans index.html pour éviter un %VITE_%% non résolu si une variable
 // manque (le défaut retombe sur « Kingdom Manager Unitas 2997 »).
 document.title = pageTitle
+
+// Idem pour le favicon (statique dans index.html, sans défaut env) : on le
+// pointe au runtime sur le logo du royaume configuré (branding.faviconUrl).
+{
+  const favicon = document.querySelector('link[rel="icon"]')
+  if (favicon && BRANDING.faviconUrl) favicon.href = BRANDING.faviconUrl
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

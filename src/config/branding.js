@@ -23,6 +23,13 @@ export const BRANDING = {
     kingdomNumber: env.VITE_KINGDOM_NUMBER || '2997',
     /** Logo (fichier dans public/ ou URL). Un royaume peut remplacer le fichier. */
     logoUrl: env.VITE_LOGO_URL || '/logo.png',
+    /** Favicon de l'onglet. Suit le logo par défaut ; surchargeable via VITE_FAVICON_URL. */
+    faviconUrl: env.VITE_FAVICON_URL || env.VITE_LOGO_URL || '/logo.png',
+    /**
+     * Avatar par défaut (fallback quand aucun avatar joueur n'est trouvé).
+     * Suit le logo par défaut ; surchargeable via VITE_DEFAULT_AVATAR_URL.
+     */
+    defaultAvatarUrl: env.VITE_DEFAULT_AVATAR_URL || env.VITE_LOGO_URL || '/logo.png',
 };
 
 /** Titre d'onglet : « Kingdom Manager Unitas 2997 ». */

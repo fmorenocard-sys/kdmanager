@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useContext } from 'react';
 import avatarMapping from '../../data/player-avatars.json';
 import { DataContext } from '../../context/DataContext';
+import { BRANDING } from '../../config/branding';
 
 const Avatar = ({
     src,
@@ -74,7 +75,7 @@ const Avatar = ({
                 ${className}
             `}>
                 <img
-                    src="/logo.png"
+                    src={BRANDING.defaultAvatarUrl}
                     alt="Default Avatar"
                     className="w-full h-full object-cover opacity-80"
                 />
