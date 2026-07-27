@@ -13,6 +13,7 @@ const LANGS = [
     { code: 'pl', label: 'PL', name: 'Polski' },
     { code: 'es', label: 'ES', name: 'Español' },
     { code: 'vi', label: 'VI', name: 'Tiếng Việt' },
+    { code: 'it', label: 'IT', name: 'Italiano' },
 ];
 
 const LanguageSwitcher = () => {

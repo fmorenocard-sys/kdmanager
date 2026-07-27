@@ -32,6 +32,10 @@ functions/serviceAccountKey.json
 functions/service-account.json
 functions/test-discord-token.js
 *serviceAccount*.json
+# Pilot service-account keys (any Firebase project key placed in functions/)
+functions/kd-41-manager.json
+functions/kd-*-manager.json
+functions/*-firebase-adminsdk-*.json
 
 # User data & log dumps — may contain personal data or tokens
 users.json

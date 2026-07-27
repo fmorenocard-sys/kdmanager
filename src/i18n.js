@@ -11,13 +11,14 @@ import ar from './locales/ar/translation.json';
 import pl from './locales/pl/translation.json';
 import es from './locales/es/translation.json';
 import vi from './locales/vi/translation.json';
+import it from './locales/it/translation.json';
 
 i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         fallbackLng: 'en',
-        supportedLngs: ['en', 'fr', 'de', 'tr', 'uk', 'ar', 'pl', 'es', 'vi'],
+        supportedLngs: ['en', 'fr', 'de', 'tr', 'uk', 'ar', 'pl', 'es', 'vi', 'it'],
         detection: {
             order: ['localStorage', 'navigator'],
             caches: ['localStorage'],
@@ -33,6 +34,7 @@ i18n
             pl: { translation: pl },
             es: { translation: es },
             vi: { translation: vi },
+            it: { translation: it },
         },
         interpolation: { escapeValue: false },
     });

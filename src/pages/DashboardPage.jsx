@@ -11,6 +11,7 @@ import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
 
 import PageHeader from '../components/ui/PageHeader';
+import { BRANDING } from '../config/branding';
 
 // Trésorerie (maquette Dashboard Home B) — couleurs par tokens pour le mode clair
 const TREASURY_RESOURCES = [
@@ -133,7 +134,7 @@ const DashboardPage = () => {
 
             {/* Header / Actions */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <PageHeader icon={CastleTurret} title={t('dashboard.title')} subtitle="Kingdom 2997" />
+                <PageHeader icon={CastleTurret} title={t('dashboard.title')} subtitle={`Kingdom ${BRANDING.kingdomNumber}`} />
             </div>
 
             <DataRefreshControl />
