@@ -5,6 +5,8 @@ import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RoleProvider, useRole, ROLES } from './context/RoleContext';
 import { BRANDING } from './config/branding';
+import { isModuleEnabled } from './config/modules';
+import ModuleDisabled from './components/ui/ModuleDisabled';
 import { LangProvider } from './context/LangContext';
 import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Hammer } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
@@ -38,7 +40,9 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
         { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
     ] : []),
     { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
-  ];
+  // Activation de modules par instance (F-023) : masque les modules optionnels
+  // désactivés. Les modules fixes (absents de la map) passent toujours.
+  ].filter((item) => isModuleEnabled(item.id));
   const isKing = isAuthorized([ROLES.KING]);
   const adminActive = currentPath === '/admin' || currentPath.startsWith('/admin/');
 
@@ -285,11 +289,11 @@ const MainContent = () => {
               <Route path="/" element={<DashboardPage />} />
               <Route path="/kvk" element={<KvKPerformancePage />} />
               <Route path="/war-tracker" element={<WarTrackerPage />} />
-              <Route path="/trophies" element={<KingdomTrophiesPage />} />
-              <Route path="/deadweight" element={<DeadweightPage />} />
+              <Route path="/trophies" element={isModuleEnabled('trophies') ? <KingdomTrophiesPage /> : <ModuleDisabled />} />
+              <Route path="/deadweight" element={isModuleEnabled('deadweight') ? <DeadweightPage /> : <ModuleDisabled />} />
               <Route path="/kvk-race" element={<KvKRacePage />} />
               <Route path="/admin" element={<AdminPage />} />
-              <Route path="/bank" element={<BankPage />} />
+              <Route path="/bank" element={isModuleEnabled('bank') ? <BankPage /> : <ModuleDisabled />} />
               <Route path="/profile" element={<ProfilePage />} />
               {/* Fallback route */}
               <Route path="*" element={<Navigate to="/" replace />} />

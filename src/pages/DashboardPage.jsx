@@ -12,6 +12,7 @@ import Avatar from '../components/ui/Avatar';
 
 import PageHeader from '../components/ui/PageHeader';
 import { BRANDING } from '../config/branding';
+import { isModuleEnabled } from '../config/modules';
 
 // Trésorerie (maquette Dashboard Home B) — couleurs par tokens pour le mode clair
 const TREASURY_RESOURCES = [
@@ -316,9 +317,11 @@ const DashboardPage = () => {
                 </div>
             </section>
 
-            {/* Ligne 50/50 : Trésorerie + Total Power (maquette Dashboard Home B) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-                {/* Kingdom Treasury */}
+            {/* Ligne 50/50 : Trésorerie + Total Power (maquette Dashboard Home B).
+                Cascade F-023 : si le module Banque est désactivé, le bloc Trésorerie
+                disparaît et l'historique de pouvoir passe pleine largeur. */}
+            <div className={`grid grid-cols-1 gap-6 items-stretch ${isModuleEnabled('bank') ? 'lg:grid-cols-2' : ''}`}>
+                {isModuleEnabled('bank') && (
                 <section className="v2-glass p-4 md:p-5 flex flex-col min-w-0">
                     <h3 className="flex items-center gap-2.5 text-[15px] font-semibold text-white mb-4">
                         <Coins size={20} weight="duotone" className="text-amber-400" />
@@ -366,6 +369,7 @@ const DashboardPage = () => {
                         </div>
                     )}
                 </section>
+                )}
 
                 {/* Power History with KP */}
                 <section className="v2-glass v2-indigo p-4 md:p-5 flex flex-col min-w-0 overflow-hidden">

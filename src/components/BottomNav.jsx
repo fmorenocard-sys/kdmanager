@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CastleTurret, Shield, TrendingUp, Trophy, Skull, Bank, Flag } from './ui/icons';
 import { useRole, ROLES } from '../context/RoleContext';
+import { isModuleEnabled, ROUTE_MODULE } from '../config/modules';
 
 // v2 domain iconography + active gradient pill (maquette M4 : 6 entrées max,
 // grille fixe sans scroll — la Course vit dans le Hub KvK, l'Admin dans le drawer)
@@ -20,7 +21,10 @@ const BottomNav = () => {
     const { t } = useTranslation();
     const { isAuthorized } = useRole();
     const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
-    const items = NAV_ITEMS.filter(i => !i.leadership || isLeadership);
+    const items = NAV_ITEMS
+        .filter(i => !i.leadership || isLeadership)
+        // Activation de modules par instance (F-023) : masque les optionnels désactivés.
+        .filter(i => { const m = ROUTE_MODULE[i.path]; return !m || isModuleEnabled(m); });
 
     return (
         <nav className="fixed bottom-0 start-0 end-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/10 safe-area-inset-bottom">

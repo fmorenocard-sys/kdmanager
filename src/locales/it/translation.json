@@ -45,7 +45,9 @@
     "min_chars": "Digita almeno 3 caratteri...",
     "toggle_theme": "Cambia tema chiaro/scuro",
     "light": "Chiaro",
-    "dark": "Scuro"
+    "dark": "Scuro",
+    "module_disabled": "Modulo non attivo",
+    "module_disabled_hint": "Questo modulo non è attivo per questo regno."
   },
   "dashboard": {
     "title": "Pannello",

@@ -45,7 +45,9 @@
     "min_chars": "En az 3 karakter girin...",
     "toggle_theme": "Açık/koyu temayı değiştir",
     "light": "Açık",
-    "dark": "Koyu"
+    "dark": "Koyu",
+    "module_disabled": "Modül etkin değil",
+    "module_disabled_hint": "Bu modül bu krallık için etkin değil."
   },
   "dashboard": {
     "title": "Panel",

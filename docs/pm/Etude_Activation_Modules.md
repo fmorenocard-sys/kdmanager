@@ -18,14 +18,15 @@
 
 ---
 
-## ⚖️ Décisions du Roi (2026-07-27)
+## ⚖️ Décisions du Roi (2026-07-27, corrigées le même jour)
 
 | Décision | Arbitrage |
 | :--- | :--- |
-| **Classification des modules** | **Fixes** (jamais désactivables) : Dashboard, Profil, Admin, War Tracker, Hub KvK — onglets **Performance** et **Progressions**. **Optionnels** (activables/désactivables par instance) : Banque, Trophées, Deadweight, et l'onglet **Course (KvK Race)**. Tranche A-016 (ci-dessous, §6). |
-| **Granularité** | Confirmée à deux niveaux, comme proposé au §2/§3 : **page entière** pour Banque/Trophées/Deadweight, **onglet interne** pour Course (le conteneur Hub KvK reste fixe). |
-| **Cascade Dashboard** | Le Dashboard est fixe, mais il embarque un **bloc Banque** et un **bloc évolution de pouvoir**. Le bloc Banque doit **disparaître** si le module Banque est désactivé sur l'instance — le toggle se propage aux blocs embarqués, pas seulement à la nav/aux routes. Le bloc évolution de pouvoir est un cas d'**état vide** (pas d'historique) — hors périmètre de cette étude, traité ailleurs. |
-| **Contexte pilote KD 3341** *(note, pas une décision d'implémentation)* | Trophées : pas suivi régulièrement aujourd'hui, « mais ça peut évoluer ». Deadweight : doctrine active. KvK Race : non déployé. À traduire en configuration lors du déploiement du pilote, pas dans cette étude. |
+| **Classification des modules** | **Fixes** (jamais désactivables) : Dashboard, Profil, Admin, War Tracker, Hub KvK **entier** — onglets **Performance**, **Progressions** et **Race/Course**. **Optionnels** (activables/désactivables par instance) : Banque, Trophées, Deadweight — **tous au niveau page**. Tranche A-016 (ci-dessous, §6). |
+| **Granularité** | **Corrigée : page uniquement.** Plus aucun module optionnel n'étant un onglet, la granularité « onglet » envisagée au §2/§3 initial n'est plus nécessaire — le mécanisme se réduit à un filtre au niveau page. |
+| **Historique de la décision — KvK Race** | Initialement classé **optionnel, granularité onglet** (c'était le cas déclencheur de cette étude — KD 3341 sans coalition de course). **Reclassé FIXE le jour même** : « la KvK Race a forcément lieu du moment qu'il y a un KvK, donc elle doit être présente » (le Roi). Conséquence : quand aucun scan de course n'est chargé sur une instance, l'onglet Race affiche un **état vide** (composant `EmptyState` existant), il n'est **pas masqué** — c'est un problème d'hygiène UX (hors périmètre de cette étude, cf. encadré en tête de document), pas un problème d'activation de module. |
+| **Cascade Dashboard** *(inchangée)* | Le Dashboard est fixe, mais il embarque un **bloc Banque** et un **bloc évolution de pouvoir**. Le bloc Banque doit **disparaître** si le module Banque est désactivé sur l'instance — le toggle se propage aux blocs embarqués, pas seulement à la nav/aux routes. Le bloc évolution de pouvoir est un cas d'**état vide** (pas d'historique) — hors périmètre de cette étude, traité ailleurs. |
+| **Contexte pilote KD 3341** *(note, pas une décision d'implémentation)* | Trophées : pas suivi régulièrement aujourd'hui, « mais ça peut évoluer ». Deadweight : doctrine active. KvK Race : non déployé — l'onglet restera visible sur l'instance et affichera son état vide, il ne sera pas désactivé (Race n'est plus désactivable). |
 
 Ces décisions remplacent les hypothèses ouvertes du §6 initial (A-016 à A-018,
 désormais tranchées ou reformulées) et sont reflétées dans les sections
@@ -76,51 +77,59 @@ Lu depuis `src/App.jsx`, `src/components/BottomNav.jsx`, `src/pages/`.
 |---|---|---|---|---|---|
 | **Dashboard** | `/` | Sidebar + BottomNav | F-001 / P-001 | Tous | **Fixe** — mais embarque un bloc Banque (cascade, voir plus bas) et un bloc évolution de pouvoir (état vide, hors périmètre) |
 | **War Tracker** | `/war-tracker` (disponibilités, War Dashboard, onglet Objectifs F-014) | Sidebar + BottomNav | F-011/F-013/F-014 / P-002 | Warriors+ | **Fixe** — module « hook » gratuit identifié par l'étude commerciale (§5bis), le cœur du produit |
-| **KvK Performance** (onglets Performance / Comptes secondaires / Progressions / **Course**) | `/kvk` | Sidebar + BottomNav | F-008/F-015/F-016/F-022 / P-003 | Tous (onglets Fillers et Progressions Discord-gated BR-008, Timeline King/Officer BR-011) | Conteneur + onglets **Performance** et **Progressions** = **fixes**. Onglet **Course = optionnel** (voir ligne KvK Race) |
-| **Trophées** | `/trophies` | Sidebar + BottomNav | F-004 / P-004 | Tous | **Optionnel** — un royaume qui ne suit pas MGE/Zenith n'a rien à y montrer (cas KD 3341 : pas suivi aujourd'hui, mais susceptible d'évoluer) |
-| **Deadweight** | `/deadweight` | Sidebar + BottomNav (King/Officer, BR-009) | F-002 / P-005 | King/Officer | **Optionnel** — suppose une doctrine de suivi des inactifs que tout royaume n'a pas forcément adoptée (KD 3341 : doctrine active — resterait activé) |
-| **Banque** | `/bank` | Sidebar + BottomNav | F-003 / P-006 | Tous | **Optionnel** — suppose une banque de royaume organisée ; désactiver ce module fait **cascader** la disparition du bloc Banque du Dashboard |
-| **KvK Race** (course de coalition) | `/kvk-race` (legacy, compat) + onglet **Course** dans le Hub KvK | Aucune entrée de nav dédiée depuis la refonte — vit comme onglet | F-018/F-019/F-020 / P-008 | King/Officer | **Optionnel, granularité onglet** — c'est le cas déclencheur. Suppose une coalition et un moteur de scan de course déployés (E-005) ; KD 3341 n'a ni l'un ni l'autre aujourd'hui |
+| **KvK Performance** (onglets Performance / Comptes secondaires / Progressions / **Course**) | `/kvk` | Sidebar + BottomNav | F-008/F-015/F-016/F-022 / P-003 | Tous (onglets Fillers et Progressions Discord-gated BR-008, Timeline King/Officer BR-011) | **Fixe — conteneur et tous ses onglets**, y compris Course (voir ligne KvK Race pour l'historique de la décision) |
+| **Trophées** | `/trophies` | Sidebar + BottomNav | F-004 / P-004 | Tous | **Optionnel (page)** — un royaume qui ne suit pas MGE/Zenith n'a rien à y montrer (cas KD 3341 : pas suivi aujourd'hui, mais susceptible d'évoluer) |
+| **Deadweight** | `/deadweight` | Sidebar + BottomNav (King/Officer, BR-009) | F-002 / P-005 | King/Officer | **Optionnel (page)** — suppose une doctrine de suivi des inactifs que tout royaume n'a pas forcément adoptée (KD 3341 : doctrine active — resterait activé) |
+| **Banque** | `/bank` | Sidebar + BottomNav | F-003 / P-006 | Tous | **Optionnel (page)** — suppose une banque de royaume organisée ; désactiver ce module fait **cascader** la disparition du bloc Banque du Dashboard |
+| **KvK Race** (course de coalition) | `/kvk-race` (legacy, compat) + onglet **Course** dans le Hub KvK | Aucune entrée de nav dédiée depuis la refonte — vit comme onglet | F-018/F-019/F-020 / P-008 | King/Officer | **Fixe.** *Historique* : classé optionnel à granularité onglet dans la première version de cette étude (c'était le cas déclencheur — KD 3341 sans coalition de course) ; **reclassé fixe le 2026-07-27** — « la KvK Race a forcément lieu du moment qu'il y a un KvK » (le Roi). Sans scan chargé : état vide (`EmptyState`), pas de masquage |
 | **Admin** | `/admin` | Sidebar (zone dédiée) | — *(non listé en P-xxx dans SSOT — écart mineur à signaler à la QA, hors périmètre ici)* | King | **Fixe** — c'est l'endroit où vivraient les interrupteurs de modules ; il doit rester présent tant qu'au moins un module a de la config |
 | **Profil** | `/profile` | Menu compte | P-007 | Tous | **Fixe** — personnel, pas un module métier |
 
-**Lecture** : le module réellement déclencheur (KvK Race) n'est déjà **pas**
-un item de navigation de premier niveau — c'est un **onglet** à l'intérieur de
-la page KvK Performance. Le Roi confirme que le mécanisme d'activation opère
-donc à deux granularités, pas une seule : **page complète** (Trophées,
-Deadweight, Banque) et **onglet interne** (Course dans le Hub KvK — les
-onglets Performance et Progressions du même conteneur restent fixes). Un
-registre par ID de module, consommé indépendamment à chaque endroit
-d'affichage, couvre les deux cas sans code spécifique par surface.
+**Lecture (corrigée le 2026-07-27).** Le module initialement déclencheur de
+cette étude (KvK Race) a finalement été reclassé **fixe** par le Roi : une
+course a lieu dès qu'il y a un KvK, elle ne peut donc jamais être « en trop »
+sur une instance ; l'absence de scan relève d'un état vide, pas d'une
+désactivation. Conséquence directe : **plus aucun module optionnel n'est un
+onglet** — les trois modules optionnels (Banque, Trophées, Deadweight) sont
+tous des pages de premier niveau. Le mécanisme d'activation se réduit donc à
+**une seule granularité, la page** ; la granularité « onglet » envisagée dans
+la première version de cette étude n'est plus nécessaire et est retirée du
+périmètre.
 
-**Exigence ferme — cascade Dashboard.** Le Dashboard est fixe, mais n'est pas
-monolithique : il embarque un bloc « données Banque » qui dépend directement
-du module Banque. Si Banque est désactivé sur une instance, ce bloc doit
-disparaître du Dashboard — le registre de modules ne filtre donc pas
-seulement la nav/les routes de premier niveau, il doit aussi être consultable
-par un composant enfant (le bloc Banque du Dashboard) pour se masquer
-lui-même. Le second bloc du Dashboard, évolution de pouvoir, ne dépend
-d'aucun module optionnel : son absence de données relève d'un état vide, hors
-périmètre de cette étude (cf. encadré en tête de document).
+**Exigence ferme — cascade Dashboard (inchangée).** Le Dashboard est fixe,
+mais n'est pas monolithique : il embarque un bloc « données Banque » qui
+dépend directement du module Banque. Si Banque est désactivé sur une
+instance, ce bloc doit disparaître du Dashboard — le registre de modules ne
+filtre donc pas seulement la nav/les routes de premier niveau, il doit aussi
+être consultable par un composant enfant (le bloc Banque du Dashboard) pour
+se masquer lui-même. Le second bloc du Dashboard, évolution de pouvoir, ne
+dépend d'aucun module optionnel : son absence de données relève d'un état
+vide, hors périmètre de cette étude (cf. encadré en tête de document).
 
 ---
 
 ## 3. Proposition — un registre de modules, en deux temps
 
 **Principe** : une **troisième dimension** de filtrage, orthogonale à celle
-qui existe déjà. Aujourd'hui, `Sidebar`, `BottomNav` et les onglets du Hub KvK
-filtrent déjà leurs listes par rôle (`isAuthorized([...])`, BR-008/BR-009/
-BR-011). Il s'agit d'ajouter le même genre de filtre, mais sur un axe
-différent :
+qui existe déjà. Aujourd'hui, `Sidebar` et `BottomNav` filtrent déjà leurs
+listes par rôle (`isAuthorized([...])`, BR-008/BR-009/BR-011). Il s'agit
+d'ajouter le même genre de filtre, mais sur un axe différent :
 
 - **« Qui peut voir ce module »** = rôle (existant, ne change pas).
 - **« Ce royaume propose-t-il ce module »** = activation d'instance (nouveau,
   objet de cette étude).
 
-Les deux se cumulent : KvK Race reste réservé King/Officer **et** peut être
-désactivé pour un royaume qui n'en a pas l'usage — les deux filtres
-s'appliquent indépendamment, exactement comme le code le fait déjà pour les
-rôles à trois endroits distincts (Sidebar, BottomNav, tabs du Hub KvK).
+Les deux se cumulent : Deadweight reste réservé King/Officer **et** peut être
+désactivé pour un royaume qui n'applique pas cette doctrine — les deux
+filtres s'appliquent indépendamment, exactement comme le code le fait déjà
+pour les rôles dans Sidebar et BottomNav.
+
+**Granularité — page uniquement (corrigé le 2026-07-27).** Les trois modules
+optionnels (Banque, Trophées, Deadweight) sont tous des pages de premier
+niveau ; KvK Race, seul module qui aurait justifié une granularité « onglet »,
+a été reclassé fixe (§2). Le mécanisme ne filtre donc que des entrées de
+navigation et des routes de page — il n'a plus besoin de filtrer une liste
+d'onglets internes au Hub KvK.
 
 ### (a) MVP — build-time, aligné sur `branding.js`
 
@@ -129,31 +138,32 @@ la marque blanche : des variables d'environnement Vite, lues au build, avec
 des valeurs par défaut qui ne changent rien pour Unitas 2997.
 
 - Un fichier `src/config/modules.js` miroir de `branding.js` : un objet
-  `MODULES = { kvkRace: true, trophies: true, deadweight: true, bank: true }`
-  par défaut (2997 ne change rien), surchargeable par `.env.pilot` (ex.
-  `VITE_MODULE_KVK_RACE=false` pour KD 3341).
-- `Sidebar`, `BottomNav` et la liste d'onglets du Hub KvK filtrent leur tableau
-  d'items par `MODULES.xxx`, en plus du filtre de rôle déjà présent — un
-  `.filter()` de plus, pas une nouvelle architecture.
+  `MODULES = { bank: true, trophies: true, deadweight: true }` par défaut
+  (2997 ne change rien), surchargeable par `.env.pilot` (ex.
+  `VITE_MODULE_TROPHIES=false` pour KD 3341).
+- `Sidebar` et `BottomNav` filtrent leur tableau d'items par `MODULES.xxx`, en
+  plus du filtre de rôle déjà présent — un `.filter()` de plus, pas une
+  nouvelle architecture. Le Hub KvK et ses onglets ne sont plus concernés :
+  ils sont fixes dans leur intégralité.
 - Les `Route` correspondantes ne sont **pas** retirées du routeur (voir §5,
   risque des deep-links) : elles rendent un écran « module non disponible sur
   ce royaume » plutôt que de disparaître silencieusement.
 - **Modules concernés au MVP — classification tranchée par le Roi** :
-  **optionnels** (interrupteur) : Banque, Trophées, Deadweight, onglet Course
-  (KvK Race). **Fixes** (aucun interrupteur, socle toujours actif) :
-  Dashboard, Profil, Admin, War Tracker, et les onglets Performance +
-  Progressions du Hub KvK.
-- **Cascade Dashboard (exigence ferme du Roi).** `MODULES.bank` n'est pas
-  consommé que par Sidebar/BottomNav : le bloc Banque du Dashboard doit
-  l'importer aussi et se masquer lui-même si `false`. Le registre doit donc
-  être un module partagé et importable depuis n'importe quel composant, pas
-  seulement depuis les trois surfaces de navigation — c'est le seul écart par
-  rapport à un simple copier-coller du pattern `branding.js`, qui n'a jusqu'ici
-  jamais eu besoin d'être lu par un composant de contenu.
-- **Effort : S.** Même famille de changement que `branding.js` — un fichier de
-  config, un `.filter()` par surface d'affichage plus une lecture directe dans
-  le bloc Banque du Dashboard, pas de nouvelle collection Firestore, pas de
-  schéma. Compatible avec l'approche « instance clonée, zéro refonte » déjà
+  **optionnels** (interrupteur, niveau page) : Banque, Trophées, Deadweight.
+  **Fixes** (aucun interrupteur, socle toujours actif) : Dashboard, Profil,
+  Admin, War Tracker, et le Hub KvK entier (Performance, Progressions, Race).
+- **Cascade Dashboard (exigence ferme du Roi, inchangée).** `MODULES.bank`
+  n'est pas consommé que par Sidebar/BottomNav : le bloc Banque du Dashboard
+  doit l'importer aussi et se masquer lui-même si `false`. Le registre doit
+  donc être un module partagé et importable depuis n'importe quel composant,
+  pas seulement depuis les deux surfaces de navigation — c'est le seul écart
+  par rapport à un simple copier-coller du pattern `branding.js`, qui n'a
+  jusqu'ici jamais eu besoin d'être lu par un composant de contenu.
+- **Effort : S** (revu à la baisse par la simplification à une seule
+  granularité). Même famille de changement que `branding.js` — un fichier de
+  config, un `.filter()` par surface de navigation plus une lecture directe
+  dans le bloc Banque du Dashboard, pas de nouvelle collection Firestore, pas
+  de schéma. Compatible avec l'approche « instance clonée, zéro refonte » déjà
   retenue pour KD 3341 (`Plan_Pilote_KvK.md`).
 
 ### (b) Cible — runtime, doc Firestore + toggle admin (Roi)
@@ -168,10 +178,12 @@ par un redéploiement (plusieurs royaumes, ou un Roi qui veut ajuster seul) :
   changement de forme).
 - Une nouvelle section « Modules » dans `AdminPage`, roi-only, dans le même
   rail sticky que Data/Campagne/Course/Maintenance déjà en place — une liste
-  de toggles, un par module du §2, effet immédiat (pas de redéploiement,
-  c'est tout l'intérêt du passage au runtime).
+  de toggles, un par module optionnel du §2 (Banque, Trophées, Deadweight),
+  effet immédiat (pas de redéploiement, c'est tout l'intérêt du passage au
+  runtime).
 - Un contexte léger (`ModulesContext`, calqué sur `RoleContext`) alimente
-  Sidebar/BottomNav/onglets/Routes à la place de l'import statique `MODULES`.
+  Sidebar/BottomNav/Routes/le bloc Banque du Dashboard à la place de l'import
+  statique `MODULES`.
 - **Qui tranche** : le Roi uniquement — cohérent avec le fait que toute la
   configuration d'`AdminPage` (campagne, course, maintenance) est déjà
   King-only.
@@ -199,12 +211,12 @@ l'anticipation non demandée, dans un projet où le multi-tenant lui-même
 ## 5. Impact technique & risques
 
 - **Deep-links vers un module désactivé.** Un lien Discord ou un favori vers
-  `/kvk-race` sur une instance sans course de coalition ne doit ni 404 ni
-  planter en tentant de lire un document Firestore qui n'existe probablement
-  même pas pour ce royaume. Recommandation : garder la `Route` déclarée et
-  rendre un écran explicite (réutiliser le composant `AccessGate` existant,
-  avec une copie et une icône distinctes de celle des restrictions de rôle —
-  voir point suivant).
+  `/bank`, `/trophies` ou `/deadweight` sur une instance où le module est
+  désactivé ne doit ni 404 ni planter en tentant de lire un document
+  Firestore qui n'existe probablement même pas pour ce royaume. Recommandation :
+  garder la `Route` déclarée et rendre un écran explicite (réutiliser le
+  composant `AccessGate` existant, avec une copie et une icône distinctes de
+  celle des restrictions de rôle — voir point suivant).
 - **Interaction avec le RBAC existant.** Les deux filtres (rôle, activation)
   se cumulent mais ne doivent pas partager le même message. Le texte actuel
   de BR-009 (« Accès restreint, connectez-vous via Discord ») serait **faux**
@@ -225,8 +237,8 @@ l'anticipation non demandée, dans un projet où le multi-tenant lui-même
   lisibles au niveau des règles — cf. BR-009). À documenter explicitement pour
   ne pas laisser croire qu'« éteindre » un module ferme un accès Firestore.
 - **Bot Discord.** `/mystats`, `/mykvk`, `/mykvkgoals` ne recoupent aujourd'hui
-  aucun des modules candidats à la désactivation (Trophées, Deadweight,
-  Banque, Course) d'après une lecture rapide des commandes — mais si un futur
+  aucun des trois modules optionnels (Trophées, Deadweight, Banque) d'après
+  une lecture rapide des commandes — mais si un futur
   module désactivable devait avoir un équivalent bot, celui-ci devrait lire la
   **même** source de vérité (le doc Firestore en cible, pas une resaisie côté
   Functions) pour éviter que le bot réponde pour un module que le web a
@@ -239,14 +251,17 @@ l'anticipation non demandée, dans un projet où le multi-tenant lui-même
 Statut au 2026-07-27, après l'arbitrage du Roi (voir encadré en tête de
 document) :
 
-- **A-016 — ✅ Tranchée.** Classification confirmée : optionnels = Banque,
-  Trophées, Deadweight, onglet Course (KvK Race) ; fixes = Dashboard, Profil,
-  Admin, War Tracker, Hub KvK (onglets Performance + Progressions). Pour
-  KD 3341 spécifiquement : Trophées non suivi aujourd'hui (susceptible
-  d'évoluer — pas figé), Deadweight actif (doctrine en place), KvK Race non
-  déployé. Ces trois faits sont une **note contextuelle pour le pilote**, pas
-  une décision d'implémentation — la configuration réelle de l'instance
-  3341 se règle au déploiement, pas dans cette étude.
+- **A-016 — ✅ Tranchée, corrigée le 2026-07-27 (même jour).** Classification
+  finale : optionnels (page) = Banque, Trophées, Deadweight ; fixes =
+  Dashboard, Profil, Admin, War Tracker, Hub KvK **entier** (Performance,
+  Progressions, Race). KvK Race, d'abord classé optionnel à granularité
+  onglet, est reclassé fixe — une course a lieu dès qu'il y a un KvK ; sans
+  scan, l'onglet affiche un état vide. Pour KD 3341 spécifiquement : Trophées
+  non suivi aujourd'hui (susceptible d'évoluer — pas figé), Deadweight actif
+  (doctrine en place), Race non déployé (l'onglet restera visible, à l'état
+  vide). Ces faits sont une **note contextuelle pour le pilote**, pas une
+  décision d'implémentation — la configuration réelle de l'instance 3341 se
+  règle au déploiement, pas dans cette étude.
 - **A-017 — non retranchée, reste l'hypothèse de travail du MVP.** Le Roi n'a
   pas demandé que désactiver un module ferme aussi les chemins d'écriture
   (ex. formulaires de contribution Banque) — le MVP reste donc
@@ -266,11 +281,12 @@ Construire la version **(a) build-time** maintenant — même famille de coût
 qu'une variable de `branding.js`, cohérente avec le traitement déjà réservé à
 KD 3341 (instance clonée, maintenue à la main), en intégrant l'exigence de
 cascade Dashboard (§3a) dès le MVP — ce n'est pas un lot séparé, c'est une
-conséquence directe de la classification tranchée par le Roi. Ne pas
-construire la version runtime (b) tant qu'aucun des deux signaux de bascule
-(§3) ne s'est produit : ce serait investir dans une généralisation avant que
-la douleur qu'elle résout (redéploiement pour changer un module) se soit
-manifestée.
+conséquence directe de la classification tranchée par le Roi. La granularité
+« onglet » envisagée initialement disparaît du périmètre (§2/§3) : le
+mécanisme ne filtre plus que des pages. Ne pas construire la version runtime
+(b) tant qu'aucun des deux signaux de bascule (§3) ne s'est produit : ce
+serait investir dans une généralisation avant que la douleur qu'elle résout
+(redéploiement pour changer un module) se soit manifestée.
 
 **Références définitives**, inscrites dans les référentiels suite à
 l'arbitrage : épic `E-006`, feature `F-023`, règle métier `BR-015`, user
@@ -279,12 +295,13 @@ runtime + toggle Admin). Voir `ProductBacklog.md`, `FeatureInventory.md`,
 `docs/qa/SSOT.md`.
 
 **Prochaines étapes** :
-1. Configuration réelle du pilote KD 3341 (Trophées off, Deadweight on, Course
-   off) au moment du déploiement — pas un chantier de cette étude.
+1. Configuration réelle du pilote KD 3341 (Trophées off, Deadweight on) au
+   moment du déploiement — pas un chantier de cette étude. L'onglet Race
+   reste visible sur l'instance et affichera son état vide tant qu'aucun scan
+   n'est chargé.
 2. Implémentation `US-024` : `src/config/modules.js`, filtre dans Sidebar/
-   BottomNav/tabs du Hub KvK, lecture directe dans le bloc Banque du
-   Dashboard (cascade), écran « module non disponible » réutilisant
-   `AccessGate`.
+   BottomNav, lecture directe dans le bloc Banque du Dashboard (cascade),
+   écran « module non disponible » réutilisant `AccessGate`.
 
 ---
 

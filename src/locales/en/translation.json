@@ -45,7 +45,9 @@
     "min_chars": "Type at least 3 characters...",
     "toggle_theme": "Toggle light/dark theme",
     "light": "Light",
-    "dark": "Dark"
+    "dark": "Dark",
+    "module_disabled": "Module not enabled",
+    "module_disabled_hint": "This module is not enabled for this kingdom."
   },
   "dashboard": {
     "title": "Dashboard",

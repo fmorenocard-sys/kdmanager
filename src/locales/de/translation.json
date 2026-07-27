@@ -45,7 +45,9 @@
     "min_chars": "Mindestens 3 Zeichen eingeben...",
     "toggle_theme": "Helles/dunkles Design umschalten",
     "light": "Hell",
-    "dark": "Dunkel"
+    "dark": "Dunkel",
+    "module_disabled": "Modul nicht aktiviert",
+    "module_disabled_hint": "Dieses Modul ist für dieses Königreich nicht aktiviert."
   },
   "dashboard": {
     "title": "Dashboard",

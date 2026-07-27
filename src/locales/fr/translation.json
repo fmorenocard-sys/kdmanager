@@ -45,7 +45,9 @@
     "min_chars": "Tapez au moins 3 caractères...",
     "toggle_theme": "Basculer thème clair/sombre",
     "light": "Clair",
-    "dark": "Sombre"
+    "dark": "Sombre",
+    "module_disabled": "Module non activé",
+    "module_disabled_hint": "Ce module n'est pas activé pour ce royaume."
   },
   "dashboard": {
     "title": "Tableau de Bord",
