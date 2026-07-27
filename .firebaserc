@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "kd-97-manager"
+    "default": "kd-97-manager",
+    "pilot": "kd-41-manager"
   },
   "targets": {},
   "etags": {}

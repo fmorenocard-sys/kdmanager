@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { RoleProvider, useRole, ROLES } from './context/RoleContext';
+import { BRANDING } from './config/branding';
 import { LangProvider } from './context/LangContext';
 import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Hammer } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
@@ -56,13 +57,13 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
       `}>
         <div className={`flex items-center gap-3 mb-8 transition-all duration-300 ${isOpen ? 'p-6' : 'p-4 justify-center'}`}>
           <img
-            src="/logo.png"
-            alt="Unitas Logo"
+            src={BRANDING.logoUrl}
+            alt={`${BRANDING.kingdomName} logo`}
             className={`object-cover rounded-full border-2 border-primary/50 shadow-[0_0_15px_rgba(148,163,184,0.3)] flex-shrink-0 transition-all duration-300 ${isOpen ? 'w-12 h-12' : 'w-10 h-10'}`}
           />
           {isOpen && (
             <div className="animate-in fade-in duration-300">
-              <h1 className="font-bold text-base tracking-tight leading-tight">Kingdom Manager<br /><span className="text-primary">Unitas 2997</span></h1>
+              <h1 className="font-bold text-base tracking-tight leading-tight">{BRANDING.appName}<br /><span className="text-primary">{BRANDING.kingdomName}</span></h1>
             </div>
           )}
         </div>
@@ -266,8 +267,8 @@ const MainContent = () => {
             </button>
             {/* Logo placeholder on mobile */}
             <div className="md:hidden flex items-center gap-2 min-w-0">
-              <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-full border border-primary/40 shrink-0" />
-              <span className="font-semibold text-sm text-white truncate">KD Manager</span>
+              <img src={BRANDING.logoUrl} alt="Logo" className="w-8 h-8 rounded-full border border-primary/40 shrink-0" />
+              <span className="font-semibold text-sm text-white truncate">{BRANDING.kingdomShort}</span>
             </div>
           </div>
 
@@ -297,10 +298,10 @@ const MainContent = () => {
 
           <footer className="mt-12 pt-6 border-t border-white/10 text-center flex flex-col items-center justify-center gap-2 opacity-80">
             <p className="text-sm text-slate-400">
-              &copy; {new Date().getFullYear()} Kingdom Manager &bull; Unitas 2997. All rights reserved.
+              &copy; {new Date().getFullYear()} {BRANDING.appName} &bull; {BRANDING.kingdomName}. All rights reserved.
             </p>
             <p className="text-xs text-slate-500">
-              Designed & Developed for Kingdom 2997
+              Designed & Developed for Kingdom {BRANDING.kingdomNumber}
             </p>
           </footer>
         </div>
