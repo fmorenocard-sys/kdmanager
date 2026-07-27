@@ -23,7 +23,9 @@ import { connectAuthEmulator } from "firebase/auth";
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app); // Initialize Analytics
 export const auth = getAuth(app);
-export const db = getFirestore(app, "kdmanagerdb");
+// Nom de la base Firestore — configurable pour la marque blanche (chaque royaume
+// a sa propre base). Défaut « kdmanagerdb » : 2997 est inchangé sans configuration.
+export const db = getFirestore(app, import.meta.env.VITE_FIRESTORE_DB || "kdmanagerdb");
 export const functions = getFunctions(app);
 
 // Use emulator for local dev if environment variable is set

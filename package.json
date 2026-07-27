@@ -14,7 +14,8 @@
     "test:goals": "node --test tests/kvkGoals.test.mjs tests/kvkGoals.parity.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-rules.test.mjs\"",
     "test:e2e": "firebase emulators:exec \"playwright test\"",
-    "test:e2e-ui": "firebase emulators:exec \"playwright test --ui\""
+    "test:e2e-ui": "firebase emulators:exec \"playwright test --ui\"",
+    "build:pilot": "vite build --mode pilot"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

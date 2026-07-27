@@ -163,8 +163,10 @@ export const DataProvider = ({ children }) => {
     const triggerSync = async () => {
         setState(prev => ({ ...prev, loading: true }));
         try {
-            // Call the Cloud Function
-            const response = await fetch("https://us-central1-kd-97-manager.cloudfunctions.net/syncData", {
+            // Call the Cloud Function — URL dérivée du projet configuré (marque
+            // blanche : chaque royaume appelle SA propre function, pas celle de 2997).
+            const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+            const response = await fetch(`https://us-central1-${projectId}.cloudfunctions.net/syncData`, {
                 method: 'GET', // or POST if needed, usually GET for simple triggers or POST for secure
                 mode: 'cors'
             });
