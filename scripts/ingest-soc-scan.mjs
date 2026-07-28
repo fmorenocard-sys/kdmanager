@@ -56,6 +56,10 @@ const ROSTER = String(arg('roster', 'detailed'));
 const MIN_POWER = Number(arg('min-power', 0)) || 0;
 // Keep only the top N governors by power (0 = no limit). e.g. --top 300 for the kingdom Top 300.
 const TOP = Number(arg('top', 0)) || 0;
+// --kvk-base : écrit AUSSI static_data/kvk avec initialPower = pouvoir du jour, pour
+// que ce scan devienne la RÉFÉRENCE FIGÉE des objectifs (F-027, KvkGoalsPanel préfère
+// kvk.initialPower). À lancer sur le scan de base au début du KvK (ex. 5 août).
+const KVK_BASE = process.argv.includes('--kvk-base');
 // A base scan is a starting point: no gains yet, so powerDiff defaults to 0.
 // Pass --keep-powerdiff to instead carry the previous KvK's power_difference.
 const KEEP_POWERDIFF = process.argv.includes('--keep-powerdiff');
@@ -177,10 +181,24 @@ if (TOP > 0 && list.length > TOP) {
 
 const doc = { list, updatedAt: new Date().toISOString(), source: `SoC scan ${path.basename(FILE)} (kingdom ${KINGDOM})` };
 
+// static_data/kvk (scan de base) : initialPower = pouvoir du jour, référence figée
+// des objectifs. finalPower = initialPower au départ (rien d'accumulé). Les scans
+// suivants pourront mettre à jour finalPower/totalKpGained/totalDead ; initialPower reste.
+const kvkDoc = KVK_BASE ? {
+    list: list.map((p) => ({ id: p.id, name: p.name, initialPower: p.power, finalPower: p.power })),
+    updatedAt: new Date().toISOString(),
+    source: `SoC BASE scan ${path.basename(FILE)} (kingdom ${KINGDOM}) — reference power for goals`,
+} : null;
+
 // ---- report + control JSON ----
 fs.mkdirSync(OUT_DIR, { recursive: true });
 const outFile = path.join(OUT_DIR, `players_${KINGDOM}.json`);
 fs.writeFileSync(outFile, JSON.stringify(doc, null, 2), 'utf8');
+if (kvkDoc) {
+    const kvkOut = path.join(OUT_DIR, `kvk_${KINGDOM}.json`);
+    fs.writeFileSync(kvkOut, JSON.stringify(kvkDoc, null, 2), 'utf8');
+    console.log(`[--kvk-base] static_data/kvk control JSON -> ${kvkOut} (${kvkDoc.list.length} joueurs, initialPower = pouvoir du scan)`);
+}
 
 const withDetail = list.filter((p) => p.deads !== undefined).length;
 const missingPower = list.filter((p) => p.power === undefined).length;
@@ -219,4 +237,19 @@ if (existing.exists) {
 
 console.log(`\nWriting static_data/players to project ${PROJECT} (kdmanagerdb)...`);
 await ref.set(doc);
-console.log(`WROTE static_data/players — ${list.length} governors. Done.`);
+console.log(`WROTE static_data/players — ${list.length} governors.`);
+
+// --- static_data/kvk (scan de base) : référence figée des objectifs ---
+if (kvkDoc) {
+    const kvkRef = db.collection('static_data').doc('kvk');
+    const kvkExisting = await kvkRef.get();
+    if (kvkExisting.exists) {
+        const kvkBackup = path.join(OUT_DIR, `backup_kvk_${PROJECT}_${stamp}.json`);
+        fs.writeFileSync(kvkBackup, JSON.stringify(kvkExisting.data(), null, 2), 'utf8');
+        console.log(`Backup of current static_data/kvk -> ${kvkBackup}`);
+    }
+    console.log(`Writing static_data/kvk (base scan, initialPower) to ${PROJECT} (kdmanagerdb)...`);
+    await kvkRef.set(kvkDoc);
+    console.log(`WROTE static_data/kvk — ${kvkDoc.list.length} joueurs, initialPower figé = référence des objectifs.`);
+}
+console.log('Done.');
