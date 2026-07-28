@@ -246,7 +246,14 @@
     "sync_roles": "مزامنة الأدوار",
     "discord_linked": "تم ربط Discord",
     "link_discord_desc": "اربط حساب Discord الخاص بك لمزامنة أدوارك في التطبيق.",
-    "link_discord_account": "ربط حساب Discord الخاص بي"
+    "link_discord_account": "ربط حساب Discord الخاص بي",
+    "my_accounts": "حساباتي",
+    "add_account": "إضافة حساب",
+    "no_accounts": "لم تتم المطالبة بأي حساب بعد. ابحث لإضافة حسابك الأول.",
+    "type_war": "حساب حربي",
+    "type_filler": "حساب ثانوي",
+    "primary_badge": "أساسي",
+    "set_primary": "تعيين كأساسي"
   },
   "datarefresh": {
     "title": "مزامنة البيانات",

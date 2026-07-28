@@ -13,7 +13,13 @@ export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // governorId = l'ID du compte PRIMAIRE (miroir rétrocompat lu par tout le
+    // reste de l'app : AvailabilityForm, KvkGoalsPanel, bot Discord, etc.).
     const [governorId, setGovernorId] = useState(null);
+    // E-007/F-025 : liste des comptes réclamés, chacun { governorId, type, name }.
+    // type ∈ {'war','filler'} ; le compte primaire est celui dont governorId === le
+    // champ governorId ci-dessus (pas de flag isPrimary séparé — BR-016).
+    const [accounts, setAccounts] = useState([]);
     // Discord-verified identity: logged in through Discord SSO (uid "discord:…")
     // or a Google account whose profile carries a linked discordId (BR-008)
     const [isDiscordUser, setIsDiscordUser] = useState(false);
@@ -39,32 +45,82 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setGovernorId(null);
+        setAccounts([]);
         return signOut(auth);
     };
 
-    const linkGovernor = async (id) => {
-        if (currentUser) {
-            localStorage.setItem(`gov_link_${currentUser.uid}`, id);
-            setGovernorId(id);
-            // Persist to Firestore so the Discord bot can resolve the governor
-            try {
-                await setDoc(
-                    doc(db, "user_profiles", currentUser.uid),
-                    { governorId: String(id) },
-                    { merge: true }
-                );
-            } catch (err) {
-                console.warn("Could not persist governorId to Firestore:", err);
-            }
+    // Normalise un compte : governorId en string, type borné à war|filler.
+    const normalizeAccount = (a) => ({
+        governorId: String(a.governorId),
+        type: a.type === 'filler' ? 'filler' : 'war',
+        name: a.name || null,
+    });
+
+    // Applique un nouvel état (primaire + liste) : state, localStorage (miroir du
+    // primaire) et Firestore (merge). Une seule voie d'écriture pour tout muter.
+    const applyProfile = async (nextGovernorId, nextAccounts) => {
+        if (!currentUser) return;
+        const gov = nextGovernorId ? String(nextGovernorId) : null;
+        const list = (nextAccounts || []).map(normalizeAccount);
+        setGovernorId(gov);
+        setAccounts(list);
+        if (gov) localStorage.setItem(`gov_link_${currentUser.uid}`, gov);
+        else localStorage.removeItem(`gov_link_${currentUser.uid}`);
+        try {
+            await setDoc(
+                doc(db, "user_profiles", currentUser.uid),
+                { governorId: gov, accounts: list, updatedAt: new Date().toISOString() },
+                { merge: true }
+            );
+        } catch (err) {
+            console.warn("Could not persist user_profiles:", err);
         }
     };
 
-    const unlinkGovernor = () => {
-        if (currentUser) {
-            localStorage.removeItem(`gov_link_${currentUser.uid}`);
-            setGovernorId(null);
-        }
+    // Réclame un compte (F-025). Le 1er compte réclamé devient primaire.
+    const claimAccount = (id, type = 'war', name = null) => {
+        const gid = String(id);
+        if (accounts.some((a) => a.governorId === gid)) return; // déjà réclamé
+        const next = [...accounts, normalizeAccount({ governorId: gid, type, name })];
+        const primary = governorId || gid; // 1er compte → primaire
+        return applyProfile(primary, next);
     };
+
+    // Retire un compte. S'il était primaire, le primaire est réassigné au 1er restant.
+    const unclaimAccount = (id) => {
+        const gid = String(id);
+        const next = accounts.filter((a) => a.governorId !== gid);
+        const primary = governorId === gid ? (next[0]?.governorId || null) : governorId;
+        return applyProfile(primary, next);
+    };
+
+    // Change le type d'un compte (war ↔ filler).
+    const setAccountType = (id, type) => {
+        const gid = String(id);
+        const next = accounts.map((a) => a.governorId === gid ? { ...a, type: type === 'filler' ? 'filler' : 'war' } : a);
+        return applyProfile(governorId, next);
+    };
+
+    // Désigne le compte primaire (doit être déjà réclamé).
+    const setPrimaryAccount = (id) => {
+        const gid = String(id);
+        if (!accounts.some((a) => a.governorId === gid)) return;
+        return applyProfile(gid, accounts);
+    };
+
+    // Rétrocompat : lie/écrase le gouverneur unique (appelé par AvailabilityForm sur
+    // saisie manuelle). Le réclame comme compte de guerre s'il est absent, puis le
+    // désigne primaire — préserve la sémantique « ceci est désormais mon gouverneur ».
+    const linkGovernor = (id) => {
+        const gid = String(id);
+        const next = accounts.some((a) => a.governorId === gid)
+            ? accounts
+            : [...accounts, normalizeAccount({ governorId: gid, type: 'war' })];
+        return applyProfile(gid, next);
+    };
+
+    // Rétrocompat : délie tout (ancienne sémantique « unlink »).
+    const unlinkGovernor = () => applyProfile(null, []);
 
     useEffect(() => {
         // Intercepter le custom token ou le linkToken retourné par notre webhook Discord
@@ -146,8 +202,24 @@ export const AuthProvider = ({ children }) => {
                     setGovernorId(profile.governorId);
                     localStorage.setItem(`gov_link_${user.uid}`, profile.governorId);
                 }
+
+                // E-007/F-025 : charge la liste des comptes. Migration paresseuse
+                // (option A, A-024) : si le doc n'a pas encore accounts[] mais un
+                // governorId legacy, on synthétise un compte de guerre primaire en
+                // mémoire — réécrit dans Firestore seulement à la prochaine mutation.
+                if (Array.isArray(profile.accounts) && profile.accounts.length) {
+                    setAccounts(profile.accounts.map((a) => ({
+                        governorId: String(a.governorId),
+                        type: a.type === 'filler' ? 'filler' : 'war',
+                        name: a.name || null,
+                    })));
+                } else {
+                    const primaryId = storedGovId || profile.governorId;
+                    setAccounts(primaryId ? [{ governorId: String(primaryId), type: 'war', name: null }] : []);
+                }
             } else {
                 setGovernorId(null);
+                setAccounts([]);
                 setIsDiscordUser(false);
             }
             setLoading(false);
@@ -159,9 +231,14 @@ export const AuthProvider = ({ children }) => {
     const value = {
         currentUser,
         governorId,
+        accounts,
         isDiscordUser,
         linkGovernor,
         unlinkGovernor,
+        claimAccount,
+        unclaimAccount,
+        setAccountType,
+        setPrimaryAccount,
         loginWithGoogle,
         loginWithDiscord,
         linkWithDiscord,

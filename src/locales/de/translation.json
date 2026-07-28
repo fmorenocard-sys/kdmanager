@@ -246,7 +246,14 @@
     "sync_roles": "Rollen synchronisieren",
     "discord_linked": "Discord Verknüpft",
     "link_discord_desc": "Verknüpfe dein Discord-Konto, um deine In-App-Rollen zu synchronisieren.",
-    "link_discord_account": "Mein Discord-Konto verknüpfen"
+    "link_discord_account": "Mein Discord-Konto verknüpfen",
+    "my_accounts": "Meine Konten",
+    "add_account": "Konto hinzufügen",
+    "no_accounts": "Noch kein Konto beansprucht. Suche, um dein erstes Konto hinzuzufügen.",
+    "type_war": "Kriegskonto",
+    "type_filler": "Filler",
+    "primary_badge": "Primär",
+    "set_primary": "Als primär festlegen"
   },
   "datarefresh": {
     "title": "Datensync",

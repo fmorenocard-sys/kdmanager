@@ -246,7 +246,14 @@
     "sync_roles": "Synchroniser les Rôles",
     "discord_linked": "Discord Lié",
     "link_discord_desc": "Liez votre compte Discord pour synchroniser vos rôles.",
-    "link_discord_account": "Lier mon compte Discord"
+    "link_discord_account": "Lier mon compte Discord",
+    "my_accounts": "Mes comptes",
+    "add_account": "Ajouter un compte",
+    "no_accounts": "Aucun compte réclamé. Cherchez pour ajouter votre premier compte.",
+    "type_war": "Compte de guerre",
+    "type_filler": "Filler",
+    "primary_badge": "Principal",
+    "set_primary": "Définir principal"
   },
   "datarefresh": {
     "title": "Synchro Données",

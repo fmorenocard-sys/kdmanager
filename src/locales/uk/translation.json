@@ -246,7 +246,14 @@
     "sync_roles": "Синхронізувати ролі",
     "discord_linked": "Discord Пов'язано",
     "link_discord_desc": "Пов'яжіть свій акаунт Discord, щоб синхронізувати свої ролі в додатку.",
-    "link_discord_account": "Пов'язати мій акаунт Discord"
+    "link_discord_account": "Пов'язати мій акаунт Discord",
+    "my_accounts": "Мої акаунти",
+    "add_account": "Додати акаунт",
+    "no_accounts": "Ще не заявлено жодного акаунта. Знайдіть, щоб додати перший.",
+    "type_war": "Бойовий акаунт",
+    "type_filler": "Філлер",
+    "primary_badge": "Основний",
+    "set_primary": "Зробити основним"
   },
   "datarefresh": {
     "title": "Синхронізація даних",

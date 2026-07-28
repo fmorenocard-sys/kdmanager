@@ -78,6 +78,16 @@ describe(`Règles Firestore — ${RULES_FILE}`, () => {
             );
         });
 
+        it('USAGE — le propriétaire écrit sa liste de comptes (F-025)', async () => {
+            await assertSucceeds(
+                setDoc(doc(as(WARRIOR), 'user_profiles', WARRIOR), {
+                    governorId: '222',
+                    accounts: [{ governorId: '222', type: 'war', name: 'Helios' }],
+                    updatedAt: '2026-07-27T00:00:00Z'
+                }, { merge: true })
+            );
+        });
+
         it('USAGE — le propriétaire lit son profil', async () => {
             await assertSucceeds(getDoc(doc(as(WARRIOR), 'user_profiles', WARRIOR)));
         });

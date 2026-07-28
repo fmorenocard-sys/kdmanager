@@ -246,7 +246,14 @@
     "sync_roles": "Sincronizza ruoli",
     "discord_linked": "Discord collegato",
     "link_discord_desc": "Collega il tuo account Discord per sincronizzare i tuoi ruoli nell'app.",
-    "link_discord_account": "Collega il mio account Discord"
+    "link_discord_account": "Collega il mio account Discord",
+    "my_accounts": "I miei account",
+    "add_account": "Aggiungi un account",
+    "no_accounts": "Nessun account rivendicato. Cerca per aggiungere il tuo primo account.",
+    "type_war": "Account di guerra",
+    "type_filler": "Filler",
+    "primary_badge": "Principale",
+    "set_primary": "Imposta come principale"
   },
   "datarefresh": {
     "title": "Sincronizzazione dati",

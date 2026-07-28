@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
@@ -12,9 +12,9 @@ import { RefreshCw , User } from '../components/ui/icons';
 import PageHeader from '../components/ui/PageHeader';
 
 const ProfilePage = () => {
-    const { currentUser, governorId, linkGovernor, unlinkGovernor, linkWithDiscord } = useAuth();
+    const { currentUser, governorId, accounts, claimAccount, unclaimAccount, setAccountType, setPrimaryAccount, linkWithDiscord } = useAuth();
     const { role } = useRole();
-    const { players, loading } = useData();
+    const { players, kvkStats, kvkFillerStats, loading } = useData();
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState("");
     const [discordProfile, setDiscordProfile] = useState(null);
@@ -47,6 +47,22 @@ const ProfilePage = () => {
         }
     }, [currentUser]);
 
+    // Roster combiné pour recherche + affichage : Top 300 (players) + fillers et
+    // mains KvK — un compte filler n'est PAS dans le Top 300 par construction, il
+    // faut donc chercher au-delà (A-022, exigence F-025). Clé = governorId string.
+    // Hook : doit précéder les early returns (rules-of-hooks).
+    const rosterById = useMemo(() => {
+        const map = new Map();
+        const add = (id, name, power) => {
+            const key = id != null ? String(id) : null;
+            if (key && !map.has(key)) map.set(key, { id: key, name: name || key, power });
+        };
+        (players || []).forEach((p) => add(p.id, p.name, p.power));
+        (kvkFillerStats || []).forEach((p) => add(p.id, p.name, p.finalPower ?? p.initialPower));
+        (kvkStats || []).forEach((p) => add(p.id, p.name, p.finalPower ?? p.initialPower));
+        return map;
+    }, [players, kvkStats, kvkFillerStats]);
+
     if (!currentUser) {
         return (
             <div className="p-8 text-center text-slate-400">
@@ -57,17 +73,20 @@ const ProfilePage = () => {
 
     if (loading) return <div className="p-8 text-center text-slate-400">{t('common.loading')}</div>;
 
-    const linkedPlayer = governorId ? players.find(p => String(p.id) === String(governorId)) : null;
-
     const handleSearch = (e) => setSearchTerm(e.target.value);
 
-    // Filter players for search
-    const filteredPlayers = searchTerm.length > 2
-        ? players.filter(p =>
-            p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            String(p.id).includes(searchTerm)
-        ).slice(0, 10) // Limit results
+    const claimedIds = new Set(accounts.map((a) => a.governorId));
+
+    // Résultats de recherche : par nom ou ID, hors comptes déjà réclamés.
+    const searchResults = searchTerm.length > 2
+        ? [...rosterById.values()].filter((p) =>
+            !claimedIds.has(p.id) &&
+            ((p.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || p.id.includes(searchTerm))
+        ).slice(0, 10)
         : [];
+
+    const typeLabel = (type) => type === 'filler' ? t('profile.type_filler') : t('profile.type_war');
+    const handleClaim = (player, type) => { claimAccount(player.id, type, player.name); setSearchTerm(''); };
 
     return (
         <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -102,81 +121,93 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="border-t border-[var(--border-flat)] pt-6">
-                    <h3 className="text-lg font-semibold text-white mb-4">{t('profile.linked_governor')}</h3>
+                    <h3 className="text-lg font-semibold text-white mb-4">{t('profile.my_accounts')}</h3>
 
-                    {linkedPlayer ? (
-                        <div className="bg-slate-700/50 rounded-lg p-4 flex flex-col md:flex-row items-center justify-between border border-green-500/30 gap-4 md:gap-0">
-                            <div className="flex items-center space-x-4 w-full md:w-auto">
-                                <Avatar
-                                    id={linkedPlayer.id}
-                                    name={linkedPlayer.name}
-                                    size="lg"
-                                    className="border border-slate-500"
-                                />
-                                <div>
-                                    <p className="text-white font-bold">{linkedPlayer.name}</p>
-                                    <p className="text-xs text-slate-400">ID: {linkedPlayer.id}</p>
-                                    <p className="text-xs text-indigo-400 mt-1">Power: {parseInt(linkedPlayer.power).toLocaleString()}</p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={unlinkGovernor}
-                                className="w-full md:w-auto px-3 py-1 bg-red-500/20 text-red-400 text-sm rounded hover:bg-red-500/30 transition-colors border border-red-500/50"
-                            >
-                                {t('profile.unlink')}
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="v2-glass p-6 text-center">
-                            <p className="text-slate-300 mb-4">{t('profile.no_governor_linked')}</p>
-
-                            <div className="max-w-md mx-auto relative">
-                                <input
-                                    type="text"
-                                    aria-label={t('common.search_placeholder')}
-                                    placeholder={t('common.search_placeholder')}
-                                    className="w-full bg-[var(--surface-input)] text-[var(--text-primary)] rounded-[10px] min-h-[44px] px-4 py-2 border border-[var(--border-flat)] focus:outline-none focus:ring-2 focus:ring-primary"
-                                    value={searchTerm}
-                                    onChange={handleSearch}
-                                />
-                                {searchTerm.length > 0 && searchTerm.length < 3 && (
-                                    <p className="text-xs text-slate-500 mt-1 absolute left-0 -bottom-5">{t('common.min_chars')}</p>
-                                )}
-                            </div>
-
-                            {/* Search Results */}
-                            {filteredPlayers.length > 0 && (
-                                <div className="mt-4 space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
-                                    {filteredPlayers.map(player => (
-                                        <div key={player.id} className="flex items-center justify-between bg-[var(--surface-solid)] p-3 rounded border border-[var(--border-flat)] hover:border-indigo-500/50 transition-colors">
-                                            <div className="flex items-center space-x-3 text-left">
-                                                <Avatar
-                                                    id={player.id}
-                                                    name={player.name}
-                                                    size="sm"
-                                                    className="bg-slate-700"
-                                                />
-                                                <div>
-                                                    <p className="text-sm font-bold text-white">{player.name}</p>
-                                                    <p className="text-[10px] text-slate-400">{player.id}</p>
+                    {/* Liste des comptes réclamés (F-025) */}
+                    {accounts.length > 0 && (
+                        <div className="space-y-2 mb-6">
+                            {accounts.map((acc) => {
+                                const info = rosterById.get(acc.governorId);
+                                const name = info?.name || acc.name || acc.governorId;
+                                const isPrimary = String(governorId) === acc.governorId;
+                                return (
+                                    <div key={acc.governorId} className="bg-slate-700/50 rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between border border-[var(--border-flat)] gap-3">
+                                        <div className="flex items-center space-x-4 min-w-0">
+                                            <Avatar id={acc.governorId} name={name} size="lg" className="border border-slate-500 shrink-0" />
+                                            <div className="min-w-0">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <p className="text-white font-bold truncate">{name}</p>
+                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${acc.type === 'war' ? 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30' : 'bg-amber-500/15 text-amber-300 border-amber-500/30'}`}>{typeLabel(acc.type)}</span>
+                                                    {isPrimary && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">{t('profile.primary_badge')}</span>}
                                                 </div>
+                                                <p className="text-xs text-slate-400">ID: {acc.governorId}</p>
+                                                {info?.power != null && <p className="text-xs text-slate-500 mt-0.5">Power: {Number(info.power).toLocaleString()}</p>}
                                             </div>
-                                            <button
-                                                onClick={() => linkGovernor(player.id)}
-                                                className="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-500 transition-colors"
-                                            >
-                                                {t('profile.claim')}
+                                        </div>
+                                        <div className="flex items-center gap-2 flex-wrap shrink-0">
+                                            <button onClick={() => setAccountType(acc.governorId, acc.type === 'war' ? 'filler' : 'war')} className="px-2.5 py-1 text-xs rounded border border-[var(--border-flat)] text-slate-300 hover:brightness-125 transition-colors">
+                                                → {acc.type === 'war' ? t('profile.type_filler') : t('profile.type_war')}
+                                            </button>
+                                            {!isPrimary && (
+                                                <button onClick={() => setPrimaryAccount(acc.governorId)} className="px-2.5 py-1 text-xs rounded border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 transition-colors">
+                                                    {t('profile.set_primary')}
+                                                </button>
+                                            )}
+                                            <button onClick={() => unclaimAccount(acc.governorId)} className="px-2.5 py-1 text-xs rounded border border-red-500/50 text-red-400 hover:bg-red-500/20 transition-colors">
+                                                {t('profile.unlink')}
                                             </button>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {searchTerm.length > 2 && filteredPlayers.length === 0 && (
-                                <p className="text-slate-500 mt-4 text-sm">{t('common.no_results')}</p>
-                            )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
+
+                    {/* Ajouter un compte */}
+                    <div className="v2-glass p-5">
+                        <p className="text-slate-300 mb-3 text-sm font-medium">{accounts.length === 0 ? t('profile.no_accounts') : t('profile.add_account')}</p>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                aria-label={t('common.search_placeholder')}
+                                placeholder={t('common.search_placeholder')}
+                                className="w-full bg-[var(--surface-input)] text-[var(--text-primary)] rounded-[10px] min-h-[44px] px-4 py-2 border border-[var(--border-flat)] focus:outline-none focus:ring-2 focus:ring-primary"
+                                value={searchTerm}
+                                onChange={handleSearch}
+                            />
+                            {searchTerm.length > 0 && searchTerm.length < 3 && (
+                                <p className="text-xs text-slate-500 mt-1">{t('common.min_chars')}</p>
+                            )}
+                        </div>
+
+                        {searchResults.length > 0 && (
+                            <div className="mt-4 space-y-2 max-h-72 overflow-y-auto custom-scrollbar">
+                                {searchResults.map((player) => (
+                                    <div key={player.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-[var(--surface-solid)] p-3 rounded border border-[var(--border-flat)] gap-2">
+                                        <div className="flex items-center space-x-3 text-left min-w-0">
+                                            <Avatar id={player.id} name={player.name} size="sm" className="bg-slate-700 shrink-0" />
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-bold text-white truncate">{player.name}</p>
+                                                <p className="text-[10px] text-slate-400">{player.id}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2 shrink-0">
+                                            <button onClick={() => handleClaim(player, 'war')} className="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-500 transition-colors">
+                                                + {t('profile.type_war')}
+                                            </button>
+                                            <button onClick={() => handleClaim(player, 'filler')} className="px-3 py-1 bg-amber-600 text-white text-xs rounded hover:bg-amber-500 transition-colors">
+                                                + {t('profile.type_filler')}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {searchTerm.length > 2 && searchResults.length === 0 && (
+                            <p className="text-slate-500 mt-4 text-sm">{t('common.no_results')}</p>
+                        )}
+                    </div>
                 </div>
 
                 {/* Account Linking Section */}

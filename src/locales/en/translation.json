@@ -246,7 +246,14 @@
     "sync_roles": "Sync Roles",
     "discord_linked": "Discord Linked",
     "link_discord_desc": "Link your Discord account to synchronize your in-app roles.",
-    "link_discord_account": "Link my Discord account"
+    "link_discord_account": "Link my Discord account",
+    "my_accounts": "My Accounts",
+    "add_account": "Add an account",
+    "no_accounts": "No account claimed yet. Search to add your first account.",
+    "type_war": "War account",
+    "type_filler": "Filler",
+    "primary_badge": "Primary",
+    "set_primary": "Set as primary"
   },
   "datarefresh": {
     "title": "Data Sync",

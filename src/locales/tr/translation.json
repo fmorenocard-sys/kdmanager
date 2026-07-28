@@ -246,7 +246,14 @@
     "sync_roles": "Rolleri Senkronize Et",
     "discord_linked": "Discord Bağlı",
     "link_discord_desc": "Uygulama içi rollerinizi senkronize etmek için Discord hesabınızı bağlayın.",
-    "link_discord_account": "Discord hesabımı bağla"
+    "link_discord_account": "Discord hesabımı bağla",
+    "my_accounts": "Hesaplarım",
+    "add_account": "Hesap ekle",
+    "no_accounts": "Henüz hesap talep edilmedi. İlk hesabını eklemek için ara.",
+    "type_war": "Savaş hesabı",
+    "type_filler": "Filler",
+    "primary_badge": "Birincil",
+    "set_primary": "Birincil yap"
   },
   "datarefresh": {
     "title": "Veri Senkronizasyonu",

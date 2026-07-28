@@ -246,7 +246,14 @@
     "sync_roles": "Đồng bộ Vai trò",
     "discord_linked": "Discord Đã liên kết",
     "link_discord_desc": "Liên kết tài khoản Discord của bạn để đồng bộ vai trò trong ứng dụng.",
-    "link_discord_account": "Liên kết tài khoản Discord của tôi"
+    "link_discord_account": "Liên kết tài khoản Discord của tôi",
+    "my_accounts": "Tài khoản của tôi",
+    "add_account": "Thêm tài khoản",
+    "no_accounts": "Chưa có tài khoản nào. Tìm kiếm để thêm tài khoản đầu tiên.",
+    "type_war": "Tài khoản chiến",
+    "type_filler": "Filler",
+    "primary_badge": "Chính",
+    "set_primary": "Đặt làm chính"
   },
   "datarefresh": {
     "title": "Đồng bộ dữ liệu",

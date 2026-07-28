@@ -76,8 +76,10 @@ service cloud.firestore {
     // L'écriture par le leadership est retirée — aucun code client ne l'utilisait.
     match /user_profiles/{userId} {
       allow read: if isOwner(userId) || isKingOrOfficer();
-      allow create: if isOwner(userId) && writesOnly(['governorId', 'updatedAt']);
-      allow update: if isOwner(userId) && changesOnly(['governorId', 'updatedAt']);
+      // E-007/F-025 : multi-comptes — le propriétaire écrit governorId (miroir du
+      // compte primaire) + accounts[] (liste de ses comptes typés war/filler).
+      allow create: if isOwner(userId) && writesOnly(['governorId', 'accounts', 'updatedAt']);
+      allow update: if isOwner(userId) && changesOnly(['governorId', 'accounts', 'updatedAt']);
       allow delete: if false;
     }
 
