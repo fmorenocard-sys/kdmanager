@@ -338,7 +338,9 @@
     "alert_save_first": "Save the active campaign configuration first before merging.",
     "alert_merge_self": "Cannot merge a campaign into itself.",
     "alert_merge_ok": "Campaign merged successfully!",
-    "alert_merge_fail": "Failed to merge campaign: {{msg}}"
+    "alert_merge_fail": "Failed to merge campaign: {{msg}}",
+    "cfg_filler_ratio": "Filler loss ratio",
+    "cfg_filler_ratio_hint": "0.5 = fillers must lose 50% of their declared power (4×T4 + 10×T5)."
   },
   "kvk_race": {
     "page_subtitle": "Star race — camp duel, kingdoms and evolution",
@@ -511,6 +513,10 @@
     "dead_points_note": "Deads are counted in points (~{{points}} per T5 dead): losing T4s costs more troops for the same total.",
     "cause_unknown_id": "ID not found in kingdom data (typo, or player outside the Top 300)",
     "cause_no_power": "player known, but no power picked up by the sync",
-    "no_governor_id": "no ID"
+    "no_governor_id": "no ID",
+    "filler_section": "Filler goals",
+    "declared_power": "Declared power",
+    "dead_target": "Loss target",
+    "achieved": "Achieved"
   }
 }

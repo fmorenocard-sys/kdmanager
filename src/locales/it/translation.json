@@ -338,7 +338,9 @@
     "alert_save_first": "Salva prima la configurazione della campagna attiva prima di unire.",
     "alert_merge_self": "Impossibile unire una campagna con se stessa.",
     "alert_merge_ok": "Campagna unita con successo!",
-    "alert_merge_fail": "Impossibile unire la campagna: {{msg}}"
+    "alert_merge_fail": "Impossibile unire la campagna: {{msg}}",
+    "cfg_filler_ratio": "Rapporto di perdita filler",
+    "cfg_filler_ratio_hint": "0,5 = i filler devono perdere il 50% della potenza dichiarata (4×T4 + 10×T5)."
   },
   "kvk_race": {
     "page_subtitle": "Corsa alla stella — duello dei campi, regni ed evoluzione",
@@ -511,6 +513,10 @@
     "dead_points_note": "Le perdite sono conteggiate in punti (~{{points}} per T5 persa): perdere T4 costa più truppe per lo stesso totale.",
     "cause_unknown_id": "ID non trovato nei dati del regno (errore di battitura o giocatore fuori dalla Top 300)",
     "cause_no_power": "giocatore noto, ma nessuna potenza rilevata dalla sincronizzazione",
-    "no_governor_id": "nessun ID"
+    "no_governor_id": "nessun ID",
+    "filler_section": "Obiettivi filler",
+    "declared_power": "Potenza dichiarata",
+    "dead_target": "Obiettivo di perdita",
+    "achieved": "Raggiunto"
   }
 }

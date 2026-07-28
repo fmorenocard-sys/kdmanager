@@ -22,7 +22,8 @@ const KvKConfigForm = () => {
         id: '',
         name: '',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        fillerDeathRatio: 0.5 // F-027 : ratio d'objectif de perte des fillers (0.5 = 50 %)
     });
     const [historyOpen, setHistoryOpen] = useState(false);
     const [campaignDeclarationCounts, setCampaignDeclarationCounts] = useState({});
@@ -46,7 +47,8 @@ const KvKConfigForm = () => {
                         id: data.id || `${data.name || 'kvk'}_${startDateStr.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_'),
                         name: data.name || '',
                         startDate: startDateStr,
-                        endDate: endDateStr
+                        endDate: endDateStr,
+                        fillerDeathRatio: data.fillerDeathRatio ?? 0.5
                     };
                     setFormData(fd);
                     setSavedConfig({
@@ -104,6 +106,7 @@ const KvKConfigForm = () => {
                 name: formData.name,
                 startDate: formData.startDate ? Timestamp.fromDate(new Date(formData.startDate)) : null,
                 endDate: formData.endDate ? Timestamp.fromDate(new Date(formData.endDate)) : null,
+                fillerDeathRatio: Number(formData.fillerDeathRatio) || 0.5, // F-027
                 updatedAt: Timestamp.now(),
                 updatedBy: role
             });
@@ -220,6 +223,23 @@ const KvKConfigForm = () => {
                             leftIcon={<Calendar size={16} />}
                             required
                         />
+                    </div>
+
+                    {/* F-027 : ratio d'objectif de perte des fillers, par campagne */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                        <div>
+                            <Input
+                                label={t('admin.cfg_filler_ratio')}
+                                name="fillerDeathRatio"
+                                type="number"
+                                step="0.05"
+                                min="0"
+                                max="1"
+                                value={formData.fillerDeathRatio}
+                                onChange={handleChange}
+                            />
+                            <p className="text-xs text-slate-500 mt-1">{t('admin.cfg_filler_ratio_hint')}</p>
+                        </div>
                     </div>
 
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-6 gap-4">

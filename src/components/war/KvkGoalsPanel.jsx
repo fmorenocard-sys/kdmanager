@@ -59,6 +59,7 @@ const KvkGoalsPanel = () => {
 
     const [declarations, setDeclarations] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
+    const [config, setConfig] = useState(null); // F-027 : kvk_config (fillerDeathRatio)
     const [kvkId, setKvkId] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -79,6 +80,7 @@ const KvkGoalsPanel = () => {
                 setDeclarations(list);
 
                 const cfg = cfgSnap.exists() ? cfgSnap.data() : null;
+                setConfig(cfg);
                 const map = {};
                 if (cfg?.id) map[cfg.id] = { id: cfg.id, name: cfg.name || cfg.id };
                 list.forEach((d) => {
@@ -130,6 +132,8 @@ const KvkGoalsPanel = () => {
             });
 
         const built = [...latestByGovernor.values()]
+            // F-027 : les fillers ont leur propre barème (fillerRows), pas celui-ci.
+            .filter((d) => d.accountType !== 'filler')
             .map((d) => {
                 const gid = String(d.governorId || '');
                 const kvk = statsById.get(gid) || null;
@@ -176,6 +180,43 @@ const KvkGoalsPanel = () => {
 
         return sortRows(filtered, sort);
     }, [declarations, kvkId, statsById, powerById, governorId, isLeadership, search, sort]);
+
+    // F-027 : objectifs des comptes filler. Barème dédié (BR-018), jamais mélangé
+    // au barème puissance des comptes de guerre : pouvoir déclaré = 4×T4 + 10×T5 ;
+    // objectif de perte = ratio (par campagne, défaut 0.5) × pouvoir déclaré ;
+    // réalisé = 4×t4Dead + 10×t5Dead (depuis kvk_filler) ; atteinte = réalisé/objectif.
+    const fillerRows = useMemo(() => {
+        const ratio = config?.fillerDeathRatio ?? 0.5;
+        const latest = new Map();
+        declarations
+            .filter((d) => (!kvkId || d.kvkId === kvkId) && d.governorId && d.accountType === 'filler')
+            .forEach((d) => {
+                const gid = String(d.governorId);
+                const prev = latest.get(gid);
+                const stamp = d.updatedAt?.seconds ?? 0;
+                if (!prev || stamp >= (prev.updatedAt?.seconds ?? 0)) latest.set(gid, d);
+            });
+        const built = [...latest.values()].map((d) => {
+            const gid = String(d.governorId);
+            const kvk = statsById.get(gid) || null;
+            const t4 = d.filler?.t4 || 0;
+            const t5 = d.filler?.t5 || 0;
+            const declaredPower = t4 * 4 + t5 * 10;
+            const target = ratio * declaredPower;
+            const achieved = (Number(kvk?.t4Dead) || 0) * 4 + (Number(kvk?.t5Dead) || 0) * 10;
+            const attainment = target > 0 ? achieved / target : null;
+            const { rate } = rateFromGoalPct(attainment);
+            return {
+                key: d.id, governorId: gid,
+                name: d.governorName || kvk?.name || gid,
+                isMe: gid === String(governorId || ''),
+                t4, t5, declaredPower, target, achieved, attainment, rate,
+            };
+        });
+        const scoped = isLeadership ? built : built.filter((r) => r.isMe);
+        const q = search.trim().toLowerCase();
+        return q ? scoped.filter((r) => r.name.toLowerCase().includes(q) || r.governorId.includes(q)) : scoped;
+    }, [declarations, kvkId, statsById, config, governorId, isLeadership, search]);
 
     // Nommer les joueurs non rattachés : un simple compteur n'est pas actionnable,
     // le Roi doit savoir quel ID vérifier. On distingue aussi les deux causes —
@@ -230,7 +271,7 @@ const KvkGoalsPanel = () => {
                 </span>
             </div>
 
-            {rows.length === 0 && (
+            {rows.length === 0 && fillerRows.length === 0 && (
                 <Card className="p-6 text-center">
                     <p className="text-sm text-slate-400">
                         {isLeadership ? t('goals.empty_campaign') : t('goals.empty_self')}
@@ -307,6 +348,76 @@ const KvkGoalsPanel = () => {
                                         <TableCell className="text-right font-mono text-xs text-slate-300">
                                             {r.goalPct == null ? '—' : `${fmt(r.goalPct * 100, 0)} %`}
                                         </TableCell>
+                                        <TableCell><RateBadge rate={r.rate} t={t} /></TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </Card>
+            )}
+
+            {/* F-027 : objectifs des comptes filler (barème T4/T5 dédié) */}
+            {fillerRows.length > 0 && (
+                <Card className="p-0 overflow-hidden border border-amber-500/20">
+                    <h3 className="p-4 text-base font-bold text-amber-400 border-b border-[var(--border-flat)]">
+                        {t('goals.filler_section')} ({fillerRows.length})
+                    </h3>
+                    {/* Cartes mobile */}
+                    <div className="md:hidden flex flex-col gap-3 p-4">
+                        {fillerRows.map((r) => (
+                            <div key={r.key} className={`bg-[var(--surface-solid)] p-3 rounded-xl border ${r.isMe ? 'border-amber-500/40' : 'border-[var(--border-flat)]'} flex flex-col gap-2`}>
+                                <div className="flex justify-between items-start gap-2 border-b border-[var(--border-flat)] pb-2">
+                                    <div className="min-w-0">
+                                        <p className="font-bold text-white text-sm truncate">{r.name}</p>
+                                        <p className="text-[11px] text-slate-500 font-mono">{r.governorId}</p>
+                                    </div>
+                                    <RateBadge rate={r.rate} t={t} />
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 text-xs">
+                                    <div className="flex flex-col bg-[var(--border-flat)] p-1.5 rounded">
+                                        <span className="text-slate-500 text-[10px]">{t('goals.declared_power')}</span>
+                                        <span className="font-mono text-slate-200">{Math.round(r.declaredPower).toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex flex-col bg-[var(--border-flat)] p-1.5 rounded">
+                                        <span className="text-slate-500 text-[10px]">{t('goals.dead_target')}</span>
+                                        <span className="font-mono font-bold text-white">{Math.round(r.target).toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex flex-col bg-[var(--border-flat)] p-1.5 rounded">
+                                        <span className="text-slate-500 text-[10px]">{t('goals.achieved')}</span>
+                                        <span className="font-mono text-red-400">{Math.round(r.achieved).toLocaleString()}</span>
+                                    </div>
+                                </div>
+                                {r.attainment != null && (
+                                    <p className="text-[11px] text-slate-400 font-mono">{t('goals.goal_attainment', { pct: fmt(r.attainment * 100, 0) })}</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                    {/* Table desktop */}
+                    <div className="hidden md:block overflow-x-auto">
+                        <Table>
+                            <TableHeader className="bg-slate-900/80">
+                                <TableRow>
+                                    <TableHead className="text-xs">{t('goals.player')}</TableHead>
+                                    <TableHead className="text-xs text-end">{t('goals.declared_power')}</TableHead>
+                                    <TableHead className="text-xs text-end">{t('goals.dead_target')}</TableHead>
+                                    <TableHead className="text-xs text-end">{t('goals.achieved')}</TableHead>
+                                    <TableHead className="text-xs text-end">{t('goals.attainment')}</TableHead>
+                                    <TableHead className="text-xs">{t('goals.status')}</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {fillerRows.map((r) => (
+                                    <TableRow key={r.key} className={`hover:bg-white/5 border-b border-white/5 ${r.isMe ? 'bg-amber-500/5' : ''}`}>
+                                        <TableCell className="text-sm text-white max-w-[220px]">
+                                            <span className="font-semibold truncate block">{r.name}</span>
+                                            <span className="text-[11px] text-slate-500 font-mono">{r.governorId}</span>
+                                        </TableCell>
+                                        <TableCell className="text-right font-mono text-xs text-slate-300">{Math.round(r.declaredPower).toLocaleString()}</TableCell>
+                                        <TableCell className="text-right font-mono text-sm font-bold text-white">{Math.round(r.target).toLocaleString()}</TableCell>
+                                        <TableCell className="text-right font-mono text-xs text-red-400">{Math.round(r.achieved).toLocaleString()}</TableCell>
+                                        <TableCell className="text-right font-mono text-xs text-slate-300">{r.attainment == null ? '—' : `${fmt(r.attainment * 100, 0)} %`}</TableCell>
                                         <TableCell><RateBadge rate={r.rate} t={t} /></TableCell>
                                     </TableRow>
                                 ))}

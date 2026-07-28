@@ -338,7 +338,9 @@
     "alert_save_first": "Enregistrez d'abord la configuration de la campagne active avant de fusionner.",
     "alert_merge_self": "Impossible de fusionner une campagne avec elle-même.",
     "alert_merge_ok": "Campagnes fusionnées.",
-    "alert_merge_fail": "Échec de la fusion : {{msg}}"
+    "alert_merge_fail": "Échec de la fusion : {{msg}}",
+    "cfg_filler_ratio": "Ratio de perte filler",
+    "cfg_filler_ratio_hint": "0,5 = les fillers doivent perdre 50 % de leur pouvoir déclaré (4×T4 + 10×T5)."
   },
   "kvk_race": {
     "page_subtitle": "Course à l'étoile — duel de camps, royaumes et évolution",
@@ -511,6 +513,10 @@
     "dead_points_note": "Les morts sont comptées en points (~{{points}} par mort T5) : une part de T4 coûte davantage de troupes pour le même total.",
     "cause_unknown_id": "ID introuvable dans les données du royaume (saisie erronée, ou joueur hors Top 300)",
     "cause_no_power": "joueur connu, mais aucune puissance remontée par la synchro",
-    "no_governor_id": "aucun ID"
+    "no_governor_id": "aucun ID",
+    "filler_section": "Objectifs filler",
+    "declared_power": "Pouvoir déclaré",
+    "dead_target": "Objectif de perte",
+    "achieved": "Réalisé"
   }
 }
