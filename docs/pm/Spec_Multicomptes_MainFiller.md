@@ -1,36 +1,46 @@
-# Spec — Multi-comptes par utilisateur (main + fillers)
+# Spec — Multi-comptes par utilisateur (comptes de guerre + fillers)
 
-> Date : 2026-07-27 (3 passes d'arbitrage le même jour) · Statut :
-> **entièrement arbitrée et prête à implémenter** (§3 + §3bis + §3ter). Tous
-> les points ouverts tranchés par le Roi, y compris la migration (A-024, option A).
-> Seule sous-question laissée en défaut : statut de dispo séparé pour un filler
-> (A-020, défaut « pas de statut séparé »).
-> Épic **E-007**, features **F-025 / F-026 / F-027**, règles **BR-016 / BR-017 / BR-018**,
-> user stories **US-027 à US-030** + **US-031** (idée future hors périmètre)
-> (nouveaux IDs, aucun renumérotage — derniers ID utilisés avant cette spec :
-> E-006, F-024, BR-015, US-026, A-018).
-> Origine : un utilisateur possède souvent plusieurs comptes de jeu — son
-> gouverneur principal (« main ») et un ou plusieurs comptes secondaires
-> (« fillers », ex. Helios en main, Aurion et Solinar en fillers). Aujourd'hui
-> il ne peut en réclamer qu'un seul.
+> Date : 2026-07-27 (4 passes d'arbitrage le même jour) · Statut :
+> **entièrement arbitrée et prête à implémenter** (§3 + §3bis + §3ter + §3quater).
+> Tous les points ouverts tranchés par le Roi, y compris la migration (A-024,
+> option A). Seule sous-question laissée en défaut : statut de dispo séparé
+> pour un filler (A-020, défaut « pas de statut séparé »).
+> Épic **E-007**, features **F-025 / F-026 / F-027**, règles **BR-016 / BR-017 / BR-018**
+> (amendées, pas de nouvelle règle créée — voir §3quater), user stories
+> **US-027 à US-030** + **US-031** (idée future hors périmètre) (nouveaux IDs,
+> aucun renumérotage — derniers ID utilisés avant cette spec : E-006, F-024,
+> BR-015, US-026, A-018).
+>
+> ⚠️ **Terminologie — piège à éviter.** Le type de compte introduit ici
+> s'appelle **« compte de guerre » (`war`)**, jamais « guerrier »/« warrior » :
+> ce mot est déjà pris par le **rôle RBAC** Roi/Officier/**Guerrier**/Invité
+> (R-002, §9). Les deux notions sont indépendantes (un Officer peut avoir des
+> comptes `war` et `filler`, un Guerrier aussi) — ne jamais les confondre dans
+> le code, l'UI ou les docs.
+>
+> Origine : un utilisateur possède souvent plusieurs comptes de jeu — un ou
+> plusieurs comptes de guerre à part entière et un ou plusieurs comptes
+> secondaires (« fillers », ex. Helios et Kaelen en comptes de guerre, Aurion
+> et Solinar en fillers). Aujourd'hui il ne peut en réclamer qu'un seul.
 
 ---
 
 ## 1. Le besoin, reformulé
 
 Le lien `utilisateur ↔ gouverneur` est aujourd'hui **1:1**. Le besoin est de
-le rendre **1:N** : un utilisateur réclame plusieurs comptes réels, en désigne
-un comme principal, et peut agir (déclarer sa dispo de guerre, voir ses
-objectifs) **au nom de chacun séparément** — pas une fusion des comptes en une
-seule identité, mais **N identités de jeu gérées depuis un seul compte
-applicatif**.
+le rendre **1:N** : un utilisateur réclame plusieurs comptes réels, type
+chacun (compte de guerre ou filler) et désigne l'un d'eux comme son compte
+principal, puis peut agir (déclarer sa dispo de guerre, voir ses objectifs)
+**au nom de chacun séparément** — pas une fusion des comptes en une seule
+identité, mais **N identités de jeu gérées depuis un seul compte applicatif**.
 
 Trois capacités concrètes en découlent, qui correspondent aux trois features
 attribuées ci-dessous :
-1. Gérer la liste de ses comptes dans le profil (F-025).
-2. Déclarer une disponibilité de guerre distincte pour chaque compte (F-026).
-3. Recevoir un objectif adapté à chaque compte — barème main inchangé, barème
-   filler nouveau et simplifié (F-027).
+1. Gérer la liste de ses comptes dans le profil, avec leur type (F-025).
+2. Déclarer une disponibilité de guerre distincte pour chaque compte, adaptée
+   à son type (F-026).
+3. Recevoir un objectif adapté au type du compte — barème puissance inchangé
+   pour un compte de guerre, barème filler nouveau et simplifié (F-027).
 
 ---
 
@@ -150,7 +160,29 @@ tranchées**, à l'exception d'un point mineur laissé par défaut plutôt que
 tranché explicitement : le **statut de disponibilité séparé pour un filler**
 (A-020) — proposition par défaut retenue faute d'arbitrage explicite : pas de
 statut séparé, un filler déclaré (sélectionné + T4/T5 saisis) vaut présence.
-Cette spec est **prête à implémenter** sur cette base.
+
+## 3quater. Décision du Roi — 4ᵉ passe (2026-07-27, révision du modèle)
+
+Après la 3ᵉ passe, le Roi révise le mécanisme de distinction retenu en §3bis
+(décision 4). Changement de modèle, pas un simple renommage :
+
+| # | Sujet | Arbitrage |
+|---|---|---|
+| 11 | **Type par compte, pas « main + fillers »** | Chaque compte réclamé porte un **type** : **`war`** (« compte de guerre » en UI) ou **`filler`**. Le type est **fixé au claim** et **librement modifiable ensuite** dans ProfilePage — mais il n'est **jamais choisi à la déclaration** : le formulaire du War Tracker s'adapte automatiquement au type déjà connu du compte (§7.1). |
+| 12 | **Terminologie — piège RBAC** | Le type `war` se nomme **« compte de guerre »** en français, jamais « guerrier »/« warrior » : ce mot désigne déjà le **rôle RBAC** Guerrier (R-002). Un compte de type `war` et un utilisateur de rôle Guerrier sont deux notions indépendantes. |
+| 13 | **Plusieurs comptes `war` autorisés** | Il n'y a plus de contrainte « un seul main » sur le type : un utilisateur peut avoir **plusieurs comptes de guerre** (cas réel confirmé par le Roi : 2 comptes de guerre sur KD 3341). Le concept « main unique » est abandonné pour le type. |
+| 14 | **Compte principal (`isPrimary`), séparé du type** | Un flag léger **`isPrimary`** (un seul par utilisateur, dès qu'au moins un compte est réclamé) porte l'**identité d'affichage** (en-tête de profil) et le **miroir `governorId`** — indépendant du type : un compte principal peut être `war` ou `filler`. |
+
+**Conséquence directe sur les règles métier** : **BR-016 est amendée** pour
+refléter ce modèle (type par compte piloté par l'utilisateur, plusieurs `war`
+autorisés, `isPrimary` distinct) ; **BR-017 et BR-018 sont amendées** pour
+remplacer le vocabulaire « main » par « compte de guerre »/`isPrimary`. **Aucune
+nouvelle règle BR n'est créée** — le principe « le type pilote le barème
+d'objectif » est une conséquence directe de BR-016 (modèle de compte), pas une
+règle indépendante ; il est documenté dans BR-016 et rappelé dans BR-018.
+
+Cette spec est **prête à implémenter** sur la base des sections 4 à 13
+ci-dessous, mises à jour pour ce modèle.
 
 ---
 
@@ -160,17 +192,22 @@ Cette spec est **prête à implémenter** sur cette base.
 
 ```jsonc
 {
-  // LEGACY — conservé tel quel, toujours égal au governorId du compte "main".
-  // Tous les lecteurs actuels du champ (AvailabilityForm pré-remplissage,
+  // LEGACY — conservé tel quel, toujours égal au governorId du compte
+  // "isPrimary: true" (pas d'un "main" — ce concept n'existe plus). Tous les
+  // lecteurs actuels du champ (AvailabilityForm pré-remplissage,
   // WarDashboard.getPlayerName, ProfilePage, le bot Discord côté Functions)
   // continuent de fonctionner sans modification.
   "governorId": "111",
 
   // NOUVEAU — liste ordonnée des comptes réclamés par cet utilisateur.
+  // `type` : choisi par l'utilisateur au claim, librement modifiable ensuite,
+  // sans contrainte de singularité (plusieurs `war` autorisés).
+  // `isPrimary` : indépendant du type, un seul `true` par utilisateur.
   "accounts": [
-    { "governorId": "111", "kind": "main",   "claimedAt": "<timestamp>" },
-    { "governorId": "222", "kind": "filler", "claimedAt": "<timestamp>" },
-    { "governorId": "333", "kind": "filler", "claimedAt": "<timestamp>" }
+    { "governorId": "111", "type": "war",    "isPrimary": true,  "claimedAt": "<timestamp>" },
+    { "governorId": "444", "type": "war",    "isPrimary": false, "claimedAt": "<timestamp>" },
+    { "governorId": "222", "type": "filler", "isPrimary": false, "claimedAt": "<timestamp>" },
+    { "governorId": "333", "type": "filler", "isPrimary": false, "claimedAt": "<timestamp>" }
   ],
 
   "updatedAt": "<timestamp>"
@@ -179,18 +216,21 @@ Cette spec est **prête à implémenter** sur cette base.
 
 **Migration douce (pas de réécriture batch).** Un profil existant n'a que
 `governorId`. À la première lecture après déploiement, le client traite
-l'absence de `accounts` comme `accounts: [{ governorId, kind: 'main' }]` —
-c'est une **migration paresseuse côté lecture**, pas une migration de données :
-aucun script de backfill n'est nécessaire, le champ `accounts` n'est écrit
-qu'au premier appel d'une action multi-compte (ajout d'un 2ᵉ compte,
-changement de main). Un utilisateur qui n'utilise jamais la nouvelle
-fonctionnalité garde un profil strictement identique à aujourd'hui.
+l'absence de `accounts` comme `accounts: [{ governorId, type: 'war', isPrimary:
+true }]` — l'ancien compte unique devient **le compte de guerre par défaut**,
+marqué principal. C'est une **migration paresseuse côté lecture**, pas une
+migration de données : aucun script de backfill n'est nécessaire, le champ
+`accounts` n'est écrit qu'au premier appel d'une action multi-compte (ajout
+d'un 2ᵉ compte, changement de type, changement de compte principal). Un
+utilisateur qui n'utilise jamais la nouvelle fonctionnalité garde un profil
+strictement identique à aujourd'hui.
 
-**`governorId` reste le miroir du compte `main`**, recalculé à chaque écriture
-de `accounts` — c'est le prix à payer pour ne pas casser tout ce qui lit déjà
-ce champ directement (y compris côté Functions/bot, hors périmètre de cette
-spec puisqu'aucun fichier de code n'est modifié ici, mais que la spec doit
-anticiper).
+**`governorId` reste le miroir du compte `isPrimary: true`**, recalculé à
+chaque écriture de `accounts` — c'est le prix à payer pour ne pas casser tout
+ce qui lit déjà ce champ directement (y compris côté Functions/bot, hors
+périmètre de cette spec puisqu'aucun fichier de code n'est modifié ici, mais
+que la spec doit anticiper). Un compte principal peut être `war` ou `filler`
+— les deux notions sont indépendantes (§3quater, décision 14).
 
 ### 4.2 Pourquoi pas une sous-collection
 
@@ -204,43 +244,76 @@ architecture élaborée). À revoir si un usage à N comptes très élevé appar
 
 ---
 
-## 5. Distinction main / filler — options et arbitrage du Roi
+## 5. Type de compte (guerre/filler) et compte principal — arbitrage du Roi
 
-| Option | Principe | Pourquoi elle est/n'est pas retenue |
+### 5.1 Historique de l'arbitrage (traçabilité)
+
+| Option | Principe | Devenir |
 |---|---|---|
-| **A — Désignation par élimination (initialement recommandée par le PM)** | L'utilisateur réclame ses comptes puis désigne **exactement un** compte « main » ; tous les autres deviennent fillers par construction (dérivé, pas un tag séparé). | **Écartée par le Roi (§3bis, décision 4)** : « pas d'auto-désignation 1 main, le reste fillers ». Le risque identifié par le PM (0/2 main) était réel mais la mécanique d'élimination n'est pas celle voulue par le Roi. |
-| **B — Dérivé de `static_data/kvk_filler`** | Un compte est filler s'il apparaît dans le roster filler de la campagne en cours. | Écartée (PM et Roi concordent) : ce document est **campagne-scoped et réécrit à chaque synchro** (§2) — un même compte pourrait changer de statut d'une campagne à l'autre sans action de l'utilisateur, et le statut serait **indéterminé** hors-saison ou avant le premier scan. |
-| **C — Tag explicite par compte (retenue par le Roi)** | L'utilisateur désigne lui-même chaque compte réclamé comme « main » ou « filler », par un choix actif au moment du claim — pas par élimination, pas par dérivation. | **Retenue.** Le Roi tranche en faveur du choix explicite : « l'utilisateur désigne lui-même ses fillers parmi les gouverneurs du Top 300 ». |
+| **A — Désignation par élimination (initialement recommandée par le PM)** | L'utilisateur réclame ses comptes puis désigne **exactement un** compte « main » ; tous les autres deviennent fillers par construction (dérivé, pas un tag séparé). | **Écartée dès le §3bis** (décision 4) : « pas d'auto-désignation 1 main, le reste fillers ». |
+| **B — Dérivé de `static_data/kvk_filler`** | Un compte est filler s'il apparaît dans le roster filler de la campagne en cours. | **Écartée** (PM et Roi concordent, §2) : collection campagne-scoped, réécrite à chaque synchro, indéterminée hors-saison. |
+| **C — Tag explicite main/filler par compte (retenue au §3bis)** | L'utilisateur désigne lui-même chaque compte comme « main » ou « filler », choix actif au claim. | **Retenue provisoirement au §3bis, puis affinée au §3quater** : le concept binaire « main/filler » est remplacé par un **type** (§5.2), et la singularité qui restait sur le « main » est déplacée sur un flag séparé, `isPrimary` (§5.3). |
 
-**Arbitrage (§3bis, décision 4) : Option C.** Le `kind` (`main`/`filler`) de
-chaque compte est fixé par une **action explicite de l'utilisateur au moment
-du claim** (choix requis, pas de valeur par défaut implicite). **Invariant
-conservé** (nécessaire pour le miroir `governorId`, §4.1) : au plus un compte
-porte `kind: 'main'` à un instant donné — mais cet invariant est **appliqué
-par validation bloquante côté UI**, pas par un effet de bord automatique :
-si l'utilisateur tente de marquer un second compte comme main, l'interface
-l'empêche et l'invite à d'abord repasser explicitement l'ancien main en
-filler (deux actions distinctes de l'utilisateur, jamais une bascule
-silencieuse). C'est la différence concrète avec l'Option A écartée : pas de
-dérivation implicite, chaque changement d'état est un geste conscient.
+### 5.2 Type de compte (`war` / `filler`) — décision finale (§3quater)
+
+Chaque compte réclamé porte un **type**, `war` (« compte de guerre ») ou
+`filler`, qui détermine son formulaire de déclaration (§7) et son barème
+d'objectif (§8) :
+
+- **Choisi explicitement par l'utilisateur au moment du claim** — jamais
+  déduit, jamais par défaut implicite.
+- **Librement modifiable ensuite**, compte par compte, dans `ProfilePage`.
+- **Sans contrainte de singularité** : un utilisateur peut avoir plusieurs
+  comptes `war` (cas réel confirmé par le Roi : 2 comptes de guerre sur
+  KD 3341). Il n'y a donc plus de notion de « main unique » côté type.
+
+⚠️ **Terminologie** : `war` s'affiche **« Compte de guerre »** en français, et
+seulement ça — jamais « Guerrier »/« Warrior », déjà pris par le rôle RBAC
+(R-002, §9).
+
+### 5.3 Compte principal (`isPrimary`) — séparé du type
+
+Le besoin d'un **miroir `governorId` unique** pour la rétrocompatibilité
+(§4.1) ne disparaît pas avec l'abandon du « main » — il est porté par un flag
+dédié, **indépendant du type** :
+
+- **Un seul compte `isPrimary: true`** par utilisateur, dès qu'au moins un
+  compte est réclamé.
+- Détermine l'identité affichée en en-tête de profil et le miroir `governorId`
+  consommé par tout le code existant (§4.1).
+- **Un compte principal peut être `war` ou `filler`** — les deux notions ne se
+  contraignent pas l'une l'autre.
+- Réassignation **simple** (sélection unique, façon bouton radio) : marquer un
+  autre compte comme principal dé-marque automatiquement l'ancien. **Pas
+  besoin** du garde-fou en deux temps décrit dans une version antérieure de
+  cette spec pour le « main » — ce garde-fou visait à empêcher une
+  **requalification de type implicite** (ce que le Roi a rejeté, §3bis
+  décision 4) ; changer le compte principal ne touche **ni** le type **ni**
+  le barème d'objectif d'aucun compte, donc rien à protéger par un blocage.
 
 ---
 
-## 6. Flux ProfilePage — claim / unlink / désignation main/filler (F-025)
+## 6. Flux ProfilePage — claim / unlink / type / compte principal (F-025)
 
 Remplace le bloc unique « Gouverneur lié » par une liste **« Mes comptes »** :
 
-- Chaque compte réclamé est affiché (nom, ID, puissance si connue, badge
-  **Main** ou **Filler**).
+- Chaque compte réclamé est affiché (nom, ID, puissance si connue, badge de
+  **type** — « Compte de guerre » ou « Filler » — et badge **Principal** s'il
+  porte `isPrimary: true`).
 - **Au moment du claim** (recherche + « Réclamer »), l'utilisateur **choisit
-  explicitement** si le compte est son Main ou un Filler (§5, décision 4) —
-  ce n'est jamais déduit.
-- Chaque compte réclamé peut être re-marqué après coup (« Marquer comme
-  Filler » / « Marquer comme Main »), avec l'invariant décrit au §5 : passer
-  un compte à Main quand un autre l'est déjà est **bloqué** tant que
-  l'utilisateur n'a pas d'abord repassé l'ancien main en filler explicitement.
+  explicitement** le type du compte — Compte de guerre ou Filler (§5.2) — ce
+  n'est jamais déduit ni par défaut.
+- **Le type reste modifiable ensuite**, librement, compte par compte
+  (« Changer de type ») — sans contrainte de singularité : rien n'empêche
+  d'avoir plusieurs comptes de guerre (§5.2).
+- **Le compte principal** se désigne séparément (« Désigner comme principal »)
+  — réassignation simple, un seul à la fois, indépendante du type (§5.3).
 - Chaque compte porte un bouton **« Retirer »** (équivalent de l'`unlinkGovernor`
-  actuel, mais compte par compte).
+  actuel, mais compte par compte). **Règle à respecter** (déduite du besoin de
+  miroir `governorId`, non explicitement énoncée par le Roi) : si le compte
+  retiré est le compte principal et qu'il reste d'autres comptes, l'utilisateur
+  doit d'abord désigner un nouveau principal — retirer le dernier compte
+  restant ramène au « aucun compte lié » actuel, sans principal à désigner.
 - Le bloc de recherche existant (déjà dans `ProfilePage.jsx`) devient
   **répétable** — « Ajouter un compte » — et **étendu** (§3bis, décision 8) :
   la recherche par governor ID doit matcher au-delà du seul `players`
@@ -249,8 +322,8 @@ Remplace le bloc unique « Gouverneur lié » par une liste **« Mes comptes »*
 
 ### 6.1 Trouvabilité du filler — recherche étendue (exigence ferme du MVP)
 
-Tranché au §3bis (décision 8). Un compte (main ou filler) est identifié
-**uniquement par son governor ID**, recherché dans :
+Tranché au §3bis (décision 8). Un compte, quel que soit son type, est
+identifié **uniquement par son governor ID**, recherché dans :
 - un scan KvK (`static_data/kvk`, c'est-à-dire `kvkStats`) ;
 - **ou** un scan/roster interne : `static_data/players` (Top 300) **et**
   `static_data/kvk_filler` s'il existe pour la campagne en cours.
@@ -294,20 +367,28 @@ enregistrée en **US-031** (idée future, non priorisée, voir `ProductBacklog.m
 
 ## 7. Flux War Tracker — déclaration par compte (F-026)
 
-### 7.1 Sélecteur de compte
+### 7.1 Le formulaire s'adapte au type du compte — pas de choix à la déclaration
 
-Quand l'utilisateur a plus d'un compte réclamé, l'onglet **Déclaration**
-affiche un sélecteur (pills, un par compte : « Helios · Main »,
-« Aurion · Filler », « Solinar · Filler ») au-dessus du formulaire. Le
-formulaire affiché dépend du compte sélectionné :
-- **Main** : formulaire actuel inchangé (ressources, marches, tech, plages
-  horaires).
-- **Filler** : formulaire réduit — nombre de T4 disponibles, nombre de T5
-  disponibles (+ point ouvert sur le statut de disponibilité, voir A-020).
+Le type (`war`/`filler`) est fixé sur le profil (§6), **jamais choisi ici** :
+le War Tracker lit le type de chaque compte réclamé et adapte l'affichage en
+conséquence (§3quater, décision 11).
 
-Avec un seul compte réclamé, le comportement actuel est préservé à l'identique
-(pas de sélecteur affiché) — **aucune régression pour un utilisateur
-mono-compte**.
+- **Comptes de type `war`** (un ou plusieurs, §5.2) : chacun garde le
+  formulaire complet actuel, inchangé (ressources, marches, tech, plages
+  horaires). S'il y en a plusieurs, un sélecteur (pills : « Helios · Compte de
+  guerre », « Kaelen · Compte de guerre ») bascule d'un compte à l'autre,
+  chacun ayant sa propre déclaration.
+- **Comptes de type `filler`** : flux **dédié**, distinct du formulaire
+  complet (§3bis, décision 5) — une liste à cocher de tous les comptes filler
+  réclamés ; l'utilisateur **sélectionne un ou plusieurs** comptes et saisit
+  **T4/T5 pour chacun** des comptes cochés, puis enregistre en une seule
+  action. Seuls les comptes cochés sont écrits/mis à jour — un filler non
+  coché cette fois-ci n'est pas réinitialisé à zéro (+ point ouvert sur le
+  statut de disponibilité, voir A-020 : par défaut, cocher + saisir T4/T5 vaut
+  présence, sans champ de statut séparé).
+
+Avec un seul compte réclamé (le cas d'aujourd'hui), le comportement actuel est
+préservé à l'identique — **aucune régression pour un utilisateur mono-compte**.
 
 ### 7.2 Identité du document — nouveau schéma de `docId`
 
@@ -316,19 +397,20 @@ mono-compte**.
 | Utilisateur connecté | `${kvkId}_${uid}` | `${kvkId}_${uid}_${governorId}` |
 | Invité (non connecté) | `${kvkId}_guest_${governorId}` | **Inchangé** — un invité n'a pas de profil multi-compte |
 
-**Migration — lecture avec repli, pas de réécriture.** Les documents
-existants (`${kvkId}_${uid}`, sans segment `governorId`) restent en l'état.
-Ils représentent, par construction, la déclaration de l'unique compte que
+**Migration — lecture avec repli, pas de réécriture** (confirmé par le Roi,
+§3ter, décision 10 — option A, aucun backfill). Les documents existants
+(`${kvkId}_${uid}`, sans segment `governorId`) restent en l'état. Ils
+représentent, par construction, la déclaration de l'unique compte que
 l'utilisateur avait au moment de la création — c'est-à-dire son compte
-**main** sous le nouveau modèle. Toute lecture « ma déclaration pour le
-compte X » doit donc :
+**`isPrimary: true`, de type `war`** sous le nouveau modèle (§4.1). Toute
+lecture « ma déclaration pour le compte X » doit donc :
 1. chercher `${kvkId}_${uid}_${X}` (nouveau schéma) ;
-2. si absent **et** `X` est le compte main de l'utilisateur, replier sur
-   `${kvkId}_${uid}` (ancien schéma) pour ne pas faire disparaître une
-   déclaration déjà saisie le jour du déploiement.
+2. si absent **et** `X` est le compte principal (`isPrimary`) de l'utilisateur,
+   replier sur `${kvkId}_${uid}` (ancien schéma) pour ne pas faire disparaître
+   une déclaration déjà saisie le jour du déploiement.
 
-Les **nouvelles** déclarations (y compris pour le compte main, à partir de
-cette livraison) s'écrivent toujours sous le nouveau schéma à 3 segments —
+Les **nouvelles** déclarations (y compris pour le compte principal, à partir
+de cette livraison) s'écrivent toujours sous le nouveau schéma à 3 segments —
 la coexistence des deux schémas est transitoire, uniquement pour les
 documents antérieurs au déploiement.
 
@@ -362,10 +444,10 @@ objectifPerte (points)  = ratio × pouvoirDéclaré        // ratio par défaut 
 **Mise en garde explicite — à ne jamais mélanger (mirroir de BR-010).** Cette
 échelle de points (T4=4, T5=10) est **propre au barème filler** et n'a
 **aucun rapport** avec :
-- la puissance réelle du jeu (unités affichées pour un main, ex.
-  `player.power`) ;
-- l'échelle « points de morts » du barème main (`DEAD_POINTS_PER_T5 = 200`
-  dans `kvkGoals.js`, complètement différente).
+- la puissance réelle du jeu (unités affichées pour un compte de type `war`,
+  ex. `player.power`) ;
+- l'échelle « points de morts » du barème des comptes `war`
+  (`DEAD_POINTS_PER_T5 = 200` dans `kvkGoals.js`, complètement différente).
 
 Ce sont **trois référentiels de points distincts** coexistant dans l'app.
 Toute UI affichant un chiffre filler doit l'étiqueter explicitement (« points
@@ -412,9 +494,10 @@ n'y sont pas câblés).
 
 Étendre `KvkGoalsPanel` (pas de page dédiée) : la vue reste « qui a déclaré,
 quel est son objectif » (le cadrage déjà en commentaire dans le fichier), mais
-le rendu d'une ligne dépend désormais de `accountKind` :
-- **Main** : colonnes actuelles inchangées (Min KP, Goal KP, Min Dead, % Goal).
-- **Filler** : nouvelles colonnes (T4/T5 déclarés, pouvoir déclaré en points,
+le rendu d'une ligne dépend désormais du **type** du compte (`war`/`filler`),
+pas d'un statut main/filler :
+- **`war`** : colonnes actuelles inchangées (Min KP, Goal KP, Min Dead, % Goal).
+- **`filler`** : nouvelles colonnes (T4/T5 déclarés, pouvoir déclaré en points,
   objectif de perte en points, % d'atteinte une fois `t4Dead`/`t5Dead`
   connus) — pas de colonnes KP/DKP, qui n'ont aucun sens pour ce barème.
 
@@ -426,6 +509,13 @@ Le rôle vient de `roles/{uid}`, lié à l'utilisateur Discord-authentifié, **p
 au compte de jeu. Un utilisateur avec 3 comptes garde un seul rôle pour les 3 ;
 aucune règle de rôle par compte n'est introduite. Rien à modifier dans
 `RoleContext.jsx` ni dans la logique de synchronisation Discord.
+
+⚠️ **Rappel terminologique** : le rôle RBAC **Guerrier** (`ROLES.WARRIOR`,
+R-002) et le **type de compte** `war` (« compte de guerre », F-025/BR-016)
+sont deux notions **totalement indépendantes** — un utilisateur de rôle
+Officier ou Roi peut très bien posséder des comptes de type `war` et
+`filler`, et un Guerrier peut n'avoir que des fillers. Ne jamais les
+confondre dans le vocabulaire produit ni dans une future implémentation.
 
 ---
 
@@ -444,14 +534,17 @@ allow create: if isOwner(userId) && writesOnly(['governorId', 'accounts', 'updat
 allow update: if isOwner(userId) && changesOnly(['governorId', 'accounts', 'updatedAt']);
 ```
 **Validation de forme** (`accounts` est un tableau d'objets `{governorId,
-kind}` avec `kind` ∈ {main, filler} et exactement un `kind: 'main'`) :
-Firestore Rules peut valider le type (`is list`) et des contraintes simples,
-mais valider « exactement un élément à `main` » dans un tableau demande une
-logique plus lourde (boucle non native aux rules). **Recommandation** :
-valider la forme grossière côté rules (c'est un tableau, chaque élément a les
-bonnes clés), laisser la contrainte d'unicité du main au client — cohérent
-avec le niveau de validation déjà appliqué ailleurs dans ce fichier de règles
-(garde-fous de forme, pas de logique métier complète).
+type, isPrimary}` avec `type` ∈ {war, filler} et exactement un
+`isPrimary: true`) : Firestore Rules peut valider le type de donnée (`is
+list`) et des contraintes simples, mais valider « exactement un élément à
+`isPrimary: true` » dans un tableau demande une logique plus lourde (boucle
+non native aux rules). **Recommandation** : valider la forme grossière côté
+rules (c'est un tableau, chaque élément a les bonnes clés), laisser la
+contrainte d'unicité de `isPrimary` au client — cohérent avec le niveau de
+validation déjà appliqué ailleurs dans ce fichier de règles (garde-fous de
+forme, pas de logique métier complète). **Note** : contrairement à la version
+précédente de cette spec, `type` **n'a aucune contrainte de singularité** à
+valider — seul `isPrimary` en a une (§5.3).
 
 ### 10.2 `war_availabilities`
 
@@ -468,63 +561,64 @@ une chaîne non vide à la création, pour fiabiliser le regroupement en aval �
 
 ---
 
-## 11. Questions ouvertes / Assumptions
+## 11. Questions ouvertes / Assumptions — état final
 
-Nouvelles hypothèses nommées (prochain ID libre : A-019) :
+Toutes tranchées sauf une (A-020). Détail dans `Assumptions_Log.md`.
 
-- **A-019** — Distinction main/filler = désignation par l'utilisateur (option A,
-  §5), pas dérivée de `static_data/kvk_filler` ni taguée librement. Proposée
-  par le PM, **à confirmer par le Roi**.
-- **A-020** — Le formulaire filler garde le sélecteur de disponibilité
-  (Available/Partial/Unavailable) déjà utilisé pour les mains, en plus de
-  T4/T5 — le Roi n'a spécifié que les troupes. Sans ce champ, le leadership ne
-  sait pas distinguer « ce filler ne joue pas ce KvK » de « ce filler n'a pas
-  encore déclaré ». **À confirmer.**
-- **A-021** — Le ratio de perte cible filler (défaut 50 %) est paramétrable
-  **par campagne** (`kvk_config/current`), pas globalement. **À confirmer** —
-  alternative : valeur globale unique, plus simple mais moins flexible d'une
-  saison à l'autre.
-- **A-022** — La recherche de claim dans `ProfilePage` doit interroger aussi
-  `static_data/kvk_filler` (pas seulement `players`/Top 300) pour que les
-  comptes filler soient réellement trouvables — fait technique découvert en
-  lisant le code, non mentionné dans le besoin initial. **Aucun montant du
-  besoin ne fonctionne sans ce point** : si les fillers ne sont pas dans le
-  Top 300, la recherche actuelle ne les trouvera jamais. **À trancher** (et à
-  noter : `kvk_filler` étant campagne-scoped, un compte filler n'est
-  cherchable qu'une fois qu'il a été scanné au moins une fois — voir aussi la
-  question de savoir si un compte peut être « pré-réclamé » par ID connu sans
-  qu'il apparaisse encore dans aucune liste).
-- **A-023** — Aucune contrainte d'unicité n'empêche deux utilisateurs de
-  réclamer le même `governorId`, en mono-compte comme en multi-compte
-  aujourd'hui. Pas introduit par cette spec, mais le risque est multiplié par
-  le nombre de comptes réclamables. **Hors périmètre de cette spec** — à
-  confirmer que ça reste acceptable, ou à ouvrir comme chantier séparé.
-- **A-024** — Migration des `war_availabilities` existants : repli en lecture
-  sur l'ancien `docId` (`${kvkId}_${uid}`) uniquement pour le compte main,
-  sans réécriture batch (§7.2). **À confirmer** que cette stratégie
-  paresseuse est suffisante (elle laisse coexister deux schémas de `docId`
-  indéfiniment pour les campagnes antérieures au déploiement).
+- **A-019 — ✅ Tranchée (4ᵉ passe, §3quater).** Chaque compte porte un type
+  explicite (`war`/`filler`), choisi au claim, librement modifiable, sans
+  singularité — plusieurs comptes `war` autorisés. Un flag séparé `isPrimary`
+  (singulier, indépendant du type) porte l'identité/le miroir `governorId`.
+  Remplace la version « 1 main + reste filler par élimination » puis « tag
+  explicite main/filler » des passes précédentes.
+- **A-020 — ⏳ Reste ouverte.** Le formulaire filler garde-t-il un sélecteur
+  de disponibilité (Available/Partial/Unavailable) en plus de T4/T5 ? Non
+  tranché explicitement par le Roi. **Défaut retenu en l'absence d'arbitrage**
+  : pas de statut séparé — un filler sélectionné + T4/T5 saisis vaut présence.
+- **A-021 — ✅ Tranchée (§3bis, décision 7).** Ratio de perte cible filler
+  paramétrable **par campagne** (`kvk_config/current.goals.fillerDeathRatio`),
+  pas globalement.
+- **A-022 — ✅ Tranchée (§3bis, décision 8).** Recherche de claim étendue,
+  exigence ferme du MVP : matcher par governor ID dans `players` (Top 300),
+  `kvkStats` (scan KvK) et `kvkFillerStats` (`static_data/kvk_filler`, s'il
+  existe). Hors périmètre : gouverneur absent des trois sources (très gros
+  royaumes) — 2997 et 3341 non concernés.
+- **A-023 — ✅ Tranchée (§3bis, décision 9).** Le gap d'unicité de claim
+  (un `governorId` réclamable par plusieurs utilisateurs) reste acceptable
+  pour le MVP, self-service sans validation. Piste future actée, hors
+  périmètre : vérification par 2FA in-game (US-031).
+- **A-024 — ✅ Tranchée (§3ter, décision 10).** Migration par repli en
+  lecture sur l'ancien `docId` (`${kvkId}_${uid}`, traité comme le compte
+  `isPrimary`/`war` par défaut), sans réécriture batch — option retenue faute
+  d'enjeu réel (KvK 41 pas commencé au moment de l'arbitrage).
 
 ---
 
 ## 12. Critères d'acceptation
 
 1. Un utilisateur mono-compte (cas d'aujourd'hui) ne voit **aucune**
-   différence : pas de sélecteur de compte affiché, formulaire main inchangé,
-   `governorId` toujours lisible où il l'était.
+   différence : pas de sélecteur de compte affiché, formulaire de compte de
+   guerre inchangé, `governorId` toujours lisible où il l'était.
 2. Un utilisateur peut réclamer un 2ᵉ (puis Nᵉ) compte depuis `ProfilePage`
-   sans perdre le premier.
-3. Un utilisateur peut désigner un autre compte comme main ; l'ancien main
-   redevient filler ; il n'existe jamais 0 ni 2 comptes main simultanément
-   dès qu'au moins un compte est réclamé.
+   sans perdre le premier, en choisissant explicitement son type (Compte de
+   guerre ou Filler) à la réclamation.
+3. Un utilisateur peut avoir **plusieurs comptes de type Compte de guerre**
+   simultanément — aucune contrainte de singularité sur le type. Un seul
+   compte porte le badge Principal à la fois ; le désigner sur un autre
+   compte dé-marque automatiquement l'ancien (réassignation simple, pas de
+   blocage).
 4. Un utilisateur peut retirer un compte sans affecter ses autres comptes ni
    ses déclarations passées (elles restent visibles dans l'historique/le War
-   Dashboard, rattachées à leur `governorId`).
+   Dashboard, rattachées à leur `governorId`) ; retirer le compte principal
+   alors qu'il en reste d'autres impose d'en désigner un nouveau.
 5. Depuis le War Tracker, un utilisateur multi-compte peut déclarer sa
    disponibilité pour chacun de ses comptes séparément ; chaque compte a son
-   propre document `war_availabilities`, retrouvable indépendamment.
-6. Le formulaire de déclaration d'un compte filler ne demande que T4/T5 (+
-   disponibilité si A-020 est confirmée) — pas les champs du formulaire main.
+   propre document `war_availabilities`, retrouvable indépendamment. Le
+   formulaire affiché dépend du **type** du compte, jamais d'un choix fait à
+   la déclaration.
+6. Le flux de déclaration filler permet de **sélectionner plusieurs** comptes
+   filler réclamés et de saisir T4/T5 pour chacun en une seule action ; un
+   filler non sélectionné cette fois n'est pas réinitialisé.
 7. L'onglet Objectifs affiche, pour un compte filler ayant déclaré T4/T5, le
    pouvoir déclaré en points, l'objectif de perte, et — une fois
    `t4Dead`/`t5Dead` connus pour la campagne — le pourcentage d'atteinte.
@@ -536,7 +630,13 @@ Nouvelles hypothèses nommées (prochain ID libre : A-019) :
    campagnes existantes (documents à l'ancien `docId`).
 10. Aucun chiffre filler (points de pouvoir déclaré, objectif) n'est jamais
     affiché sous un libellé qui pourrait le faire confondre avec la puissance
-    réelle du jeu ou avec les points de morts du barème main.
+    réelle du jeu ou avec les points de morts du barème des comptes de guerre.
+11. Nulle part dans l'UI ou les libellés le type de compte « Compte de
+    guerre » n'est désigné par « Guerrier »/« Warrior » — terme réservé au
+    rôle RBAC (R-002).
+12. La recherche de claim dans `ProfilePage` trouve un gouverneur présent
+    dans `players` (Top 300), `kvkStats` ou `kvkFillerStats`, pas seulement
+    dans le Top 300.
 
 ---
 
@@ -544,14 +644,20 @@ Nouvelles hypothèses nommées (prochain ID libre : A-019) :
 
 | ID | Intitulé |
 |---|---|
-| **E-007** | Multi-comptes par utilisateur (main + fillers) |
-| **F-025** | Multi-comptes de profil — claim, retrait, désignation du main |
-| **F-026** | Déclaration de guerre par compte (War Tracker multi-comptes) |
+| **E-007** | Multi-comptes par utilisateur (comptes de guerre + fillers) |
+| **F-025** | Multi-comptes de profil — claim, retrait, type par compte, compte principal |
+| **F-026** | Déclaration de guerre par compte, adaptée au type (War Tracker multi-comptes) |
 | **F-027** | Objectifs filler paramétrables |
-| **BR-016** | Modèle multi-comptes — un main désigné par l'utilisateur, claim self-service inchangé |
-| **BR-017** | Identité des déclarations de guerre par compte — `docId` à 3 segments, migration en lecture |
-| **BR-018** | Barème d'objectif filler — échelle de points dédiée (T4=4, T5=10), jamais mélangée aux autres référentiels |
-| **US-027** | Gérer mes comptes (ajouter / retirer / désigner main) |
-| **US-028** | Déclarer la dispo de guerre pour chacun de mes comptes |
+| **BR-016** | Modèle multi-comptes — type par compte (`war`/`filler`, plusieurs `war` autorisés) + `isPrimary` séparé, claim self-service inchangé *(amendée le 2026-07-27, 4ᵉ passe — remplace le modèle « un main désigné »)* |
+| **BR-017** | Identité des déclarations de guerre par compte — `docId` à 3 segments, migration en lecture *(amendée — vocabulaire « main » remplacé par « compte principal/`isPrimary`»)* |
+| **BR-018** | Barème d'objectif filler — échelle de points dédiée (T4=4, T5=10), jamais mélangée aux autres référentiels ; le type du compte sélectionne le barème (BR-016) *(amendée — vocabulaire)* |
+| **US-027** | Gérer mes comptes (ajouter / retirer / typer / désigner le compte principal) |
+| **US-028** | Déclarer la dispo de guerre pour chacun de mes comptes, formulaire adapté au type |
 | **US-029** | Voir mon objectif filler dans l'onglet Objectifs |
 | **US-030** | Le Roi configure le ratio de perte cible filler par campagne |
+| **US-031** | *(Idée future, hors périmètre E-007)* Vérification d'appartenance de compte par 2FA in-game — voir §6.2 / `ProductBacklog.md` |
+
+**Aucune nouvelle règle BR créée pour « le type pilote l'objectif »** (§3quater,
+décision 14) : ce principe est documenté comme conséquence directe de BR-016
+(modèle de compte) et rappelé dans BR-018 (formule filler), plutôt que d'ouvrir
+une BR-019 redondante.
