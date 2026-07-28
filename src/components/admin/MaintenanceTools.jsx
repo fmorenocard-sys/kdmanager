@@ -102,7 +102,11 @@ const MaintenanceTools = () => {
             for (const docData of snapshot.docs) {
                 const data = docData.data();
                 const uid = data.userId !== 'guest' ? data.userId : null;
-                const newDocId = uid ? `${target.id}_${uid}` : `${target.id}_guest_${data.governorId}`;
+                // F-026 : docId 3 segments par compte — sans le governorId, N
+                // declarations d'un meme utilisateur seraient ecrasees en une seule.
+                const newDocId = uid
+                    ? `${target.id}_${uid}_${data.governorId}`
+                    : `${target.id}_guest_${data.governorId}`;
                 currentBatch.set(doc(db, 'war_availabilities', newDocId), {
                     ...data,
                     kvkId: target.id,

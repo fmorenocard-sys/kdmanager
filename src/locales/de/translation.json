@@ -162,7 +162,13 @@
     "crystal_high": "Hoch / Whale",
     "example": "z. B. {{v}}",
     "speedups_total_label": "Beschleuniger gesamt — Universal + Heilung (Tage)",
-    "speedups_placeholder": "z. B. 45 (Universal- + Heilungstage addieren)"
+    "speedups_placeholder": "z. B. 45 (Universal- + Heilungstage addieren)",
+    "filler_section": "Filler-Konten",
+    "filler_hint": "Wähle deine Filler und gib die verfügbaren T4/T5-Truppen für jeden an.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Filler speichern",
+    "account_selector": "Kriegskonten"
   },
   "trophies": {
     "title": "Königreich-Trophäen",

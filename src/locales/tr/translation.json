@@ -162,7 +162,13 @@
     "crystal_high": "Yüksek / Whale",
     "example": "örn. {{v}}",
     "speedups_total_label": "Toplam Hızlandırma — Evrensel + İyileştirme (gün)",
-    "speedups_placeholder": "örn. 45 (evrensel + iyileştirme günlerini topla)"
+    "speedups_placeholder": "örn. 45 (evrensel + iyileştirme günlerini topla)",
+    "filler_section": "Filler hesapları",
+    "filler_hint": "Filler hesaplarını işaretle ve her biri için mevcut T4/T5 birliklerini gir.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Filler hesaplarını kaydet",
+    "account_selector": "Savaş hesapları"
   },
   "trophies": {
     "title": "Krallık Kupaları",

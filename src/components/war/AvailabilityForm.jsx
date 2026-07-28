@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../../config/firebase';
-import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import Button from '../ui/Button';
@@ -11,13 +11,12 @@ import Card from '../ui/Card';
 import AccessGate from '../ui/AccessGate';
 import CommanderSelector from './CommanderSelector';
 import ActiveHoursPickerUTC from './ActiveHoursPickerUTC';
+import FillerDeclarationBlock from './FillerDeclarationBlock';
 import { COMMANDERS } from '../../data/commanders';
 import { Save, User, Database, Swords, Zap, X, Calendar } from '../ui/icons';
 
 const AvailabilityForm = () => {
-    const { currentUser, governorId, linkGovernor } = useAuth();
-
-
+    const { currentUser, governorId, accounts, linkGovernor } = useAuth();
 
     const { players } = useData();
     const { t, i18n } = useTranslation();
@@ -26,6 +25,32 @@ const AvailabilityForm = () => {
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const [kvkConfig, setKvkConfig] = useState(null);
+
+    // E-007/F-026 : déclaration par compte. On distingue comptes de guerre (form
+    // complet) et fillers (bloc dédié). `selectedGovernorId` = le compte de guerre
+    // actuellement édité par le formulaire complet.
+    const warAccounts = accounts.filter((a) => a.type === 'war');
+    const fillerAccounts = accounts.filter((a) => a.type === 'filler');
+    const [selectedGovernorId, setSelectedGovernorId] = useState(null);
+
+    // Nom live par id (donnée synchro), repli sur le nom stocké dans le compte.
+    const resolveName = (gid) => {
+        const p = players.find((x) => String(x.id) === String(gid));
+        if (p?.name) return p.name;
+        const acc = accounts.find((a) => String(a.governorId) === String(gid));
+        return acc?.name || String(gid);
+    };
+
+    // Défaut du compte édité : le primaire s'il est 'war', sinon le 1er compte war.
+    useEffect(() => {
+        const warIds = warAccounts.map((a) => String(a.governorId));
+        if (selectedGovernorId && warIds.includes(selectedGovernorId)) return;
+        const primary = String(governorId || '');
+        // primaire s'il est 'war', sinon 1er compte war ; null si aucun compte war
+        // (l'utilisateur pur-filler / sans compte utilise la saisie manuelle ou le bloc filler).
+        setSelectedGovernorId(warIds.includes(primary) ? primary : (warIds[0] || null));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accounts, governorId]);
 
     const [formData, setFormData] = useState({
         governorName: '',
@@ -39,27 +64,6 @@ const AvailabilityForm = () => {
     });
 
     const [marchInput, setMarchInput] = useState({ type: 'Infantry', primary: '', secondary: '' });
-
-    // Pre-fill and Nickname Lookup
-    useEffect(() => {
-        if (currentUser) {
-            let name = currentUser.displayName || '';
-            let id = governorId || '';
-
-            if (id) {
-                const player = players.find(p => String(p.id) === String(id));
-                if (player) {
-                    name = player.name;
-                }
-            }
-
-            setFormData(prev => ({
-                ...prev,
-                governorName: name,
-                governorId: id
-            }));
-        }
-    }, [currentUser, governorId, players]);
 
     // Dynamic Lookup when governorId changes (manually typed or prefilled)
     useEffect(() => {
@@ -100,18 +104,35 @@ const AvailabilityForm = () => {
                     currentKvkId = data.id || `${configData.name}_${configData.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
                 }
 
-                // If user is logged in, query their specific declaration for THIS KvK
-                if (currentUser) {
-                    const docId = `${currentKvkId}_${currentUser.uid}`;
-                    const docRef = doc(db, "war_availabilities", docId);
-                    const sn = await getDoc(docRef);
+                // F-026 : déclaration du COMPTE sélectionné. On réinitialise d'abord
+                // le formulaire (pour ne pas traîner les données du compte précédent
+                // lors d'un switch), puis on charge sa déclaration.
+                if (currentUser && selectedGovernorId != null) {
+                    const gid = String(selectedGovernorId);
+                    setFormData({
+                        governorName: resolveName(gid),
+                        governorId: gid,
+                        availability: 'Available',
+                        crystalTech: 'Low',
+                        activeHoursUTC: { from: '', to: '' },
+                        resources: { food: 0, wood: 0, stone: 0, gold: 0 },
+                        speedups: { total: 0 },
+                        marches: [],
+                    });
+                    // docId 3 segments ; repli lecture sur l'ancien 2 segments si
+                    // c'est le compte primaire (migration option A, spec §7.2).
+                    let sn = await getDoc(doc(db, "war_availabilities", `${currentKvkId}_${currentUser.uid}_${gid}`));
+                    if (!sn.exists() && gid === String(governorId)) {
+                        sn = await getDoc(doc(db, "war_availabilities", `${currentKvkId}_${currentUser.uid}`));
+                    }
                     if (sn.exists()) {
                         const data = sn.data();
                         setFormData(prev => ({
                             ...prev,
                             ...data,
-                            // Ensure activeHoursUTC is always an object
-                            activeHoursUTC: data.activeHoursUTC || { from: '', to: '' }
+                            governorId: gid,
+                            governorName: resolveName(gid),
+                            activeHoursUTC: data.activeHoursUTC || { from: '', to: '' },
                         }));
                     }
                 }
@@ -121,7 +142,8 @@ const AvailabilityForm = () => {
         };
 
         fetchConfigAndData();
-    }, [currentUser]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser, selectedGovernorId]);
 
 
 
@@ -174,8 +196,11 @@ const AvailabilityForm = () => {
         }
 
         try {
-            // Auto-link if authenticated and ID provided
-            if (currentUser && formData.governorId && formData.governorId !== governorId) {
+            // Auto-link seulement si le compte n'est PAS déjà réclamé (cas saisie
+            // manuelle d'un utilisateur sans compte). Déclarer pour un compte de
+            // guerre déjà réclamé ne doit PAS repointer le compte primaire.
+            if (currentUser && formData.governorId
+                && !accounts.some((a) => String(a.governorId) === String(formData.governorId))) {
                 linkGovernor(formData.governorId);
             }
 
@@ -195,7 +220,11 @@ const AvailabilityForm = () => {
                 kvkName = kvkConfig.name;
             }
 
-            const docId = currentUser ? `${localKvkId}_${currentUser.uid}` : `${localKvkId}_guest_${formData.governorId}`;
+            // F-026 : docId 3 segments par compte pour un utilisateur connecté ;
+            // invité inchangé (2 segments guest).
+            const docId = currentUser
+                ? `${localKvkId}_${currentUser.uid}_${formData.governorId}`
+                : `${localKvkId}_guest_${formData.governorId}`;
 
             // Ensure resources are saved as numbers (0 if empty)
             const sanitizedResources = {
@@ -217,6 +246,7 @@ const AvailabilityForm = () => {
 
             await setDoc(doc(db, "war_availabilities", docId), {
                 ...formData,
+                accountType: 'war',
                 resources: sanitizedResources,
                 speedups: sanitizedSpeedups,
                 activeHoursUTC: sanitizedActiveHours,
@@ -225,6 +255,14 @@ const AvailabilityForm = () => {
                 kvkName: kvkName || 'Unknown',
                 updatedAt: Timestamp.now()
             });
+
+            // Anti-doublon : si on vient d'écrire le compte primaire en 3 segments,
+            // on supprime son ancien doc 2 segments (migration option A au fil de
+            // l'eau — évite qu'il apparaisse deux fois dans le War Dashboard).
+            if (currentUser && String(formData.governorId) === String(governorId)) {
+                try { await deleteDoc(doc(db, "war_availabilities", `${localKvkId}_${currentUser.uid}`)); }
+                catch { /* pas d'ancien doc : rien à faire */ }
+            }
 
             setSuccessMsg(t('war.submit_success'));
         } catch (err) {
@@ -239,6 +277,9 @@ const AvailabilityForm = () => {
 
     // BR-013: campagne clôturée par le Roi — déclarations gelées jusqu'à la prochaine saison
     const isClosedSeason = kvkConfig?.status === 'closed';
+    const activeKvkId = kvkConfig
+        ? (kvkConfig.id || `${kvkConfig.name}_${kvkConfig.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_'))
+        : 'default_kvk';
 
     if (!currentUser) {
         return (
@@ -296,6 +337,26 @@ const AvailabilityForm = () => {
                     </div>
                 )}
             </div>
+
+            {/* Sélecteur de comptes de guerre (F-026) — n'apparaît qu'avec plusieurs */}
+            {warAccounts.length > 1 && (
+                <div className="flex flex-wrap gap-2" role="group" aria-label={t('war.account_selector')}>
+                    {warAccounts.map((acc) => {
+                        const gid = String(acc.governorId);
+                        const active = gid === String(selectedGovernorId);
+                        return (
+                            <button
+                                key={gid}
+                                type="button"
+                                onClick={() => setSelectedGovernorId(gid)}
+                                className={`px-3 py-1.5 rounded-full text-sm font-bold border transition-colors ${active ? 'text-indigo-300 bg-indigo-500/15 border-indigo-500/40' : 'text-slate-400 bg-[var(--border-flat)] border-[var(--border-flat)] hover:text-slate-200'}`}
+                            >
+                                {resolveName(gid)}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
 
             {/* Identity */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -468,6 +529,18 @@ const AvailabilityForm = () => {
             {/* Messages */}
             {successMsg && <div className="p-3 bg-green-500/20 border border-green-500/50 text-green-400 rounded text-center animate-in fade-in">{successMsg}</div>}
             {errorMsg && <div className="p-3 bg-red-500/20 border border-red-500/50 text-red-400 rounded text-center animate-in fade-in">{errorMsg}</div>}
+
+            {/* Déclaration filler (F-026) — comptes de type filler uniquement */}
+            {fillerAccounts.length > 0 && (
+                <FillerDeclarationBlock
+                    fillerAccounts={fillerAccounts}
+                    uid={currentUser.uid}
+                    kvkId={activeKvkId}
+                    kvkName={kvkConfig?.name}
+                    resolveName={resolveName}
+                    disabled={isClosedSeason}
+                />
+            )}
         </Card>
     );
 };

@@ -162,7 +162,13 @@
     "crystal_high": "Wysokie / Whale",
     "example": "np. {{v}}",
     "speedups_total_label": "Przyspieszenia łącznie — Uniwersalne + Leczenie (dni)",
-    "speedups_placeholder": "np. 45 (dodaj dni uniwersalne + leczenie)"
+    "speedups_placeholder": "np. 45 (dodaj dni uniwersalne + leczenie)",
+    "filler_section": "Konta filler",
+    "filler_hint": "Zaznacz swoje fillery i podaj dostępne wojska T4/T5 dla każdego.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Zapisz fillery",
+    "account_selector": "Konta wojenne"
   },
   "trophies": {
     "title": "Trofea Królestwa",

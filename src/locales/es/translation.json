@@ -162,7 +162,13 @@
     "crystal_high": "Alto / Whale",
     "example": "ej. {{v}}",
     "speedups_total_label": "Aceleraciones totales — Universal + Curación (días)",
-    "speedups_placeholder": "ej. 45 (suma universal + curación)"
+    "speedups_placeholder": "ej. 45 (suma universal + curación)",
+    "filler_section": "Cuentas filler",
+    "filler_hint": "Marca tus fillers e introduce las tropas T4/T5 disponibles para cada uno.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Guardar fillers",
+    "account_selector": "Cuentas de guerra"
   },
   "trophies": {
     "title": "Trofeos del Reino",

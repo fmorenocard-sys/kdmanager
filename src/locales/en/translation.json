@@ -162,7 +162,13 @@
     "crystal_high": "High / Whale",
     "example": "e.g. {{v}}",
     "speedups_total_label": "Total Speedups — Universal + Healing (days)",
-    "speedups_placeholder": "e.g. 45 (add universal + healing days together)"
+    "speedups_placeholder": "e.g. 45 (add universal + healing days together)",
+    "filler_section": "Filler accounts",
+    "filler_hint": "Check your fillers and enter available T4/T5 troops for each.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Save fillers",
+    "account_selector": "War accounts"
   },
   "trophies": {
     "title": "Kingdom Trophies",

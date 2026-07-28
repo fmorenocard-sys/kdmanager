@@ -162,7 +162,13 @@
     "crystal_high": "Cao / Whale",
     "example": "vd. {{v}}",
     "speedups_total_label": "Tổng tăng tốc — Chung + Hồi máu (ngày)",
-    "speedups_placeholder": "vd. 45 (cộng ngày chung + hồi máu)"
+    "speedups_placeholder": "vd. 45 (cộng ngày chung + hồi máu)",
+    "filler_section": "Tài khoản filler",
+    "filler_hint": "Chọn các filler và nhập số quân T4/T5 khả dụng cho mỗi tài khoản.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Lưu filler",
+    "account_selector": "Tài khoản chiến"
   },
   "trophies": {
     "title": "Cúp vương quốc",

@@ -162,7 +162,13 @@
     "crystal_high": "مرتفع / حوت",
     "example": "مثال: {{v}}",
     "speedups_total_label": "إجمالي التسريعات — عام + شفاء (أيام)",
-    "speedups_placeholder": "مثال: 45 (اجمع أيام العام + الشفاء)"
+    "speedups_placeholder": "مثال: 45 (اجمع أيام العام + الشفاء)",
+    "filler_section": "حسابات ثانوية",
+    "filler_hint": "حدد حساباتك الثانوية وأدخل قوات T4/T5 المتاحة لكل منها.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "حفظ الحسابات الثانوية",
+    "account_selector": "حسابات الحرب"
   },
   "trophies": {
     "title": "كؤوس المملكة",

@@ -152,7 +152,11 @@ const WarDashboard = () => {
 
             for (const docData of unmigratedDeclarations) {
                 const uid = docData.userId !== 'guest' ? docData.userId : null;
-                const newDocId = uid ? `${currentKvkId}_${uid}` : `${currentKvkId}_guest_${docData.governorId}`;
+                // F-026 : docId 3 segments par compte (governorId inclus) — sinon
+                // N declarations d'un meme utilisateur ecrasees en une seule.
+                const newDocId = uid
+                    ? `${currentKvkId}_${uid}_${docData.governorId}`
+                    : `${currentKvkId}_guest_${docData.governorId}`;
 
                 batch.set(doc(db, "war_availabilities", newDocId), {
                     ...docData,

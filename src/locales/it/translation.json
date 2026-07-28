@@ -162,7 +162,13 @@
     "crystal_high": "Alto / Whale",
     "example": "es. {{v}}",
     "speedups_total_label": "Acceleratori totali — Universale + Cura (giorni)",
-    "speedups_placeholder": "es. 45 (somma universale + cura)"
+    "speedups_placeholder": "es. 45 (somma universale + cura)",
+    "filler_section": "Account filler",
+    "filler_hint": "Seleziona i tuoi filler e inserisci le truppe T4/T5 disponibili per ciascuno.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Salva filler",
+    "account_selector": "Account di guerra"
   },
   "trophies": {
     "title": "Trofei del Regno",

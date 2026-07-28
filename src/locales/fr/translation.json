@@ -162,7 +162,13 @@
     "crystal_high": "Gros / Whale",
     "example": "ex. {{v}}",
     "speedups_total_label": "Accélérations totales — Universel + Soin (jours)",
-    "speedups_placeholder": "ex. 45 (additionner universel + soin)"
+    "speedups_placeholder": "ex. 45 (additionner universel + soin)",
+    "filler_section": "Comptes filler",
+    "filler_hint": "Cochez vos fillers et saisissez les troupes T4/T5 disponibles pour chacun.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Enregistrer les fillers",
+    "account_selector": "Comptes de guerre"
   },
   "trophies": {
     "title": "Trophées du Royaume",

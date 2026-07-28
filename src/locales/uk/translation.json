@@ -162,7 +162,13 @@
     "crystal_high": "Високі / Whale",
     "example": "напр. {{v}}",
     "speedups_total_label": "Усього прискорень — Універсальні + Лікування (дні)",
-    "speedups_placeholder": "напр. 45 (додайте універсальні + лікування)"
+    "speedups_placeholder": "напр. 45 (додайте універсальні + лікування)",
+    "filler_section": "Філлер-акаунти",
+    "filler_hint": "Позначте свої філлери та вкажіть доступні війська T4/T5 для кожного.",
+    "filler_t4": "T4",
+    "filler_t5": "T5",
+    "filler_save": "Зберегти філлери",
+    "account_selector": "Бойові акаунти"
   },
   "trophies": {
     "title": "Трофеї Королівства",
