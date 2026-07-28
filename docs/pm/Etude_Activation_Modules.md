@@ -32,6 +32,22 @@ Ces décisions remplacent les hypothèses ouvertes du §6 initial (A-016 à A-01
 désormais tranchées ou reformulées) et sont reflétées dans les sections
 ci-dessous.
 
+## ⚖️ Décision du Roi (2026-07-28) — activation = DEUX couches d'autorité
+
+Correction majeure du modèle : l'activation de modules n'est **pas** un réglage
+unique piloté par le Roi de chaque royaume. Elle mélange **deux questions
+distinctes, à deux niveaux d'autorité différents** :
+
+| Couche | Question | Qui décide | Enjeu |
+| :--- | :--- | :--- | :--- |
+| **1. Entitlement (droit)** | Ce royaume a-t-il le **droit** d'avoir ce module ? | **Fournisseur** (Federico), lié au **tier payant** | Frontière **commerciale** — hors de portée du Roi client (sinon fuite de revenu) |
+| **2. Préférence (pertinence)** | Parmi les modules **autorisés**, lesquels afficher ? | Roi client (à la limite) | Cosmétique (« on ne suit pas les trophées ») |
+
+Conséquence : la V1 de l'US-025 (« toggle roi-only dans l'`AdminPage` ») était
+**mal cadrée** — mettre un module premium à portée du Roi client l'activerait
+gratuitement. L'entitlement doit vivre **au-dessus** du Roi (domaine
+fournisseur). Détails et implications dans le §3b (réécrit) et A-018 (retranchée).
+
 ---
 
 ## 1. Le problème, reformulé
@@ -166,35 +182,56 @@ des valeurs par défaut qui ne changent rien pour Unitas 2997.
   de schéma. Compatible avec l'approche « instance clonée, zéro refonte » déjà
   retenue pour KD 3341 (`Plan_Pilote_KvK.md`).
 
-### (b) Cible — runtime, doc Firestore + toggle admin (Roi)
+### (b) Cible — runtime, en DEUX COUCHES d'autorité (réécrit le 2026-07-28)
 
-Une fois qu'une instance a besoin de changer ses modules **sans** repasser
-par un redéploiement (plusieurs royaumes, ou un Roi qui veut ajuster seul) :
+La première version de (b) supposait un unique toggle « roi-only » dans
+l'`AdminPage`. C'est une **erreur de cadrage** corrigée par la décision du Roi
+du 2026-07-28 (voir encadré en tête) : l'activation relève de deux couches
+d'autorité — **entitlement (fournisseur)** et **préférence (Roi client)**.
 
-- Un document `instance_config/modules` (même projet Firebase — l'architecture
-  actuelle est **un projet par royaume**, pas encore multi-tenant ; si
-  `Etude_Commercialisation_SaaS.md` §3 item 1 aboutit un jour à
-  `tenants/{kingdomId}/…`, ce document suit sous le même chemin, sans
-  changement de forme).
-- Une nouvelle section « Modules » dans `AdminPage`, roi-only, dans le même
-  rail sticky que Data/Campagne/Course/Maintenance déjà en place — une liste
-  de toggles, un par module optionnel du §2 (Banque, Trophées, Deadweight),
-  effet immédiat (pas de redéploiement, c'est tout l'intérêt du passage au
-  runtime).
-- Un contexte léger (`ModulesContext`, calqué sur `RoleContext`) alimente
-  Sidebar/BottomNav/Routes/le bloc Banque du Dashboard à la place de l'import
-  statique `MODULES`.
-- **Qui tranche** : le Roi uniquement — cohérent avec le fait que toute la
-  configuration d'`AdminPage` (campagne, course, maintenance) est déjà
-  King-only.
+**Couche 1 — entitlement (fournisseur).** C'est la frontière commerciale : quels
+modules l'instance a le **droit** d'avoir, selon son tier. Elle ne doit
+**jamais** être un interrupteur dans l'`AdminPage` du Roi client (il activerait
+gratuitement un module payant). Point contre-intuitif mais central : **le MVP
+build-time (a) EST déjà un contrôle d'entitlement côté fournisseur** — le Roi
+client ne peut pas changer `VITE_MODULE_*` sans un redéploiement que **seul le
+fournisseur** opère (cohérent avec `A-028` : onboarding opéré par le
+fournisseur). Donc à court terme, **rien de neuf à construire** : le build-time
+couvre déjà le cas premium **et** le cas « pas pertinent pour ce royaume » (ex.
+3341 sans trophées).
 
-**Recommandation de séquencement** : rester en (a) tant qu'il n'y a qu'une ou
-deux instances en marque blanche maintenues à la main (situation actuelle,
-assumée par `Plan_Pilote_KvK.md` — « acceptable pour un royaume, pas
-au-delà »). Basculer en (b) quand l'un de ces deux signaux apparaît : un
-troisième royaume, ou un Roi qui demande à changer ses modules sans passer
-par le développeur. Construire (b) avant l'un de ces deux signaux serait de
-l'anticipation non demandée, dans un projet où le multi-tenant lui-même
+Quand le tiering deviendra réel (frontière gratuit/payant tranchée, étude SaaS
+§8), trois briques apparaîtront — **aucune n'est un toggle roi-only** :
+- une **table `tier → modules`** (quel palier débloque quoi) ;
+- si l'entitlement doit changer **sans redéploiement**, un **rôle fournisseur /
+  super-admin AU-DESSUS du Roi** — nouveau : aujourd'hui le Roi est le sommet de
+  la hiérarchie (`roles`), il n'existe pas d'échelon fournisseur. Le doc de
+  config (`instance_config/modules`, ou en multi-tenant `tenants/{kingdomId}/
+  config`) serait écrit **uniquement par ce super-admin**, jamais par le Roi ;
+- une **UI « verrouillé → passer au premium »** pour les modules non inclus —
+  une surface de **vente** (le module existe mais est gated, avec un CTA
+  d'upgrade), distincte du masquage neutre d'un module non pertinent.
+
+**Couche 2 — préférence (Roi client).** Une fois l'entitlement acquis, le Roi
+pourrait masquer/afficher les modules **optionnels qu'il a le droit d'avoir**
+(ex. « on ne suit pas les trophées »). C'est ce que la V1 de (b) imaginait, mais
+**scopé au sous-ensemble autorisé**. Feature **spéculative, différée** : tant
+que l'onboarding est opéré par le fournisseur (`A-028`), c'est lui qui règle
+aussi la préférence à la config — aucun client n'a demandé à le faire seul. À
+construire seulement si un client le réclame.
+
+- Implémentation (le jour venu) : un contexte léger (`ModulesContext`, calqué
+  sur `RoleContext`) fusionne **entitlement** (couche 1, source fournisseur) et
+  **préférence** (couche 2, si activée) et alimente Sidebar/BottomNav/Routes/le
+  bloc Banque du Dashboard à la place de l'import statique `MODULES`. Règle de
+  résolution : un module est visible **ssi entitled ET préféré-visible**.
+
+**Recommandation de séquencement (mise à jour 2026-07-28)** : rester en (a)
+build-time — il fait déjà office d'entitlement fournisseur — tant que le tiering
+n'est pas tranché commercialement. **Ne PAS construire de toggle roi-only**
+(mauvaise cible). Les vraies briques runtime (table tier→modules, super-admin
+fournisseur, UI d'upgrade) se construisent **avec** la décision de tiering
+(étude SaaS §8), pas avant — et sur un projet où le multi-tenant lui-même
 (item 1/7 de `Etude_Commercialisation_SaaS.md` §3) n'est pas encore décidé.
 
 ---
@@ -267,11 +304,17 @@ document) :
   (ex. formulaires de contribution Banque) — le MVP reste donc
   présentationnel, symétrique au traitement déjà appliqué aux gates de rôle
   (BR-009/BR-011). À rouvrir si un usage réel prouve le contraire.
-- **A-018 — non retranchée, reste l'hypothèse de travail.** Le mécanisme est
-  construit pour la propreté de la marque blanche, pas comme brique de
-  tarification ; il restera réutilisable pour un futur tiering sans travail
-  supplémentaire. Toujours vrai, toujours à garder en tête pour le choix de
-  copie UI (rester neutre, ne pas écrire « pas inclus dans votre offre »).
+- **A-018 — ✅ Retranchée le 2026-07-28 (corrigée).** L'hypothèse initiale
+  (« mécanisme construit pour la marque blanche, réutilisable pour un futur
+  tiering ») est confirmée mais **précisée en deux couches d'autorité** (voir
+  encadré en tête + §3b) : l'activation n'est pas un réglage unique roi-only —
+  c'est un **entitlement fournisseur** (droit lié au tier payant, hors de portée
+  du Roi client, sinon fuite de revenu) superposé à une **préférence Roi**
+  (cosmétique, dans le sous-ensemble autorisé). Le MVP build-time (a) est déjà le
+  contrôle d'entitlement côté fournisseur. Conséquence sur la copie UI : pour un
+  module premium **non inclus**, prévoir une surface « verrouillé → passer au
+  premium » (vente) — distincte du masquage **neutre** d'un module simplement
+  non pertinent (là, rester neutre, ne pas écrire « pas inclus dans votre offre »).
 
 ---
 
@@ -290,9 +333,12 @@ serait investir dans une généralisation avant que la douleur qu'elle résout
 
 **Références définitives**, inscrites dans les référentiels suite à
 l'arbitrage : épic `E-006`, feature `F-023`, règle métier `BR-015`, user
-stories `US-024` (MVP build-time, avec cascade Dashboard) et `US-025` (cible
-runtime + toggle Admin). Voir `ProductBacklog.md`, `FeatureInventory.md`,
-`docs/qa/SSOT.md`.
+stories `US-024` (MVP build-time, avec cascade Dashboard) et `US-025`
+(**re-scopée le 2026-07-28** en deux couches — entitlement fournisseur /
+préférence Roi, voir §3b ; l'ancienne formulation « cible runtime + toggle Admin
+roi-only » est abandonnée). Voir `ProductBacklog.md`, `FeatureInventory.md`,
+`docs/qa/SSOT.md` — **à resynchroniser** avec ce re-scope (la description US-025
+y porte encore l'ancienne formulation).
 
 **Prochaines étapes** :
 1. Configuration réelle du pilote KD 3341 (Trophées off, Deadweight on) au
@@ -303,16 +349,18 @@ runtime + toggle Admin). Voir `ProductBacklog.md`, `FeatureInventory.md`,
    BottomNav, lecture directe dans le bloc Banque du Dashboard (cascade),
    écran « module non disponible » réutilisant `AccessGate`.
 
-> **Signal de bascule US-025 déclenché — 2026-07-28.** Le Roi a demandé comment
-> activer un module (la Banque) sur l'instance 3341 sans passer par le
-> développeur — c'est exactement le second des deux signaux du §3b (« un Roi
-> qui demande à changer ses modules sans passer par le développeur »). La
-> condition de construction de la cible runtime (`US-025` : doc Firestore
-> `instance_config/modules` + section toggles dans l'Admin, effet immédiat sans
-> redéploiement) est donc remplie. Construction **non engagée** à la demande du
-> Roi (« rien pour l'instant ») ; à reprendre quand il le décidera. Lien direct
-> avec `Etude_Industrialisation_Onboarding.md` (la config build-time est une
-> friction de redéploiement par royaume qui ne scale pas).
+> **Signal US-025 déclenché puis RE-CADRÉ — 2026-07-28.** Le Roi a d'abord
+> demandé comment activer un module (la Banque) sur 3341 sans passer par le
+> développeur (le second signal de bascule). Mais en creusant, il a tranché que
+> l'activation relève de **deux couches d'autorité** (voir encadré en tête +
+> §3b réécrit + A-018) : l'entitlement est une décision **fournisseur** (tier
+> payant), pas un toggle roi-only. La « cible runtime » n'est donc **pas** un
+> self-service du Roi client — le build-time actuel suffit comme contrôle
+> d'entitlement fournisseur, et les vraies briques runtime (table tier→modules,
+> super-admin fournisseur, UI d'upgrade) se construiront **avec** la décision de
+> tiering (étude SaaS §8). Rien engagé. Lien direct avec
+> `Etude_Industrialisation_Onboarding.md` (A-028 : onboarding opéré par le
+> fournisseur).
 
 ---
 
