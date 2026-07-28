@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Panel",
     "power": "Łączna moc",
+    "power_history_empty_title": "Brak historii",
+    "power_history_empty_desc": "Wykres zmian mocy i punktów zabójstw będzie budowany wraz z kolejnymi skanami.",
     "dead": "Łączna liczba zabitych",
     "kp": "Łączne KP",
     "players": "Gracze",

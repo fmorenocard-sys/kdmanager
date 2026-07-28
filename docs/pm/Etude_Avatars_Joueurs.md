@@ -84,3 +84,91 @@ Priorité d'affichage par joueur : **URL Lilith fraîche (A) → avatar Discord 
 2. Frontend : `Avatar.jsx` lit `static_data/avatars` (via DataContext) avant le mapping local.
 3. Bot Discord : les embeds `/mystats` peuvent afficher l'avatar en `thumbnail` (même source).
 4. QA : cas de test fallback (URL morte → Discord → local → logo).
+
+---
+
+## Addendum — relecture multi-royaumes (2026-07-28)
+
+> Cette étude date du 2026-07-11 et raisonne **mono-royaume** (2997). Depuis, le
+> cadrage `Etude_Commercialisation_SaaS.md` et `Etude_Industrialisation_Onboarding.md`
+> a posé la trajectoire multi-royaumes. Le Roi rouvre la question sous cet angle :
+> plutôt que dépendre d'une maj de scrap des icônes sur le site d'un concurrent,
+> ne devrait-on pas afficher les avatars **Discord** ? Cet addendum relit la reco
+> A+B à la lumière de l'échelle — il ne remplace pas la §4, il la prolonge.
+
+### État réellement implémenté (vérifié dans le code, 2026-07-28)
+
+La cascade recommandée (§4) est en place, mais avec une **priorité précise à
+connaître** — `functions/index.js` `syncAvatars()` (synchro quotidienne) :
+
+1. Récupère d'abord les avatars **in-game** via le scrap ProKingdoms → CDN Lilith
+   (`source: "lilith"`), par `governor_id`, uniquement pour les gouverneurs du
+   royaume visibles au leaderboard du KvK actif.
+2. Ajoute ensuite les avatars **Discord** des comptes liés
+   (`user_profiles.photoURL`, capté par `discordAuth.js`, `source: "discord"`) —
+   **mais seulement pour les gouverneurs que le scrap n'a pas couverts**
+   (`!fresh[gid]`), avec une règle explicite « never downgrade » (le Discord
+   n'écrase jamais un Lilith existant).
+
+Autrement dit : **le scrap est prioritaire, Discord n'est qu'un filet de
+secours.** La proposition du Roi revient à **inverser cette priorité**.
+
+### Pourquoi ce n'est pas un simple « Discord au lieu de »
+
+Deux différences de fond, qui justifiaient la cascade plutôt qu'un choix exclusif :
+
+- **Ce ne sont pas la même image.** Scrap = **portrait RoK in-game** (l'identité
+  du gouverneur, celle qu'on reconnaît en jeu). Discord = **photo de profil
+  Discord** de la personne (meme, photo, souvent sans rapport avec le gouverneur).
+  Pour un outil où on identifie les joueurs par leur compte RoK, l'avatar in-game
+  est « le bon » — d'où sa priorité initiale.
+- **Couverture opposée.** Discord ne couvre que les joueurs **liés + connectés en
+  SSO** ; sur 300+ gouverneurs d'un roster, la majorité ne se connecte jamais →
+  « Discord au lieu de » laisserait le gros du roster sans avatar (logo seul). Le
+  scrap, lui, couvre les tops automatiquement, sans aucune connexion.
+
+### La relecture stratégique — le scrap est un passif à l'échelle
+
+L'instinct de fond du Roi est juste : dépendre d'une API **non documentée** d'un
+concurrent est fragile (zone grise ToS reprise en A-029 de l'`Assumptions_Log`,
+rate limits, peut casser sans préavis). Et **à l'échelle multi-royaumes, ce
+passif se multiplie** :
+
+- il faut un `KVK_MAP_ID` configuré **par royaume** (config manuelle de plus à
+  l'onboarding, cf. `Etude_Industrialisation_Onboarding.md` §2) ;
+- les rate limits (HTTP 429) se subissent **× N royaumes** sur le même endpoint ;
+- une rupture de l'API casserait la fraîcheur des avatars **de tous les royaumes
+  à la fois**.
+
+Maintenir un scrap par royaume, c'est exactement le type d'ops fragile que
+l'étude d'industrialisation cherche à éviter.
+
+### Cohérence avec « Discord = module premium » (A-031)
+
+Si l'intégration Discord devient optionnelle/premium (levier de l'étude
+d'industrialisation, §5), on **ne peut pas** en faire la source *primaire
+universelle* des avatars : les royaumes du **tier de base** (sans Discord)
+n'auraient plus rien à part le scrap/local. La répartition naturelle est donc :
+
+- **Tier de base** (sans Discord) → avatars via **JPG local / statique** ; le
+  scrap 2997 reste un bonus maison, **pas une promesse produit**.
+- **Tier premium** (Discord activé) → avatars **Discord** frais, officiels,
+  légitimes (API officielle, zéro scraping). C'est un bénéfice premium de plus,
+  pas seulement l'auth/le bot.
+
+### Recommandation (multi-royaumes)
+
+1. **Pour 2997 aujourd'hui : ne pas inverser la cascade.** L'avatar in-game reste
+   le meilleur rendu, et Discord le seconde déjà — la §4 tient telle quelle.
+2. **Ne pas embarquer le scrap dans le produit multi-royaumes.** Pour les N
+   royaumes clients, s'appuyer sur **Discord (premium) + local**, jamais sur un
+   scrap per-royaume. Robuste, légitime, et renforce la valeur du module Discord
+   premium.
+3. **Optionnel, à évaluer plus tard** : rendre la priorité Lilith/Discord
+   **configurable par instance** (un royaume qui privilégie la légitimité à la
+   fidélité in-game pourrait vouloir Discord-first). Non prioritaire — à ne
+   construire que si un royaume le demande.
+
+> Renvois : `Etude_Industrialisation_Onboarding.md` (§5 Discord opt-in, A-031 ;
+> A-029 CGU ProKingdoms à l'échelle), `Etude_Commercialisation_SaaS.md` (§4
+> abstraction des fournisseurs de scan, §5 Discord natif comme différenciateur).

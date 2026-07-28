@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Dashboard",
     "power": "Gesamtmacht",
+    "power_history_empty_title": "Noch kein Verlauf",
+    "power_history_empty_desc": "Der Verlauf von Macht und Kill-Punkten baut sich mit jedem neuen Scan auf.",
     "dead": "Gesamte Tote",
     "kp": "Gesamte KP",
     "players": "Spieler",

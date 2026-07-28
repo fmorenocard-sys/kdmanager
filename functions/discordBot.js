@@ -262,6 +262,36 @@ const fmtDataDate = (iso) => (iso ? String(iso).split("T")[0] : "unknown");
 const dataFooter = (parts) =>
     `KD 2997 — Kingdom Manager  •  ${parts.map(([label, iso]) => `${label}: ${fmtDataDate(iso)}`).join("  •  ")}`;
 
+/**
+ * Livre le résultat d'une commande via le followup d'interaction (édition du
+ * message @original). À appeler APRÈS un ACK différé (type 5). Aucune en-tête
+ * d'auth : le token de l'interaction fait foi, valable 15 minutes. Le champ
+ * `flags` est retiré — l'éphémère est déjà fixé par l'ACK et le followup ne peut
+ * pas le changer. Ne lève jamais : une panne réseau ne doit pas planter le handler.
+ * @param {string} applicationId ID d'application (fourni dans l'interaction)
+ * @param {string} token token d'interaction (fourni dans l'interaction)
+ * @param {object} data corps du message ({embeds} ou {content})
+ * @return {Promise<void>}
+ */
+async function editInteractionResponse(applicationId, token, data) {
+    const payload = { ...(data || {}) };
+    delete payload.flags;
+    const url = `https://discord.com/api/v10/webhooks/${applicationId}/${token}/messages/@original`;
+    try {
+        const resp = await fetch(url, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        if (!resp.ok) {
+            const errText = await resp.text().catch(() => "");
+            logger.error(`Interaction followup PATCH failed (${resp.status}): ${errText.slice(0, 300)}`);
+        }
+    } catch (err) {
+        logger.error(`Interaction followup PATCH threw: ${err.message}`);
+    }
+}
+
 // --- Embed Builders ---
 
 function buildAccessDeniedEmbed() {
@@ -623,7 +653,7 @@ async function buildMyKvKEmbed(discordId, db, campaignId = null) {
 export const discordInteractionHandler = onRequest(
     {
         secrets: [DISCORD_PUBLIC_KEY],
-        // No CORS needed — Discord calls this server-side
+        // No CORS needed — Discord calls this server-side.
     },
     async (req, res) => {
         // Only accept POST
@@ -706,11 +736,21 @@ export const discordInteractionHandler = onRequest(
 
             logger.info(`Slash command /${commandName} from Discord user ${discordId}`);
 
+            // ACK immédiat sous 3 s (type 5 = réponse différée, éphémère). Discord
+            // coupe l'interaction à 3 s. Calculer l'embed AVANT de répondre dépassait
+            // ce délai sur une instance froide (~2 s de démarrage + ~1 s de requêtes
+            // AVANT même le chargement des données) — bug « L'application ne répond
+            // plus » (2026-07-24, confirmé par les logs). On accuse réception tout de
+            // suite, puis on livre le résultat via le followup (fenêtre de 15 min,
+            // aucune pression de temps). flags:64 fixe l'éphémère dès l'ACK.
+            res.json({ type: 5, data: { flags: 64 } });
+
+            const applicationId = body.application_id;
+            const token = body.token;
             const db = getFirestore("kdmanagerdb");
 
             try {
                 let responseData;
-
                 if (commandName === "mystats") {
                     responseData = await buildMyStatsEmbed(discordId, db);
                 } else if (commandName === "mykvkgoals") {
@@ -720,24 +760,16 @@ export const discordInteractionHandler = onRequest(
                     const campaignOpt = (body.data?.options || []).find((o) => o.name === "campaign");
                     responseData = await buildMyKvKEmbed(discordId, db, campaignOpt?.value || null);
                 } else {
-                    responseData = {
-                        content: `❓ Unknown command \`/${commandName}\`.`,
-                        flags: 64,
-                    };
+                    responseData = { content: `❓ Unknown command \`/${commandName}\`.` };
                 }
-
-                return res.json({ type: 4, data: responseData });
-
+                await editInteractionResponse(applicationId, token, responseData);
             } catch (error) {
                 logger.error(`Error processing /${commandName} for user ${discordId}:`, error);
-                return res.json({
-                    type: 4,
-                    data: {
-                        content: "❌ An error occurred while processing your command. Please try again in a moment.",
-                        flags: 64,
-                    },
+                await editInteractionResponse(applicationId, token, {
+                    content: "❌ An error occurred while processing your command. Please try again in a moment.",
                 });
             }
+            return;
         }
 
         // 4. Unhandled interaction type

@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Tableau de Bord",
     "power": "Puissance Totale",
+    "power_history_empty_title": "Pas encore d'historique",
+    "power_history_empty_desc": "La courbe d'évolution de la puissance et des points de kills se construira au fil des scans.",
     "dead": "Morts Totaux",
     "kp": "Kill Points Totaux",
     "players": "Joueurs",

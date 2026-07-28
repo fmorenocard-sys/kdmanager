@@ -18,6 +18,15 @@
         "preview"
       ],
       "port": 4173
+    },
+    {
+      "name": "kdmanager-pilot",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:pilot"
+      ],
+      "port": 5175
     }
   ]
 }

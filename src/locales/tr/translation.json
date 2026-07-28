@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Panel",
     "power": "Toplam Güç",
+    "power_history_empty_title": "Henüz geçmiş yok",
+    "power_history_empty_desc": "Güç ve öldürme puanı grafiği, yeni taramalar geldikçe oluşacak.",
     "dead": "Toplam Ölü",
     "kp": "Toplam KP",
     "players": "Oyuncular",

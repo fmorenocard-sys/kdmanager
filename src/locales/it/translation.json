@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Pannello",
     "power": "Potenza totale",
+    "power_history_empty_title": "Nessuno storico ancora",
+    "power_history_empty_desc": "L'andamento della potenza e dei punti uccisione si costruirà a ogni nuova scansione.",
     "dead": "Perdite totali",
     "kp": "Kill Points totali",
     "players": "Giocatori",

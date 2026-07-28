@@ -9,6 +9,7 @@ import { XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChar
 import { TrendingUp, Users, Skull, Sword, Coins, Coin, Cube, Grains, Trees, Search, Filter, AlertCircle, ArrowUp, ArrowDown, ArrowRight, ArrowUpDown, CastleTurret } from '../components/ui/icons';
 import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
+import EmptyState from '../components/ui/EmptyState';
 
 import PageHeader from '../components/ui/PageHeader';
 import { BRANDING } from '../config/branding';
@@ -23,7 +24,7 @@ const TREASURY_RESOURCES = [
 ];
 
 const DashboardPage = () => {
-    const { players, history, bank, stats: kingdomStats } = useData();
+    const { players, history, bank, stats: kingdomStats, loading } = useData();
     const { t } = useTranslation();
     const [sortConfig, setSortConfig] = useState({ key: 'power', direction: 'desc' });
     const [searchTerm, setSearchTerm] = useState("");
@@ -378,7 +379,11 @@ const DashboardPage = () => {
                         {t('dashboard.power')}
                     </h3>
                     <div className="flex-1 min-h-[280px]">
-                        {history.length > 0 ? (
+                        {loading ? (
+                            <div className="flex items-center justify-center h-full text-slate-500">
+                                {t('common.loading')}
+                            </div>
+                        ) : history.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart data={history.slice(-15)}>
                                     <defs>
@@ -440,9 +445,11 @@ const DashboardPage = () => {
                                 </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="flex items-center justify-center h-full text-slate-500">
-                                {t('common.loading')}
-                            </div>
+                            <EmptyState
+                                icon={TrendingUp}
+                                title={t('dashboard.power_history_empty_title')}
+                                description={t('dashboard.power_history_empty_desc')}
+                            />
                         )}
                     </div>
                 </section>

@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Panel",
     "power": "Poder total",
+    "power_history_empty_title": "Aún no hay historial",
+    "power_history_empty_desc": "La evolución del poder y de los puntos de aniquilación se irá construyendo con cada escaneo.",
     "dead": "Bajas totales",
     "kp": "KP totales",
     "players": "Jugadores",

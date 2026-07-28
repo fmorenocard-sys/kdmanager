@@ -21,6 +21,7 @@
  *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>"                 # dry run -> control JSON
  *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>" --kingdom 3341  # pick kingdom (default 3341)
  *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>" --write         # persist to Firestore pilot
+ *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>" --history --write # + append a power/KP evolution point to static_data/history
  *
  * Write requires pilot credentials for kd-41-manager: either
  *   --credentials <serviceAccountKey.json>   (a kd-41-manager service-account key), or
@@ -63,6 +64,13 @@ const KVK_BASE = process.argv.includes('--kvk-base');
 // A base scan is a starting point: no gains yet, so powerDiff defaults to 0.
 // Pass --keep-powerdiff to instead carry the previous KvK's power_difference.
 const KEEP_POWERDIFF = process.argv.includes('--keep-powerdiff');
+// --history : accumule un point d'évolution PxKP dans static_data/history à partir des
+// TOTAUX NORMALISÉS du roster (Σpower, Σkp). Source-agnostique : fonctionne à l'identique
+// quel que soit le format de scan (SoC, ProKingdoms, maison, HeroScroll…) dès lors que le
+// roster normalisé `list` est construit. Merge idempotent par date. À passer sur chaque
+// scan (base + références) pour que la courbe se construise au fil du KvK.
+const HISTORY = process.argv.includes('--history');
+const HISTORY_DATE = arg('date'); // "M/D/YYYY" ; défaut = aujourd'hui (même format que le front)
 const RESTORE = arg('restore'); // path to a backup JSON to write back verbatim
 
 // helper shared by write + restore: init Admin SDK with pilot creds (refuses cross-tenant)
@@ -181,6 +189,15 @@ if (TOP > 0 && list.length > TOP) {
 
 const doc = { list, updatedAt: new Date().toISOString(), source: `SoC scan ${path.basename(FILE)} (kingdom ${KINGDOM})` };
 
+// Point d'évolution PxKP (static_data/history) — calculé sur le roster NORMALISÉ,
+// donc INDÉPENDANT du fournisseur de scan (le principe : normaliser à l'ingestion,
+// la couche d'affichage ne consomme qu'un format interne unique). Voir --history.
+const historyPoint = {
+    date: (HISTORY_DATE && HISTORY_DATE !== true) ? HISTORY_DATE : new Date().toLocaleDateString('en-US'),
+    power: list.reduce((s, p) => s + (p.power || 0), 0),
+    kp: list.reduce((s, p) => s + (p.kp || 0), 0),
+};
+
 // static_data/kvk (scan de base) : initialPower = pouvoir du jour, référence figée
 // des objectifs. finalPower = initialPower au départ (rien d'accumulé). Les scans
 // suivants pourront mettre à jour finalPower/totalKpGained/totalDead ; initialPower reste.
@@ -198,6 +215,11 @@ if (kvkDoc) {
     const kvkOut = path.join(OUT_DIR, `kvk_${KINGDOM}.json`);
     fs.writeFileSync(kvkOut, JSON.stringify(kvkDoc, null, 2), 'utf8');
     console.log(`[--kvk-base] static_data/kvk control JSON -> ${kvkOut} (${kvkDoc.list.length} joueurs, initialPower = pouvoir du scan)`);
+}
+if (HISTORY) {
+    const histOut = path.join(OUT_DIR, `history_point_${KINGDOM}.json`);
+    fs.writeFileSync(histOut, JSON.stringify(historyPoint, null, 2), 'utf8');
+    console.log(`[--history] point d'évolution -> ${histOut} (date ${historyPoint.date}, power ${historyPoint.power.toLocaleString()}, kp ${historyPoint.kp.toLocaleString()})`);
 }
 
 const withDetail = list.filter((p) => p.deads !== undefined).length;
@@ -251,5 +273,24 @@ if (kvkDoc) {
     console.log(`Writing static_data/kvk (base scan, initialPower) to ${PROJECT} (kdmanagerdb)...`);
     await kvkRef.set(kvkDoc);
     console.log(`WROTE static_data/kvk — ${kvkDoc.list.length} joueurs, initialPower figé = référence des objectifs.`);
+}
+
+// --- static_data/history (évolution PxKP) : merge idempotent par date ---
+if (HISTORY) {
+    const histRef = db.collection('static_data').doc('history');
+    const histExisting = await histRef.get();
+    const prev = (histExisting.exists && Array.isArray(histExisting.data().list)) ? histExisting.data().list : [];
+    if (histExisting.exists) {
+        const histBackup = path.join(OUT_DIR, `backup_history_${PROJECT}_${stamp}.json`);
+        fs.writeFileSync(histBackup, JSON.stringify(histExisting.data(), null, 2), 'utf8');
+        console.log(`Backup of current static_data/history -> ${histBackup}`);
+    }
+    const merged = [...prev];
+    const idx = merged.findIndex((p) => p.date === historyPoint.date);
+    if (idx >= 0) merged[idx] = historyPoint; // même date -> remplace (ré-ingestion idempotente)
+    else merged.push(historyPoint);           // sinon append en fin (ordre chronologique)
+    console.log(`Writing static_data/history (${merged.length} points, ${idx >= 0 ? 'updated' : 'appended'} ${historyPoint.date}) to ${PROJECT} (kdmanagerdb)...`);
+    await histRef.set({ list: merged, updatedAt: new Date().toISOString() });
+    console.log(`WROTE static_data/history — ${merged.length} points d'évolution PxKP.`);
 }
 console.log('Done.');

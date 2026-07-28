@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Bảng điều khiển",
     "power": "Tổng sức mạnh",
+    "power_history_empty_title": "Chưa có lịch sử",
+    "power_history_empty_desc": "Biểu đồ tiến triển sức mạnh và điểm tiêu diệt sẽ được xây dựng qua mỗi lần quét.",
     "dead": "Tổng quân tử trận",
     "kp": "Tổng điểm tiêu diệt",
     "players": "Người chơi",

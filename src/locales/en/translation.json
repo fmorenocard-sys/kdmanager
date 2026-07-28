@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Dashboard",
     "power": "Total Power",
+    "power_history_empty_title": "No history yet",
+    "power_history_empty_desc": "The power and kill-points trend will build up as new scans come in.",
     "dead": "Total Dead",
     "kp": "Total Kill Points",
     "players": "Players",

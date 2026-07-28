@@ -303,6 +303,17 @@ runtime + toggle Admin). Voir `ProductBacklog.md`, `FeatureInventory.md`,
    BottomNav, lecture directe dans le bloc Banque du Dashboard (cascade),
    écran « module non disponible » réutilisant `AccessGate`.
 
+> **Signal de bascule US-025 déclenché — 2026-07-28.** Le Roi a demandé comment
+> activer un module (la Banque) sur l'instance 3341 sans passer par le
+> développeur — c'est exactement le second des deux signaux du §3b (« un Roi
+> qui demande à changer ses modules sans passer par le développeur »). La
+> condition de construction de la cible runtime (`US-025` : doc Firestore
+> `instance_config/modules` + section toggles dans l'Admin, effet immédiat sans
+> redéploiement) est donc remplie. Construction **non engagée** à la demande du
+> Roi (« rien pour l'instant ») ; à reprendre quand il le décidera. Lien direct
+> avec `Etude_Industrialisation_Onboarding.md` (la config build-time est une
+> friction de redéploiement par royaume qui ne scale pas).
+
 ---
 
 ## 8. Opportunité PM soulevée en marge — Deadweight croisé performance/progression
