@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "Зберегти філлери",
-    "account_selector": "Бойові акаунти"
+    "account_selector": "Бойові акаунти",
+    "filler_declared_power": "Заявлена сила"
   },
   "trophies": {
     "title": "Трофеї Королівства",

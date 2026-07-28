@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "Filler hesaplarını kaydet",
-    "account_selector": "Savaş hesapları"
+    "account_selector": "Savaş hesapları",
+    "filler_declared_power": "Bildirilen güç"
   },
   "trophies": {
     "title": "Krallık Kupaları",

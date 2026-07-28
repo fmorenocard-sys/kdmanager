@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "Lưu filler",
-    "account_selector": "Tài khoản chiến"
+    "account_selector": "Tài khoản chiến",
+    "filler_declared_power": "Sức mạnh khai báo"
   },
   "trophies": {
     "title": "Cúp vương quốc",

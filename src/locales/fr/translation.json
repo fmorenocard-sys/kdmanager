@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "Enregistrer les fillers",
-    "account_selector": "Comptes de guerre"
+    "account_selector": "Comptes de guerre",
+    "filler_declared_power": "Puissance déclarée"
   },
   "trophies": {
     "title": "Trophées du Royaume",

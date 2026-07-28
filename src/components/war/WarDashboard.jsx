@@ -97,6 +97,11 @@ const WarDashboard = () => {
         return allDeclarations.filter(d => d.kvkId === selectedKvkId);
     }, [allDeclarations, selectedKvkId]);
 
+    // F-026 : distinguer comptes de guerre (formulaire complet) et fillers (T4/T5).
+    // accountType absent = ancienne déclaration = compte de guerre.
+    const warDeclarations = useMemo(() => declarations.filter(d => d.accountType !== 'filler'), [declarations]);
+    const fillerDeclarations = useMemo(() => declarations.filter(d => d.accountType === 'filler'), [declarations]);
+
     const [unmigratedDeclarations, setUnmigratedDeclarations] = useState([]);
 
     useEffect(() => {
@@ -105,7 +110,7 @@ const WarDashboard = () => {
     }, [authorized]);
 
     const stats = useMemo(() => {
-        return declarations.reduce((acc, curr) => {
+        return warDeclarations.reduce((acc, curr) => {
             acc.food += (curr.resources?.food || 0);
             acc.wood += (curr.resources?.wood || 0);
             acc.stone += (curr.resources?.stone || 0);
@@ -135,7 +140,7 @@ const WarDashboard = () => {
             totalMarches: 0, infantry: 0, cavalry: 0, archer: 0, siege: 0,
             tech: {}
         });
-    }, [declarations]);
+    }, [warDeclarations]);
 
     // ── Migration: Tie old data to CURRENT KvK ──
     const migrateLegacyData = async () => {
@@ -269,12 +274,12 @@ const WarDashboard = () => {
 
             {/* Detailed List */}
             <Card className="overflow-hidden border border-[var(--border-flat)] bg-slate-900/40">
-                <h3 className="p-4 text-lg font-bold text-white border-b border-[var(--border-flat)]">{t('war.declarations')} ({declarations.length})</h3>
+                <h3 className="p-4 text-lg font-bold text-white border-b border-[var(--border-flat)]">{t('war.declarations')} ({warDeclarations.length})</h3>
                 <div className="overflow-x-auto max-h-[600px] custom-scrollbar">
 
                     {/* Mobile Card View */}
                     <div className="md:hidden flex flex-col gap-3 p-4">
-                        {declarations.map((d) => (
+                        {warDeclarations.map((d) => (
                             <div key={d.id} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-3">
                                 <div className="flex justify-between items-center border-b border-[var(--border-flat)] pb-2">
                                     <div className="flex flex-col">
@@ -317,7 +322,7 @@ const WarDashboard = () => {
                                 </div>
                             </div>
                         ))}
-                        {declarations.length === 0 && (
+                        {warDeclarations.length === 0 && (
                             <div className="text-center py-8 text-slate-500 text-sm">
                                 {t('common.no_results')}
                             </div>
@@ -339,7 +344,7 @@ const WarDashboard = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {declarations.map((d) => (
+                                {warDeclarations.map((d) => (
                                     <TableRow key={d.id} className="hover:bg-white/5">
                                         <TableCell className="font-medium text-white">
                                             {getPlayerName(d)} <span className="text-xs text-slate-500">({d.governorId})</span>
@@ -370,6 +375,45 @@ const WarDashboard = () => {
                     </div>
                 </div>
             </Card>
+
+            {/* Fillers (F-026) — comptes de type filler : troupes T4/T5 déclarées */}
+            {fillerDeclarations.length > 0 && (
+                <Card className="overflow-hidden border border-amber-500/20 bg-slate-900/40">
+                    <h3 className="p-4 text-lg font-bold text-amber-400 border-b border-[var(--border-flat)]">
+                        {t('war.filler_section')} ({fillerDeclarations.length})
+                    </h3>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>{t('dashboard.name')}</TableHead>
+                                    <TableHead>{t('war.filler_t4')}</TableHead>
+                                    <TableHead>{t('war.filler_t5')}</TableHead>
+                                    <TableHead>{t('war.filler_declared_power')}</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {fillerDeclarations.map((d) => {
+                                    const t4 = d.filler?.t4 || 0;
+                                    const t5 = d.filler?.t5 || 0;
+                                    const power = t4 * 4 + t5 * 10;
+                                    return (
+                                        <TableRow key={d.id} className="hover:bg-white/5">
+                                            <TableCell className="font-medium text-white">
+                                                {getPlayerName(d)} <span className="text-xs text-slate-500">({d.governorId})</span>
+                                                <span className="ms-2 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">{t('profile.type_filler')}</span>
+                                            </TableCell>
+                                            <TableCell className="text-slate-300 text-xs font-mono">{t4.toLocaleString()}</TableCell>
+                                            <TableCell className="text-slate-300 text-xs font-mono">{t5.toLocaleString()}</TableCell>
+                                            <TableCell className="text-amber-400 text-xs font-mono">{power.toLocaleString()}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </Card>
+            )}
         </div>
     );
 };

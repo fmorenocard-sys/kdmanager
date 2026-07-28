@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "حفظ الحسابات الثانوية",
-    "account_selector": "حسابات الحرب"
+    "account_selector": "حسابات الحرب",
+    "filler_declared_power": "القوة المعلنة"
   },
   "trophies": {
     "title": "كؤوس المملكة",

@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "Save fillers",
-    "account_selector": "War accounts"
+    "account_selector": "War accounts",
+    "filler_declared_power": "Declared power"
   },
   "trophies": {
     "title": "Kingdom Trophies",

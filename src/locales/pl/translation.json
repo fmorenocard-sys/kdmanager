@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "Zapisz fillery",
-    "account_selector": "Konta wojenne"
+    "account_selector": "Konta wojenne",
+    "filler_declared_power": "Zadeklarowana moc"
   },
   "trophies": {
     "title": "Trofea Królestwa",

@@ -168,7 +168,8 @@
     "filler_t4": "T4",
     "filler_t5": "T5",
     "filler_save": "Filler speichern",
-    "account_selector": "Kriegskonten"
+    "account_selector": "Kriegskonten",
+    "filler_declared_power": "Deklarierte Macht"
   },
   "trophies": {
     "title": "Königreich-Trophäen",
