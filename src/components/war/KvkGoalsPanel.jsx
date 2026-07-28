@@ -399,11 +399,11 @@ const KvkGoalsPanel = () => {
                         <Table>
                             <TableHeader className="bg-slate-900/80">
                                 <TableRow>
-                                    <TableHead className="text-xs">{t('goals.player')}</TableHead>
-                                    <TableHead className="text-xs text-end">{t('goals.declared_power')}</TableHead>
-                                    <TableHead className="text-xs text-end">{t('goals.dead_target')}</TableHead>
-                                    <TableHead className="text-xs text-end">{t('goals.achieved')}</TableHead>
-                                    <TableHead className="text-xs text-end">{t('goals.attainment')}</TableHead>
+                                    <TableHead className="text-xs !normal-case">{t('goals.player')}</TableHead>
+                                    <TableHead className="text-xs text-end !normal-case">{t('goals.declared_power')}</TableHead>
+                                    <TableHead className="text-xs text-end !normal-case">{t('goals.dead_target')}</TableHead>
+                                    <TableHead className="text-xs text-end !normal-case">{t('goals.achieved')}</TableHead>
+                                    <TableHead className="text-xs text-end !normal-case">{t('goals.attainment')}</TableHead>
                                     <TableHead className="text-xs">{t('goals.status')}</TableHead>
                                 </TableRow>
                             </TableHeader>
