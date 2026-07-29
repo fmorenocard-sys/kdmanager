@@ -1,5 +1,10 @@
 # QA Changelog
 
+## v2.33 - 2026-07-28 — BR-015 : activation de modules en deux couches (doc)
+
+### Changed
+- **BR-015 / US-025 — modèle d'activation de modules re-cadré en DEUX couches d'autorité** (décision Roi 2026-07-28). **Entitlement** = quels modules une instance a le *droit* d'avoir (lié au tier payant), décidé par le **fournisseur**, hors de portée du Roi client (un toggle premium dans l'Admin du Roi serait une fuite de revenu) ; assuré aujourd'hui par le build-time (`VITE_MODULE_*`), cible runtime = table `tier→modules` + rôle super-admin au-dessus du Roi + UI « verrouillé → upgrade ». **Préférence** = masquer/afficher les modules optionnels *autorisés*, choix cosmétique du Roi (différé). L'ancienne formulation « toggle Admin roi-only » est abandonnée. IDs stables (US-025 / BR-015 non renumérotés). Voir `Etude_Activation_Modules.md` §3b, `ProductBacklog.md`, `SSOT.md`.
+
 ## v2.32 - 2026-07-22 — F-014 / US-009 : objectifs KvK, et A-005 résolue après quatre mois
 
 ### Added
