@@ -5,8 +5,8 @@ export const COMMANDERS = [
         "rarity": "Legendary"
     },
     {
-        "name": "Arp Arslan",
-        "id": "arp_arslan",
+        "name": "Alp Arslan",
+        "id": "alp_arslan",
         "rarity": "Legendary"
     },
     {

@@ -3,7 +3,7 @@
 ## v2.34 - 2026-07-28 — Référentiel commandants : découplage image + saisie de marche non bloquante
 
 ### Added
-- **3 commandants ajoutés** (`src/data/commanders.js`) : Hayam Wuruk (Archer), Arp Arslan (Archer), Elisabeth I (Siege) — remontés manquants par un utilisateur. Ajoutés **sans image** (aucune source d'images à jour pour les commandants récents ; ex. la tier list TierMaker « 2023 » ne les contient pas).
+- **3 commandants ajoutés** (`src/data/commanders.js`) : Hayam Wuruk (Archer), Alp Arslan (Archer), Elisabeth I (Siege) — remontés manquants par un utilisateur. Ajoutés **sans image** (aucune source d'images à jour pour les commandants récents ; ex. la tier list TierMaker « 2023 » ne les contient pas).
 - **`CommanderAvatar`** (`src/components/war/CommanderAvatar.jsx`) — vignette à **dégradation propre** : image si présente, sinon initiales du nom (repli aussi si une URL casse). L'image d'un commandant devient **optionnelle** → ajouter un futur commandant = une ligne `{name, id}`, sans sourcer d'image. Branché dans `CommanderSelector` et la liste des marches déclarées (`AvailabilityForm`).
 
 ### Changed
