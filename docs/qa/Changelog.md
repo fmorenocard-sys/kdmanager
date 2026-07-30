@@ -1,5 +1,17 @@
 # QA Changelog
 
+## v2.34 - 2026-07-28 — Référentiel commandants : découplage image + saisie de marche non bloquante
+
+### Added
+- **3 commandants ajoutés** (`src/data/commanders.js`) : Hayam Wuruk (Archer), Arp Arslan (Archer), Elisabeth I (Siege) — remontés manquants par un utilisateur. Ajoutés **sans image** (aucune source d'images à jour pour les commandants récents ; ex. la tier list TierMaker « 2023 » ne les contient pas).
+- **`CommanderAvatar`** (`src/components/war/CommanderAvatar.jsx`) — vignette à **dégradation propre** : image si présente, sinon initiales du nom (repli aussi si une URL casse). L'image d'un commandant devient **optionnelle** → ajouter un futur commandant = une ligne `{name, id}`, sans sourcer d'image. Branché dans `CommanderSelector` et la liste des marches déclarées (`AvailabilityForm`).
+
+### Changed
+- **Saisie de marche non bloquante (soupape).** `addMarch` n'exige plus que le **type de marche** ; les commandants (primary/secondary) deviennent un enrichissement **optionnel**. Motif : le pairing exact n'est pas exploité aujourd'hui (seul le `type` l'est), et un commandant pas encore présent au référentiel ne doit plus **bloquer** une déclaration (bug remonté par un utilisateur). Une marche sans commandants affiche « commandants non précisés » (clé i18n `war.commanders_unspecified` × 10 langues).
+
+### Notes
+- **Future feature loggée** : `F-028` / `US-032` « couverture méta des marches » (opportunité, non cadrée) — classer les commandants méta et agréger qui aligne des marches méta / sous-optimales. Conserver l'identité du commandant (vs simple type) est justifié par ce futur besoin ; sa qualité de donnée dépend d'un référentiel tenu à jour, d'où le découplage ci-dessus. Voir `FeatureInventory.md` F-028, `ProductBacklog.md` US-032.
+
 ## v2.33 - 2026-07-28 — BR-015 : activation de modules en deux couches (doc)
 
 ### Changed

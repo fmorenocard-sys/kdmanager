@@ -124,6 +124,7 @@
     "no_marches": "No marches added yet.",
     "commander_primary": "Primary Commander",
     "commander_secondary": "Secondary Commander",
+    "commanders_unspecified": "Commanders not specified",
     "add_march": "Add March",
     "save_declaration": "Save Declaration",
     "food": "Food (B)",

@@ -124,6 +124,7 @@
     "no_marches": "Henüz yürüyüş eklenmedi.",
     "commander_primary": "Birincil Komutan",
     "commander_secondary": "İkincil Komutan",
+    "commanders_unspecified": "Komutanlar belirtilmedi",
     "add_march": "Yürüyüş Ekle",
     "save_declaration": "Bildirimi Kaydet",
     "food": "Yiyecek (B)",

@@ -124,6 +124,7 @@
     "no_marches": "Noch keine Märsche hinzugefügt.",
     "commander_primary": "Primärkommandant",
     "commander_secondary": "Sekundärkommandant",
+    "commanders_unspecified": "Kommandanten nicht angegeben",
     "add_march": "Marsch hinzufügen",
     "save_declaration": "Erklärung speichern",
     "food": "Nahrung (B)",

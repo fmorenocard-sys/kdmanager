@@ -1,5 +1,20 @@
 export const COMMANDERS = [
     {
+        "name": "Hayam Wuruk",
+        "id": "hayam_wuruk",
+        "rarity": "Legendary"
+    },
+    {
+        "name": "Arp Arslan",
+        "id": "arp_arslan",
+        "rarity": "Legendary"
+    },
+    {
+        "name": "Elisabeth I",
+        "id": "elisabeth_i",
+        "rarity": "Legendary"
+    },
+    {
         "name": "Julius Caesar",
         "id": "julius_caesar",
         "rarity": "Legendary",

@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { COMMANDERS } from '../../data/commanders';
+import CommanderAvatar from './CommanderAvatar';
 import { Search, X } from '../ui/icons';
 
 const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Select Commander" }) => {
@@ -47,10 +48,11 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
             >
                 {selectedCommander ? (
                     <>
-                        <img
-                            src={selectedCommander.image}
-                            alt={selectedCommander.name}
-                            className="w-8 h-8 rounded-full object-cover border border-slate-500"
+                        <CommanderAvatar
+                            image={selectedCommander.image}
+                            name={selectedCommander.name}
+                            size={32}
+                            className="w-8 h-8 rounded-full border border-slate-500"
                         />
                         <span className="font-medium text-sm text-slate-200 truncate">{selectedCommander.name}</span>
                     </>
@@ -105,12 +107,7 @@ const CommanderSelector = ({ selectedId, onSelect, excludeIds = [], label = "Sel
                                             }`}
                                     >
                                         <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-slate-900 shadow-lg group-hover:border-white/20 transition-colors">
-                                            <img
-                                                src={cmd.image}
-                                                alt={cmd.name}
-                                                loading="lazy"
-                                                className="w-full h-full object-cover"
-                                            />
+                                            <CommanderAvatar image={cmd.image} name={cmd.name} size={56} className="w-full h-full" />
                                         </div>
                                         <span className="text-[10px] text-center font-medium leading-tight line-clamp-2 w-full px-1">
                                             {cmd.name}

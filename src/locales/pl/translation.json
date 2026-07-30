@@ -124,6 +124,7 @@
     "no_marches": "Nie dodano jeszcze marszów.",
     "commander_primary": "Główny dowódca",
     "commander_secondary": "Drugi dowódca",
+    "commanders_unspecified": "Nie określono dowódców",
     "add_march": "Dodaj marsz",
     "save_declaration": "Zapisz deklarację",
     "food": "Jedzenie (B)",

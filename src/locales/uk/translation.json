@@ -124,6 +124,7 @@
     "no_marches": "Марші ще не додані.",
     "commander_primary": "Головний командир",
     "commander_secondary": "Другорядний командир",
+    "commanders_unspecified": "Командири не вказані",
     "add_march": "Додати марш",
     "save_declaration": "Зберегти заяву",
     "food": "Їжа (B)",

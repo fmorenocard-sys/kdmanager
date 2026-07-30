@@ -124,6 +124,7 @@
     "no_marches": "Chưa có hành quân nào.",
     "commander_primary": "Tướng chính",
     "commander_secondary": "Tướng phụ",
+    "commanders_unspecified": "Chưa chỉ định tướng",
     "add_march": "Thêm hành quân",
     "save_declaration": "Lưu khai báo",
     "food": "Lương thực (Tỷ)",

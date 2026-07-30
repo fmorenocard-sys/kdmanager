@@ -124,6 +124,7 @@
     "no_marches": "Aucune marche ajoutée.",
     "commander_primary": "Commandant Principal",
     "commander_secondary": "Commandant Secondaire",
+    "commanders_unspecified": "Commandants non précisés",
     "add_march": "Ajouter Marche",
     "save_declaration": "Enregistrer Déclaration",
     "food": "Nourriture (B)",

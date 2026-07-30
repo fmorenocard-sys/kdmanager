@@ -10,6 +10,7 @@ import Input from '../ui/Input';
 import Card from '../ui/Card';
 import AccessGate from '../ui/AccessGate';
 import CommanderSelector from './CommanderSelector';
+import CommanderAvatar from './CommanderAvatar';
 import ActiveHoursPickerUTC from './ActiveHoursPickerUTC';
 import FillerDeclarationBlock from './FillerDeclarationBlock';
 import { COMMANDERS } from '../../data/commanders';
@@ -167,7 +168,11 @@ const AvailabilityForm = () => {
     };
 
     const addMarch = () => {
-        if (!marchInput.primary || !marchInput.secondary) return;
+        // Soupape : seul le TYPE de marche est requis. Les commandants sont un
+        // enrichissement optionnel — un commandant pas encore présent au référentiel
+        // ne doit jamais bloquer une déclaration (le pairing exact n'est pas exploité
+        // aujourd'hui ; réservé à une future analyse « marches méta »).
+        if (!marchInput.type) return;
         setFormData(prev => ({
             ...prev,
             marches: [...prev.marches, { ...marchInput }]
@@ -457,14 +462,20 @@ const AvailabilityForm = () => {
                                         m.type === 'Archer' ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-500'
                                     }`}>{m.type}</span>
 
-                                <div className="flex items-center gap-[-10px]">
-                                    <img src={getCmdImage(m.primary)} alt="" className="w-8 h-8 rounded-full border-2 border-[var(--border-flat)] z-10" />
-                                    <img src={getCmdImage(m.secondary)} alt="" className="w-8 h-8 rounded-full border-2 border-[var(--border-flat)] -ms-3 z-0" />
-                                </div>
-                                <div className="flex flex-col min-w-0">
-                                    <span className="text-sm font-medium text-slate-200 truncate">{getCmdName(m.primary)}</span>
-                                    <span className="text-xs text-slate-400 truncate">+ {getCmdName(m.secondary)}</span>
-                                </div>
+                                {(m.primary || m.secondary) ? (
+                                    <>
+                                        <div className="flex items-center gap-[-10px]">
+                                            {m.primary && <CommanderAvatar image={getCmdImage(m.primary)} name={getCmdName(m.primary)} size={32} className="w-8 h-8 rounded-full border-2 border-[var(--border-flat)] z-10" />}
+                                            {m.secondary && <CommanderAvatar image={getCmdImage(m.secondary)} name={getCmdName(m.secondary)} size={32} className="w-8 h-8 rounded-full border-2 border-[var(--border-flat)] -ms-3 z-0" />}
+                                        </div>
+                                        <div className="flex flex-col min-w-0">
+                                            {m.primary && <span className="text-sm font-medium text-slate-200 truncate">{getCmdName(m.primary)}</span>}
+                                            {m.secondary && <span className="text-xs text-slate-400 truncate">+ {getCmdName(m.secondary)}</span>}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <span className="text-xs text-slate-500 italic">{t('war.commanders_unspecified')}</span>
+                                )}
                             </div>
                             <button onClick={() => removeMarch(idx)} className="text-slate-500 hover:text-red-400 p-1">
                                 <X size={16} />
@@ -511,7 +522,7 @@ const AvailabilityForm = () => {
 
                     <div className="col-span-1 md:col-span-3 mt-2 md:mt-0 flex flex-col justify-end">
                         <div className="h-[20px] hidden md:block" /> {/* Spacer to align with labels */}
-                        <Button onClick={addMarch} disabled={!marchInput.primary || !marchInput.secondary} className="w-full h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-500 rounded-lg transition-all active:scale-95 text-sm font-medium">
+                        <Button onClick={addMarch} disabled={!marchInput.type} className="w-full h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-500 rounded-lg transition-all active:scale-95 text-sm font-medium">
                             {t('war.add_march')}
                         </Button>
                     </div>

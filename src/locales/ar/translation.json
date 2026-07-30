@@ -124,6 +124,7 @@
     "no_marches": "لم يتم إضافة جيوش بعد.",
     "commander_primary": "القائد الأول",
     "commander_secondary": "القائد الثاني",
+    "commanders_unspecified": "لم يتم تحديد القادة",
     "add_march": "إضافة جيش",
     "save_declaration": "حفظ الإعلان",
     "food": "طعام (B)",
