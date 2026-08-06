@@ -32,7 +32,13 @@ import {postDuelSnapshot} from "./snapshot.js";
 // US-021 : le snapshot Discord réutilise le jeton du bot déjà en Secret Manager.
 const DISCORD_BOT_TOKEN = defineSecret("DISCORD_BOT_TOKEN");
 
-export const RACE_BUCKET = "kd-97-manager-kvk-race";
+// Bucket des scans de course, DÉRIVÉ DU PROJET (multi-instance) : pour kd-97-manager il
+// reste "kd-97-manager-kvk-race" (inchangé), pour le pilote kd-41-manager il devient
+// "kd-41-manager-kvk-race". GCLOUD_PROJECT est injecté au runtime par Cloud Functions ;
+// repli sur 2997 en local. Le bucket doit exister (privé, IAM uniforme) AVANT le déploiement.
+/* global process */
+const PROJECT_ID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || "kd-97-manager";
+export const RACE_BUCKET = `${PROJECT_ID}-kvk-race`;
 const DB_NAME = "kdmanagerdb";
 const TOP_N = 200;
 
