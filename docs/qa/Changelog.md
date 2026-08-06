@@ -1,6 +1,9 @@
 # QA Changelog
 
-## v2.36 - 2026-08-06 — Objectifs : copier la liste + correctif nom du scan (Declared)
+## v2.37 - 2026-08-07 — Fix : dépôt du 1er scan de course impossible (état vide)
+
+### Fixed
+- **KvK Race — impossible de déposer le premier scan.** `RaceView` faisait un `return` de l'état vide (« No race data yet ») dès qu'il n'y avait aucun scan, **avant** de rendre le panneau de dépôt → le bouton d'upload n'apparaissait jamais tant qu'aucun scan n'existait (cercle vicieux). Jamais rencontré sur 2997 (toujours des scans), révélé sur le pilote 3341 (campagne créée, 0 scan). Correctif : le panneau de dépôt (leadership) est extrait et rendu **aussi dans l'état vide** dès qu'une campagne existe. Débloque l'onboarding de la course sur toute nouvelle instance.
 
 ### Added
 - **Bouton « Copier la liste »** dans l'onglet Objectifs (leadership) — copie la sélection courante (Top N + recherche, ou déclarants) en texte **neutre en langue** (symboles : `KP`, `☠`), prêt à coller dans un mail in-game ou sur Discord. Ex. `1. Bochica ツ (67M) · KP 1234M · ☠ 56M`. Extension de F-029. Clés i18n `goals.copy_list`/`goals.copied` × 10 langues.

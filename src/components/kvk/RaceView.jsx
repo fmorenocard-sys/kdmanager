@@ -115,10 +115,56 @@ const RaceView = () => {
         setUploading(false);
     };
 
+    // Panneau de dépôt (leadership), extrait pour être rendu AUSSI dans l'état vide
+    // (campagne créée mais 0 scan) — sinon impossible de déposer le 1er scan (BUG).
+    const uploadPanel = isLeadership && campaign ? (
+        <section className="v2-glass p-4 md:p-5">
+            <h3 className="flex items-center gap-2.5 text-[15px] font-semibold text-white mb-1">
+                <Upload size={19} weight="duotone" className="text-amber-400" />
+                {t('kvk_hub.upload_title')}
+            </h3>
+            <p className="text-xs text-slate-400 mb-3">{t('kvk_hub.upload_desc')}</p>
+            <div className="flex flex-wrap items-center gap-3">
+                <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    disabled={uploading}
+                    className="flex items-center justify-center gap-2 px-5 min-h-[44px] text-[13px] font-bold rounded-xl btn-grad-primary text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Upload size={16} />
+                    {uploading ? t('common.loading') : t('kvk_hub.upload_button')}
+                </button>
+                <input
+                    type="file"
+                    ref={fileRef}
+                    className="hidden"
+                    accept=".xlsx"
+                    onChange={(e) => { uploadScan(e.target.files[0]); e.target.value = ''; }}
+                />
+                {scan?.meta?.scanTs && (
+                    <span className="text-xs text-slate-500">
+                        {t('kvk_race.scan_label')} #{scan.seq} — {String(scan.meta.scanTs).slice(0, 16).replace('T', ' ')} UTC
+                    </span>
+                )}
+                {uploadState && (
+                    <p className={`text-sm flex items-center gap-2 ${uploadState.type === 'ok' ? 'text-emerald-400' : 'text-red-400'}`} role="status">
+                        {uploadState.type === 'ok' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
+                        {uploadState.text}
+                    </p>
+                )}
+            </div>
+        </section>
+    ) : null;
+
     if (loading) return <div className="p-8 text-center text-muted">{t('common.loading')}</div>;
 
     if (!campaign || !scans.length) {
-        return <EmptyState icon={Flag} title={t('kvk_race.no_data')} />;
+        return (
+            <div className="space-y-6">
+                <EmptyState icon={Flag} title={t('kvk_race.no_data')} />
+                {uploadPanel}
+            </div>
+        );
     }
 
     const duel = scan?.duel || null;
@@ -207,44 +253,7 @@ const RaceView = () => {
                 ))}
             </div>
 
-            {isLeadership && (
-                <section className="v2-glass p-4 md:p-5">
-                    <h3 className="flex items-center gap-2.5 text-[15px] font-semibold text-white mb-1">
-                        <Upload size={19} weight="duotone" className="text-amber-400" />
-                        {t('kvk_hub.upload_title')}
-                    </h3>
-                    <p className="text-xs text-slate-400 mb-3">{t('kvk_hub.upload_desc')}</p>
-                    <div className="flex flex-wrap items-center gap-3">
-                        <button
-                            type="button"
-                            onClick={() => fileRef.current?.click()}
-                            disabled={uploading}
-                            className="flex items-center justify-center gap-2 px-5 min-h-[44px] text-[13px] font-bold rounded-xl btn-grad-primary text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <Upload size={16} />
-                            {uploading ? t('common.loading') : t('kvk_hub.upload_button')}
-                        </button>
-                        <input
-                            type="file"
-                            ref={fileRef}
-                            className="hidden"
-                            accept=".xlsx"
-                            onChange={(e) => { uploadScan(e.target.files[0]); e.target.value = ''; }}
-                        />
-                        {scan?.meta?.scanTs && (
-                            <span className="text-xs text-slate-500">
-                                {t('kvk_race.scan_label')} #{scan.seq} — {String(scan.meta.scanTs).slice(0, 16).replace('T', ' ')} UTC
-                            </span>
-                        )}
-                        {uploadState && (
-                            <p className={`text-sm flex items-center gap-2 ${uploadState.type === 'ok' ? 'text-emerald-400' : 'text-red-400'}`} role="status">
-                                {uploadState.type === 'ok' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
-                                {uploadState.text}
-                            </p>
-                        )}
-                    </div>
-                </section>
-            )}
+            {uploadPanel}
 
             {/* Évolution du duel */}
             <section className="v2-glass v2-indigo p-4 md:p-5 min-w-0 overflow-hidden">
