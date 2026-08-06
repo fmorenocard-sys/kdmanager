@@ -1,5 +1,13 @@
 # QA Changelog
 
+## v2.36 - 2026-08-06 — Objectifs : copier la liste + correctif nom du scan (Declared)
+
+### Added
+- **Bouton « Copier la liste »** dans l'onglet Objectifs (leadership) — copie la sélection courante (Top N + recherche, ou déclarants) en texte **neutre en langue** (symboles : `KP`, `☠`), prêt à coller dans un mail in-game ou sur Discord. Ex. `1. Bochica ツ (67M) · KP 1234M · ☠ 56M`. Extension de F-029. Clés i18n `goals.copy_list`/`goals.copied` × 10 langues.
+
+### Fixed
+- **Nom périmé dans Declared** — l'onglet Objectifs affichait le libellé **figé à la déclaration** (`governorName`) plutôt que le nom **frais du scan**. Un joueur renommé in-game (ex. « ˣˢHelios » → « Bochica ツ », id 169363448) restait affiché sous son ancien nom. Corrigé : le nom du scan (`kvk.name`) est désormais prioritaire, repli sur le libellé déclaré puis l'ID. S'applique aussi aux lignes filler.
+
 ## v2.35 - 2026-08-06 — F-029 : objectifs « Top du royaume » (sans inscription) + référence max_power
 
 ### Added

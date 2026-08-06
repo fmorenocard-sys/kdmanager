@@ -512,6 +512,8 @@
     "top_n_option": "Top {{n}}",
     "top_count": "{{count}} người chơi",
     "empty_top": "Chưa có dữ liệu tham chiếu (cần quét cơ sở).",
+    "copy_list": "Sao chép danh sách",
+    "copied": "Đã sao chép!",
     "player": "Người chơi",
     "attainment": "Đã đạt",
     "empty_campaign": "Chưa ai khai báo sẵn sàng cho chiến dịch này.",

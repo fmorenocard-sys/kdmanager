@@ -512,6 +512,8 @@
     "top_n_option": "İlk {{n}}",
     "top_count": "{{count}} oyuncu",
     "empty_top": "Henüz referans verisi yok (temel tarama gerekli).",
+    "copy_list": "Listeyi kopyala",
+    "copied": "Kopyalandı!",
     "player": "Oyuncu",
     "attainment": "Ulaşılan",
     "empty_campaign": "Bu kampanya için henüz kimse uygunluğunu bildirmedi.",

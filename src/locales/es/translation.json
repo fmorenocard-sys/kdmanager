@@ -512,6 +512,8 @@
     "top_n_option": "Top {{n}}",
     "top_count": "{{count}} jugador(es)",
     "empty_top": "Aún no hay datos de referencia (se requiere un escaneo base).",
+    "copy_list": "Copiar lista",
+    "copied": "¡Copiado!",
     "player": "Jugador",
     "attainment": "Alcanzado",
     "empty_campaign": "Nadie ha declarado su disponibilidad para esta campaña todavía.",

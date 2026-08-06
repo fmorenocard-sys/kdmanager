@@ -69,6 +69,7 @@ const KvkGoalsPanel = () => {
     // N plus puissants du roster, indépendamment de toute inscription/déclaration.
     const [viewMode, setViewMode] = useState('declared'); // 'declared' | 'top'
     const [topN, setTopN] = useState(50);
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -154,7 +155,11 @@ const KvkGoalsPanel = () => {
                 return {
                     key: d.id,
                     governorId: gid,
-                    name: d.governorName || kvk?.name || gid,
+                    // Nom FRAIS du scan prioritaire sur le libellé figé à la déclaration :
+                    // un joueur qui se renomme in-game (ex. Helios -> Bochica) doit refléter
+                    // son nom courant, cohérent avec le leaderboard. Repli sur le libellé
+                    // déclaré (déclaration invité hors roster), puis l'ID.
+                    name: kvk?.name || d.governorName || gid,
                     isMe: gid && gid === String(governorId || ''),
                     powerM: goals.powerM,
                     minKp: goals.minKp,
@@ -212,7 +217,7 @@ const KvkGoalsPanel = () => {
             const { rate } = rateFromGoalPct(attainment);
             return {
                 key: d.id, governorId: gid,
-                name: d.governorName || kvk?.name || gid,
+                name: kvk?.name || d.governorName || gid,
                 isMe: gid === String(governorId || ''),
                 t4, t5, declaredPower, target, achieved, attainment, rate,
             };
@@ -264,6 +269,20 @@ const KvkGoalsPanel = () => {
         cause: r.knownPlayer ? 'no_power' : 'unknown_id'
     })), [displayRows]);
     const toggleSort = (key) => setSort((prev) => nextSort(prev, key));
+
+    // Copier la sélection courante (Top N + recherche) en texte prêt à coller dans un mail
+    // in-game ou sur Discord. Format NEUTRE en langue (symboles) — le royaume est multilingue.
+    const copyList = async () => {
+        const title = viewMode === 'top' ? `Top ${topN} — ${BRANDING.kingdomName}` : `KvK — ${BRANDING.kingdomName}`;
+        const lines = displayRows.map((r, i) => `${i + 1}. ${r.name} (${fmt(r.powerM)}M) · KP ${fmt(r.goalKp)}M · ☠ ${fmt(r.minDead)}M`);
+        try {
+            await navigator.clipboard.writeText([title, ...lines].join('\n'));
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (e) {
+            console.error('copy list failed:', e);
+        }
+    };
 
     if (!currentUser) {
         return <Card className="p-6 text-center"><p className="text-sm text-slate-400">{t('goals.login_required')}</p></Card>;
@@ -329,6 +348,15 @@ const KvkGoalsPanel = () => {
                         ? t('goals.top_count', { count: displayRows.length })
                         : t('goals.declared_count', { count: rows.length })}
                 </span>
+                {isLeadership && displayRows.length > 0 && (
+                    <button
+                        type="button"
+                        onClick={copyList}
+                        className="ms-auto inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-sm rounded-lg border border-[var(--border-flat)] text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
+                    >
+                        {copied ? t('goals.copied') : t('goals.copy_list')}
+                    </button>
+                )}
             </div>
 
             {displayRows.length === 0 && (viewMode === 'top' || fillerRows.length === 0) && (
