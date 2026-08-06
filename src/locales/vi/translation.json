@@ -304,7 +304,7 @@
     "chip_player": "Người chơi",
     "chip_kingdom": "Vương quốc",
     "upload_title": "Tải lên scan",
-    "upload_desc": "Nhập scan mới nhất của cuộc thi: trận đấu và 32 vương quốc sẽ được tính lại tự động.",
+    "upload_desc": "Nhập scan mới nhất của cuộc thi: trận đấu và tất cả vương quốc trên bản đồ sẽ được tính lại tự động.",
     "upload_button": "Tải lên scan",
     "upload_ok": "Đã tải scan — đang xử lý (~10 giây), tải lại sau giây lát.",
     "upload_err": "Tải lên thất bại.",

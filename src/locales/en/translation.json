@@ -304,7 +304,7 @@
     "chip_player": "Player",
     "chip_kingdom": "Kingdom",
     "upload_title": "Upload a scan",
-    "upload_desc": "Import the latest competition scan: the duel and the 32 kingdoms will be recomputed automatically.",
+    "upload_desc": "Import the latest competition scan: the duel and all kingdoms on the map will be recomputed automatically.",
     "upload_button": "Upload a scan",
     "upload_ok": "Scan uploaded — digesting (~10s), reload shortly.",
     "upload_err": "Upload failed.",

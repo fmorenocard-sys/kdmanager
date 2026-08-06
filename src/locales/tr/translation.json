@@ -304,7 +304,7 @@
     "chip_player": "Oyuncu",
     "chip_kingdom": "Krallık",
     "upload_title": "Scan yükle",
-    "upload_desc": "En son rekabet scan'ini içe aktarın: düello ve 32 krallık otomatik yeniden hesaplanır.",
+    "upload_desc": "En son rekabet scan'ini içe aktarın: düello ve haritadaki tüm krallıklar otomatik yeniden hesaplanır.",
     "upload_button": "Scan yükle",
     "upload_ok": "Scan yüklendi — işleniyor (~10 sn), birazdan yenileyin.",
     "upload_err": "Yükleme başarısız.",

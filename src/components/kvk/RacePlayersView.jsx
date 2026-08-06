@@ -12,7 +12,7 @@ import { Search } from '../ui/icons';
 //
 // BR-010 : on est ici dans le domaine coalition. Aucune donnée du DKP interne n'est
 // affichée à côté du DKP de course — le croisement 2997 ne sert qu'à identifier les
-// nôtres dans la masse des 32 royaumes, pas à comparer les deux barèmes.
+// nôtres dans la masse des royaumes de la carte, pas à comparer les deux barèmes.
 
 const fmtCompact = (num) => {
     if (num == null) return '—';

@@ -304,7 +304,7 @@
     "chip_player": "Giocatore",
     "chip_kingdom": "Regno",
     "upload_title": "Carica uno scan",
-    "upload_desc": "Importa l'ultimo scan della competizione: il duello e i 32 regni verranno ricalcolati automaticamente.",
+    "upload_desc": "Importa l'ultimo scan della competizione: il duello e tutti i regni della mappa verranno ricalcolati automaticamente.",
     "upload_button": "Carica uno scan",
     "upload_ok": "Scan caricato — elaborazione (~10s), ricarica a breve.",
     "upload_err": "Caricamento fallito.",

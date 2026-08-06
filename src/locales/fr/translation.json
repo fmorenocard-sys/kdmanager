@@ -304,7 +304,7 @@
     "chip_player": "Joueur",
     "chip_kingdom": "Royaume",
     "upload_title": "Déposer un scan",
-    "upload_desc": "Importez le dernier scan de la compétition : le duel et les 32 royaumes seront recalculés automatiquement.",
+    "upload_desc": "Importez le dernier scan de la compétition : le duel et tous les royaumes de la carte seront recalculés automatiquement.",
     "upload_button": "Déposer un scan",
     "upload_ok": "Scan déposé — digestion en cours (~10 s), rechargez dans un instant.",
     "upload_err": "Échec du dépôt.",

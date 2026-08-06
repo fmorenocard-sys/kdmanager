@@ -304,7 +304,7 @@
     "chip_player": "Spieler",
     "chip_kingdom": "Königreich",
     "upload_title": "Scan hochladen",
-    "upload_desc": "Importiere den neuesten Wettbewerbs-Scan: Duell und 32 Königreiche werden automatisch neu berechnet.",
+    "upload_desc": "Importiere den neuesten Wettbewerbs-Scan: Duell und alle Königreiche der Karte werden automatisch neu berechnet.",
     "upload_button": "Scan hochladen",
     "upload_ok": "Scan hochgeladen — Verarbeitung (~10 s), gleich neu laden.",
     "upload_err": "Upload fehlgeschlagen.",

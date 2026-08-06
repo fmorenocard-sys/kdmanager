@@ -304,7 +304,7 @@
     "chip_player": "Gracz",
     "chip_kingdom": "Królestwo",
     "upload_title": "Wgraj skan",
-    "upload_desc": "Zaimportuj najnowszy skan rywalizacji: pojedynek i 32 królestwa zostaną przeliczone automatycznie.",
+    "upload_desc": "Zaimportuj najnowszy skan rywalizacji: pojedynek i wszystkie królestwa na mapie zostaną przeliczone automatycznie.",
     "upload_button": "Wgraj skan",
     "upload_ok": "Skan wgrany — przetwarzanie (~10 s), odśwież za chwilę.",
     "upload_err": "Wgrywanie nie powiodło się.",

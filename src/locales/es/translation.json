@@ -304,7 +304,7 @@
     "chip_player": "Jugador",
     "chip_kingdom": "Reino",
     "upload_title": "Subir un scan",
-    "upload_desc": "Importa el último scan de la competición: el duelo y los 32 reinos se recalcularán automáticamente.",
+    "upload_desc": "Importa el último scan de la competición: el duelo y todos los reinos del mapa se recalcularán automáticamente.",
     "upload_button": "Subir un scan",
     "upload_ok": "Scan subido — procesando (~10 s), recarga en un momento.",
     "upload_err": "Error al subir.",
