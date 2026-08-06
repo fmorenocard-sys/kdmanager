@@ -1,5 +1,17 @@
 # QA Changelog
 
+## v2.35 - 2026-08-06 — F-029 : objectifs « Top du royaume » (sans inscription) + référence max_power
+
+### Added
+- **Vue « Top du royaume » dans l'onglet Objectifs** (`KvkGoalsPanel`, leadership) — bascule « Déclarants » / « Top du royaume » + sélecteur **Top 25/50/100/300**. Affiche les cibles KvK (KP min, objectif KP, morts min) des N plus puissants du roster, calculées depuis `static_data/kvk.initialPower`, **sans dépendre d'une inscription/déclaration**. Statut/atteinte via `totalKpGained`. 6 clés i18n `goals.*` × 10 langues.
+- **`ingest-soc-scan.mjs --kvk-progress`** — scan de progression : met à jour `totalKpGained` (= `max_points` courant − `initialKp` figé) et `finalPower` dans `static_data/kvk`, **sans toucher** `initialPower`/`initialKp` (référence gelée). Ajoute les nouveaux arrivants du Top N.
+
+### Changed
+- **Référence d'objectifs ancrée sur `max_power` (pic observé) au lieu de `latest_power`** — décision Roi : anti-abus de la phase de gain de pouvoir du pré-KvK (un joueur ne peut pas baisser son pouvoir juste avant le scan pour minorer son objectif). `--kvk-base` fige désormais aussi `initialKp` (baseline du KP gagné, ancrée **fin pré-KvK**), pour que l'atteinte mesure le KP du vrai KvK et non depuis le début du pré-KvK.
+
+### Notes
+- **Action requise** : re-lancer le scan de base (`--kvk-base`, même fichier 8/6) avec le script mis à jour pour appliquer la référence `max_power` + écrire `initialKp`. L'atteinte se remplit ensuite aux scans `--kvk-progress`. Réfs : `FeatureInventory.md` F-029, `ProductBacklog.md` US-033.
+
 ## v2.34 - 2026-07-28 — Référentiel commandants : découplage image + saisie de marche non bloquante
 
 ### Added

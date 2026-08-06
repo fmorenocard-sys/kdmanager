@@ -22,6 +22,7 @@
  *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>" --kingdom 3341  # pick kingdom (default 3341)
  *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>" --write         # persist to Firestore pilot
  *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>" --history --write # + append a power/KP evolution point to static_data/history
+ *   node scripts/ingest-soc-scan.mjs --file "<path.xlsx>" --kvk-progress --write # MAJ du KP gagné dans static_data/kvk (initialPower/initialKp figés intacts)
  *
  * Write requires pilot credentials for kd-41-manager: either
  *   --credentials <serviceAccountKey.json>   (a kd-41-manager service-account key), or
@@ -61,6 +62,10 @@ const TOP = Number(arg('top', 0)) || 0;
 // que ce scan devienne la RÉFÉRENCE FIGÉE des objectifs (F-027, KvkGoalsPanel préfère
 // kvk.initialPower). À lancer sur le scan de base au début du KvK (ex. 5 août).
 const KVK_BASE = process.argv.includes('--kvk-base');
+// --kvk-progress : scan de progression. MAJ totalKpGained (= max_points courant - initialKp
+// figé) et finalPower dans static_data/kvk, SANS toucher initialPower/initialKp (référence gelée).
+// Nécessite un --kvk-base préalable. Ignoré si --kvk-base est aussi passé (le base prime).
+const KVK_PROGRESS = process.argv.includes('--kvk-progress');
 // A base scan is a starting point: no gains yet, so powerDiff defaults to 0.
 // Pass --keep-powerdiff to instead carry the previous KvK's power_difference.
 const KEEP_POWERDIFF = process.argv.includes('--keep-powerdiff');
@@ -137,6 +142,10 @@ console.log(`KD ${KINGDOM}: ${basic.length} in Basic Data, ${full.length} in Ful
 const fullById = new Map();
 for (const r of full) fullById.set(String(r.governor_id), r);
 
+// Référence d'objectifs par gouverneur : maxPower = PIC de pouvoir observé (anti-abus,
+// ancré fin pré-KvK), kpRef = KP total à cet instant (baseline du KP gagné). Rempli au mapping.
+const refById = new Map();
+
 // ---- build roster (static_data/players shape) ----
 // Field names must match functions/index.js syncPlayers exactly (camelCase, load-bearing):
 // rank,id,name,power,kp,deads,t1Kills,t4Kills,t5Kills,ranged,rssGathered,rssAssistance,
@@ -146,6 +155,7 @@ let list = basic
     .map((r) => {
         const id = String(r.governor_id);
         const f = fullById.get(id);
+        refById.set(id, { maxPower: num(r.max_power), kpRef: num(r.max_points) });
         const player = {
             id,
             name: str(r.name),
@@ -198,13 +208,19 @@ const historyPoint = {
     kp: list.reduce((s, p) => s + (p.kp || 0), 0),
 };
 
-// static_data/kvk (scan de base) : initialPower = pouvoir du jour, référence figée
-// des objectifs. finalPower = initialPower au départ (rien d'accumulé). Les scans
-// suivants pourront mettre à jour finalPower/totalKpGained/totalDead ; initialPower reste.
+// static_data/kvk (scan de BASE) : référence FIGÉE des objectifs, ancrée à la FIN du
+// pré-KvK (ce scan). initialPower = max_power (PIC observé = anti-abus : un joueur ne peut
+// pas baisser son pouvoir juste avant pour minorer son objectif). initialKp = KP total figé
+// à cet instant : les scans de progression compteront le KP gagné À PARTIR d'ici (pas depuis
+// le début du pré-KvK). totalKpGained = 0 au départ. Voir --kvk-progress.
 const kvkDoc = KVK_BASE ? {
-    list: list.map((p) => ({ id: p.id, name: p.name, initialPower: p.power, finalPower: p.power })),
+    list: list.map((p) => {
+        const r = refById.get(p.id) || {};
+        const initPow = r.maxPower ?? p.power;
+        return { id: p.id, name: p.name, initialPower: initPow, finalPower: initPow, initialKp: r.kpRef ?? 0, totalKpGained: 0 };
+    }),
     updatedAt: new Date().toISOString(),
-    source: `SoC BASE scan ${path.basename(FILE)} (kingdom ${KINGDOM}) — reference power for goals`,
+    source: `SoC BASE scan ${path.basename(FILE)} (kingdom ${KINGDOM}) — initialPower=max_power (pic, fin pré-KvK)`,
 } : null;
 
 // ---- report + control JSON ----
@@ -220,6 +236,9 @@ if (HISTORY) {
     const histOut = path.join(OUT_DIR, `history_point_${KINGDOM}.json`);
     fs.writeFileSync(histOut, JSON.stringify(historyPoint, null, 2), 'utf8');
     console.log(`[--history] point d'évolution -> ${histOut} (date ${historyPoint.date}, power ${historyPoint.power.toLocaleString()}, kp ${historyPoint.kp.toLocaleString()})`);
+}
+if (KVK_PROGRESS && !KVK_BASE) {
+    console.log('[--kvk-progress] au --write : KP gagné = (max_points courant − initialKp figé) écrit dans static_data/kvk, initialPower intact. (Nécessite un --kvk-base préalable.)');
 }
 
 const withDetail = list.filter((p) => p.deads !== undefined).length;
@@ -273,6 +292,38 @@ if (kvkDoc) {
     console.log(`Writing static_data/kvk (base scan, initialPower) to ${PROJECT} (kdmanagerdb)...`);
     await kvkRef.set(kvkDoc);
     console.log(`WROTE static_data/kvk — ${kvkDoc.list.length} joueurs, initialPower figé = référence des objectifs.`);
+}
+
+// --- static_data/kvk (scan de PROGRESSION) : MAJ KP gagné + finalPower, initialPower/initialKp INTACTS ---
+if (KVK_PROGRESS && !KVK_BASE) {
+    const kvkRef = db.collection('static_data').doc('kvk');
+    const snap = await kvkRef.get();
+    if (!snap.exists) {
+        console.warn('⚠️  static_data/kvk absent — lance d\'abord un --kvk-base. Progression ignorée.');
+    } else {
+        const cur = snap.data();
+        const kvkBackup = path.join(OUT_DIR, `backup_kvk_${PROJECT}_${stamp}.json`);
+        fs.writeFileSync(kvkBackup, JSON.stringify(cur, null, 2), 'utf8');
+        console.log(`Backup of current static_data/kvk -> ${kvkBackup}`);
+        let updated = 0, added = 0;
+        const merged = (cur.list || []).map((e) => {
+            const r = refById.get(String(e.id));
+            if (!r) return e; // gouverneur absent de ce scan -> inchangé
+            updated++;
+            const gained = Math.max(0, (r.kpRef ?? 0) - (e.initialKp ?? 0));
+            return { ...e, finalPower: r.maxPower ?? e.finalPower, totalKpGained: gained };
+        });
+        const known = new Set(merged.map((e) => String(e.id)));
+        for (const p of list) { // nouveaux arrivants du top N : référence = maintenant
+            if (!known.has(p.id)) {
+                const r = refById.get(p.id) || {};
+                merged.push({ id: p.id, name: p.name, initialPower: r.maxPower ?? p.power, finalPower: r.maxPower ?? p.power, initialKp: r.kpRef ?? 0, totalKpGained: 0 });
+                added++;
+            }
+        }
+        await kvkRef.set({ ...cur, list: merged, updatedAt: new Date().toISOString() });
+        console.log(`WROTE static_data/kvk (progression) — ${merged.length} entrées (${updated} MAJ, ${added} nouveaux), KP gagné recalculé depuis initialKp.`);
+    }
 }
 
 // --- static_data/history (évolution PxKP) : merge idempotent par date ---

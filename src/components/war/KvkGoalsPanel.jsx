@@ -65,6 +65,10 @@ const KvkGoalsPanel = () => {
     const [error, setError] = useState(false);
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState({ key: 'goalKp', dir: 'desc' });
+    // Vue « Déclarants » (défaut) vs « Top du royaume » (leadership, F-029) : objectifs des
+    // N plus puissants du roster, indépendamment de toute inscription/déclaration.
+    const [viewMode, setViewMode] = useState('declared'); // 'declared' | 'top'
+    const [topN, setTopN] = useState(50);
 
     useEffect(() => {
         let cancelled = false;
@@ -218,15 +222,47 @@ const KvkGoalsPanel = () => {
         return q ? scoped.filter((r) => r.name.toLowerCase().includes(q) || r.governorId.includes(q)) : scoped;
     }, [declarations, kvkId, statsById, config, governorId, isLeadership, search]);
 
+    // Vue « Top du royaume » (F-029) : objectifs des N plus puissants du roster, pris de
+    // static_data/kvk (initialPower figé = référence, totalKpGained = KP gagné du KvK).
+    // Aucune dépendance aux déclarations — un joueur non inscrit a quand même sa cible.
+    const topRows = useMemo(() => {
+        if (!isLeadership || viewMode !== 'top') return [];
+        const built = (kvkStats || [])
+            .filter((k) => (k.initialPower || 0) > 0)
+            .sort((a, b) => (b.initialPower || 0) - (a.initialPower || 0))
+            .slice(0, topN)
+            .map((k) => {
+                const power = k.initialPower || 0;
+                const goals = computeKvkGoals(power);
+                const kpGained = k.totalKpGained ?? null;
+                const goalPct = (kpGained != null && goals.goalKp > 0) ? kpGained / (goals.goalKp * 1e6) : null;
+                const { rate, uncertain } = rateFromGoalPct(goalPct);
+                const gid = String(k.id);
+                return {
+                    key: 'top_' + gid, governorId: gid, name: k.name || gid,
+                    isMe: gid === String(governorId || ''),
+                    powerM: goals.powerM, minKp: goals.minKp, goalKp: goals.goalKp,
+                    minDead: goals.minDead, minDeadTroops: goals.minDeadApproxTroops,
+                    hasPower: power > 0, knownPlayer: true, outOfDomain: goals.outOfDomain,
+                    kpGained, goalPct, rate, uncertain
+                };
+            });
+        const q = search.trim().toLowerCase();
+        const filtered = q ? built.filter((r) => r.name.toLowerCase().includes(q) || r.governorId.includes(q)) : built;
+        return sortRows(filtered, sort);
+    }, [kvkStats, viewMode, topN, isLeadership, governorId, search, sort]);
+
+    const displayRows = viewMode === 'top' ? topRows : rows;
+
     // Nommer les joueurs non rattachés : un simple compteur n'est pas actionnable,
     // le Roi doit savoir quel ID vérifier. On distingue aussi les deux causes —
     // l'ID ne correspond à personne (saisie erronée, ou joueur hors Top 300), ou il
     // correspond mais la puissance est absente du profil.
-    const unresolved = useMemo(() => rows.filter((r) => !r.hasPower).map((r) => ({
+    const unresolved = useMemo(() => displayRows.filter((r) => !r.hasPower).map((r) => ({
         name: r.name,
         governorId: r.governorId,
         cause: r.knownPlayer ? 'no_power' : 'unknown_id'
-    })), [rows]);
+    })), [displayRows]);
     const toggleSort = (key) => setSort((prev) => nextSort(prev, key));
 
     if (!currentUser) {
@@ -254,6 +290,28 @@ const KvkGoalsPanel = () => {
                     </select>
                 )}
                 {isLeadership && (
+                    <div className="inline-flex rounded-lg border border-[var(--border-flat)] overflow-hidden">
+                        <button type="button" onClick={() => setViewMode('declared')}
+                            className={`px-3 py-2 text-sm min-h-[44px] ${viewMode === 'declared' ? 'bg-indigo-500/20 text-indigo-200' : 'text-slate-400 hover:text-white'}`}>
+                            {t('goals.view_declared')}
+                        </button>
+                        <button type="button" onClick={() => setViewMode('top')}
+                            className={`px-3 py-2 text-sm min-h-[44px] ${viewMode === 'top' ? 'bg-indigo-500/20 text-indigo-200' : 'text-slate-400 hover:text-white'}`}>
+                            {t('goals.view_top')}
+                        </button>
+                    </div>
+                )}
+                {isLeadership && viewMode === 'top' && (
+                    <select
+                        aria-label={t('goals.top_n_label')}
+                        value={topN}
+                        onChange={(e) => setTopN(Number(e.target.value))}
+                        className="bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 min-h-[44px]"
+                    >
+                        {[25, 50, 100, 300].map((n) => <option key={n} value={n}>{t('goals.top_n_option', { n })}</option>)}
+                    </select>
+                )}
+                {isLeadership && (
                     <div className="relative flex-1 min-w-[180px]">
                         <Search size={16} className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                         <input
@@ -267,23 +325,27 @@ const KvkGoalsPanel = () => {
                     </div>
                 )}
                 <span className="text-xs text-slate-500 font-mono whitespace-nowrap">
-                    {t('goals.declared_count', { count: rows.length })}
+                    {viewMode === 'top'
+                        ? t('goals.top_count', { count: displayRows.length })
+                        : t('goals.declared_count', { count: rows.length })}
                 </span>
             </div>
 
-            {rows.length === 0 && fillerRows.length === 0 && (
+            {displayRows.length === 0 && (viewMode === 'top' || fillerRows.length === 0) && (
                 <Card className="p-6 text-center">
                     <p className="text-sm text-slate-400">
-                        {isLeadership ? t('goals.empty_campaign') : t('goals.empty_self')}
+                        {viewMode === 'top'
+                            ? t('goals.empty_top')
+                            : (isLeadership ? t('goals.empty_campaign') : t('goals.empty_self'))}
                     </p>
                 </Card>
             )}
 
-            {rows.length > 0 && (
+            {displayRows.length > 0 && (
                 <Card className="p-0 overflow-hidden">
                     {/* Cartes en mobile — pas de scroll horizontal (UXA11Y-001) */}
                     <div className="md:hidden flex flex-col gap-3 p-4">
-                        {rows.map((r) => (
+                        {displayRows.map((r) => (
                             <div key={r.key} className={`bg-[var(--surface-solid)] p-3 rounded-xl border ${r.isMe ? 'border-amber-500/40' : 'border-[var(--border-flat)]'} flex flex-col gap-2`}>
                                 <div className="flex justify-between items-start gap-2 border-b border-[var(--border-flat)] pb-2">
                                     <div className="min-w-0">
@@ -330,7 +392,7 @@ const KvkGoalsPanel = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {rows.map((r) => (
+                                {displayRows.map((r) => (
                                     <TableRow key={r.key} className={`hover:bg-white/5 border-b border-white/5 ${r.isMe ? 'bg-amber-500/5' : ''}`}>
                                         <TableCell className="text-sm text-white max-w-[220px]">
                                             <span className="font-semibold truncate block">{r.name}</span>
@@ -357,8 +419,8 @@ const KvkGoalsPanel = () => {
                 </Card>
             )}
 
-            {/* F-027 : objectifs des comptes filler (barème T4/T5 dédié) */}
-            {fillerRows.length > 0 && (
+            {/* F-027 : objectifs des comptes filler (barème T4/T5 dédié). Masqués en vue « Top du royaume ». */}
+            {viewMode === 'declared' && fillerRows.length > 0 && (
                 <Card className="p-0 overflow-hidden border border-amber-500/20">
                     <h3 className="p-4 text-base font-bold text-amber-400 border-b border-[var(--border-flat)]">
                         {t('goals.filler_section')} ({fillerRows.length})
