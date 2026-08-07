@@ -306,7 +306,7 @@
     "upload_title": "Carica uno scan",
     "upload_desc": "Importa l'ultimo scan della competizione: il duello e tutti i regni della mappa verranno ricalcolati automaticamente.",
     "upload_button": "Carica uno scan",
-    "upload_ok": "Scan caricato — elaborazione (~10s), ricarica a breve.",
+    "upload_ok": "Scan caricato — elaborazione (~10s), la vista si aggiornerà automaticamente.",
     "upload_err": "Caricamento fallito.",
     "upload_bad_name": "Il nome del file non rispetta la convenzione di scan (es. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },

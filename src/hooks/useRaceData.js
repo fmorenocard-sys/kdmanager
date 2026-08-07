@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 /**
@@ -18,10 +18,12 @@ export function useRaceData() {
 
     useEffect(() => {
         let cancelled = false;
-        (async () => {
+        // Temps réel : onSnapshot sur la racine kvk_race → dès que digestRaceScan met à
+        // jour un doc campagne (nouveau scan digéré), on ré-hydrate ses sous-collections.
+        // Supprime le rechargement manuel après un dépôt de scan.
+        const hydrate = async (rootDocs) => {
             try {
-                const rootSnap = await getDocs(collection(db, 'kvk_race'));
-                const list = await Promise.all(rootSnap.docs.map(async (d) => {
+                const list = await Promise.all(rootDocs.map(async (d) => {
                     const [scansSnap, kingdomsSnap, playersSnap] = await Promise.all([
                         getDocs(collection(db, 'kvk_race', d.id, 'scans')),
                         getDocs(collection(db, 'kvk_race', d.id, 'kingdoms')),
@@ -38,13 +40,18 @@ export function useRaceData() {
                 }));
                 if (!cancelled) setCampaigns(list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')));
             } catch (err) {
-                console.error('useRaceData error:', err);
+                console.error('useRaceData hydrate error:', err);
                 if (!cancelled) setError(err);
             } finally {
                 if (!cancelled) setLoading(false);
             }
-        })();
-        return () => { cancelled = true; };
+        };
+        const unsub = onSnapshot(
+            collection(db, 'kvk_race'),
+            (rootSnap) => { hydrate(rootSnap.docs); },
+            (err) => { console.error('useRaceData snapshot error:', err); if (!cancelled) { setError(err); setLoading(false); } }
+        );
+        return () => { cancelled = true; unsub(); };
     }, []);
 
     return { campaigns, loading, error };

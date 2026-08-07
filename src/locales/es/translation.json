@@ -306,7 +306,7 @@
     "upload_title": "Subir un scan",
     "upload_desc": "Importa el último scan de la competición: el duelo y todos los reinos del mapa se recalcularán automáticamente.",
     "upload_button": "Subir un scan",
-    "upload_ok": "Scan subido — procesando (~10 s), recarga en un momento.",
+    "upload_ok": "Scan subido — procesando (~10 s), la vista se actualizará automáticamente.",
     "upload_err": "Error al subir.",
     "upload_bad_name": "Nombre de archivo no conforme (ej.: 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },

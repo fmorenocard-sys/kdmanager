@@ -306,7 +306,7 @@
     "upload_title": "Scan hochladen",
     "upload_desc": "Importiere den neuesten Wettbewerbs-Scan: Duell und alle Königreiche der Karte werden automatisch neu berechnet.",
     "upload_button": "Scan hochladen",
-    "upload_ok": "Scan hochgeladen — Verarbeitung (~10 s), gleich neu laden.",
+    "upload_ok": "Scan hochgeladen — Verarbeitung (~10 s), die Ansicht aktualisiert sich automatisch.",
     "upload_err": "Upload fehlgeschlagen.",
     "upload_bad_name": "Dateiname entspricht nicht der Scan-Konvention (z. B. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },

@@ -306,7 +306,7 @@
     "upload_title": "Scan yükle",
     "upload_desc": "En son rekabet scan'ini içe aktarın: düello ve haritadaki tüm krallıklar otomatik yeniden hesaplanır.",
     "upload_button": "Scan yükle",
-    "upload_ok": "Scan yüklendi — işleniyor (~10 sn), birazdan yenileyin.",
+    "upload_ok": "Scan yüklendi — işleniyor (~10 sn), görünüm otomatik yenilenecek.",
     "upload_err": "Yükleme başarısız.",
     "upload_bad_name": "Dosya adı kurala uymuyor (ör. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },

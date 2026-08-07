@@ -306,7 +306,7 @@
     "upload_title": "Upload a scan",
     "upload_desc": "Import the latest competition scan: the duel and all kingdoms on the map will be recomputed automatically.",
     "upload_button": "Upload a scan",
-    "upload_ok": "Scan uploaded — digesting (~10s), reload shortly.",
+    "upload_ok": "Scan uploaded — digesting (~10s), the view will refresh automatically.",
     "upload_err": "Upload failed.",
     "upload_bad_name": "Filename does not match the scan convention (e.g. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },

@@ -1,5 +1,11 @@
 # QA Changelog
 
+## v2.38 - 2026-08-07 — KvK Race : auto-refresh après dépôt + sous-onglet persistant
+
+### Changed
+- **Course en temps réel** — `useRaceData` passe de `getDocs` one-shot à un `onSnapshot` sur la racine `kvk_race` : dès que `digestRaceScan` met à jour la campagne (scan digéré), la vue se ré-hydrate **sans rechargement manuel**. Message post-dépôt ajusté (« la vue s'actualisera automatiquement » au lieu de « rechargez ») × 10 langues.
+- **Sous-onglet KvK persistant** — l'onglet actif du hub (Performance / Progressions / Course) est désormais porté par l'URL (`#/kvk?tab=course`, via `useSearchParams`) : un rechargement revient sur le même onglet au lieu de retomber sur Performance. Valeur validée + garde d'accès (course = leadership, progressions = Discord/leadership) synchronisée avec l'URL.
+
 ## v2.37 - 2026-08-07 — Fix : dépôt du 1er scan de course impossible (état vide)
 
 ### Fixed

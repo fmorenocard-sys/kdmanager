@@ -306,7 +306,7 @@
     "upload_title": "Tải lên scan",
     "upload_desc": "Nhập scan mới nhất của cuộc thi: trận đấu và tất cả vương quốc trên bản đồ sẽ được tính lại tự động.",
     "upload_button": "Tải lên scan",
-    "upload_ok": "Đã tải scan — đang xử lý (~10 giây), tải lại sau giây lát.",
+    "upload_ok": "Đã tải scan — đang xử lý (~10 giây), giao diện sẽ tự động cập nhật.",
     "upload_err": "Tải lên thất bại.",
     "upload_bad_name": "Tên tệp không đúng quy ước (vd: 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },

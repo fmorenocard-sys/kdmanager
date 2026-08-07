@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
 import { BRANDING } from '../config/branding';
@@ -37,7 +38,18 @@ const KvKPerformancePage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState([]);
     const [sortConfig, setSortConfig] = useState({ key: 'finalPower', direction: 'desc' });
-    const [activeTab, setActiveTab] = useState('performance'); // performance | progressions | course
+    // Sous-onglet persisté dans l'URL (#/kvk?tab=course) : un rechargement revient au même onglet.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [activeTab, setActiveTab] = useState(() => {
+        const t0 = searchParams.get('tab');
+        return ['performance', 'progressions', 'course'].includes(t0) ? t0 : 'performance';
+    }); // performance | progressions | course
+    const goTab = (id) => {
+        setActiveTab(id);
+        const p = new URLSearchParams(searchParams);
+        p.set('tab', id);
+        setSearchParams(p, { replace: true });
+    };
     const [perfView, setPerfView] = useState('main'); // main | filler
     const [progView, setProgView] = useState('player'); // player | kingdom
     const [selectedCampaignId, setSelectedCampaignId] = useState('current');
@@ -50,8 +62,9 @@ const KvKPerformancePage = () => {
 
     // Gating des onglets : progressions requiert Discord OU leadership ; course requiert leadership
     React.useEffect(() => {
-        if (activeTab === 'progressions' && !isDiscordUser && !isLeadership) setActiveTab('performance');
-        if (activeTab === 'course' && !isLeadership) setActiveTab('performance');
+        if (activeTab === 'progressions' && !isDiscordUser && !isLeadership) goTab('performance');
+        if (activeTab === 'course' && !isLeadership) goTab('performance');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, isDiscordUser, isLeadership]);
 
     // Chips de l'onglet Progressions : Joueur (BR-008) / Royaume (BR-011)
@@ -299,7 +312,7 @@ const KvKPerformancePage = () => {
                         <button
                             key={tab.id}
                             type="button"
-                            onClick={() => { setActiveTab(tab.id); setStatusFilter([]); setSearchTerm(''); }}
+                            onClick={() => { goTab(tab.id); setStatusFilter([]); setSearchTerm(''); }}
                             aria-pressed={isActive}
                             className={`v2-tab select-none ${isActive ? 'on' : 'off'}`}
                         >

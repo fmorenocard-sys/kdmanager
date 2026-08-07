@@ -306,7 +306,7 @@
     "upload_title": "Wgraj skan",
     "upload_desc": "Zaimportuj najnowszy skan rywalizacji: pojedynek i wszystkie królestwa na mapie zostaną przeliczone automatycznie.",
     "upload_button": "Wgraj skan",
-    "upload_ok": "Skan wgrany — przetwarzanie (~10 s), odśwież za chwilę.",
+    "upload_ok": "Skan wgrany — przetwarzanie (~10 s), widok odświeży się automatycznie.",
     "upload_err": "Wgrywanie nie powiodło się.",
     "upload_bad_name": "Nazwa pliku niezgodna z konwencją (np. 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },

@@ -306,7 +306,7 @@
     "upload_title": "Déposer un scan",
     "upload_desc": "Importez le dernier scan de la compétition : le duel et tous les royaumes de la carte seront recalculés automatiquement.",
     "upload_button": "Déposer un scan",
-    "upload_ok": "Scan déposé — digestion en cours (~10 s), rechargez dans un instant.",
+    "upload_ok": "Scan déposé — digestion en cours (~10 s), la vue s'actualisera automatiquement.",
     "upload_err": "Échec du dépôt.",
     "upload_bad_name": "Nom de fichier non conforme (ex. attendu : 002_1249539_06_16_2026,_11_07_14_AM.xlsx)."
   },
