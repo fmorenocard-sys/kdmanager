@@ -373,6 +373,7 @@
     "role_enemy": "Przeciwnik",
     "hero_duel_label": "Główny pojedynek",
     "our_camp_label": "Nasz obóz",
+    "our_camp_auto": "Nasz obóz: {{camp}} (z roli «My»). Pojedynek wstępnie wypełniony z ról, edytowalny.",
     "pinned_label": "Przypięte królestwa (ID po przecinkach)",
     "dkp_title": "Wagi DKP wyścigu",
     "dkp_hint": "Domena koalicji — nigdy nie mieszana z wewnętrznym DKP {{kingdom}} (BR-010).",

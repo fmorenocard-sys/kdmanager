@@ -373,6 +373,7 @@
     "role_enemy": "Gegner",
     "hero_duel_label": "Hauptduell",
     "our_camp_label": "Unser Lager",
+    "our_camp_auto": "Unser Lager: {{camp}} (aus der Rolle « Wir »). Duell aus den Rollen vorausgefüllt, änderbar.",
     "pinned_label": "Angepinnte Königreiche (IDs, kommagetrennt)",
     "dkp_title": "Renn-DKP-Gewichte",
     "dkp_hint": "Koalitionsdomäne — nie mit dem internen {{kingdom}}-DKP vermischt (BR-010).",

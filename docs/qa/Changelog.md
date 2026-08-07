@@ -1,5 +1,10 @@
 # QA Changelog
 
+## v2.39 - 2026-08-07 — Config Course : « Notre camp » et duel déduits des rôles
+
+### Changed
+- **`RaceConfigForm` — fin de la double saisie.** « Notre camp » n'est plus un champ manuel : il est **déduit du camp dont le rôle est « Nous »** (au save + affiché en clair). Le duel est **pré-rempli depuis les rôles** (Nous vs Allié rival étoile) et se met à jour quand on change les rôles, tout en restant **surchargeable** (dès qu'on touche un select de duel, l'auto-déduction se désactive ; une campagne existante conserve son duel enregistré). Motif : retour Roi — re-saisir « Notre camp » alors qu'Aeolia est déjà marqué « Nous » était redondant et source d'erreur (bug vécu). Clé i18n `kvk_race.our_camp_auto` × 10 langues.
+
 ## v2.38 - 2026-08-07 — KvK Race : auto-refresh après dépôt + sous-onglet persistant
 
 ### Changed

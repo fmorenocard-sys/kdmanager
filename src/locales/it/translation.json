@@ -373,6 +373,7 @@
     "role_enemy": "Nemico",
     "hero_duel_label": "Duello degli eroi",
     "our_camp_label": "Il nostro campo",
+    "our_camp_auto": "Il nostro campo: {{camp}} (dal ruolo «Noi»). Duello precompilato dai ruoli, modificabile.",
     "pinned_label": "Regni fissati (ID separati da virgola)",
     "dkp_title": "Pesi DKP della corsa",
     "dkp_hint": "Dominio della coalizione — mai mischiato con il DKP interno {{kingdom}} (BR-010).",

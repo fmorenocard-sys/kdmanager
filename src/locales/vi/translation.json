@@ -373,6 +373,7 @@
     "role_enemy": "Đối thủ",
     "hero_duel_label": "Trận đấu chính",
     "our_camp_label": "Phe của ta",
+    "our_camp_auto": "Phe của ta: {{camp}} (từ vai trò « Chúng ta »). Trận đấu điền sẵn theo vai trò, có thể sửa.",
     "pinned_label": "Vương quốc ghim (ID cách nhau bằng dấu phẩy)",
     "dkp_title": "Trọng số DKP đua",
     "dkp_hint": "Miền liên minh — không bao giờ trộn với DKP nội bộ {{kingdom}} (BR-010).",

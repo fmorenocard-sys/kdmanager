@@ -373,6 +373,7 @@
     "role_enemy": "Rakip",
     "hero_duel_label": "Ana düello",
     "our_camp_label": "Kampımız",
+    "our_camp_auto": "Kampımız: {{camp}} («Biz» rolünden). Düello rollerden önceden dolduruldu, düzenlenebilir.",
     "pinned_label": "Sabitlenmiş krallıklar (virgülle ayrılmış ID'ler)",
     "dkp_title": "Yarış DKP ağırlıkları",
     "dkp_hint": "Koalisyon alanı — dahili {{kingdom}} DKP ile asla karıştırılmaz (BR-010).",

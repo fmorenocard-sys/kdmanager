@@ -44,6 +44,7 @@ const RaceConfigForm = () => {
     const [digestState, setDigestState] = useState(null); // {scanCount, latestSeq}
     const [busy, setBusy] = useState(false);
     const [message, setMessage] = useState(null); // {type: 'ok'|'err', text}
+    const [duelTouched, setDuelTouched] = useState(false); // le duel a-t-il été réglé à la main ?
 
     useEffect(() => {
         if (!authorized) return;
@@ -55,12 +56,24 @@ const RaceConfigForm = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authorized]);
 
+    // « Notre camp » et le duel sont DÉDUITS des rôles pour éviter la double saisie :
+    // notre camp = celui dont le rôle est « nous » ; le duel par défaut = « nous » vs
+    // l'allié rival étoile. Le duel reste surchargeable (setDuelTouched au 1er changement).
+    const nousCamp = CAMP_IDS.find((c) => form.roles[c] === 'nous') || null;
+    const starRivalCamp = CAMP_IDS.find((c) => form.roles[c] === 'allie_concurrent_etoile') || null;
+    useEffect(() => {
+        if (duelTouched || !nousCamp || !starRivalCamp) return;
+        const want = [Number(nousCamp), Number(starRivalCamp)];
+        setForm((f) => (f.hero_duel[0] === want[0] && f.hero_duel[1] === want[1]) ? f : { ...f, hero_duel: want });
+    }, [nousCamp, starRivalCamp, duelTouched]);
+
     const selectCampaign = (id, list = campaigns) => {
         setMessage(null);
         setSelectedId(id);
         if (id === 'new') {
             setForm(DEFAULT_FORM);
             setDigestState(null);
+            setDuelTouched(false); // nouvelle campagne : duel auto-déduit des rôles
             return;
         }
         const c = list.find((x) => x.id === id);
@@ -87,6 +100,7 @@ const RaceConfigForm = () => {
             }))
         });
         setDigestState(c.scanCount != null ? { scanCount: c.scanCount, latestSeq: c.latestSeq } : null);
+        setDuelTouched(true); // campagne existante : on respecte son duel enregistré
     };
 
     const effective = useMemo(() => {
@@ -120,7 +134,7 @@ const RaceConfigForm = () => {
                 labels: form.labels,
                 roles: form.roles,
                 hero_duel: form.hero_duel.map(Number),
-                our_camp: String(form.our_camp),
+                our_camp: String(nousCamp || form.our_camp || '2'), // déduit du rôle « nous »
                 pinned_kingdoms: pinned,
                 base_scan_override: form.base_scan_override === '' ? null : Number(form.base_scan_override),
                 discord_channel_id: form.discord_channel_id.trim(),
@@ -241,25 +255,18 @@ const RaceConfigForm = () => {
                 ))}
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-2">
                 <div>
                     <label htmlFor="race-duel-a" className="block text-xs text-slate-400 mb-1.5">{t('kvk_race.hero_duel_label')} A</label>
                     <select id="race-duel-a" className={inputCls} value={form.hero_duel[0]}
-                        onChange={(e) => setForm((f) => ({ ...f, hero_duel: [Number(e.target.value), f.hero_duel[1]] }))}>
+                        onChange={(e) => { setDuelTouched(true); setForm((f) => ({ ...f, hero_duel: [Number(e.target.value), f.hero_duel[1]] })); }}>
                         {CAMP_IDS.map((c) => <option key={c} value={c}>{form.labels[c] || `Camp ${c}`}</option>)}
                     </select>
                 </div>
                 <div>
                     <label htmlFor="race-duel-b" className="block text-xs text-slate-400 mb-1.5">{t('kvk_race.hero_duel_label')} B</label>
                     <select id="race-duel-b" className={inputCls} value={form.hero_duel[1]}
-                        onChange={(e) => setForm((f) => ({ ...f, hero_duel: [f.hero_duel[0], Number(e.target.value)] }))}>
-                        {CAMP_IDS.map((c) => <option key={c} value={c}>{form.labels[c] || `Camp ${c}`}</option>)}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="race-our-camp" className="block text-xs text-slate-400 mb-1.5">{t('kvk_race.our_camp_label')}</label>
-                    <select id="race-our-camp" className={inputCls} value={form.our_camp}
-                        onChange={(e) => setForm((f) => ({ ...f, our_camp: e.target.value }))}>
+                        onChange={(e) => { setDuelTouched(true); setForm((f) => ({ ...f, hero_duel: [f.hero_duel[0], Number(e.target.value)] })); }}>
                         {CAMP_IDS.map((c) => <option key={c} value={c}>{form.labels[c] || `Camp ${c}`}</option>)}
                     </select>
                 </div>
@@ -270,6 +277,9 @@ const RaceConfigForm = () => {
                     onChange={(e) => setForm((f) => ({ ...f, base_scan_override: e.target.value }))}
                 />
             </div>
+            <p className="text-xs text-slate-500 mb-4">
+                {t('kvk_race.our_camp_auto', { camp: nousCamp ? (form.labels[nousCamp] || `Camp ${nousCamp}`) : '—' })}
+            </p>
 
             <Input
                 label={t('kvk_race.pinned_label')}
