@@ -486,6 +486,17 @@ async function syncAvatars() {
 // Full sync pipeline, shared by the HTTP endpoint and the daily schedule.
 // Each source is isolated: one failing sheet never blocks the others.
 async function runFullSync() {
+    /* global process */
+    // Garde-fou multi-instance : la synchro tire les données du royaume 2997 (Google Sheet
+    // + ProKingdoms kingdom 2997) et NE DOIT PAS tourner sur une autre instance — sinon elle
+    // écrase les données du royaume client par celles du 2997 (incident cross-tenant 2026-08-07,
+    // où le cron du pilote kd-41 a clobberé tout static_data avec du 2997). Sur tout projet
+    // ≠ kd-97-manager : no-op (les données d'une instance client viennent de son ingestion dédiée).
+    const PROJECT_ID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || "kd-97-manager";
+    if (PROJECT_ID !== "kd-97-manager") {
+        logger.warn(`runFullSync ignoré sur le projet ${PROJECT_ID} (synchro réservée à kd-97-manager, multi-instance).`);
+        return { serviceAccountEmail: "skipped", results: { skipped: `non-2997 project (${PROJECT_ID})` } };
+    }
     let serviceAccountEmail = "unknown";
     let sheets;
     try {
