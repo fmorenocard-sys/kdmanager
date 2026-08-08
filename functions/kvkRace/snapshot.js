@@ -92,9 +92,9 @@ export function buildDuelEmbed({campaignId, cfg, duel, previousDuel, meta}) {
         {name: nameA, value: `**${fmtCompact(duel["camp_a"])}**`, inline: true},
         {name: nameB, value: `**${fmtCompact(duel["camp_b"])}**`, inline: true},
         {
-            name: "Écart",
+            name: "Gap",
             value: leader
-                ? `**${fmtSigned(ecart)}**\n${leader} en tête`
+                ? `**${fmtSigned(ecart)}**\n${leader} in the lead`
                 : "—",
             inline: true,
         },
@@ -102,15 +102,15 @@ export function buildDuelEmbed({campaignId, cfg, duel, previousDuel, meta}) {
 
     if (variation != null) {
         fields.push({
-            name: "Variation depuis le scan précédent",
-            value: `${fmtSigned(variation)} ${variation === 0 ? "" : (variation > 0 ? "(en faveur de " + nameA + ")" : "(en faveur de " + nameB + ")")}`.trim(),
+            name: "Change since last scan",
+            value: `${fmtSigned(variation)} ${variation === 0 ? "" : (variation > 0 ? "(favoring " + nameA + ")" : "(favoring " + nameB + ")")}`.trim(),
             inline: false,
         });
     }
 
     return {
         title: `${cfg["name"] || campaignId} — scan #${duel["scan_seq"]}`,
-        description: "Duel de course · DKP de course (domaine coalition, BR-010)",
+        description: "Race duel · Race DKP (coalition scoring)",
         color,
         fields,
         footer: {text: "Kingdom Manager · KvK Race"},
