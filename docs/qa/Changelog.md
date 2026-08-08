@@ -1,5 +1,10 @@
 # QA Changelog
 
+## v2.40 - 2026-08-07 — War Tracker : sous-onglets persistants (Déclaration / Objectifs / Dashboard)
+
+### Changed
+- **`WarTrackerPage` — sous-onglet persistant dans l'URL** (`#/war-tracker?tab=goals`, via `useSearchParams`), même mécanisme que le hub KvK (v2.38). Un rechargement (ou un lien partagé) revient sur l'onglet Déclaration / Objectifs / Tableau de Bord au lieu de retomber sur Déclaration. Garde d'accès : le Dashboard de guerre (King/Officer) synchronisé avec l'URL. Retour Roi : la persistance ne marchait que pour l'onglet Course.
+
 ## v2.39 - 2026-08-07 — Config Course : « Notre camp » et duel déduits des rôles
 
 ### Changed

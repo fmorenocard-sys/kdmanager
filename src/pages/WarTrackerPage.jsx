@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useRole, ROLES } from '../context/RoleContext';
 import AvailabilityForm from '../components/war/AvailabilityForm';
@@ -14,9 +15,26 @@ import PageHeader from '../components/ui/PageHeader';
 const WarTrackerPage = () => {
     const { isAuthorized } = useRole();
     const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState('declaration'); // declaration, dashboard
+    // Onglet persisté dans l'URL (#/war-tracker?tab=goals) : un rechargement revient au même onglet.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [activeTab, setActiveTab] = useState(() => {
+        const t0 = searchParams.get('tab');
+        return ['declaration', 'goals', 'dashboard'].includes(t0) ? t0 : 'declaration';
+    });
+    const goTab = (id) => {
+        setActiveTab(id);
+        const p = new URLSearchParams(searchParams);
+        p.set('tab', id);
+        setSearchParams(p, { replace: true });
+    };
 
     const showDashboard = isAuthorized([ROLES.KING, ROLES.OFFICER]);
+
+    // Le Tableau de Bord de Guerre est réservé King/Officer : si l'URL le demande sans le rôle, on retombe.
+    React.useEffect(() => {
+        if (activeTab === 'dashboard' && !showDashboard) goTab('declaration');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, showDashboard]);
 
     const tabs = [
         { id: 'declaration', label: t('war.declaration_form'), icon: Swords },
@@ -38,7 +56,7 @@ const WarTrackerPage = () => {
                         <button
                             key={tab.id}
                             type="button"
-                            onClick={() => setActiveTab(tab.id)}
+                            onClick={() => goTab(tab.id)}
                             aria-pressed={isActive}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border select-none ${
                                 isActive 
