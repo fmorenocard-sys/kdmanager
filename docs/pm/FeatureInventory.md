@@ -35,6 +35,39 @@ Ce document centralise l'état de toutes les fonctionnalités du Kingdom Manager
 | F-029 | Objectifs « Top du royaume » (sans inscription) | Vue leadership de l'onglet Objectifs (War Tracker) : cibles KvK (KP min, objectif KP, morts min) des **N plus puissants du roster** (sélecteur Top 25/50/100/300), calculées depuis `static_data/kvk.initialPower` — **indépendamment de toute inscription/déclaration** (l'objectif est une pure fonction de la puissance). Statut/atteinte (%) via `totalKpGained` (KP gagné depuis la référence figée). Ingestion étendue : `--kvk-base` fige `initialPower` = **max_power** (pic observé = anti-abus, ancré fin pré-KvK) + `initialKp` ; nouveau `--kvk-progress` met à jour le KP gagné (= KP courant − initialKp) sans toucher la référence. Décidé/livré par le Roi le 2026-08-06. | Livré (front) — atteinte active après re-scan de base + scans de progression | P2 | Moyen | F-014 (moteur objectifs), static_data/kvk, ingest-soc-scan |
 | F-030 | Ingestion de progression unifiée (Course + Objectifs) | Un **seul dépôt de scan in-app** met à jour à la fois la **course** (`kvk_race`, déjà le cas via `digestRaceScan`) ET la **progression des objectifs** (`static_data/kvk.totalKpGained` pour notre royaume) — aujourd'hui les objectifs exigent un **script local `ingest-soc-scan --kvk-progress`** séparé, alors que la donnée vient du **même fichier** (constat Roi 2026-08-08 : « pas très logique »). Cible : `digestRaceScan` (qui lit déjà le scan) met aussi à jour `totalKpGained` de notre royaume. **Garde-fous** : sur 2997 les objectifs viennent du Google Sheet (Performance Analysis) → ne pas écraser (guard par instance/source) ; la profondeur du scan course (multi-camps) est moindre que la réf figée → couvre les tops, pas la queue. Lié à la dette **F-008** (ingestion full in-app) et à `Spec_Format_Interne_Adaptateurs_Scan.md`. **Cadrée le 2026-08-08 : `Spec_Ingestion_Progression_Unifiee.md`** (modèle « source d'objectifs » par instance — `sheet` 2997 / `scan` clients —, garde-fous, profondeur, plan). | Spec écrite, non priorisée | — | — | F-008, digestRaceScan, static_data/kvk |
 
+## Frontière commerciale Gratuit / Premium (figée par le Roi — 2026-08-08)
+
+Décision pivot de commercialisation (`Etude_Commercialisation_SaaS.md` §8). Le Roi a
+tranché les 3 tiers ; **0 feature restée à débattre**. Principe retenu : **value-ladder**
+(basiques gratuits, profondeur + gestion + automation payantes) — et **non** le principe
+« coût » brut de l'étude (§5bis). Deux croisements assumés : des scan-dépendants sont
+_gratuits_ (hook), des données internes gratuites sont _premium_ (vendues sur leur valeur
+analytique, couche 3 §5).
+
+| Tier | Features |
+|---|---|
+| **GRATUIT (hook)** | F-006 War Tracker · F-001 Dashboard · F-014 Objectifs KvK · F-002 Performance · F-025 Multi-comptes · F-026 Déclaration par compte · F-027 Objectifs filler |
+| **PREMIUM (payant)** | F-018/F-019/F-020 Course (ingestion/duel/analytique) · F-015 Historique multi-saisons · F-022 Timeline · F-004 Deadweight · F-024 Deadweight croisé perf · F-028 Couverture méta des marches · F-010 Rôles & synchro Discord · F-012 Bot commandes · F-013 Pings « formulaires manquants » · F-005 Banque · F-003 Trophées |
+| **SOCLE (toujours inclus)** | F-007 Auth & profil · F-008 Ingestion · F-009 Multilingue · F-016 Avatars · F-017 Design system · F-011 Migration legacy · F-023 Activation de modules |
+
+**Décision compagnon (Roi 2026-08-08) — plafonds du tier gratuit.** Une frontière par
+_feature_ seule ne rend pas le gratuit viable : le gratuit contient du **scan-coûteux**
+(Dashboard/Perf/Objectifs tournent sur ProKingdoms), ce qui réexpose l'objection 2 du §8
+(coût par royaume). Le gratuit est donc **plafonné sur les deux dimensions coûteuses** :
+- **Fréquence de scans** — gratuit = quota limité par campagne ; premium = scans illimités
+  (donnée fraîche en continu pendant le KvK, la valeur cœur du Roi §5bis).
+- **Rétention d'historique** — gratuit = saison en cours ; premium = historique
+  multi-saisons complet (cohérent avec F-015 premium).
+
+Lecture : **le gratuit donne _la vue_ (une démo vivante), le premium donne _la fréquence +
+la profondeur + l'automation_.** Points de vigilance notés au fil de l'eau : (a) F-005
+Banque premium = bonus de bundle, pas déclencheur de conversion (le Roi ne la cite pas dans
+sa valeur cœur, §5bis) ; (b) Discord premium (F-010/F-012/F-013) conditionné au **fallback
+in-app** (chantier L, §3 item 8) — sans lui, un royaume sans Discord n'est pas servable.
+
+**Prochaine étape** : prix & packaging (fourchette 20-40 $/royaume §6 ; modèle B clé-en-main
+pour amorcer → D hybride).
+
 ## Problèmes connus actuels
 * **F-008 (Data Ingestion)**: L'ingestion repose encore fortement sur des traitements manuels de fichiers XLSX avant de nourrir le frontend (ou un script local `digest-data.js`). Le processus mériterait d'être full in-app ou automatisé via Cloud Functions.
 * **F-001 à F-005**: Fortement couplé à la structure exacte des fichiers Excel. Une modification de colonne dans le jeu casse le parsing.

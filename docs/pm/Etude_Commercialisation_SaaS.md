@@ -406,6 +406,46 @@ sait pas encore qui paie ni combien un Roi accepte de sortir** (voir §8).
 
 ---
 
+## 8bis. Décision — frontière, packaging & prix (Roi, 2026-08-08)
+
+La décision pivot du §8 (« où passe la ligne gratuit/payant ») est **prise**. Le Roi a
+tranché les 3 tiers sur les ~27 features (**0 restée à débattre**) — détail dans
+`FeatureInventory.md` §« Frontière commerciale ». Puis packaging et prix ont été arbitrés.
+
+**Frontière (principe : value-ladder, pas coût).** Gratuit = War Tracker + multi-comptes,
+Dashboard, Performance, Objectifs KvK. Premium = Course, analytics croisés (deadweight,
+couverture méta), Timeline, Historique multi-saisons, Banque, Trophées, Discord (rôles/bot/
+pings). Socle = auth, ingestion, i18n, avatars, design, migration, activation de modules.
+Le Roi croise volontairement le principe « coût » (§5bis) : des scan-dépendants sont
+_gratuits_ (hook), des données internes gratuites sont _premium_ (vendues sur leur valeur
+analytique de couche 3, §5).
+
+**Plafonds du gratuit (décision compagnon).** Parce que le gratuit contient du scan-coûteux,
+il est **plafonné sur les deux dimensions coûteuses** (objection 2 ci-dessous) : **fréquence
+de scans** (quota/campagne vs illimité) **et rétention d'historique** (saison en cours vs
+multi-saisons). → Le gratuit donne _la vue_ (démo vivante), le premium _la fréquence + la
+profondeur + l'automation_.
+
+**Packaging.** Deux tiers commerciaux — **Découverte** (gratuit, plafonné) et **Royaume**
+(premium) — plus une **couche service (modèle B)** par-dessus : setup + « je scanne pour toi »,
+facturés à part, comme dispositif d'**amorçage** (vendable sans multi-tenant, et seul vrai
+test de disposition à payer — cf. objection 1). Trajectoire : **B → D hybride**.
+
+**Prix (hypothèse à tester).** **25-30 $/mois par royaume** ; annuel **−25 %**. Positionné
+au-dessus de ROK Steward (9,99 $) et sous le haut de gamme (70 $), justifié par l'app temps
+réel + Discord natif + banque + historique (§6). **Unité = le royaume** (pas la coalition) :
+le Roi paie pour son royaume, la Course affiche le contexte coalition sans changer l'acheteur.
+Le concierge (modèle B) se facture en plus, au temps.
+
+**Ce qui reste à faire (dérive de cette décision) :**
+- **Tester la disposition à payer** — le prix est une _hypothèse_ ; aucun royaume n'a encore
+  payé (pilote 3341 gratuit). Test le moins cher : proposer au pilote, après quelques semaines
+  d'usage, de payer 25-30 $ (cf. §8 objection 1). **Chemin critique du go-to-market.**
+- **Fixer le quota de scans exact du gratuit** (ex. _N_ scans/campagne) — détail de packaging,
+  à caler à l'implémentation des plafonds.
+- **Vérifier les CGU ProKingdoms** sur la fourniture de scans à l'échelle (A-029, §5bis).
+- Prérequis produit du premium Discord : **fallback in-app** (chantier L, §3 item 8).
+
 ## 8. Recommandation & prochaines étapes
 
 La stratégie retenue par le Roi (décision 1) est **freemium + pilote gratuit sur
