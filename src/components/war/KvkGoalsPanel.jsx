@@ -283,7 +283,10 @@ const KvkGoalsPanel = () => {
     // in-game ou sur Discord. Format NEUTRE en langue (symboles) — le royaume est multilingue.
     const copyList = async () => {
         const title = viewMode === 'top' ? `Top ${topN} — ${BRANDING.kingdomName}` : `KvK — ${BRANDING.kingdomName}`;
-        const lines = displayRows.map((r, i) => `${i + 1}. ${r.name} (${fmt(r.powerM)}M) · KP ${fmt(r.goalKp)}M · ☠ ${fmt(r.minDead)}M`);
+        // Morts exprimées en TROUPES (≈ k T5) plutôt qu'en points DKP : plus parlant pour
+        // un joueur (« combien de morts produire ») que le montant de points. Format neutre
+        // en langue conservé (symboles + T5). Voir demande du Roi 2026-08-09.
+        const lines = displayRows.map((r, i) => `${i + 1}. ${r.name} (${fmt(r.powerM)}M) · KP ${fmt(r.goalKp)}M · ☠ ≈ ${fmt(r.minDeadTroops / 1000, 0)}k T5`);
         try {
             await navigator.clipboard.writeText([title, ...lines].join('\n'));
             setCopied(true);
@@ -439,7 +442,8 @@ const KvkGoalsPanel = () => {
                                     </div>
                                     <div className="flex flex-col bg-[var(--border-flat)] p-1.5 rounded">
                                         <span className="text-slate-500 text-[10px]">{t('goals.min_dead')}</span>
-                                        <span className="font-mono text-red-400">{fmt(r.minDead)}M</span>
+                                        <span className="font-mono text-red-400">≈ {fmt(r.minDeadTroops / 1000, 0)}k T5</span>
+                                        <span className="font-mono text-slate-600 text-[9px]">{fmt(r.minDead)}M</span>
                                     </div>
                                 </div>
                                 {r.goalPct != null && (
@@ -478,8 +482,8 @@ const KvkGoalsPanel = () => {
                                         <TableCell className="text-right font-mono text-xs text-slate-300">{fmt(r.minKp)} M</TableCell>
                                         <TableCell className="text-right font-mono text-sm font-bold text-white">{fmt(r.goalKp)} M</TableCell>
                                         <TableCell className="text-right font-mono text-xs text-red-400">
-                                            {fmt(r.minDead)} M
-                                            <span className="block text-[10px] text-slate-600">≈ {fmt(r.minDeadTroops / 1000, 0)} k T5</span>
+                                            ≈ {fmt(r.minDeadTroops / 1000, 0)} k T5
+                                            <span className="block text-[10px] text-slate-600">{fmt(r.minDead)} M</span>
                                         </TableCell>
                                         <TableCell className="text-right font-mono text-xs text-slate-300">
                                             {r.goalPct == null ? '—' : `${fmt(r.goalPct * 100, 0)} %`}
