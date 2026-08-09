@@ -44,19 +44,21 @@
 | **BR-017** | **Per-account war availability identity (decided, E-007/F-026)** | `war_availabilities` document IDs extend from `${kvkId}_${uid}` to `${kvkId}_${uid}_${governorId}`, allowing one declaration per claimed account per campaign. Guest IDs (`${kvkId}_guest_${governorId}`) are unchanged. Pre-existing documents (legacy 2-segment ID) are read as the declaration of the user's `isPrimary` account (by construction the sole account that existed before this feature, migrated as `type: 'war'` + `isPrimary: true`) — no batch rewrite (decided by the King: migration stays lazy-read, no backfill script, given near-zero existing declarations on the KD 3341 pilot). New declarations for any account use the 3-segment scheme going forward. Decided by the King 2026-07-27; see `Spec_Multicomptes_MainFiller.md` §7.2. |
 | **BR-018** | **Filler goal scale — dedicated points, never mixed (decided, E-007/F-027)** | The filler goal formula uses a points scale where 1 T4 = 4 points and 1 T5 = 10 points: declared power (points) = 4×T4 + 10×T5; death-loss target (points) = a per-campaign configurable ratio (default 50 %, stored in `kvk_config/current`) × declared power. This points scale is distinct from both real in-game power and the `war`-account goal system's death-points scale (`DEAD_POINTS_PER_T5 = 200` in `kvkGoals.js`) — the three must never be displayed or compared without explicit labelling, mirroring BR-010's domain-separation principle. The `war`-account goal formula (F-014) is unchanged; which formula applies is selected by the account's `type` (BR-016). Decided by the King 2026-07-27; see `Spec_Multicomptes_MainFiller.md` §8. |
 | **BR-019** | **Goal status reveal — King-controlled, hidden during battles (decided, F-014)** | The absolute goal **status labels** (Dead Weight / Need Improvement / Good / Excellent — F-014, `rateFromGoalPct`) are **hidden by default while a campaign is in progress** and shown only once the King flips a dedicated switch **`kvk_config/current.revealGoalStatus`** (boolean, default absent/false). This switch is **independent of campaign closure/archival** (BR-013): the King reveals statuses when the *battles* are over, not when he archives (Option B). Rationale: a "Dead Weight" pill mid-campaign is misread by players, since a KP-goal attainment rate is only meaningful once the battles have been fought. Scope of the gate: the War Tracker **Goals tab** (`KvkGoalsPanel`, all row sets — declared war accounts, fillers F-027, and Top-du-royaume F-029) **and** the live-campaign status in the Discord commands `/mykvkgoals` and `/mystats`. **Archived campaigns (`kvk_history`) always show final ratings** — the gate only applies to the live current campaign. The **numeric goals and attainment %** stay visible at all times; only the judgmental status label is gated. King-only write (existing `kvk_config` rule, `allow write: if isKing()`). Decided by the King 2026-08-09. |
+| **BR-020** | **Data ingestion is King-only (decided)** | The xlsx data sync / ingestion (`DataRefreshControl`, in `/admin`) is restricted to the **King** — **not** Officer. Deliberate (confirmed by the King 2026-08-09), correcting the earlier R-003 wording. Rationale: ingestion overwrites the kingdom's source stats; the King keeps that gate. **Forward direction (not built)**: introduce a dedicated **operator/admin role decoupled from the in-game King** for technical ops (ingestion, config), so that whoever runs the instance need not be the King — especially in the SaaS multi-tenant, where the *founder/provider* operates instances. Same spirit as the **"provider/super-admin role above the King"** already noted in BR-015, and echoes the King's decision to make role→access mapping configurable (`Etude_Commercialisation_SaaS.md` §0, decision 4). See A-033 and `Etude_Industrialisation_Onboarding.md`. |
 
 ## 3. Pages / Screens (P)
 
 | ID | Name | Route | Components |
 | :--- | :--- | :--- | :--- |
 | **P-001** | **Dashboard** | `/` | `DashboardPage.jsx`, `PlayerDetailPanel.jsx` |
-| **P-002** | **War Tracker** | `/war-tracker` | `WarTrackerPage.jsx`, `AvailabilityForm`, `WarDashboard`, `KvKConfigForm` |
-| **P-003** | **KvK Performance** | `/kvk` | `KvKPerformancePage.jsx`, `KingdomProgression.jsx` |
+| **P-002** | **War Tracker** | `/war-tracker` | `WarTrackerPage.jsx` — 3 onglets URL-persistants (`?tab=` Déclaration / Objectifs / War Dashboard) ; `AvailabilityForm`, `KvkGoalsPanel`, `WarDashboard`. *(Refonte M3 : `KvKConfigForm` déplacé vers `/admin`, P-009.)* |
+| **P-003** | **KvK Hub** | `/kvk` | `KvKPerformancePage.jsx` — hub à 3 onglets URL-persistants : **Performance** (public) / **Progressions** (Discord-vérifié ou leadership) / **Course** (leadership, `RaceView`) ; `KingdomProgression.jsx`. |
 | **P-004** | **Trophies** | `/trophies` | `KingdomTrophiesPage.jsx` |
 | **P-005** | **Deadweight** | `/deadweight` | `DeadweightPage.jsx` |
-| **P-008** | **KvK Race** | `/kvk-race` | `KvKRacePage.jsx`, `useRaceData.js` — leadership-only (§9.4), nav sidebar masquée sinon ; duel hero, classement des royaumes (pins 2997/1523), évolution multi-scans |
+| **P-008** | **KvK Race** *(legacy)* | `/kvk-race` | `KvKRacePage.jsx` → `RaceView` — **route de compatibilité** (leadership, `AccessGate`) ; la Course vit désormais dans le Hub KvK (P-003, onglet Course), **plus aucune entrée de nav** vers `/kvk-race`. |
 | **P-006** | **Bank** | `/bank` | `BankPage.jsx` |
 | **P-007** | **User Profile** | `/profile` | `ProfilePage.jsx` |
+| **P-009** | **Administration** | `/admin` | `AdminPage.jsx` — **King only** (`AccessGate`). Rail interne : `DataRefreshControl` (ingestion, King), `KvKConfigForm` + `CampaignArchiveControl` (config/clôture), `RaceConfigForm` (config course), `MaintenanceTools` (fusion, danger zone). Refonte M3. |
 
 ## 4. Roles (R)
 
@@ -67,8 +69,8 @@
 | :--- | :--- | :--- |
 | **R-001** | **Guest** | Can read public metrics (if explicitly allowed, mostly zeroed right now due to rules). |
 | **R-002** | **Warrior** | Can read dashboards, access War Tracker to submit availability. |
-| **R-003** | **Officer** | Can trigger Data Syncs, view War Dashboard results. |
-| **R-004** | **King** | Can configure Active KvK campaigns, delete campaigns. |
+| **R-003** | **Officer** | View the War Dashboard and leadership analytics (Deadweight, KvK Race/Course, Kingdom timeline); deposit race scans. **Does NOT trigger data ingestion** — the xlsx sync is King-only (BR-020). *(Amended 2026-08-09: the earlier "can trigger Data Syncs" was corrected — deliberate King-only per the King.)* |
+| **R-004** | **King** | Everything an Officer can, plus the Administration page (`/admin`): **data sync / ingestion (King-only, BR-020)**, KvK campaign config, closure/archival, race config, maintenance (merge, danger zone). Top of the `roles` hierarchy — no operator role sits above the King today (a decoupled admin/operator role is a future direction, see BR-020 / BR-015). |
 
 ## 5. Errors & Fallbacks (E)
 

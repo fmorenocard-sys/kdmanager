@@ -58,12 +58,12 @@ La page entière est King-only ; chaque section l'est aussi (défense en profond
 | Config de course (KvK Race) | King | `RaceConfigForm` |
 | Maintenance : fusion de campagnes, danger zone (suppression) | King | `MaintenanceTools` |
 
-### Écarts SSOT ↔ code détectés (à réconcilier)
+### Écarts SSOT ↔ code — réconciliés (2026-08-09)
 
-La refonte navigation (M3) a déplacé des surfaces ; le SSOT §3 (Pages) n'a pas suivi :
-1. **Ingestion / synchro de données** — le SSOT R-003 dit « Officer can trigger Data Syncs », mais le code (`DataRefreshControl`) est **King-only**. À trancher : régression à corriger, ou décision à entériner dans R-003 ?
-2. **`KvKConfigForm`** — listé sous War Tracker (SSOT §3 P-002) ; il vit désormais dans `/admin`.
-3. **KvK Race** — SSOT §3 P-008 le décrit comme la page `/kvk-race` ; c'est maintenant un **onglet du Hub KvK**, et `/kvk-race` n'est qu'une route de compat sans entrée de nav.
+La refonte navigation (M3) avait déplacé des surfaces sans que le SSOT §3 suive. Réglé :
+1. **Ingestion King-only** — **intentionnel** (confirmé par le Roi) : c'est le **SSOT** qui est corrigé (R-003/R-004 + **BR-020**), pas le code. **Direction future** : un **rôle admin/opérateur découplé du Roi** pour les ops techniques (ingestion, config), surtout en multi-tenant où c'est le *fondateur* qui opère les instances — même esprit que le « provider/super-admin au-dessus du Roi » de **BR-015** (voir BR-020, A-033).
+2. **`KvKConfigForm`** — SSOT §3 corrigé : déplacé sous **P-009 Administration** (`/admin`).
+3. **KvK Race** — SSOT §3 corrigé : la Course est un onglet du **Hub KvK** (P-003) ; `/kvk-race` = **P-008 legacy** sans entrée de nav.
 
 ## Accès par collection Firestore (application réelle — `firestore.rules`)
 
