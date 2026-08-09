@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campaign merged successfully!",
     "alert_merge_fail": "Failed to merge campaign: {{msg}}",
     "cfg_filler_ratio": "Коефіцієнт втрат філлера",
-    "cfg_filler_ratio_hint": "0,5 = філлери мають втратити 50 % заявленої сили (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0,5 = філлери мають втратити 50 % заявленої сили (4×T4 + 10×T5).",
+    "cfg_reveal_status": "Показувати мітки статусу цілей (битви завершено)",
+    "cfg_reveal_status_hint": "Поки вимкнено, мітки Deadweight/Excellent залишаються прихованими, щоб уникнути хибних тлумачень під час кампанії."
   },
   "kvk_race": {
     "page_subtitle": "Гонка за зірку — дуель таборів, королівства та динаміка",
@@ -529,6 +531,7 @@
     "filler_section": "Цілі філлерів",
     "declared_power": "Заявлена сила",
     "dead_target": "Ціль втрат",
-    "achieved": "Досягнуто"
+    "achieved": "Досягнуто",
+    "status_hidden_notice": "Мітки статусу (Deadweight, Excellent…) з'являться після завершення битв, коли Король їх відкриє."
   }
 }

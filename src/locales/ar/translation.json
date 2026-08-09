@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campaign merged successfully!",
     "alert_merge_fail": "Failed to merge campaign: {{msg}}",
     "cfg_filler_ratio": "نسبة خسارة الحساب الثانوي",
-    "cfg_filler_ratio_hint": "0.5 = يجب أن تخسر الحسابات الثانوية 50٪ من قوتها المعلنة (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0.5 = يجب أن تخسر الحسابات الثانوية 50٪ من قوتها المعلنة (4×T4 + 10×T5).",
+    "cfg_reveal_status": "إظهار تسميات حالة الأهداف (انتهت المعارك)",
+    "cfg_reveal_status_hint": "أثناء الإيقاف، تبقى تسميات Deadweight/Excellent مخفية لتجنّب سوء الفهم أثناء الحملة."
   },
   "kvk_race": {
     "page_subtitle": "سباق النجمة — مبارزة المعسكرات والممالك والتطور",
@@ -529,6 +531,7 @@
     "filler_section": "أهداف الحسابات الثانوية",
     "declared_power": "القوة المعلنة",
     "dead_target": "هدف الخسارة",
-    "achieved": "المُحقَّق"
+    "achieved": "المُحقَّق",
+    "status_hidden_notice": "ستظهر تسميات الحالة (Deadweight، Excellent…) بعد انتهاء المعارك، عندما يكشفها الملك."
   }
 }

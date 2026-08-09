@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campaign merged successfully!",
     "alert_merge_fail": "Failed to merge campaign: {{msg}}",
     "cfg_filler_ratio": "Filler kayıp oranı",
-    "cfg_filler_ratio_hint": "0,5 = filler'lar bildirilen güçlerinin %50'sini kaybetmeli (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0,5 = filler'lar bildirilen güçlerinin %50'sini kaybetmeli (4×T4 + 10×T5).",
+    "cfg_reveal_status": "Hedef durum etiketlerini göster (savaşlar bitti)",
+    "cfg_reveal_status_hint": "Kapalıyken, kampanya sırasında yanlış anlaşılmaları önlemek için Deadweight/Excellent etiketleri gizli kalır."
   },
   "kvk_race": {
     "page_subtitle": "Yıldız yarışı — kamp düellosu, krallıklar ve gelişim",
@@ -529,6 +531,7 @@
     "filler_section": "Filler hedefleri",
     "declared_power": "Bildirilen güç",
     "dead_target": "Kayıp hedefi",
-    "achieved": "Gerçekleşen"
+    "achieved": "Gerçekleşen",
+    "status_hidden_notice": "Durum etiketleri (Deadweight, Excellent…) savaşlar bittiğinde, Kral onları gösterdiğinde görünür."
   }
 }

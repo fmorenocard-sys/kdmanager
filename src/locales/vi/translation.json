@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campaign merged successfully!",
     "alert_merge_fail": "Failed to merge campaign: {{msg}}",
     "cfg_filler_ratio": "Tỷ lệ tổn thất filler",
-    "cfg_filler_ratio_hint": "0,5 = filler phải mất 50% sức mạnh khai báo (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0,5 = filler phải mất 50% sức mạnh khai báo (4×T4 + 10×T5).",
+    "cfg_reveal_status": "Hiện nhãn trạng thái mục tiêu (trận chiến đã kết thúc)",
+    "cfg_reveal_status_hint": "Khi tắt, các nhãn Deadweight/Excellent vẫn được ẩn để tránh hiểu nhầm trong chiến dịch."
   },
   "kvk_race": {
     "page_subtitle": "Đua ngôi sao — đấu phe, vương quốc và diễn biến",
@@ -529,6 +531,7 @@
     "filler_section": "Mục tiêu filler",
     "declared_power": "Sức mạnh khai báo",
     "dead_target": "Mục tiêu tổn thất",
-    "achieved": "Đã đạt"
+    "achieved": "Đã đạt",
+    "status_hidden_notice": "Nhãn trạng thái (Deadweight, Excellent…) sẽ hiển thị khi các trận chiến kết thúc, khi Vua tiết lộ chúng."
   }
 }

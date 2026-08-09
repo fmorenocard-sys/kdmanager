@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campaign merged successfully!",
     "alert_merge_fail": "Failed to merge campaign: {{msg}}",
     "cfg_filler_ratio": "Filler-Verlustquote",
-    "cfg_filler_ratio_hint": "0,5 = Filler müssen 50 % ihrer deklarierten Macht verlieren (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0,5 = Filler müssen 50 % ihrer deklarierten Macht verlieren (4×T4 + 10×T5).",
+    "cfg_reveal_status": "Ziel-Status anzeigen (Kämpfe beendet)",
+    "cfg_reveal_status_hint": "Solange deaktiviert, bleiben die Labels Deadweight/Excellent ausgeblendet, um Fehldeutungen während der Kampagne zu vermeiden."
   },
   "kvk_race": {
     "page_subtitle": "Sternrennen — Lagerduell, Königreiche und Verlauf",
@@ -529,6 +531,7 @@
     "filler_section": "Filler-Ziele",
     "declared_power": "Deklarierte Macht",
     "dead_target": "Verlustziel",
-    "achieved": "Erreicht"
+    "achieved": "Erreicht",
+    "status_hidden_notice": "Status-Labels (Deadweight, Excellent…) erscheinen, sobald die Kämpfe vorbei sind und der König sie freigibt."
   }
 }

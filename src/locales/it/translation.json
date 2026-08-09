@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campagna unita con successo!",
     "alert_merge_fail": "Impossibile unire la campagna: {{msg}}",
     "cfg_filler_ratio": "Rapporto di perdita filler",
-    "cfg_filler_ratio_hint": "0,5 = i filler devono perdere il 50% della potenza dichiarata (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0,5 = i filler devono perdere il 50% della potenza dichiarata (4×T4 + 10×T5).",
+    "cfg_reveal_status": "Mostra le etichette di stato degli obiettivi (battaglie concluse)",
+    "cfg_reveal_status_hint": "Finché è disattivato, le etichette Deadweight/Excellent restano nascoste per evitare interpretazioni errate durante la campagna."
   },
   "kvk_race": {
     "page_subtitle": "Corsa alla stella — duello dei campi, regni ed evoluzione",
@@ -529,6 +531,7 @@
     "filler_section": "Obiettivi filler",
     "declared_power": "Potenza dichiarata",
     "dead_target": "Obiettivo di perdita",
-    "achieved": "Raggiunto"
+    "achieved": "Raggiunto",
+    "status_hidden_notice": "Le etichette di stato (Deadweight, Excellent…) appariranno al termine delle battaglie, quando il Re le rivelerà."
   }
 }

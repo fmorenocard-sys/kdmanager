@@ -41,7 +41,11 @@ const RATE_STYLES = {
 
 const rateKey = (rate) => `goals.rate_${rate.toLowerCase().replace(/\s+/g, '_')}`;
 
-const RateBadge = ({ rate, t }) => {
+const RateBadge = ({ rate, revealed, t }) => {
+    // Statuts masqués tant que le Roi ne les a pas révélés (fin des combats, Option B) :
+    // une pastille « Deadweight » en pleine campagne est mal interprétée par les joueurs
+    // (l'objectif n'est atteignable qu'une fois les batailles jouées). Voir BR-019.
+    if (!revealed) return <span className="text-slate-600" title={t('goals.status_hidden_notice')}>—</span>;
     if (!rate) return <span className="text-slate-600">—</span>;
     return (
         <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border whitespace-nowrap ${RATE_STYLES[rate]}`}>
@@ -259,6 +263,11 @@ const KvkGoalsPanel = () => {
 
     const displayRows = viewMode === 'top' ? topRows : rows;
 
+    // Option B (BR-019) : le Roi révèle les statuts d'objectifs une fois les combats
+    // terminés, via un interrupteur dédié (`kvk_config.revealGoalStatus`), indépendant
+    // de la clôture/archivage. Défaut absent → masqués (safe pendant la campagne).
+    const revealStatus = config?.revealGoalStatus === true;
+
     // Nommer les joueurs non rattachés : un simple compteur n'est pas actionnable,
     // le Roi doit savoir quel ID vérifier. On distingue aussi les deux causes —
     // l'ID ne correspond à personne (saisie erronée, ou joueur hors Top 300), ou il
@@ -369,6 +378,15 @@ const KvkGoalsPanel = () => {
                 </Card>
             )}
 
+            {/* Option B (BR-019) : statuts non révélés → on l'explique, pour ne pas laisser
+                croire à un bug ou à une absence de données. */}
+            {!revealStatus && (displayRows.length > 0 || fillerRows.length > 0) && (
+                <div className="flex items-start gap-2.5 text-xs text-slate-300 bg-slate-500/10 border border-slate-500/30 rounded-lg p-3">
+                    <Target size={16} className="shrink-0 mt-0.5 text-slate-400" />
+                    <p>{t('goals.status_hidden_notice')}</p>
+                </div>
+            )}
+
             {displayRows.length > 0 && (
                 <Card className="p-0 overflow-hidden">
                     {/* Cartes en mobile — pas de scroll horizontal (UXA11Y-001) */}
@@ -380,7 +398,7 @@ const KvkGoalsPanel = () => {
                                         <p className="font-bold text-white text-sm truncate">{r.name}</p>
                                         <p className="text-[11px] text-slate-500 font-mono">{r.governorId} · {fmt(r.powerM)} M</p>
                                     </div>
-                                    <RateBadge rate={r.rate} t={t} />
+                                    <RateBadge rate={r.rate} revealed={revealStatus} t={t} />
                                 </div>
                                 <div className="grid grid-cols-3 gap-2 text-xs">
                                     <div className="flex flex-col bg-[var(--border-flat)] p-1.5 rounded">
@@ -438,7 +456,7 @@ const KvkGoalsPanel = () => {
                                         <TableCell className="text-right font-mono text-xs text-slate-300">
                                             {r.goalPct == null ? '—' : `${fmt(r.goalPct * 100, 0)} %`}
                                         </TableCell>
-                                        <TableCell><RateBadge rate={r.rate} t={t} /></TableCell>
+                                        <TableCell><RateBadge rate={r.rate} revealed={revealStatus} t={t} /></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -462,7 +480,7 @@ const KvkGoalsPanel = () => {
                                         <p className="font-bold text-white text-sm truncate">{r.name}</p>
                                         <p className="text-[11px] text-slate-500 font-mono">{r.governorId}</p>
                                     </div>
-                                    <RateBadge rate={r.rate} t={t} />
+                                    <RateBadge rate={r.rate} revealed={revealStatus} t={t} />
                                 </div>
                                 <div className="grid grid-cols-3 gap-2 text-xs">
                                     <div className="flex flex-col bg-[var(--border-flat)] p-1.5 rounded">
@@ -508,7 +526,7 @@ const KvkGoalsPanel = () => {
                                         <TableCell className="text-right font-mono text-sm font-bold text-white">{Math.round(r.target).toLocaleString()}</TableCell>
                                         <TableCell className="text-right font-mono text-xs text-red-400">{Math.round(r.achieved).toLocaleString()}</TableCell>
                                         <TableCell className="text-right font-mono text-xs text-slate-300">{r.attainment == null ? '—' : `${fmt(r.attainment * 100, 0)} %`}</TableCell>
-                                        <TableCell><RateBadge rate={r.rate} t={t} /></TableCell>
+                                        <TableCell><RateBadge rate={r.rate} revealed={revealStatus} t={t} /></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

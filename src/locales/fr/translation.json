@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campagnes fusionnées.",
     "alert_merge_fail": "Échec de la fusion : {{msg}}",
     "cfg_filler_ratio": "Ratio de perte filler",
-    "cfg_filler_ratio_hint": "0,5 = les fillers doivent perdre 50 % de leur pouvoir déclaré (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0,5 = les fillers doivent perdre 50 % de leur pouvoir déclaré (4×T4 + 10×T5).",
+    "cfg_reveal_status": "Afficher les statuts d'objectifs (combats terminés)",
+    "cfg_reveal_status_hint": "Tant que c'est désactivé, les pastilles Deadweight/Excellent restent masquées pour éviter les mauvaises interprétations pendant la campagne."
   },
   "kvk_race": {
     "page_subtitle": "Course à l'étoile — duel de camps, royaumes et évolution",
@@ -529,6 +531,7 @@
     "filler_section": "Objectifs filler",
     "declared_power": "Pouvoir déclaré",
     "dead_target": "Objectif de perte",
-    "achieved": "Réalisé"
+    "achieved": "Réalisé",
+    "status_hidden_notice": "Les statuts (Deadweight, Excellent…) s'afficheront une fois les combats terminés, quand le Roi les révélera."
   }
 }

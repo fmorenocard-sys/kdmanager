@@ -23,7 +23,8 @@ const KvKConfigForm = () => {
         name: '',
         startDate: '',
         endDate: '',
-        fillerDeathRatio: 0.5 // F-027 : ratio d'objectif de perte des fillers (0.5 = 50 %)
+        fillerDeathRatio: 0.5, // F-027 : ratio d'objectif de perte des fillers (0.5 = 50 %)
+        revealGoalStatus: false // BR-019 : le Roi révèle les statuts d'objectifs (Deadweight/Excellent…) une fois les combats terminés
     });
     const [historyOpen, setHistoryOpen] = useState(false);
     const [campaignDeclarationCounts, setCampaignDeclarationCounts] = useState({});
@@ -48,7 +49,8 @@ const KvKConfigForm = () => {
                         name: data.name || '',
                         startDate: startDateStr,
                         endDate: endDateStr,
-                        fillerDeathRatio: data.fillerDeathRatio ?? 0.5
+                        fillerDeathRatio: data.fillerDeathRatio ?? 0.5,
+                        revealGoalStatus: data.revealGoalStatus === true // BR-019
                     };
                     setFormData(fd);
                     setSavedConfig({
@@ -90,7 +92,8 @@ const KvKConfigForm = () => {
     }, [authorized]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, type, value, checked } = e.target;
+        setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
     };
 
     const handleSave = async (e) => {
@@ -107,6 +110,7 @@ const KvKConfigForm = () => {
                 startDate: formData.startDate ? Timestamp.fromDate(new Date(formData.startDate)) : null,
                 endDate: formData.endDate ? Timestamp.fromDate(new Date(formData.endDate)) : null,
                 fillerDeathRatio: Number(formData.fillerDeathRatio) || 0.5, // F-027
+                revealGoalStatus: !!formData.revealGoalStatus, // BR-019
                 updatedAt: Timestamp.now(),
                 updatedBy: role
             });
@@ -130,7 +134,8 @@ const KvKConfigForm = () => {
     const handleStartNew = (e) => {
         e.preventDefault();
         const newId = `kvk_${Date.now().toString(36)}`;
-        setFormData({ id: newId, name: '', startDate: '', endDate: '' });
+        // Nouvelle campagne : statuts masqués par défaut (BR-019) — on ne révèle qu'à la fin des combats.
+        setFormData({ id: newId, name: '', startDate: '', endDate: '', fillerDeathRatio: 0.5, revealGoalStatus: false });
         setMessage(t('admin.cfg_new_ready'));
     };
 
@@ -241,6 +246,22 @@ const KvKConfigForm = () => {
                             <p className="text-xs text-slate-500 mt-1">{t('admin.cfg_filler_ratio_hint')}</p>
                         </div>
                     </div>
+
+                    {/* BR-019 (Option B) : le Roi révèle les statuts d'objectifs (Deadweight/Excellent…)
+                        une fois les combats terminés. Masqués par défaut pendant la campagne. */}
+                    <label className="flex items-start gap-3 p-3 rounded-lg border border-[var(--border-flat)] bg-[var(--surface-solid)] cursor-pointer min-h-[44px]">
+                        <input
+                            type="checkbox"
+                            name="revealGoalStatus"
+                            checked={!!formData.revealGoalStatus}
+                            onChange={handleChange}
+                            className="mt-0.5 h-5 w-5 shrink-0 rounded border-slate-500 bg-transparent text-indigo-500 focus:ring-indigo-500"
+                        />
+                        <span className="min-w-0">
+                            <span className="block text-sm font-medium text-slate-200">{t('admin.cfg_reveal_status')}</span>
+                            <span className="block text-xs text-slate-500 mt-0.5">{t('admin.cfg_reveal_status_hint')}</span>
+                        </span>
+                    </label>
 
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-6 gap-4">
                         <span className={`text-sm w-full text-center md:text-left ${isError ? 'text-red-400' : 'text-green-400'}`}>

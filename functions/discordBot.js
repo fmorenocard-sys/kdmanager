@@ -185,6 +185,24 @@ async function loadKvKData(governorId, db) {
 }
 
 /**
+ * BR-019 — le Roi révèle les statuts d'objectifs (Dead Weight/Excellent…) une fois les
+ * combats terminés, via `kvk_config/current.revealGoalStatus`. Tant que c'est faux/absent,
+ * on masque le statut du KvK EN COURS (jamais des campagnes archivées de `kvk_history`) :
+ * une note « Dead Weight » en pleine campagne est mal interprétée. En cas d'erreur de
+ * lecture on renvoie false (masqué = choix sûr).
+ * @param {object} db Firestore
+ * @return {Promise<boolean>} true si le Roi a révélé les statuts
+ */
+async function loadRevealGoalStatus(db) {
+    try {
+        const snap = await db.collection("kvk_config").doc("current").get();
+        return snap.exists && snap.data()?.revealGoalStatus === true;
+    } catch (e) {
+        return false;
+    }
+}
+
+/**
  * US-014 — Archived campaigns (kvk_history). Small module-level cache: the
  * autocomplete fires on every keystroke and Discord expects a <3s answer.
  */
@@ -333,9 +351,10 @@ async function buildMyKvKGoalsEmbed(discordId, db) {
     if (!profile) return {embeds: [buildAccessDeniedEmbed()], flags: 64};
 
     const {governorId} = profile;
-    const [{player, updatedAt: playerUpdatedAt}, {kvk, updatedAt: kvkUpdatedAt}] = await Promise.all([
+    const [{player, updatedAt: playerUpdatedAt}, {kvk, updatedAt: kvkUpdatedAt}, reveal] = await Promise.all([
         loadPlayerData(governorId, db),
         loadKvKData(governorId, db),
+        loadRevealGoalStatus(db), // BR-019
     ]);
 
     if (!player && !kvk) return {embeds: [buildPlayerNotFoundEmbed(governorId)], flags: 64};
@@ -377,7 +396,7 @@ async function buildMyKvKGoalsEmbed(discordId, db) {
             value: [
                 `**KP gained**  •  \`${fmt(kpGained)}\``,
                 `**Goal reached**  •  \`${(goalPct * 100).toFixed(0)}%\``,
-                rate ? `**Status**  •  \`${rate}\`` : null,
+                (rate && reveal) ? `**Status**  •  \`${rate}\`` : null, // BR-019 : statut masqué pendant les combats
             ].filter(Boolean).join("\n"),
             inline: false,
         });
@@ -395,7 +414,7 @@ async function buildMyKvKGoalsEmbed(discordId, db) {
     } else if (goals.outsideValidatedRange) {
         notes.push("⚠️ Your power is outside last season's observed range — figures are extrapolated.");
     }
-    if (uncertain) {
+    if (uncertain && reveal) { // BR-019 : ne pas divulguer d'indice de statut tant qu'il est masqué
         notes.push("⚠️ You are in the band where Good and Excellent overlapped last season.");
     }
     notes.push(`ℹ️ Deads are counted in points (~${DEAD_POINTS_PER_T5} per T5 dead). Losing T4s costs more troops for the same points.`);
@@ -403,7 +422,7 @@ async function buildMyKvKGoalsEmbed(discordId, db) {
 
     return {
         embeds: [{
-            color: RATE_COLORS[rate] || 0x94a3b8,
+            color: reveal ? (RATE_COLORS[rate] || 0x94a3b8) : 0x6366f1, // BR-019 : couleur neutre tant que masqué
             title: "🎯 Your KvK Goals",
             description: `Governor \`${governorId}\`  •  reference power \`${goals.powerM.toFixed(1)}M\``,
             fields,
@@ -425,17 +444,20 @@ async function buildMyStatsEmbed(discordId, db) {
 
     const { governorId } = profile;
 
-    const [{ player, updatedAt: playerUpdatedAt }, { kvk, updatedAt: kvkUpdatedAt }, avatarUrl] = await Promise.all([
+    const [{ player, updatedAt: playerUpdatedAt }, { kvk, updatedAt: kvkUpdatedAt }, avatarUrl, reveal] = await Promise.all([
         loadPlayerData(governorId, db),
         loadKvKData(governorId, db),
         loadAvatarUrl(governorId, db),
+        loadRevealGoalStatus(db), // BR-019
     ]);
 
     if (!player) {
         return { embeds: [buildPlayerNotFoundEmbed(governorId)], flags: 64 };
     }
 
-    const { color } = rateStyle(kvk?.rate);
+    // BR-019 : le rating de la campagne EN COURS (static_data/kvk) est masqué tant que le
+    // Roi ne l'a pas révélé — d'où la couleur neutre et l'absence de ligne Rating ci-dessous.
+    const { color } = rateStyle(reveal ? kvk?.rate : null);
 
     const fields = [];
 
@@ -487,7 +509,7 @@ async function buildMyStatsEmbed(discordId, db) {
     // Section 4: Last KvK (optional)
     if (kvk) {
         const goalPct = typeof kvk.goalPercent === "number" ? kvk.goalPercent * 100 : parseFloat(kvk.goalPercent);
-        const { emoji: rateEmoji } = rateStyle(kvk.rate);
+        const { emoji: rateEmoji } = rateStyle(reveal ? kvk.rate : null);
         fields.push({
             name: "📊 LAST KvK",
             value: [
@@ -498,7 +520,7 @@ async function buildMyStatsEmbed(discordId, db) {
                 !isNaN(goalPct)
                     ? `**Goal**  •  \`${goalPct.toFixed(1)}%\`  ${progressBar(kvk.goalPercent)}`
                     : null,
-                kvk.rate ? `**Rating**  •  ${rateEmoji} **${kvk.rate}**` : null,
+                (kvk.rate && reveal) ? `**Rating**  •  ${rateEmoji} **${kvk.rate}**` : null, // BR-019
             ]
                 .filter(Boolean)
                 .join("\n"),
@@ -593,7 +615,10 @@ async function buildMyKvKEmbed(discordId, db, campaignId = null) {
         };
     }
 
-    const { color, emoji } = rateStyle(kvk.rate);
+    // BR-019 : une campagne archivée (kvk_history) porte une note finale légitime ;
+    // pour le KvK EN COURS, on ne montre le rating que si le Roi l'a révélé.
+    const showRate = campaign ? true : await loadRevealGoalStatus(db);
+    const { color, emoji } = rateStyle(showRate ? kvk.rate : null);
     const goalPct = typeof kvk.goalPercent === "number" ? kvk.goalPercent * 100 : parseFloat(kvk.goalPercent);
     const bar = progressBar(kvk.goalPercent);
 
@@ -632,7 +657,7 @@ async function buildMyKvKEmbed(discordId, db, campaignId = null) {
                             !isNaN(goalPct)
                                 ? `**Goal %**  •  \`${goalPct.toFixed(1)}%\`\n\`${bar}\``
                                 : null,
-                            kvk.rate
+                            (kvk.rate && showRate) // BR-019 : rating live masqué tant que non révélé
                                 ? `**Rating**  •  ${emoji} **${kvk.rate}**`
                                 : null,
                         ]

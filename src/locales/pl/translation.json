@@ -343,7 +343,9 @@
     "alert_merge_ok": "Campaign merged successfully!",
     "alert_merge_fail": "Failed to merge campaign: {{msg}}",
     "cfg_filler_ratio": "Współczynnik strat fillera",
-    "cfg_filler_ratio_hint": "0,5 = fillery muszą stracić 50% zadeklarowanej mocy (4×T4 + 10×T5)."
+    "cfg_filler_ratio_hint": "0,5 = fillery muszą stracić 50% zadeklarowanej mocy (4×T4 + 10×T5).",
+    "cfg_reveal_status": "Pokaż etykiety statusu celów (bitwy zakończone)",
+    "cfg_reveal_status_hint": "Gdy wyłączone, etykiety Deadweight/Excellent pozostają ukryte, aby uniknąć błędnych interpretacji podczas kampanii."
   },
   "kvk_race": {
     "page_subtitle": "Wyścig o gwiazdę — pojedynek obozów, królestwa i przebieg",
@@ -529,6 +531,7 @@
     "filler_section": "Cele fillerów",
     "declared_power": "Zadeklarowana moc",
     "dead_target": "Cel strat",
-    "achieved": "Osiągnięto"
+    "achieved": "Osiągnięto",
+    "status_hidden_notice": "Etykiety statusu (Deadweight, Excellent…) pojawią się po zakończeniu bitew, gdy Król je odsłoni."
   }
 }
