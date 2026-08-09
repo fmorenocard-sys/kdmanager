@@ -21,25 +21,49 @@ les vues « Discord-gated » (BR-008), mais garde son rôle pour les vues « rol
 | **Officer** (R-003) | Déclenche les synchros de données, voit le War Dashboard et l'analytique leadership. |
 | **King** (R-004) | Configure les campagnes KvK, clôture/archive, gère la config d'instance. |
 
-## Accès par page (gating UI)
+## Accès par page (gating UI — post-refonte navigation, vérifié code 2026-08-09)
 
-Légende : ✅ accès · 👁️ lecture partielle · 🔒 masqué/refusé · ⓘ voir note.
+Légende : ✅ accès · 👁️ lecture partielle · 🔒 masqué/refusé · 🔑 login requis (pas un gate de rôle).
+**Architecture** : pas de `<ProtectedRoute>` — chaque page/onglet s'auto-garde (early-return
+`AccessGate` ou rendu conditionnel). Les sous-onglets sont dans l'URL (`?tab=`) et un **redirect**
+renvoie les deep-links non autorisés vers un onglet public. `isAuthorized` est un **match exact**
+de liste (pas de hiérarchie) — mais tous les checks « leadership » passent la paire
+`[King, Officer]`, donc le King voit bien tout ce que voit l'Officer.
 
-| Page (route) | Guest | Warrior | Officer | King | Base / source |
+| Surface | Guest | Warrior | Officer | King | Base / source |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Dashboard** `/` | ✅ | ✅ | ✅ | ✅ | Lecture publique. Bloc Banque en cascade du module (BR-015). |
-| **War Tracker — déclaration** `/war-tracker` | 🔒 | ✅¹ | ✅ | ✅ | Déclarer = utilisateur authentifié (BR-002, R-002). ¹Son propre compte. |
-| **War Tracker — War Dashboard** | 🔒 | 🔒 | ✅ | ✅ | Résultats agrégés = Officer+ (R-003). |
-| **War Tracker — Objectifs (Goals)** | 🔒 | 👁️² | ✅ | ✅ | ²Le Warrior ne voit **que sa ligne** ; leadership voit tout le monde (code `isLeadership`). Statuts masqués tant que non révélés (BR-019). |
-| **War Tracker — Config KvK / Admin** | 🔒 | 🔒 | 🔒 | ✅ | King-only (`KvKConfigForm`, M-2). Inclut l'interrupteur BR-019. |
-| **KvK Performance — comptes principaux** `/kvk` | ✅ | ✅ | ✅ | ✅ | Lecture publique (table principale). |
-| **KvK Performance — Fillers & Progression** | 🔒 | ✅³ | ✅ | ✅ | ³**Discord-gated** : uniquement comptes Discord-vérifiés (BR-008). |
-| **KvK Performance — Progression du Royaume (Timeline)** | 🔒 | 🔒 | ✅ | ✅ | **Role-gated** King/Officer (BR-011, F-022). |
-| **Trophies** `/trophies` | ✅ | ✅ | ✅ | ✅ | Lecture publique. Module optionnel par instance (BR-015). |
-| **Deadweight** `/deadweight` | 🔒 | 🔒 | ✅ | ✅ | Leadership uniquement (BR-009). Module optionnel (BR-015). |
-| **KvK Race / Course** `/kvk-race` | 🔒 | 🔒 | ✅ | ✅ | Leadership uniquement (§9.4) — **renforcé côté données** (voir table suivante). |
-| **Bank** `/bank` | 🔒⁴ | 👁️⁴ | ✅ | ✅ | ⁴Lecture = authentifié ; écriture (dépôts) = Officer+. Module optionnel (BR-015). |
-| **Profil** `/profile` | 🔒 | ✅ | ✅ | ✅ | Chacun gère **son** profil (liaison gouverneur, comptes multi F-025). |
+| **Dashboard** `/` | ✅ | ✅ | ✅ | ✅ | Public. Bloc Banque en cascade du module (BR-015). |
+| **War Tracker — Déclaration** `?tab=declaration` | 🔑 | ✅ | ✅ | ✅ | **Login requis**, pas de rôle : tout utilisateur connecté déclare son compte (`AvailabilityForm`). |
+| **War Tracker — Objectifs** `?tab=goals` | 🔑 | 👁️ | ✅ | ✅ | Le Warrior ne voit **que sa ligne** ; leadership voit tout + vue « Top du royaume ». Statuts masqués tant que non révélés (BR-019). |
+| **War Tracker — War Dashboard** `?tab=dashboard` | 🔒 | 🔒 | ✅ | ✅ | Leadership (`AccessGate` + redirect si deep-link). Actions de migration = King seul. |
+| **KvK Hub — Performance** `/kvk?tab=performance` | ✅ | ✅ | ✅ | ✅ | Public. Sous-chip **Fillers** = comptes **Discord-vérifiés** (BR-008). |
+| **KvK Hub — Progressions** `?tab=progressions` | 🔒 | ✅ᵈ | ✅ | ✅ | ᵈ**Discord-vérifié OU leadership**. Sous-vue « Progression du Royaume » = leadership seul (BR-011). |
+| **KvK Hub — Course** `?tab=course` | 🔒 | 🔒 | ✅ | ✅ | Leadership (redirect si deep-link). **Dépôt de scan** = King **et** Officer (`RaceView`). |
+| **Trophies** `/trophies` | ✅ | ✅ | ✅ | ✅ | Public + module (BR-015). |
+| **Deadweight** `/deadweight` | 🔒 | 🔒 | ✅ | ✅ | Leadership (`AccessGate`, BR-009) + module. |
+| **Bank** `/bank` | 🔑 | 👁️ | ✅ | ✅ | Page visible (module) ; lecture = authentifié ; **dépôts = Officer+**. |
+| **Profil** `/profile` | 🔑 | ✅ | ✅ | ✅ | Login ; chacun gère **son** profil (F-025). |
+| **Administration** `/admin` | 🔒 | 🔒 | 🔒 | ✅ | **King only** (`AccessGate`). Détail ci-dessous. |
+| *(legacy)* `/kvk-race` | 🔒 | 🔒 | ✅ | ✅ | Route de **compatibilité** (leadership) — la Course vit désormais dans le Hub KvK, **plus d'entrée de nav**. |
+
+### Détail de l'Administration `/admin` — King only
+
+La page entière est King-only ; chaque section l'est aussi (défense en profondeur, garde par composant).
+
+| Section | Rôle | Composant |
+| :--- | :---: | :--- |
+| Synchro / ingestion de données (xlsx) | **King** | `DataRefreshControl` — ⚠️ **King-only** aujourd'hui (écart SSOT, voir plus bas) |
+| Config de campagne KvK (interrupteur BR-019, ratio filler F-027) | King | `KvKConfigForm` (déplacé depuis War Tracker — M3) |
+| Clôture / archivage de campagne | King | `CampaignArchiveControl` (update = `outcome` seul, BR-006/BR-012) |
+| Config de course (KvK Race) | King | `RaceConfigForm` |
+| Maintenance : fusion de campagnes, danger zone (suppression) | King | `MaintenanceTools` |
+
+### Écarts SSOT ↔ code détectés (à réconcilier)
+
+La refonte navigation (M3) a déplacé des surfaces ; le SSOT §3 (Pages) n'a pas suivi :
+1. **Ingestion / synchro de données** — le SSOT R-003 dit « Officer can trigger Data Syncs », mais le code (`DataRefreshControl`) est **King-only**. À trancher : régression à corriger, ou décision à entériner dans R-003 ?
+2. **`KvKConfigForm`** — listé sous War Tracker (SSOT §3 P-002) ; il vit désormais dans `/admin`.
+3. **KvK Race** — SSOT §3 P-008 le décrit comme la page `/kvk-race` ; c'est maintenant un **onglet du Hub KvK**, et `/kvk-race` n'est qu'une route de compat sans entrée de nav.
 
 ## Accès par collection Firestore (application réelle — `firestore.rules`)
 
