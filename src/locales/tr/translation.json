@@ -532,6 +532,8 @@
     "declared_power": "Bildirilen güç",
     "dead_target": "Kayıp hedefi",
     "achieved": "Gerçekleşen",
-    "status_hidden_notice": "Durum etiketleri (Deadweight, Excellent…) savaşlar bittiğinde, Kral onları gösterdiğinde görünür."
+    "status_hidden_notice": "Durum etiketleri (Deadweight, Excellent…) savaşlar bittiğinde, Kral onları gösterdiğinde görünür.",
+    "sort_by": "Sırala",
+    "sort_direction": "Sıralama yönü"
   }
 }

@@ -60,6 +60,9 @@
 
 ## 4. Roles (R)
 
+> 📋 Vue consolidée « qui voit / fait quoi » (pages × rôles + collections Firestore) :
+> [`Matrice_Acces.md`](Matrice_Acces.md).
+
 | ID | Role | Description |
 | :--- | :--- | :--- |
 | **R-001** | **Guest** | Can read public metrics (if explicitly allowed, mostly zeroed right now due to rules). |

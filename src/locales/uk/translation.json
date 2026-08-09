@@ -532,6 +532,8 @@
     "declared_power": "Заявлена сила",
     "dead_target": "Ціль втрат",
     "achieved": "Досягнуто",
-    "status_hidden_notice": "Мітки статусу (Deadweight, Excellent…) з'являться після завершення битв, коли Король їх відкриє."
+    "status_hidden_notice": "Мітки статусу (Deadweight, Excellent…) з'являться після завершення битв, коли Король їх відкриє.",
+    "sort_by": "Сортувати за",
+    "sort_direction": "Напрямок сортування"
   }
 }

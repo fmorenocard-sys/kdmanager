@@ -532,6 +532,8 @@
     "declared_power": "Declared power",
     "dead_target": "Loss target",
     "achieved": "Achieved",
-    "status_hidden_notice": "Status labels (Deadweight, Excellent…) will appear once the battles are over, when the King reveals them."
+    "status_hidden_notice": "Status labels (Deadweight, Excellent…) will appear once the battles are over, when the King reveals them.",
+    "sort_by": "Sort by",
+    "sort_direction": "Sort direction"
   }
 }

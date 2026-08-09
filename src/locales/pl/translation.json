@@ -532,6 +532,8 @@
     "declared_power": "Zadeklarowana moc",
     "dead_target": "Cel strat",
     "achieved": "Osiągnięto",
-    "status_hidden_notice": "Etykiety statusu (Deadweight, Excellent…) pojawią się po zakończeniu bitew, gdy Król je odsłoni."
+    "status_hidden_notice": "Etykiety statusu (Deadweight, Excellent…) pojawią się po zakończeniu bitew, gdy Król je odsłoni.",
+    "sort_by": "Sortuj według",
+    "sort_direction": "Kierunek sortowania"
   }
 }

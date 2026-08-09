@@ -532,6 +532,8 @@
     "declared_power": "Sức mạnh khai báo",
     "dead_target": "Mục tiêu tổn thất",
     "achieved": "Đã đạt",
-    "status_hidden_notice": "Nhãn trạng thái (Deadweight, Excellent…) sẽ hiển thị khi các trận chiến kết thúc, khi Vua tiết lộ chúng."
+    "status_hidden_notice": "Nhãn trạng thái (Deadweight, Excellent…) sẽ hiển thị khi các trận chiến kết thúc, khi Vua tiết lộ chúng.",
+    "sort_by": "Sắp xếp theo",
+    "sort_direction": "Hướng sắp xếp"
   }
 }

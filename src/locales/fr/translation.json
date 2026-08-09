@@ -532,6 +532,8 @@
     "declared_power": "Pouvoir déclaré",
     "dead_target": "Objectif de perte",
     "achieved": "Réalisé",
-    "status_hidden_notice": "Les statuts (Deadweight, Excellent…) s'afficheront une fois les combats terminés, quand le Roi les révélera."
+    "status_hidden_notice": "Les statuts (Deadweight, Excellent…) s'afficheront une fois les combats terminés, quand le Roi les révélera.",
+    "sort_by": "Trier par",
+    "sort_direction": "Sens du tri"
   }
 }

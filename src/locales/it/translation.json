@@ -532,6 +532,8 @@
     "declared_power": "Potenza dichiarata",
     "dead_target": "Obiettivo di perdita",
     "achieved": "Raggiunto",
-    "status_hidden_notice": "Le etichette di stato (Deadweight, Excellent…) appariranno al termine delle battaglie, quando il Re le rivelerà."
+    "status_hidden_notice": "Le etichette di stato (Deadweight, Excellent…) appariranno al termine delle battaglie, quando il Re le rivelerà.",
+    "sort_by": "Ordina per",
+    "sort_direction": "Direzione ordinamento"
   }
 }

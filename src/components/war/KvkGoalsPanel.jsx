@@ -389,6 +389,34 @@ const KvkGoalsPanel = () => {
 
             {displayRows.length > 0 && (
                 <Card className="p-0 overflow-hidden">
+                    {/* Tri mobile : les en-têtes triables (SortHead) n'existent qu'en desktop.
+                        On offre l'équivalent en cartes — sélecteur de colonne + sens — pilotant
+                        le même état `sort` (responsiveness.md : pas de scroll horizontal). */}
+                    <div className="md:hidden flex items-center gap-2 p-3 border-b border-[var(--border-flat)]">
+                        <span className="text-[11px] text-slate-500 shrink-0">{t('goals.sort_by')}</span>
+                        <select
+                            value={sort.key}
+                            onChange={(e) => setSort({ key: e.target.value, dir: e.target.value === 'name' ? 'asc' : 'desc' })}
+                            aria-label={t('goals.sort_by')}
+                            className="flex-1 min-w-0 bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg px-2 py-2 text-sm text-slate-200 min-h-[44px]"
+                        >
+                            <option value="name">{t('goals.player')}</option>
+                            <option value="powerM">{t('goals.reference_power')}</option>
+                            <option value="minKp">{t('goals.min_kp')}</option>
+                            <option value="goalKp">{t('goals.goal_kp')}</option>
+                            <option value="minDead">{t('goals.min_dead')}</option>
+                            <option value="goalPct">{t('goals.attainment')}</option>
+                        </select>
+                        <button
+                            type="button"
+                            onClick={() => setSort((p) => ({ ...p, dir: p.dir === 'asc' ? 'desc' : 'asc' }))}
+                            aria-label={t('goals.sort_direction')}
+                            className="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-lg border border-[var(--border-flat)] text-slate-300 hover:text-white"
+                        >
+                            {sort.dir === 'asc' ? '↑' : '↓'}
+                        </button>
+                    </div>
+
                     {/* Cartes en mobile — pas de scroll horizontal (UXA11Y-001) */}
                     <div className="md:hidden flex flex-col gap-3 p-4">
                         {displayRows.map((r) => (

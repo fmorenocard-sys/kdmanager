@@ -532,6 +532,8 @@
     "declared_power": "القوة المعلنة",
     "dead_target": "هدف الخسارة",
     "achieved": "المُحقَّق",
-    "status_hidden_notice": "ستظهر تسميات الحالة (Deadweight، Excellent…) بعد انتهاء المعارك، عندما يكشفها الملك."
+    "status_hidden_notice": "ستظهر تسميات الحالة (Deadweight، Excellent…) بعد انتهاء المعارك، عندما يكشفها الملك.",
+    "sort_by": "ترتيب حسب",
+    "sort_direction": "اتجاه الترتيب"
   }
 }

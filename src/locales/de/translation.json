@@ -532,6 +532,8 @@
     "declared_power": "Deklarierte Macht",
     "dead_target": "Verlustziel",
     "achieved": "Erreicht",
-    "status_hidden_notice": "Status-Labels (Deadweight, Excellent…) erscheinen, sobald die Kämpfe vorbei sind und der König sie freigibt."
+    "status_hidden_notice": "Status-Labels (Deadweight, Excellent…) erscheinen, sobald die Kämpfe vorbei sind und der König sie freigibt.",
+    "sort_by": "Sortieren nach",
+    "sort_direction": "Sortierrichtung"
   }
 }
