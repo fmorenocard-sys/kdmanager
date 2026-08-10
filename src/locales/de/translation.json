@@ -365,7 +365,15 @@
     "cal_shift_hint": "Praktisch für die letzte Saison: alles um einige Tage verschieben (Uhrzeiten bleiben).",
     "cal_save": "Kalender speichern",
     "cal_saved": "Kalender gespeichert ({{count}} Ereignisse).",
-    "cal_save_error": "Speichern fehlgeschlagen."
+    "cal_save_error": "Speichern fehlgeschlagen.",
+    "cal_for_campaign": "Kalender für: {{name}}",
+    "cal_no_campaign": "Keine aktive Kampagne konfiguriert.",
+    "cal_mismatch": "⚠️ Dieser Kalender wurde für \"{{name}}\" erstellt, nicht die aktuelle Kampagne. Verschiebe ihn (unten) oder ersetze ihn, dann speichern.",
+    "cal_paste_toggle": "Aus Tabelle importieren (einfügen)",
+    "cal_paste_desc": "Füge deine Zeilen aus Google Sheets ein (eine pro Zeile: Name + Datum/Uhrzeit UTC). Ersetzt die aktuelle Liste.",
+    "cal_paste_year": "Jahr (falls in Daten fehlt)",
+    "cal_paste_apply": "Durch Einfügen ersetzen",
+    "cal_paste_result": "{{ok}} Ereignisse importiert, {{skipped}} Zeile(n) übersprungen."
   },
   "kvk_race": {
     "page_subtitle": "Sternrennen — Lagerduell, Königreiche und Verlauf",

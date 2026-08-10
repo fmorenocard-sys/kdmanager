@@ -365,7 +365,15 @@
     "cal_shift_hint": "Przydatne do ponownego użycia poprzedniego sezonu: przesuń wszystko o kilka dni (godziny zostają).",
     "cal_save": "Zapisz kalendarz",
     "cal_saved": "Kalendarz zapisany ({{count}} wydarzeń).",
-    "cal_save_error": "Zapis nie powiódł się."
+    "cal_save_error": "Zapis nie powiódł się.",
+    "cal_for_campaign": "Kalendarz dla: {{name}}",
+    "cal_no_campaign": "Brak skonfigurowanej aktywnej kampanii.",
+    "cal_mismatch": "⚠️ Ten kalendarz wprowadzono dla „{{name}}”, nie dla bieżącej kampanii. Przesuń (poniżej) lub zastąp, potem zapisz.",
+    "cal_paste_toggle": "Importuj z arkusza (wklej)",
+    "cal_paste_desc": "Wklej wiersze z Google Sheets (po jednym: nazwa + data/godzina UTC). Zastępuje bieżącą listę.",
+    "cal_paste_year": "Rok (jeśli brak w datach)",
+    "cal_paste_apply": "Zastąp wklejonym",
+    "cal_paste_result": "Zaimportowano {{ok}} wydarzeń, pominięto {{skipped}} wiersz(y)."
   },
   "kvk_race": {
     "page_subtitle": "Wyścig o gwiazdę — pojedynek obozów, królestwa i przebieg",

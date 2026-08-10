@@ -365,7 +365,15 @@
     "cal_shift_hint": "Handy to reuse last season: shift everything by a number of days (times are kept).",
     "cal_save": "Save calendar",
     "cal_saved": "Calendar saved ({{count}} events).",
-    "cal_save_error": "Save failed."
+    "cal_save_error": "Save failed.",
+    "cal_for_campaign": "Calendar for: {{name}}",
+    "cal_no_campaign": "No active campaign configured.",
+    "cal_mismatch": "⚠️ This calendar was entered for \"{{name}}\", not the current campaign. Shift it (below) or replace it, then save.",
+    "cal_paste_toggle": "Import from a spreadsheet (paste)",
+    "cal_paste_desc": "Paste your rows from Google Sheets (one per line: name + date/time UTC). Replaces the current list.",
+    "cal_paste_year": "Year (if missing in dates)",
+    "cal_paste_apply": "Replace with paste",
+    "cal_paste_result": "{{ok}} events imported, {{skipped}} line(s) skipped."
   },
   "kvk_race": {
     "page_subtitle": "Star race — camp duel, kingdoms and evolution",

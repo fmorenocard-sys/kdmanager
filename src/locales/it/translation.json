@@ -365,7 +365,15 @@
     "cal_shift_hint": "Utile per riusare la stagione precedente: sposta tutto di alcuni giorni (le ore restano).",
     "cal_save": "Salva calendario",
     "cal_saved": "Calendario salvato ({{count}} eventi).",
-    "cal_save_error": "Salvataggio non riuscito."
+    "cal_save_error": "Salvataggio non riuscito.",
+    "cal_for_campaign": "Calendario di: {{name}}",
+    "cal_no_campaign": "Nessuna campagna attiva configurata.",
+    "cal_mismatch": "⚠️ Questo calendario è stato inserito per «{{name}}», non la campagna attuale. Spostalo (sotto) o sostituiscilo, poi salva.",
+    "cal_paste_toggle": "Importa da un foglio di calcolo (incolla)",
+    "cal_paste_desc": "Incolla le righe da Google Sheets (una per riga: nome + data/ora UTC). Sostituisce l'elenco attuale.",
+    "cal_paste_year": "Anno (se assente nelle date)",
+    "cal_paste_apply": "Sostituisci con l'incollato",
+    "cal_paste_result": "{{ok}} eventi importati, {{skipped}} riga/e ignorata/e."
   },
   "kvk_race": {
     "page_subtitle": "Corsa alla stella — duello dei campi, regni ed evoluzione",

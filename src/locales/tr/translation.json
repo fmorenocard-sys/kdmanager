@@ -365,7 +365,15 @@
     "cal_shift_hint": "Geçen sezonu yeniden kullanmak için pratik: her şeyi birkaç gün kaydırın (saatler korunur).",
     "cal_save": "Takvimi kaydet",
     "cal_saved": "Takvim kaydedildi ({{count}} etkinlik).",
-    "cal_save_error": "Kaydetme başarısız."
+    "cal_save_error": "Kaydetme başarısız.",
+    "cal_for_campaign": "Takvim: {{name}}",
+    "cal_no_campaign": "Yapılandırılmış aktif kampanya yok.",
+    "cal_mismatch": "⚠️ Bu takvim güncel kampanya için değil, \"{{name}}\" için girildi. Kaydırın (aşağıda) veya değiştirin, sonra kaydedin.",
+    "cal_paste_toggle": "Bir tablodan içe aktar (yapıştır)",
+    "cal_paste_desc": "Satırları Google Sheets'ten yapıştır (satır başına: ad + tarih/saat UTC). Mevcut listeyi değiştirir.",
+    "cal_paste_year": "Yıl (tarihlerde yoksa)",
+    "cal_paste_apply": "Yapıştırılanla değiştir",
+    "cal_paste_result": "{{ok}} etkinlik içe aktarıldı, {{skipped}} satır atlandı."
   },
   "kvk_race": {
     "page_subtitle": "Yıldız yarışı — kamp düellosu, krallıklar ve gelişim",

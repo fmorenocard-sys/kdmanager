@@ -365,7 +365,15 @@
     "cal_shift_hint": "Útil para reutilizar la temporada anterior: desplaza todo unos días (se mantienen las horas).",
     "cal_save": "Guardar calendario",
     "cal_saved": "Calendario guardado ({{count}} eventos).",
-    "cal_save_error": "Error al guardar."
+    "cal_save_error": "Error al guardar.",
+    "cal_for_campaign": "Calendario de: {{name}}",
+    "cal_no_campaign": "Ninguna campaña activa configurada.",
+    "cal_mismatch": "⚠️ Este calendario se creó para «{{name}}», no la campaña actual. Desplázalo (abajo) o reemplázalo y guarda.",
+    "cal_paste_toggle": "Importar desde una hoja de cálculo (pegar)",
+    "cal_paste_desc": "Pega tus filas desde Google Sheets (una por línea: nombre + fecha/hora UTC). Reemplaza la lista actual.",
+    "cal_paste_year": "Año (si falta en las fechas)",
+    "cal_paste_apply": "Reemplazar con lo pegado",
+    "cal_paste_result": "{{ok}} eventos importados, {{skipped}} línea(s) omitida(s)."
   },
   "kvk_race": {
     "page_subtitle": "Carrera por la estrella — duelo de campos, reinos y evolución",

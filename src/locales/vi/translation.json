@@ -365,7 +365,15 @@
     "cal_shift_hint": "Tiện để dùng lại mùa trước: dịch mọi thứ theo số ngày (giữ nguyên giờ).",
     "cal_save": "Lưu lịch",
     "cal_saved": "Đã lưu lịch ({{count}} sự kiện).",
-    "cal_save_error": "Lưu thất bại."
+    "cal_save_error": "Lưu thất bại.",
+    "cal_for_campaign": "Lịch cho: {{name}}",
+    "cal_no_campaign": "Chưa cấu hình chiến dịch nào.",
+    "cal_mismatch": "⚠️ Lịch này được nhập cho «{{name}}», không phải chiến dịch hiện tại. Dịch (bên dưới) hoặc thay thế, rồi lưu.",
+    "cal_paste_toggle": "Nhập từ bảng tính (dán)",
+    "cal_paste_desc": "Dán các dòng từ Google Sheets (mỗi dòng: tên + ngày/giờ UTC). Thay thế danh sách hiện tại.",
+    "cal_paste_year": "Năm (nếu thiếu trong ngày)",
+    "cal_paste_apply": "Thay bằng nội dung dán",
+    "cal_paste_result": "Đã nhập {{ok}} sự kiện, bỏ qua {{skipped}} dòng."
   },
   "kvk_race": {
     "page_subtitle": "Đua ngôi sao — đấu phe, vương quốc và diễn biến",

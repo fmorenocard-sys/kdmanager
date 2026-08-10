@@ -365,7 +365,15 @@
     "cal_shift_hint": "Pratique pour repartir de la saison précédente : décale tout d'un nombre de jours (les heures sont conservées).",
     "cal_save": "Enregistrer le calendrier",
     "cal_saved": "Calendrier enregistré ({{count}} événements).",
-    "cal_save_error": "Échec de l'enregistrement."
+    "cal_save_error": "Échec de l'enregistrement.",
+    "cal_for_campaign": "Calendrier de : {{name}}",
+    "cal_no_campaign": "Aucune campagne active configurée.",
+    "cal_mismatch": "⚠️ Ce calendrier a été saisi pour « {{name}} », pas pour la campagne courante. Décale-le (ci-dessous) ou remplace-le, puis enregistre.",
+    "cal_paste_toggle": "Importer depuis un tableur (coller)",
+    "cal_paste_desc": "Colle tes lignes depuis Google Sheets (une par ligne : nom + date/heure UTC). Remplace la liste actuelle.",
+    "cal_paste_year": "Année (si absente des dates)",
+    "cal_paste_apply": "Remplacer par le collage",
+    "cal_paste_result": "{{ok}} événements importés, {{skipped}} ligne(s) ignorée(s)."
   },
   "kvk_race": {
     "page_subtitle": "Course à l'étoile — duel de camps, royaumes et évolution",

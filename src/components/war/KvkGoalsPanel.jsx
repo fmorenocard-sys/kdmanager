@@ -93,7 +93,11 @@ const KvkGoalsPanel = () => {
 
                 const cfg = cfgSnap.exists() ? cfgSnap.data() : null;
                 setConfig(cfg);
-                setTimelineEvents(tlSnap.exists() && Array.isArray(tlSnap.data().events) ? tlSnap.data().events : []);
+                // F-031 : n'affiche le calendrier que s'il est estampillé de la campagne
+                // courante (ou pas encore estampillé — rétro-compat) : évite une frise périmée.
+                const tlData = tlSnap.exists() ? tlSnap.data() : null;
+                const tlCid = tlData?.campaignId || null;
+                setTimelineEvents((!tlCid || tlCid === (cfg?.id || null)) && Array.isArray(tlData?.events) ? tlData.events : []);
                 const map = {};
                 if (cfg?.id) map[cfg.id] = { id: cfg.id, name: cfg.name || cfg.id };
                 list.forEach((d) => {
