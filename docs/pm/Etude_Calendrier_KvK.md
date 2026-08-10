@@ -114,6 +114,17 @@ cette étude.
   ProKingdoms pour ces dates. Même statut de fiabilité que A-009 (format des scans tiers) : une
   hypothèse à surveiller, pas un fait acquis.
 
+> **Implémentation livrée (2026-08-10) — écart assumé vs le schéma indicatif ci-dessus :**
+> la timeline vit dans un **doc dédié `kvk_config/timeline`** (champ `events: [{key, label, at,
+> category}]`), **pas** dans `kvk_config/current` — sinon le `setDoc` **sans merge** de
+> `KvKConfigForm` l'effacerait à chaque sauvegarde de config. Même collection ⇒ déjà King-writable
+> (aucune règle ajoutée). Les datetimes sont stockées en **absolu UTC** (`at` ISO), pas en offsets
+> depuis `startDate` : plus simple pour l'affichage et sans ambiguïté d'ancrage (A-015, deux dates
+> de début). Le **pré-remplissage saison-à-saison (D2)** est réalisé par un **décalage global « N
+> jours »** dans l'éditeur (heures conservées) plutôt qu'un recalcul d'offsets. Bandeau =
+> `CampaignTimelineBanner` (onglet Objectifs) ; éditeur = `CampaignTimelineEditor` (section
+> « Calendrier » de `/admin`, King-only).
+
 ## 5. Effort par lot
 
 | Lot | Contenu | Effort | Notes |
