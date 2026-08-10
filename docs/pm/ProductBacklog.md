@@ -30,6 +30,11 @@
   * *Objectif*: Donner un déroulé chronologique **intra-campagne** du KvK en cours (Passes, artefacts, Altar of Darkness, Ziggurat...) — angle planification joueur, distinct de F-022 (rétrospectif inter-campagnes). Croise la donnée événementielle avec ce que l'app sait déjà (F-014 Objectifs, F-025/026/027 déclarations, roster Discord) pour se différencier d'un simple écran ProKingdoms.
   * *Valeur*: Réduit la dépendance à un Google Sheet personnel du Roi (bus factor) ; donne un rythme de retour dans l'app pendant les 52 jours de campagne (jalons de scoring, pas seulement déclaration/clôture) ; base pour des pings ciblés et un export agenda.
   * *Métrique d'impact*: Consultations de l'onglet en fenêtre J-3/J0 d'un événement ; (V2+) taux d'ouverture des pings, exports ICS.
+* **E-009 [CADRÉ — grille livrée et adoptée le 2026-08-10, `Etude_Architecture_Information.md`]**: Cadre d'architecture de l'information (grille de décision « ça va où ? »)
+  * *Objectif*: Fournir une grille de décision réutilisable (intention/audience × accès effectif → section : Mon jeu / Le Royaume / Pilotage / Administration) pour trancher l'emplacement et le niveau d'accès de toute nouvelle feature sans rouvrir le débat à chaque fois. Cartographie complète current→target de `Matrice_Acces.md` ; 3 écarts identifiés (tous trackés, aucun corrigé d'office).
+  * *Valeur*: Élimine l'irritant nommé par le Roi (« ça va où ? » reposé à chaque feature) ; pré-cadre le tiering (BR-015) et le futur rôle Admin découplé (A-033, §6.2 de l'étude — le jour où le rôle existe, `/admin` ne bouge pas, seul le gate change).
+  * *Statut d'exécution*: **Pas de chantier dédié** — migration opportuniste uniquement (§5 de l'étude) ; aucune bascule de nav engagée par cet epic. Prochaine étape à coût quasi nul : colonne « Section IA cible » dans `Matrice_Acces.md` (propriété QA, non exécutée par cette étude).
+  * *Métrique d'impact*: Aucune feature future ne devrait plus nécessiter de débat de placement dédié (à vérifier sur les 2-3 prochaines features réellement inédites, A-037).
 
 ## User Stories
 * **US-001 (E-001)**: En tant qu'officier, je veux pouvoir uploader les fichiers XLSX directement sur la page "Config" ou "Data" pour mettre à jour la BDD, afin de ne pas lancer de script local.

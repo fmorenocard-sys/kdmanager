@@ -69,6 +69,12 @@ in-app** (chantier L, §3 item 8) — sans lui, un royaume sans Discord n'est pa
 **Prochaine étape** : prix & packaging (fourchette 20-40 $/royaume §6 ; modèle B clé-en-main
 pour amorcer → D hybride).
 
+**Lien architecture de l'information** : le tier (gratuit/premium/socle) reste un axe orthogonal à
+la section de nav (Mon jeu/Le Royaume/Pilotage/Administration) — une heuristique existe (Pilotage/
+Administration skewent Premium) mais n'est pas une règle dérivable (Trophées Premium malgré « Le
+Royaume », Multi-comptes gratuit malgré « Mon jeu »). Voir `Etude_Architecture_Information.md` §6.1
+(E-009).
+
 **Ajout proposé, en attente de confirmation du Roi (2026-08-10, `Etude_Calendrier_KvK.md` §6)** —
 F-031 Calendrier KvK, non encore actif dans le tableau ci-dessus :
 - **GRATUIT (hook)** : la tranche « Calendrier » (frise + dates UTC/local + countdown, le MVP).
