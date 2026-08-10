@@ -1,7 +1,7 @@
 # Étude — Calendrier KvK (F-031 / E-008)
 
 > Date : 2026-08-10
-> Statut : **Étude courte — D1 tranchée par le Roi, D2–D5 ouvertes**
+> Statut : **Étude courte — D1–D4 tranchées par le Roi (2026-08-10), D5 différée. MVP à construire, PRIORITAIRE (avant E-007).**
 > Origine : proposition du Roi — s'inspirer de l'écran « Event Timeline » de ProKingdoms (dates
 > d'ouverture des Passes, comptes à rebours, UTC/local) mais avec un angle **planification
 > joueur**, pas une simple copie. Donnée de départ : le déroulé KvK 3341 « Song of Troy », tenu
@@ -13,9 +13,12 @@
 
 | Décision | Arbitrage |
 | :--- | :--- |
-| **D1 — Visibilité** | **Tranchée (Roi, 2026-08-10) : Warriors+ / tous les membres connectés.** Inverse assumé du précédent F-022 (King/Officer, BR-011) — cohérent avec l'objectif « planification joueur », pas une lecture leadership. **Ne pas rouvrir.** |
+| **D1 — Visibilité** | **Warriors+ / tous les membres connectés.** Inverse assumé de F-022 (King/Officer, BR-011) — cohérent avec l'objectif « planification joueur ». |
+| **D2 — Saisie King** | **Formulaire ligne-à-ligne, pré-rempli depuis la saison précédente** (pas d'import/parseur en MVP). |
+| **D3 — Périmètre MVP** | **Confirmé : frise + countdown + bascule UTC/local, sans pings ni ICS.** |
+| **D4 — Priorité** | **Prioritaire — AVANT E-007** (le Roi place le Calendrier devant les multi-comptes ; override assumé de la reco « après E-007 » : la fenêtre KvK 3341 live jusqu'au 19/09 borne la valeur). |
 
-Décisions restantes : D2 (mécanisme de saisie), D3 (confirmation périmètre MVP), D4 (priorité vs backlog), D5 (placement de l'ICS) — voir §7.
+Tout tranché le 2026-08-10 (Roi). Reste **D5** (placement de l'ICS) — différée avec le lot V3, sans objet tant que pings/ICS ne sont pas construits. Voir §8.
 
 ---
 
@@ -163,21 +166,16 @@ concret pour la conversation de conversion, pas de pari construit à l'aveugle.
 ## 8. Décisions à trancher (Roi)
 
 - **D1 — Visibilité** : ✅ **Tranchée** — Warriors+ / tous les membres connectés. Ne pas rouvrir.
-- **D2 — Mécanisme de saisie King** : formulaire ligne-à-ligne (King ressaisit/ajuste chaque
-  événement dans l'UI) ou import/copier-coller depuis le Google Sheet (moins de friction, parsing
-  à écrire) ? Recommandation : formulaire ligne-à-ligne pré-rempli depuis la saison précédente pour
-  le MVP — l'import ajoute un parseur pour un gain marginal tant que le volume reste ~15-20 lignes
-  et un seul King saisissant.
-- **D3 — Confirmation du périmètre MVP** : frise + countdown, sans pings ni ICS — confirmer ou
-  élargir/réduire ?
-- **D4 — Priorité vs backlog en attente** : US-024 (activation de modules), E-007 (multi-comptes,
-  spec prête), F-030 (ingestion unifiée) attendent déjà. Où se place ce chantier ? Recommandation :
-  après E-007 (spec déjà arbitrée, prête à implémenter — dette d'exécution plus mûre) mais avant
-  toute extension V2/V3 de ce calendrier lui-même.
-- **D5 — Placement de l'ICS** : groupé premium avec les pings (reco commerciale, cohérence
-  « automation payante ») ou carotte gratuite isolée (l'ICS seul, sans ping, a un coût de service
-  très faible et pourrait rester gratuit pour élargir le hook) ? Vrai judgment call, non tranché
-  ici.
+- **D2 — Mécanisme de saisie King** : ✅ **Tranchée** — formulaire ligne-à-ligne, **pré-rempli
+  depuis la saison précédente**. Pas d'import/parseur du Sheet en MVP (gain marginal pour ~15-20
+  lignes saisies par un seul King).
+- **D3 — Périmètre MVP** : ✅ **Confirmé** — frise + countdown + bascule UTC/local, **sans** pings
+  ni ICS.
+- **D4 — Priorité** : ✅ **Tranchée — AVANT E-007.** Le Roi place le Calendrier devant les
+  multi-comptes (override assumé de la reco « après E-007 » : la fenêtre KvK 3341 live jusqu'au
+  19/09 borne la valeur du timing). **C'est le prochain chantier d'implémentation.**
+- **D5 — Placement de l'ICS** : ⏳ **Différée** — sans objet tant que le lot V3 (ICS) n'est pas
+  construit ; reco commerciale = premium groupé avec les pings, à confirmer au moment du lot V3.
 
 ## 9. Priorisation (grille §3 des règles PM)
 
