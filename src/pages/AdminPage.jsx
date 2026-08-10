@@ -8,7 +8,8 @@ import KvKConfigForm from '../components/war/KvKConfigForm';
 import CampaignArchiveControl from '../components/war/CampaignArchiveControl';
 import RaceConfigForm from '../components/kvk/RaceConfigForm';
 import MaintenanceTools from '../components/admin/MaintenanceTools';
-import { ShieldAlert, Database, Flag, Hammer, Shield } from '../components/ui/icons';
+import CampaignTimelineEditor from '../components/war/CampaignTimelineEditor';
+import { ShieldAlert, Database, Flag, Hammer, Shield, Calendar } from '../components/ui/icons';
 
 // Refonte navigation (maquette M3) — page Administration, Roi uniquement,
 // accessible via la zone « Administration » de la sidebar (pas de bottom nav).
@@ -31,6 +32,7 @@ const AdminPage = () => {
     const rail = [
         { id: 'data', label: t('admin.rail_data'), icon: Database },
         { id: 'campaign', label: t('admin.rail_campaign'), icon: Shield },
+        { id: 'calendar', label: t('admin.rail_calendar'), icon: Calendar },
         { id: 'race', label: t('admin.rail_race'), icon: Flag },
         { id: 'maintenance', label: t('admin.rail_maintenance'), icon: Hammer }
     ];
@@ -77,6 +79,14 @@ const AdminPage = () => {
                             {/* F-015: clôture de campagne (archive kvk_history) */}
                             <CampaignArchiveControl />
                         </div>
+                    </section>
+
+                    <section id="admin-calendar" className="scroll-mt-[88px]">
+                        <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-3">
+                            <Calendar size={20} weight="duotone" className="text-indigo-400" />
+                            {t('admin.rail_calendar')}
+                        </h2>
+                        <CampaignTimelineEditor />
                     </section>
 
                     <section id="admin-race" className="scroll-mt-[88px]">

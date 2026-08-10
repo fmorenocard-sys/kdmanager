@@ -65,6 +65,7 @@ const KvkGoalsPanel = () => {
     const [declarations, setDeclarations] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
     const [config, setConfig] = useState(null); // F-027 : kvk_config (fillerDeathRatio)
+    const [timelineEvents, setTimelineEvents] = useState([]); // F-031 : kvk_config/timeline (doc dédié)
     const [kvkId, setKvkId] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -80,9 +81,10 @@ const KvkGoalsPanel = () => {
         let cancelled = false;
         (async () => {
             try {
-                const [snap, cfgSnap] = await Promise.all([
+                const [snap, cfgSnap, tlSnap] = await Promise.all([
                     getDocs(collection(db, 'war_availabilities')),
-                    getDoc(doc(db, 'kvk_config', 'current'))
+                    getDoc(doc(db, 'kvk_config', 'current')),
+                    getDoc(doc(db, 'kvk_config', 'timeline'))
                 ]);
                 if (cancelled) return;
 
@@ -91,6 +93,7 @@ const KvkGoalsPanel = () => {
 
                 const cfg = cfgSnap.exists() ? cfgSnap.data() : null;
                 setConfig(cfg);
+                setTimelineEvents(tlSnap.exists() && Array.isArray(tlSnap.data().events) ? tlSnap.data().events : []);
                 const map = {};
                 if (cfg?.id) map[cfg.id] = { id: cfg.id, name: cfg.name || cfg.id };
                 list.forEach((d) => {
@@ -311,7 +314,7 @@ const KvkGoalsPanel = () => {
         <div className="space-y-4">
             {/* F-031 : bandeau de progression de campagne — contexte temporel des objectifs.
                 S'affiche seulement si un calendrier est saisi dans kvk_config (sinon rien). */}
-            <CampaignTimelineBanner timeline={config?.timeline} campaignName={config?.name} />
+            <CampaignTimelineBanner timeline={timelineEvents} campaignName={config?.name} />
 
             {/* Sélecteur de campagne + recherche */}
             <div className="flex flex-wrap items-center gap-2">

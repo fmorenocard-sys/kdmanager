@@ -55,6 +55,8 @@ export {
     TrendUpIcon as TrendingUp,
     TrophyIcon as Trophy,
     UploadSimpleIcon as Upload,
+    PlusIcon as Plus,
+    TrashIcon as Trash2,
     UserIcon as User,
     UserMinusIcon as UserX,
     UsersIcon as Users,
