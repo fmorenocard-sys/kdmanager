@@ -535,5 +535,13 @@
     "status_hidden_notice": "Etykiety statusu (Deadweight, Excellent…) pojawią się po zakończeniu bitew, gdy Król je odsłoni.",
     "sort_by": "Sortuj według",
     "sort_direction": "Kierunek sortowania"
+  },
+  "calendar": {
+    "campaign_progress": "Postęp KvK",
+    "next": "Następny",
+    "finished": "KvK zakończony",
+    "milestones_done": "{{done}}/{{total}} etapów",
+    "local": "Lokalny",
+    "toggle_timezone": "Przełącz UTC / czas lokalny"
   }
 }

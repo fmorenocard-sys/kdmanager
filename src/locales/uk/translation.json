@@ -535,5 +535,13 @@
     "status_hidden_notice": "Мітки статусу (Deadweight, Excellent…) з'являться після завершення битв, коли Король їх відкриє.",
     "sort_by": "Сортувати за",
     "sort_direction": "Напрямок сортування"
+  },
+  "calendar": {
+    "campaign_progress": "Прогрес KvK",
+    "next": "Далі",
+    "finished": "KvK завершено",
+    "milestones_done": "{{done}}/{{total}} етапів",
+    "local": "Місцевий",
+    "toggle_timezone": "Перемкнути UTC / місцевий час"
   }
 }

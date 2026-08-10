@@ -535,5 +535,13 @@
     "status_hidden_notice": "Status-Labels (Deadweight, Excellent…) erscheinen, sobald die Kämpfe vorbei sind und der König sie freigibt.",
     "sort_by": "Sortieren nach",
     "sort_direction": "Sortierrichtung"
+  },
+  "calendar": {
+    "campaign_progress": "KvK-Fortschritt",
+    "next": "Nächstes",
+    "finished": "KvK abgeschlossen",
+    "milestones_done": "{{done}}/{{total}} Meilensteine",
+    "local": "Lokal",
+    "toggle_timezone": "UTC / Ortszeit umschalten"
   }
 }

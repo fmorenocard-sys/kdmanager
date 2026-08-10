@@ -535,5 +535,13 @@
     "status_hidden_notice": "Le etichette di stato (Deadweight, Excellent…) appariranno al termine delle battaglie, quando il Re le rivelerà.",
     "sort_by": "Ordina per",
     "sort_direction": "Direzione ordinamento"
+  },
+  "calendar": {
+    "campaign_progress": "Avanzamento KvK",
+    "next": "Prossimo",
+    "finished": "KvK completato",
+    "milestones_done": "{{done}}/{{total}} tappe",
+    "local": "Locale",
+    "toggle_timezone": "Alterna UTC / ora locale"
   }
 }

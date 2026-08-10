@@ -12,6 +12,7 @@ import { sortRows, nextSort } from '../../lib/sortRows';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
 import SortHead from '../ui/SortHead';
 import Card from '../ui/Card';
+import CampaignTimelineBanner from './CampaignTimelineBanner';
 import { Search, AlertTriangle, Target } from '../ui/icons';
 
 // F-014 / US-009 — objectifs de campagne des joueurs qui ont déclaré.
@@ -308,6 +309,10 @@ const KvkGoalsPanel = () => {
 
     return (
         <div className="space-y-4">
+            {/* F-031 : bandeau de progression de campagne — contexte temporel des objectifs.
+                S'affiche seulement si un calendrier est saisi dans kvk_config (sinon rien). */}
+            <CampaignTimelineBanner timeline={config?.timeline} campaignName={config?.name} />
+
             {/* Sélecteur de campagne + recherche */}
             <div className="flex flex-wrap items-center gap-2">
                 {campaigns.length > 0 && (

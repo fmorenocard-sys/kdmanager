@@ -535,5 +535,13 @@
     "status_hidden_notice": "Nhãn trạng thái (Deadweight, Excellent…) sẽ hiển thị khi các trận chiến kết thúc, khi Vua tiết lộ chúng.",
     "sort_by": "Sắp xếp theo",
     "sort_direction": "Hướng sắp xếp"
+  },
+  "calendar": {
+    "campaign_progress": "Tiến trình KvK",
+    "next": "Tiếp theo",
+    "finished": "KvK hoàn tất",
+    "milestones_done": "{{done}}/{{total}} mốc",
+    "local": "Giờ địa phương",
+    "toggle_timezone": "Chuyển UTC / giờ địa phương"
   }
 }

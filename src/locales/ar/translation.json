@@ -535,5 +535,13 @@
     "status_hidden_notice": "ستظهر تسميات الحالة (Deadweight، Excellent…) بعد انتهاء المعارك، عندما يكشفها الملك.",
     "sort_by": "ترتيب حسب",
     "sort_direction": "اتجاه الترتيب"
+  },
+  "calendar": {
+    "campaign_progress": "تقدّم الـ KvK",
+    "next": "التالي",
+    "finished": "انتهى الـ KvK",
+    "milestones_done": "{{done}}/{{total}} مرحلة",
+    "local": "محلي",
+    "toggle_timezone": "تبديل UTC / التوقيت المحلي"
   }
 }

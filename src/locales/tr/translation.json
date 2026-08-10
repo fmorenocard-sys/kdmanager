@@ -535,5 +535,13 @@
     "status_hidden_notice": "Durum etiketleri (Deadweight, Excellent…) savaşlar bittiğinde, Kral onları gösterdiğinde görünür.",
     "sort_by": "Sırala",
     "sort_direction": "Sıralama yönü"
+  },
+  "calendar": {
+    "campaign_progress": "KvK ilerlemesi",
+    "next": "Sonraki",
+    "finished": "KvK tamamlandı",
+    "milestones_done": "{{done}}/{{total}} kilometre taşı",
+    "local": "Yerel",
+    "toggle_timezone": "UTC / yerel saati değiştir"
   }
 }

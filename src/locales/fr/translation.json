@@ -535,5 +535,13 @@
     "status_hidden_notice": "Les statuts (Deadweight, Excellent…) s'afficheront une fois les combats terminés, quand le Roi les révélera.",
     "sort_by": "Trier par",
     "sort_direction": "Sens du tri"
+  },
+  "calendar": {
+    "campaign_progress": "Progression du KvK",
+    "next": "Prochain",
+    "finished": "KvK terminé",
+    "milestones_done": "{{done}}/{{total}} jalons",
+    "local": "Local",
+    "toggle_timezone": "Basculer UTC / heure locale"
   }
 }

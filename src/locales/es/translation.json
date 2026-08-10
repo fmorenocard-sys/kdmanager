@@ -535,5 +535,13 @@
     "status_hidden_notice": "Las etiquetas de estado (Deadweight, Excellent…) aparecerán cuando terminen las batallas, cuando el Rey las revele.",
     "sort_by": "Ordenar por",
     "sort_direction": "Dirección de orden"
+  },
+  "calendar": {
+    "campaign_progress": "Progreso del KvK",
+    "next": "Próximo",
+    "finished": "KvK completado",
+    "milestones_done": "{{done}}/{{total}} hitos",
+    "local": "Local",
+    "toggle_timezone": "Cambiar UTC / hora local"
   }
 }
