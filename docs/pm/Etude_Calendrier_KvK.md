@@ -124,6 +124,15 @@ cette étude.
 > jours »** dans l'éditeur (heures conservées) plutôt qu'un recalcul d'offsets. Bandeau =
 > `CampaignTimelineBanner` (onglet Objectifs) ; éditeur = `CampaignTimelineEditor` (section
 > « Calendrier » de `/admin`, King-only).
+>
+> **Amendement 2026-08-10 (retour terrain du Roi) — D2 révisée + lien campagne :** la saisie
+> ligne-à-ligne s'est révélée pénible → ajout d'un **coller-importer** (parse le format copié
+> depuis Google Sheets : `Libellé <tab> "Fri, 31 Jul 0:00 UTC"`, devine le type, remplace la
+> liste). D2 « pas d'import » est donc **rouverte et invalidée par l'usage**. **Lien campagne** :
+> le doc `kvk_config/timeline` est **estampillé** `campaignId`/`campaignName` à l'enregistrement ;
+> le bandeau ne s'affiche que si l'estampille correspond à la campagne courante (ou est absente =
+> rétro-compat), et l'éditeur alerte si le calendrier vient d'une autre campagne. (Archivage du
+> calendrier *avec* `kvk_history` à la clôture = amélioration future non faite.)
 
 ## 5. Effort par lot
 
