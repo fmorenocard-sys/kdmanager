@@ -4,6 +4,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { db } from '../../config/firebase';
 import { doc, getDoc, setDoc, Timestamp, collection, getDocs } from 'firebase/firestore';
 import { useRole, ROLES } from '../../context/RoleContext';
+import { resolveCampaignName } from '../../lib/campaignLabel';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
@@ -67,14 +68,18 @@ const KvKConfigForm = () => {
         const fetchCampaigns = async () => {
             if (!authorized) return;
             try {
-                const querySnapshot = await getDocs(collection(db, "war_availabilities"));
+                const [querySnapshot, histSnap] = await Promise.all([
+                    getDocs(collection(db, "war_availabilities")),
+                    getDocs(collection(db, "kvk_history"))
+                ]);
+                const historyDocs = histSnap.docs.map(h => ({ id: h.id, title: h.data().title }));
                 const campaignsMap = {};
                 const counts = {};
                 querySnapshot.docs.forEach(d => {
                     const data = d.data();
                     if (data.kvkId) {
                         if (!campaignsMap[data.kvkId]) {
-                            campaignsMap[data.kvkId] = { id: data.kvkId, name: data.kvkName || data.kvkId };
+                            campaignsMap[data.kvkId] = { id: data.kvkId, name: resolveCampaignName(data.kvkId, data.kvkName, historyDocs) };
                             counts[data.kvkId] = 0;
                         }
                         counts[data.kvkId]++;

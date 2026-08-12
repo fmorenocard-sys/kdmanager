@@ -9,6 +9,7 @@ import { useRole, ROLES } from '../../context/RoleContext';
 import { computeKvkGoals, DEAD_POINTS_PER_T5 } from '../../lib/kvkGoals';
 import { rateFromGoalPct, RATES } from '../../lib/kvkScoring';
 import { sortRows, nextSort } from '../../lib/sortRows';
+import { resolveCampaignName } from '../../lib/campaignLabel';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
 import SortHead from '../ui/SortHead';
 import Card from '../ui/Card';
@@ -81,10 +82,11 @@ const KvkGoalsPanel = () => {
         let cancelled = false;
         (async () => {
             try {
-                const [snap, cfgSnap, tlSnap] = await Promise.all([
+                const [snap, cfgSnap, tlSnap, histSnap] = await Promise.all([
                     getDocs(collection(db, 'war_availabilities')),
                     getDoc(doc(db, 'kvk_config', 'current')),
-                    getDoc(doc(db, 'kvk_config', 'timeline'))
+                    getDoc(doc(db, 'kvk_config', 'timeline')),
+                    getDocs(collection(db, 'kvk_history'))
                 ]);
                 if (cancelled) return;
 
@@ -98,10 +100,13 @@ const KvkGoalsPanel = () => {
                 const tlData = tlSnap.exists() ? tlSnap.data() : null;
                 const tlCid = tlData?.campaignId || null;
                 setTimelineEvents((!tlCid || tlCid === (cfg?.id || null)) && Array.isArray(tlData?.events) ? tlData.events : []);
+                // Libellé résolu depuis le titre d'archive (kvk_history) quand possible, pour que
+                // Goals et Performance affichent le même nom de campagne (voir lib/campaignLabel).
+                const historyDocs = histSnap.docs.map((h) => ({ id: h.id, title: h.data().title }));
                 const map = {};
-                if (cfg?.id) map[cfg.id] = { id: cfg.id, name: cfg.name || cfg.id };
+                if (cfg?.id) map[cfg.id] = { id: cfg.id, name: resolveCampaignName(cfg.id, cfg.name, historyDocs) };
                 list.forEach((d) => {
-                    if (d.kvkId && !map[d.kvkId]) map[d.kvkId] = { id: d.kvkId, name: d.kvkName || d.kvkId };
+                    if (d.kvkId && !map[d.kvkId]) map[d.kvkId] = { id: d.kvkId, name: resolveCampaignName(d.kvkId, d.kvkName, historyDocs) };
                 });
                 const all = Object.values(map);
                 setCampaigns(all);

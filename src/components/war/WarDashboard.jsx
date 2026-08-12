@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../../config/firebase';
 import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
+import { resolveCampaignName } from '../../lib/campaignLabel';
 import { useRole, ROLES } from '../../context/RoleContext';
 import { useData } from '../../context/DataContext';
 import Card from '../ui/Card';
@@ -66,19 +67,23 @@ const WarDashboard = () => {
                 currentKvkId = configData.id;
             }
 
-            const querySnapshot = await getDocs(collection(db, "war_availabilities"));
+            const [querySnapshot, histSnap] = await Promise.all([
+                getDocs(collection(db, "war_availabilities")),
+                getDocs(collection(db, "kvk_history"))
+            ]);
             const data = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            const historyDocs = histSnap.docs.map(h => ({ id: h.id, title: h.data().title }));
 
             setAllDeclarations(data);
 
-            // Compute unique campaigns
+            // Compute unique campaigns — libellé résolu depuis l'archive (voir lib/campaignLabel).
             const campaignsMap = {};
             if (configData) {
-                campaignsMap[currentKvkId] = { id: currentKvkId, name: configData.name };
+                campaignsMap[currentKvkId] = { id: currentKvkId, name: resolveCampaignName(currentKvkId, configData.name, historyDocs) };
             }
             data.forEach(d => {
                 if (d.kvkId && !campaignsMap[d.kvkId]) {
-                    campaignsMap[d.kvkId] = { id: d.kvkId, name: d.kvkName || d.kvkId };
+                    campaignsMap[d.kvkId] = { id: d.kvkId, name: resolveCampaignName(d.kvkId, d.kvkName, historyDocs) };
                 }
             });
             setAvailableCampaigns(Object.values(campaignsMap));

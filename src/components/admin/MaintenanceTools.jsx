@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../../config/firebase';
 import { doc, getDoc, collection, getDocs, writeBatch, query, where } from 'firebase/firestore';
+import { resolveCampaignName } from '../../lib/campaignLabel';
 import { useRole, ROLES } from '../../context/RoleContext';
 import Card from '../ui/Card';
 
@@ -28,14 +29,18 @@ const MaintenanceTools = () => {
             if (snap.exists()) setTarget({ id: snap.data().id, name: snap.data().name });
         }).catch((err) => console.error('kvk_config read error:', err));
 
-        getDocs(collection(db, 'war_availabilities')).then((querySnapshot) => {
+        Promise.all([
+            getDocs(collection(db, 'war_availabilities')),
+            getDocs(collection(db, 'kvk_history'))
+        ]).then(([querySnapshot, histSnap]) => {
+            const historyDocs = histSnap.docs.map(h => ({ id: h.id, title: h.data().title }));
             const campaignsMap = {};
             const counts = {};
             querySnapshot.docs.forEach(d => {
                 const data = d.data();
                 if (data.kvkId) {
                     if (!campaignsMap[data.kvkId]) {
-                        campaignsMap[data.kvkId] = { id: data.kvkId, name: data.kvkName || data.kvkId };
+                        campaignsMap[data.kvkId] = { id: data.kvkId, name: resolveCampaignName(data.kvkId, data.kvkName, historyDocs) };
                         counts[data.kvkId] = 0;
                     }
                     counts[data.kvkId]++;
