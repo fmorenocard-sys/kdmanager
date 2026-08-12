@@ -602,6 +602,14 @@
       "badge": "Mon objectif KvK",
       "title": "Le leadership n'a pas encore publié les objectifs.",
       "desc": "Les objectifs sont calculés à partir du snapshot de puissance du Pass 1. Le tien apparaîtra ici dès sa publication — rien à faire de ton côté."
+    },
+    "goal": {
+      "kp": "KP gagné",
+      "dead": "Objectif morts",
+      "marker_min": "60 % min",
+      "marker_target": "100 % cible",
+      "hidden_short": "statut masqué",
+      "reveal_note": "Note révélée en fin de campagne"
     }
   }
 }

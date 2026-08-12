@@ -602,6 +602,14 @@
       "badge": "Mục tiêu KvK của tôi",
       "title": "Ban chỉ huy chưa công bố mục tiêu.",
       "desc": "Mục tiêu được tính từ ảnh chụp sức mạnh ở Lượt 1. Mục tiêu của bạn sẽ xuất hiện ở đây ngay khi công bố — bạn không cần làm gì."
+    },
+    "goal": {
+      "kp": "Điểm tiêu diệt",
+      "dead": "Mục tiêu tổn thất",
+      "marker_min": "60% tối thiểu",
+      "marker_target": "100% mục tiêu",
+      "hidden_short": "trạng thái ẩn",
+      "reveal_note": "Điểm hiển thị khi trận chiến kết thúc"
     }
   }
 }

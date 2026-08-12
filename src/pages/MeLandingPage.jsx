@@ -15,6 +15,9 @@ import NextActionCard from '../components/me/NextActionCard';
 import LoadingSkeleton from '../components/me/LoadingSkeleton';
 import ErrorCard from '../components/me/ErrorCard';
 import OffCampaignCard from '../components/me/OffCampaignCard';
+import MyGoalCard from '../components/me/MyGoalCard';
+import NoGoalPublishedCard from '../components/me/NoGoalPublishedCard';
+import { useMyKvkGoals } from '../hooks/useMyKvkGoals';
 
 /**
  * F-032 — Espace perso « Moi » (spec docs/pm/Spec_Espace_Perso.md).
@@ -33,6 +36,7 @@ const MeLandingPage = () => {
     const { currentUser, governorId } = useAuth();
     const { role } = useRole();
     const { error: dataError, lastUpdated } = useData();
+    const { rows: goalRows, revealed: goalRevealed } = useMyKvkGoals();
 
     const [configLoading, setConfigLoading] = useState(true);
     const [kvkConfig, setKvkConfig] = useState(null);
@@ -131,6 +135,14 @@ const MeLandingPage = () => {
                             onDeclareClick={scrollToForm}
                         />
                         <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
+                        {/* Lot 2 — objectif perso : carte si un objectif est publié
+                            (war = initialPower figé, filler = stacks déclarés), sinon
+                            le placeholder « pas encore publié » (spec §5.2 / §6.2). */}
+                        {goalRows.some((r) => r.published) ? (
+                            <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} />
+                        ) : (
+                            <NoGoalPublishedCard />
+                        )}
                         <div ref={formRef} className="scroll-mt-20">
                             <AvailabilityForm />
                         </div>

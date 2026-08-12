@@ -602,6 +602,14 @@
       "badge": "KvK hedefim",
       "title": "Liderlik henüz hedefleri yayınlamadı.",
       "desc": "Hedefler 1. Geçiş güç anlık görüntüsünden hesaplanır. Seninki yayınlanır yayınlanmaz burada görünecek — yapman gereken bir şey yok."
+    },
+    "goal": {
+      "kp": "Öldürme puanı",
+      "dead": "Ölüm hedefi",
+      "marker_min": "%60 min",
+      "marker_target": "%100 hedef",
+      "hidden_short": "durum gizli",
+      "reveal_note": "Puan, savaş bittiğinde açıklanır"
     }
   }
 }

@@ -6,7 +6,7 @@ import { BRANDING } from '../../config/branding';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { useRole, ROLES } from '../../context/RoleContext';
-import { computeKvkGoals, DEAD_POINTS_PER_T5 } from '../../lib/kvkGoals';
+import { computeKvkGoals, computeFillerGoal, DEAD_POINTS_PER_T5 } from '../../lib/kvkGoals';
 import { rateFromGoalPct, RATES } from '../../lib/kvkScoring';
 import { sortRows, nextSort } from '../../lib/sortRows';
 import { resolveCampaignName } from '../../lib/campaignLabel';
@@ -227,10 +227,8 @@ const KvkGoalsPanel = () => {
             const kvk = statsById.get(gid) || null;
             const t4 = d.filler?.t4 || 0;
             const t5 = d.filler?.t5 || 0;
-            const declaredPower = t4 * 4 + t5 * 10;
-            const target = ratio * declaredPower;
-            const achieved = (Number(kvk?.t4Dead) || 0) * 4 + (Number(kvk?.t5Dead) || 0) * 10;
-            const attainment = target > 0 ? achieved / target : null;
+            // Barème filler partagé avec l'espace perso (lib/kvkGoals.computeFillerGoal).
+            const { declaredPower, target, achieved, attainment } = computeFillerGoal(t4, t5, kvk?.t4Dead, kvk?.t5Dead, ratio);
             const { rate } = rateFromGoalPct(attainment);
             return {
                 key: d.id, governorId: gid,

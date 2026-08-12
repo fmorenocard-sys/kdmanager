@@ -240,6 +240,14 @@
             "badge": "Mein KvK-Ziel",
             "title": "Die Führung hat noch keine Ziele veröffentlicht.",
             "desc": "Ziele werden aus dem Machtwert von Pass 1 berechnet. Deins erscheint hier, sobald es veröffentlicht ist — du musst nichts tun."
+        },
+        "goal": {
+            "kp": "Killpunkte",
+            "dead": "Todesziel",
+            "marker_min": "60 % Min.",
+            "marker_target": "100 % Ziel",
+            "hidden_short": "Status verborgen",
+            "reveal_note": "Wertung nach Kampfende sichtbar"
         }
     }
 }

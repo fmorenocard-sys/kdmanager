@@ -602,6 +602,14 @@
       "badge": "Il mio obiettivo KvK",
       "title": "La leadership non ha ancora pubblicato gli obiettivi.",
       "desc": "Gli obiettivi si calcolano dall'istantanea di potere del Passaggio 1. Il tuo apparirà qui appena pubblicato — non devi fare nulla."
+    },
+    "goal": {
+      "kp": "Punti uccisione",
+      "dead": "Obiettivo morti",
+      "marker_min": "60% min",
+      "marker_target": "100% obiettivo",
+      "hidden_short": "stato nascosto",
+      "reveal_note": "Valutazione svelata a fine campagna"
     }
   }
 }

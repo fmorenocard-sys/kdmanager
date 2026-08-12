@@ -602,6 +602,14 @@
       "badge": "My KvK goal",
       "title": "Leadership hasn't published targets yet.",
       "desc": "Goals are set from the power snapshot taken at Pass 1. Yours lands here as soon as it's out — nothing for you to do."
+    },
+    "goal": {
+      "kp": "Kill points",
+      "dead": "Death goal",
+      "marker_min": "60% min",
+      "marker_target": "100% target",
+      "hidden_short": "status hidden",
+      "reveal_note": "Rating revealed once the fighting ends"
     }
   }
 }

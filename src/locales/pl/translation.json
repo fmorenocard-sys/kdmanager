@@ -602,6 +602,14 @@
       "badge": "Mój cel KvK",
       "title": "Dowództwo nie opublikowało jeszcze celów.",
       "desc": "Cele są ustalane na podstawie migawki mocy z Przejścia 1. Twój pojawi się tutaj zaraz po publikacji — nic nie musisz robić."
+    },
+    "goal": {
+      "kp": "Punkty zabójstw",
+      "dead": "Cel strat",
+      "marker_min": "60% min",
+      "marker_target": "100% cel",
+      "hidden_short": "status ukryty",
+      "reveal_note": "Ocena ujawniana po zakończeniu walk"
     }
   }
 }

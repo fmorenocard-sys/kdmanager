@@ -240,6 +240,14 @@
             "badge": "Mi objetivo KvK",
             "title": "El liderazgo aún no ha publicado los objetivos.",
             "desc": "Los objetivos se calculan a partir de la instantánea de poder del Pase 1. El tuyo aparecerá aquí en cuanto salga — nada que hacer de tu parte."
+        },
+        "goal": {
+            "kp": "PK ganados",
+            "dead": "Objetivo muertes",
+            "marker_min": "60 % mín",
+            "marker_target": "100 % objetivo",
+            "hidden_short": "estado oculto",
+            "reveal_note": "Puntuación revelada al terminar la campaña"
         }
     }
 }

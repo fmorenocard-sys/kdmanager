@@ -148,6 +148,36 @@ export function computeKvkGoals(power, opts = {}) {
 }
 
 /**
+ * Points de puissance/morts par troupe pour le barème filler (F-027 / BR-018).
+ * Un filler déclare des stacks T4/T5 ; « pouvoir déclaré » = 4×T4 + 10×T5.
+ */
+export const FILLER_POINTS = { t4: 4, t5: 10 };
+
+/**
+ * Objectif d'un compte filler (F-027 / BR-018). Barème dédié, jamais mélangé au
+ * barème puissance des comptes de guerre : pouvoir déclaré = 4×T4 + 10×T5 ;
+ * objectif de perte = ratio (par campagne, défaut 0.5) × pouvoir déclaré ;
+ * réalisé = 4×t4Dead + 10×t5Dead ; atteinte = réalisé / objectif.
+ *
+ * Source unique partagée par le War Tracker (KvkGoalsPanel) et l'espace perso
+ * (useMyKvkGoals) — voir spec Espace_Perso §5.2 « pas de duplication de calcul ».
+ *
+ * @param {number} t4 stacks T4 déclarés
+ * @param {number} t5 stacks T5 déclarés
+ * @param {number} t4Dead morts T4 réalisées (depuis kvk_filler)
+ * @param {number} t5Dead morts T5 réalisées
+ * @param {number} [ratio=0.5] ratio de perte de la campagne (kvk_config.fillerDeathRatio)
+ * @returns {{declaredPower:number, target:number, achieved:number, attainment:number|null}}
+ */
+export function computeFillerGoal(t4, t5, t4Dead, t5Dead, ratio = 0.5) {
+    const declaredPower = (Number(t4) || 0) * FILLER_POINTS.t4 + (Number(t5) || 0) * FILLER_POINTS.t5;
+    const target = ratio * declaredPower;
+    const achieved = (Number(t4Dead) || 0) * FILLER_POINTS.t4 + (Number(t5Dead) || 0) * FILLER_POINTS.t5;
+    const attainment = target > 0 ? achieved / target : null;
+    return { declaredPower, target, achieved, attainment };
+}
+
+/**
  * Résout le « Req DKP » d'un joueur depuis la configuration de campagne.
  * Deux modes, parce que l'étude laisse la question ouverte (A-005) :
  *  - `constant`   : une valeur unique pour tout le royaume, la variation par
