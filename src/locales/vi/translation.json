@@ -9,7 +9,9 @@
     "kvk": "KvK",
     "admin": "Quản trị",
     "bank": "Ngân hàng",
-    "war": "Chiến tranh"
+    "war": "Chiến tranh",
+    "me": "Tôi",
+    "royaume": "Vương quốc"
   },
   "auth": {
     "sign_in": "Đăng nhập",
@@ -571,5 +573,35 @@
     "milestones_done": "{{done}}/{{total}} mốc",
     "local": "Giờ địa phương",
     "toggle_timezone": "Chuyển UTC / giờ địa phương"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Hành động tiếp theo",
+      "not_declared_title": "Bạn chưa đăng ký cho {{name}}.",
+      "not_declared_desc": "Ban chỉ huy lên kế hoạch hành quân dựa trên đăng ký.",
+      "cta": "Đăng ký khả dụng",
+      "declared_title": "Đã đăng ký khả dụng",
+      "edit": "Chỉnh sửa",
+      "marches": "{{count}} cánh quân"
+    },
+    "error": {
+      "badge": "Không thể kết nối bản quét",
+      "title": "Số liệu của bạn có thể đã lỗi thời.",
+      "last_scan": "Lần quét thành công gần nhất:",
+      "retry": "Thử lại"
+    },
+    "offcampaign": {
+      "badge": "Giữa các chiến dịch",
+      "title": "{{name}} đã kết thúc. Không có gì để đăng ký.",
+      "title_generic": "Không có chiến dịch nào đang diễn ra. Không có gì để đăng ký.",
+      "desc": "Ban chỉ huy sẽ thông báo chiến dịch tiếp theo tại đây.",
+      "next_badge": "Chiến dịch tiếp theo",
+      "next_none": "Chưa được thông báo"
+    },
+    "nogoal": {
+      "badge": "Mục tiêu KvK của tôi",
+      "title": "Ban chỉ huy chưa công bố mục tiêu.",
+      "desc": "Mục tiêu được tính từ ảnh chụp sức mạnh ở Lượt 1. Mục tiêu của bạn sẽ xuất hiện ở đây ngay khi công bố — bạn không cần làm gì."
+    }
   }
 }

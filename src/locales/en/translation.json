@@ -9,7 +9,9 @@
     "kvk": "KvK",
     "admin": "Administration",
     "bank": "Bank",
-    "war": "War"
+    "war": "War",
+    "me": "Me",
+    "royaume": "Kingdom"
   },
   "auth": {
     "sign_in": "Sign In",
@@ -571,5 +573,35 @@
     "milestones_done": "{{done}}/{{total}} milestones",
     "local": "Local",
     "toggle_timezone": "Toggle UTC / local time"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Next action",
+      "not_declared_title": "You haven't declared for {{name}} yet.",
+      "not_declared_desc": "Leadership plans marches from declarations only.",
+      "cta": "Declare my availability",
+      "declared_title": "Availability declared",
+      "edit": "Edit",
+      "marches": "{{count}} marches"
+    },
+    "error": {
+      "badge": "Can't reach the scan",
+      "title": "Your figures may be out of date.",
+      "last_scan": "Last successful scan:",
+      "retry": "Try again"
+    },
+    "offcampaign": {
+      "badge": "Between campaigns",
+      "title": "{{name}} is over. Nothing to declare.",
+      "title_generic": "No campaign running. Nothing to declare.",
+      "desc": "Leadership announces the next campaign here.",
+      "next_badge": "Next campaign",
+      "next_none": "Not announced yet"
+    },
+    "nogoal": {
+      "badge": "My KvK goal",
+      "title": "Leadership hasn't published targets yet.",
+      "desc": "Goals are set from the power snapshot taken at Pass 1. Yours lands here as soon as it's out — nothing for you to do."
+    }
   }
 }

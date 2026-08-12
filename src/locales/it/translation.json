@@ -9,7 +9,9 @@
     "kvk": "KvK",
     "admin": "Amministrazione",
     "bank": "Banca",
-    "war": "Guerra"
+    "war": "Guerra",
+    "me": "Io",
+    "royaume": "Regno"
   },
   "auth": {
     "sign_in": "Accedi",
@@ -571,5 +573,35 @@
     "milestones_done": "{{done}}/{{total}} tappe",
     "local": "Locale",
     "toggle_timezone": "Alterna UTC / ora locale"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Prossima azione",
+      "not_declared_title": "Non hai ancora dichiarato per {{name}}.",
+      "not_declared_desc": "La leadership pianifica le marce solo dalle dichiarazioni.",
+      "cta": "Dichiara la mia disponibilità",
+      "declared_title": "Disponibilità dichiarata",
+      "edit": "Modifica",
+      "marches": "{{count}} marce"
+    },
+    "error": {
+      "badge": "Scansione irraggiungibile",
+      "title": "I tuoi dati potrebbero essere obsoleti.",
+      "last_scan": "Ultima scansione riuscita:",
+      "retry": "Riprova"
+    },
+    "offcampaign": {
+      "badge": "Tra le campagne",
+      "title": "{{name}} è finita. Niente da dichiarare.",
+      "title_generic": "Nessuna campagna in corso. Niente da dichiarare.",
+      "desc": "La leadership annuncerà qui la prossima campagna.",
+      "next_badge": "Prossima campagna",
+      "next_none": "Non ancora annunciata"
+    },
+    "nogoal": {
+      "badge": "Il mio obiettivo KvK",
+      "title": "La leadership non ha ancora pubblicato gli obiettivi.",
+      "desc": "Gli obiettivi si calcolano dall'istantanea di potere del Passaggio 1. Il tuo apparirà qui appena pubblicato — non devi fare nulla."
+    }
   }
 }

@@ -9,7 +9,9 @@
     "kvk": "KvK",
     "admin": "Yönetim",
     "bank": "Banka",
-    "war": "Savaş"
+    "war": "Savaş",
+    "me": "Ben",
+    "royaume": "Krallık"
   },
   "auth": {
     "sign_in": "Giriş Yap",
@@ -571,5 +573,35 @@
     "milestones_done": "{{done}}/{{total}} kilometre taşı",
     "local": "Yerel",
     "toggle_timezone": "UTC / yerel saati değiştir"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Sonraki eylem",
+      "not_declared_title": "{{name}} için henüz bildirim yapmadın.",
+      "not_declared_desc": "Liderlik yürüyüşleri yalnızca bildirimlere göre planlar.",
+      "cta": "Uygunluğumu bildir",
+      "declared_title": "Uygunluk bildirildi",
+      "edit": "Düzenle",
+      "marches": "{{count}} yürüyüş"
+    },
+    "error": {
+      "badge": "Taramaya ulaşılamıyor",
+      "title": "Verilerin güncel olmayabilir.",
+      "last_scan": "Son başarılı tarama:",
+      "retry": "Tekrar dene"
+    },
+    "offcampaign": {
+      "badge": "Kampanyalar arası",
+      "title": "{{name}} sona erdi. Bildirilecek bir şey yok.",
+      "title_generic": "Devam eden kampanya yok. Bildirilecek bir şey yok.",
+      "desc": "Liderlik bir sonraki kampanyayı burada duyuracak.",
+      "next_badge": "Sonraki kampanya",
+      "next_none": "Henüz duyurulmadı"
+    },
+    "nogoal": {
+      "badge": "KvK hedefim",
+      "title": "Liderlik henüz hedefleri yayınlamadı.",
+      "desc": "Hedefler 1. Geçiş güç anlık görüntüsünden hesaplanır. Seninki yayınlanır yayınlanmaz burada görünecek — yapman gereken bir şey yok."
+    }
   }
 }

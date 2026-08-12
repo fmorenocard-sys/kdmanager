@@ -8,7 +8,9 @@
         "kvk": "KvK",
         "admin": "Verwaltung",
         "bank": "Bank",
-        "war": "Krieg"
+        "war": "Krieg",
+        "me": "Ich",
+        "royaume": "Königreich"
     },
     "auth": {
         "sign_in": "Anmelden",
@@ -209,5 +211,35 @@
         "kp_goal": "KP-Ziel",
         "dead_goal": "Tote-Ziel",
         "save": "Konfiguration speichern"
+    },
+    "me": {
+        "next_action": {
+            "badge": "Nächste Aktion",
+            "not_declared_title": "Du hast dich noch nicht für {{name}} gemeldet.",
+            "not_declared_desc": "Die Führung plant Märsche nur anhand der Meldungen.",
+            "cta": "Verfügbarkeit melden",
+            "declared_title": "Verfügbarkeit gemeldet",
+            "edit": "Bearbeiten",
+            "marches": "{{count}} Märsche"
+        },
+        "error": {
+            "badge": "Scan nicht erreichbar",
+            "title": "Deine Zahlen sind möglicherweise veraltet.",
+            "last_scan": "Letzter erfolgreicher Scan:",
+            "retry": "Erneut versuchen"
+        },
+        "offcampaign": {
+            "badge": "Zwischen den Kampagnen",
+            "title": "{{name}} ist vorbei. Nichts zu melden.",
+            "title_generic": "Keine laufende Kampagne. Nichts zu melden.",
+            "desc": "Die Führung kündigt die nächste Kampagne hier an.",
+            "next_badge": "Nächste Kampagne",
+            "next_none": "Noch nicht angekündigt"
+        },
+        "nogoal": {
+            "badge": "Mein KvK-Ziel",
+            "title": "Die Führung hat noch keine Ziele veröffentlicht.",
+            "desc": "Ziele werden aus dem Machtwert von Pass 1 berechnet. Deins erscheint hier, sobald es veröffentlicht ist — du musst nichts tun."
+        }
     }
 }

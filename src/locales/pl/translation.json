@@ -9,7 +9,9 @@
     "kvk": "KvK",
     "admin": "Administracja",
     "bank": "Bank",
-    "war": "Wojna"
+    "war": "Wojna",
+    "me": "Ja",
+    "royaume": "Królestwo"
   },
   "auth": {
     "sign_in": "Zaloguj",
@@ -571,5 +573,35 @@
     "milestones_done": "{{done}}/{{total}} etapów",
     "local": "Lokalny",
     "toggle_timezone": "Przełącz UTC / czas lokalny"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Następne działanie",
+      "not_declared_title": "Nie zgłosiłeś jeszcze gotowości na {{name}}.",
+      "not_declared_desc": "Dowództwo planuje marsze wyłącznie na podstawie zgłoszeń.",
+      "cta": "Zgłoś moją gotowość",
+      "declared_title": "Gotowość zgłoszona",
+      "edit": "Edytuj",
+      "marches": "{{count}} marszów"
+    },
+    "error": {
+      "badge": "Brak dostępu do skanu",
+      "title": "Twoje dane mogą być nieaktualne.",
+      "last_scan": "Ostatni udany skan:",
+      "retry": "Spróbuj ponownie"
+    },
+    "offcampaign": {
+      "badge": "Między kampaniami",
+      "title": "{{name}} zakończona. Nic do zgłoszenia.",
+      "title_generic": "Brak trwającej kampanii. Nic do zgłoszenia.",
+      "desc": "Dowództwo ogłosi tutaj następną kampanię.",
+      "next_badge": "Następna kampania",
+      "next_none": "Jeszcze nieogłoszona"
+    },
+    "nogoal": {
+      "badge": "Mój cel KvK",
+      "title": "Dowództwo nie opublikowało jeszcze celów.",
+      "desc": "Cele są ustalane na podstawie migawki mocy z Przejścia 1. Twój pojawi się tutaj zaraz po publikacji — nic nie musisz robić."
+    }
   }
 }

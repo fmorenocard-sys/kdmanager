@@ -9,7 +9,9 @@
     "kvk": "KvK",
     "admin": "Administration",
     "bank": "Banque",
-    "war": "Guerre"
+    "war": "Guerre",
+    "me": "Moi",
+    "royaume": "Royaume"
   },
   "auth": {
     "sign_in": "Se Connecter",
@@ -571,5 +573,35 @@
     "milestones_done": "{{done}}/{{total}} jalons",
     "local": "Local",
     "toggle_timezone": "Basculer UTC / heure locale"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Prochaine action",
+      "not_declared_title": "Tu n'as pas encore déclaré pour {{name}}.",
+      "not_declared_desc": "Le leadership planifie les marches à partir des déclarations.",
+      "cta": "Déclarer ma disponibilité",
+      "declared_title": "Disponibilité déclarée",
+      "edit": "Modifier",
+      "marches": "{{count}} marches"
+    },
+    "error": {
+      "badge": "Scan injoignable",
+      "title": "Tes chiffres sont peut-être périmés.",
+      "last_scan": "Dernier scan réussi :",
+      "retry": "Réessayer"
+    },
+    "offcampaign": {
+      "badge": "Entre deux campagnes",
+      "title": "{{name}} est terminé. Rien à déclarer.",
+      "title_generic": "Aucune campagne en cours. Rien à déclarer.",
+      "desc": "Le leadership annoncera la prochaine campagne ici.",
+      "next_badge": "Prochaine campagne",
+      "next_none": "Pas encore annoncée"
+    },
+    "nogoal": {
+      "badge": "Mon objectif KvK",
+      "title": "Le leadership n'a pas encore publié les objectifs.",
+      "desc": "Les objectifs sont calculés à partir du snapshot de puissance du Pass 1. Le tien apparaîtra ici dès sa publication — rien à faire de ton côté."
+    }
   }
 }

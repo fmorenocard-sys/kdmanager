@@ -8,7 +8,9 @@
         "kvk": "KvK",
         "admin": "Administración",
         "bank": "Banco",
-        "war": "Guerra"
+        "war": "Guerra",
+        "me": "Yo",
+        "royaume": "Reino"
     },
     "auth": {
         "sign_in": "Iniciar sesión",
@@ -209,5 +211,35 @@
         "kp_goal": "Objetivo KP",
         "dead_goal": "Objetivo de bajas",
         "save": "Guardar configuración"
+    },
+    "me": {
+        "next_action": {
+            "badge": "Próxima acción",
+            "not_declared_title": "Aún no has declarado para {{name}}.",
+            "not_declared_desc": "El liderazgo planifica las marchas solo con las declaraciones.",
+            "cta": "Declarar mi disponibilidad",
+            "declared_title": "Disponibilidad declarada",
+            "edit": "Editar",
+            "marches": "{{count}} marchas"
+        },
+        "error": {
+            "badge": "No se puede acceder al escaneo",
+            "title": "Tus cifras pueden estar desactualizadas.",
+            "last_scan": "Último escaneo correcto:",
+            "retry": "Reintentar"
+        },
+        "offcampaign": {
+            "badge": "Entre campañas",
+            "title": "{{name}} ha terminado. Nada que declarar.",
+            "title_generic": "Ninguna campaña en curso. Nada que declarar.",
+            "desc": "El liderazgo anunciará la próxima campaña aquí.",
+            "next_badge": "Próxima campaña",
+            "next_none": "Aún sin anunciar"
+        },
+        "nogoal": {
+            "badge": "Mi objetivo KvK",
+            "title": "El liderazgo aún no ha publicado los objetivos.",
+            "desc": "Los objetivos se calculan a partir de la instantánea de poder del Pase 1. El tuyo aparecerá aquí en cuanto salga — nada que hacer de tu parte."
+        }
     }
 }
