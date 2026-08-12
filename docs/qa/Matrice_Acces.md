@@ -4,7 +4,7 @@
 > règles `BR-xxx` du [SSOT](SSOT.md), et l'**application réelle** dans
 > [`firestore.rules`](../../firestore.rules) (données) + `RoleContext.jsx` (UI).
 > Ce fichier est un récapitulatif dérivé — en cas de doute, les règles Firestore
-> et le SSOT font foi. Dernière synchro : 2026-08-09.
+> et le SSOT font foi. Dernière synchro : 2026-08-12 (ajout `/me`, F-032 Lot 1).
 
 ## Rôles (SSOT §4, hiérarchie BR-002)
 
@@ -32,8 +32,9 @@ de liste (pas de hiérarchie) — mais tous les checks « leadership » passent 
 
 | Surface | Guest | Warrior | Officer | King | Base / source |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Dashboard** `/` | ✅ | ✅ | ✅ | ✅ | Public. Bloc Banque en cascade du module (BR-015). |
-| **War Tracker — Déclaration** `?tab=declaration` | 🔑 | ✅ | ✅ | ✅ | **Login requis**, pas de rôle : tout utilisateur connecté déclare son compte (`AvailabilityForm`). |
+| **Dashboard** `/` | ✅ | ✅ | ✅ | ✅ | Public. Bloc Banque en cascade du module (BR-015). Renommé « Royaume » (`/royaume`) ; connecté → aiguillé vers **Moi** (`/me`, décision Roi 2026-08-12 #4). |
+| **Espace perso « Moi »** `/me` | 🔑 | ✅ | ✅ | ✅ | **Login requis**, pas de rôle : **même espace pour tous** (décision Roi 2026-08-12 #2) — Warrior/Officer/King identiques, aucune couche leadership. Compose Déclaration (F-006), Mon objectif (F-014, Lot 2), Calendrier (F-031), Mes comptes (F-025, Lot 3), Mes stats (Lot 4) — vue scopée sur l'utilisateur courant uniquement, jamais de roster tiers (A-039, pas de gate BR-008). **F-032, Lot 1 (socle) livré** sur branche `feat/espace-perso-moi`, à valider sur staging. Section IA cible (E-009 §5.3) : **Mon jeu**. |
+| **War Tracker — Déclaration** `?tab=declaration` | 🔑 | ✅ | ✅ | ✅ | **Login requis**, pas de rôle : tout utilisateur connecté déclare son compte (`AvailabilityForm`). Composé tel quel dans `/me` depuis le Lot 1 (F-032) — même composant, pas de duplication. |
 | **War Tracker — Objectifs** `?tab=goals` | 🔑 | 👁️ | ✅ | ✅ | Le Warrior ne voit **que sa ligne** ; leadership voit tout + vue « Top du royaume ». Statuts masqués tant que non révélés (BR-019). |
 | **War Tracker — War Dashboard** `?tab=dashboard` | 🔒 | 🔒 | ✅ | ✅ | Leadership (`AccessGate` + redirect si deep-link). Actions de migration = King seul. |
 | **KvK Hub — Performance** `/kvk?tab=performance` | ✅ | ✅ | ✅ | ✅ | Public. Sous-chip **Fillers** = comptes **Discord-vérifiés** (BR-008). |
@@ -104,3 +105,11 @@ certaines pages (Deadweight, Timeline) est **UI seulement**.
   **désactivés par instance** (marque blanche) : sur une instance donnée, une page « autorisée
   par le rôle » peut être **absente** si le module n'est pas activé — c'est une couche
   orthogonale au rôle (autorité fournisseur, pas King).
+- **Nav interim F-032 (2026-08-12, `feat/espace-perso-moi`).** Le slot « Guerre » de
+  `BottomNav`/Sidebar est **repointé vers `/me`** pour tout le monde — le War Dashboard
+  (leadership) **perd sa place dans la barre** mais reste joignable par son URL directe
+  `/war-tracker`, sur le même précédent que `/admin` (rail desktop hors plafond des 6 slots,
+  absent du mobile). Dette de navigabilité temporaire pour le leadership, le temps que la
+  fusion « Pilotage » (US-043, Lot 6) réintroduise un point d'entrée dédié dans la barre —
+  décision Roi 2026-08-12 §12.1 (`Spec_Espace_Perso.md` §7). Ne pas lire cet interim comme
+  la cible : c'est une étape assumée, pas la fin de la bascule de nav.
