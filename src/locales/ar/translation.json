@@ -582,7 +582,9 @@
       "cta": "إعلان جاهزيتي",
       "declared_title": "تم إعلان الجاهزية",
       "edit": "تعديل",
-      "marches": "{{count}} زحوف"
+      "marches": "{{count}} زحوف",
+      "declare_account": "إعلان {{name}}",
+      "all_declared": "جميع حساباتك أعلنت"
     },
     "error": {
       "badge": "تعذّر الوصول إلى المسح",
@@ -610,6 +612,17 @@
       "marker_target": "100٪ الهدف",
       "hidden_short": "الحالة مخفية",
       "reveal_note": "يظهر التقييم بعد انتهاء القتال"
-    }
+    },
+    "account": {
+      "primary": "رئيسي",
+      "war": "حرب",
+      "filler": "داعم"
+    },
+    "accounts": {
+      "title": "حساباتي",
+      "manage": "إدارة",
+      "none": "لم تتم المطالبة بأي حساب"
+    },
+    "rollup": "{{done}}/{{total}} معلن"
   }
 }

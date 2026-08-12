@@ -220,7 +220,9 @@
             "cta": "Uygunluğumu bildir",
             "declared_title": "Uygunluk bildirildi",
             "edit": "Düzenle",
-            "marches": "{{count}} yürüyüş"
+            "marches": "{{count}} yürüyüş",
+            "declare_account": "{{name}} bildir",
+            "all_declared": "Tüm hesapların bildirildi"
         },
         "error": {
             "badge": "Taramaya ulaşılamıyor",
@@ -248,6 +250,17 @@
             "marker_target": "%100 hedef",
             "hidden_short": "durum gizli",
             "reveal_note": "Puan, savaş bittiğinde açıklanır"
-        }
+        },
+        "account": {
+            "primary": "Birincil",
+            "war": "Savaş",
+            "filler": "Filler"
+        },
+        "accounts": {
+            "title": "Hesaplarım",
+            "manage": "Yönet",
+            "none": "Talep edilen hesap yok"
+        },
+        "rollup": "{{done}}/{{total}} bildirildi"
     }
 }

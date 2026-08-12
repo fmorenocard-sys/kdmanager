@@ -582,7 +582,9 @@
       "cta": "Đăng ký khả dụng",
       "declared_title": "Đã đăng ký khả dụng",
       "edit": "Chỉnh sửa",
-      "marches": "{{count}} cánh quân"
+      "marches": "{{count}} cánh quân",
+      "declare_account": "Đăng ký {{name}}",
+      "all_declared": "Tất cả tài khoản của bạn đã đăng ký"
     },
     "error": {
       "badge": "Không thể kết nối bản quét",
@@ -610,6 +612,17 @@
       "marker_target": "100% mục tiêu",
       "hidden_short": "trạng thái ẩn",
       "reveal_note": "Điểm hiển thị khi trận chiến kết thúc"
-    }
+    },
+    "account": {
+      "primary": "Chính",
+      "war": "Chiến đấu",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Tài khoản của tôi",
+      "manage": "Quản lý",
+      "none": "Chưa yêu cầu tài khoản nào"
+    },
+    "rollup": "{{done}}/{{total}} đã đăng ký"
   }
 }

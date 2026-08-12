@@ -17,6 +17,7 @@ import ErrorCard from '../components/me/ErrorCard';
 import OffCampaignCard from '../components/me/OffCampaignCard';
 import MyGoalCard from '../components/me/MyGoalCard';
 import NoGoalPublishedCard from '../components/me/NoGoalPublishedCard';
+import MyAccountsSummary from '../components/me/MyAccountsSummary';
 import { useMyKvkGoals } from '../hooks/useMyKvkGoals';
 
 /**
@@ -33,7 +34,7 @@ import { useMyKvkGoals } from '../hooks/useMyKvkGoals';
  */
 const MeLandingPage = () => {
     const { t } = useTranslation();
-    const { currentUser, governorId } = useAuth();
+    const { currentUser, governorId, accounts } = useAuth();
     const { role } = useRole();
     const { error: dataError, lastUpdated } = useData();
     const { rows: goalRows, revealed: goalRevealed } = useMyKvkGoals();
@@ -41,12 +42,18 @@ const MeLandingPage = () => {
     const [configLoading, setConfigLoading] = useState(true);
     const [kvkConfig, setKvkConfig] = useState(null);
     const [timeline, setTimeline] = useState([]);
-    const [declaration, setDeclaration] = useState(null); // { updatedAt: Date|null, marches: [] } | null
+    // Lot 3 : état de déclaration de TOUS les comptes réclamés (pas seulement le
+    // principal). [{ governorId, name, type, isPrimary, declared, declaredAt, marchesCount }]
+    const [myAccounts, setMyAccounts] = useState([]);
     const formRef = useRef(null);
 
     useEffect(() => {
         let alive = true;
         const load = async () => {
+            // Login-only : un visiteur est redirigé vers /royaume au rendu. On
+            // évite ici les lectures Firestore futiles (kvk_config n'est pas public
+            // → permission-denied) tant qu'il n'y a pas d'utilisateur connecté.
+            if (!currentUser) { setConfigLoading(false); return; }
             setConfigLoading(true);
             try {
                 // Lecture de référence copiée de KvkGoalsPanel : current + timeline
@@ -69,26 +76,35 @@ const MeLandingPage = () => {
                     setTimeline([]);
                 }
 
-                // Déclaration du compte PRINCIPAL pour la campagne courante
-                // (docId 3 segments, repli 2 segments comme AvailabilityForm).
-                if (currentUser && governorId && cur) {
+                // État de déclaration de TOUS les comptes réclamés pour la campagne
+                // courante (docId 3 segments, repli 2 segments pour le principal,
+                // comme AvailabilityForm). Lecture bornée au nombre de comptes.
+                if (currentUser && cur) {
                     const kvkId = cur.id || 'default_kvk';
-                    let sn = await getDoc(doc(db, 'war_availabilities', `${kvkId}_${currentUser.uid}_${governorId}`));
-                    if (!sn.exists()) {
-                        sn = await getDoc(doc(db, 'war_availabilities', `${kvkId}_${currentUser.uid}`));
-                    }
+                    const acctList = (accounts && accounts.length)
+                        ? accounts
+                        : (governorId ? [{ governorId, type: 'war' }] : []);
+                    const built = await Promise.all(acctList.map(async (a) => {
+                        const gid = String(a.governorId);
+                        let sn = await getDoc(doc(db, 'war_availabilities', `${kvkId}_${currentUser.uid}_${gid}`));
+                        if (!sn.exists() && gid === String(governorId || '')) {
+                            sn = await getDoc(doc(db, 'war_availabilities', `${kvkId}_${currentUser.uid}`));
+                        }
+                        const d = sn.exists() ? sn.data() : null;
+                        return {
+                            governorId: gid,
+                            name: a.name || gid,
+                            type: a.type || 'war',
+                            isPrimary: gid === String(governorId || ''),
+                            declared: !!d,
+                            declaredAt: d?.updatedAt?.toDate ? d.updatedAt.toDate() : null,
+                            marchesCount: d && Array.isArray(d.marches) ? d.marches.length : null,
+                        };
+                    }));
                     if (!alive) return;
-                    if (sn.exists()) {
-                        const d = sn.data();
-                        setDeclaration({
-                            updatedAt: d.updatedAt?.toDate ? d.updatedAt.toDate() : null,
-                            marches: Array.isArray(d.marches) ? d.marches : [],
-                        });
-                    } else {
-                        setDeclaration(null);
-                    }
+                    setMyAccounts(built);
                 } else {
-                    setDeclaration(null);
+                    setMyAccounts([]);
                 }
             } catch (e) {
                 console.error('[MeLandingPage] échec lecture config/déclaration', e);
@@ -98,7 +114,7 @@ const MeLandingPage = () => {
         };
         load();
         return () => { alive = false; };
-    }, [currentUser, governorId]);
+    }, [currentUser, governorId, accounts]);
 
     const scrollToForm = useCallback(() => {
         formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -128,10 +144,8 @@ const MeLandingPage = () => {
                 ) : (
                     <>
                         <NextActionCard
-                            declared={!!declaration}
+                            accounts={myAccounts}
                             kvkName={kvkName}
-                            declaredAt={declaration?.updatedAt}
-                            marchesCount={declaration ? declaration.marches.length : null}
                             onDeclareClick={scrollToForm}
                         />
                         <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
@@ -148,6 +162,10 @@ const MeLandingPage = () => {
                         </div>
                     </>
                 )}
+
+                {/* Lot 3 — résumé « Mes comptes » (roster + lien Gérer). Toujours
+                    utile, en/hors campagne ; masqué seulement pendant le chargement. */}
+                {!configLoading && <MyAccountsSummary />}
             </div>
         </div>
     );

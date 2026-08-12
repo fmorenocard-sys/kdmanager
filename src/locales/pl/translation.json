@@ -582,7 +582,9 @@
       "cta": "Zgłoś moją gotowość",
       "declared_title": "Gotowość zgłoszona",
       "edit": "Edytuj",
-      "marches": "{{count}} marszów"
+      "marches": "{{count}} marszów",
+      "declare_account": "Zgłoś {{name}}",
+      "all_declared": "Wszystkie Twoje konta zgłoszone"
     },
     "error": {
       "badge": "Brak dostępu do skanu",
@@ -610,6 +612,17 @@
       "marker_target": "100% cel",
       "hidden_short": "status ukryty",
       "reveal_note": "Ocena ujawniana po zakończeniu walk"
-    }
+    },
+    "account": {
+      "primary": "Główne",
+      "war": "Wojna",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Moje konta",
+      "manage": "Zarządzaj",
+      "none": "Brak przypisanego konta"
+    },
+    "rollup": "{{done}}/{{total}} zgłoszono"
   }
 }

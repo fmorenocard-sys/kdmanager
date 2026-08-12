@@ -37,6 +37,9 @@ export function useMyKvkGoals() {
     useEffect(() => {
         let alive = true;
         (async () => {
+            // Réservé aux utilisateurs connectés (kvk_config n'est pas public) —
+            // évite les permission-denied sur /me pour un visiteur avant redirection.
+            if (!currentUser) { setLoading(false); return; }
             setLoading(true);
             try {
                 const curSnap = await getDoc(doc(db, 'kvk_config', 'current'));

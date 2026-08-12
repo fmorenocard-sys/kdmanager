@@ -582,7 +582,9 @@
       "cta": "Déclarer ma disponibilité",
       "declared_title": "Disponibilité déclarée",
       "edit": "Modifier",
-      "marches": "{{count}} marches"
+      "marches": "{{count}} marches",
+      "declare_account": "Déclarer {{name}}",
+      "all_declared": "Tous tes comptes ont déclaré"
     },
     "error": {
       "badge": "Scan injoignable",
@@ -610,6 +612,17 @@
       "marker_target": "100 % cible",
       "hidden_short": "statut masqué",
       "reveal_note": "Note révélée en fin de campagne"
-    }
+    },
+    "account": {
+      "primary": "Principal",
+      "war": "Guerre",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Mes comptes",
+      "manage": "Gérer",
+      "none": "Aucun compte réclamé"
+    },
+    "rollup": "{{done}}/{{total}} déclarés"
   }
 }

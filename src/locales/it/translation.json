@@ -582,7 +582,9 @@
       "cta": "Dichiara la mia disponibilità",
       "declared_title": "Disponibilità dichiarata",
       "edit": "Modifica",
-      "marches": "{{count}} marce"
+      "marches": "{{count}} marce",
+      "declare_account": "Dichiara {{name}}",
+      "all_declared": "Tutti i tuoi account hanno dichiarato"
     },
     "error": {
       "badge": "Scansione irraggiungibile",
@@ -610,6 +612,17 @@
       "marker_target": "100% obiettivo",
       "hidden_short": "stato nascosto",
       "reveal_note": "Valutazione svelata a fine campagna"
-    }
+    },
+    "account": {
+      "primary": "Principale",
+      "war": "Guerra",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "I miei account",
+      "manage": "Gestisci",
+      "none": "Nessun account rivendicato"
+    },
+    "rollup": "{{done}}/{{total}} dichiarati"
   }
 }
