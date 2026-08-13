@@ -124,6 +124,16 @@ async function seed() {
         batch.delete(warDecl);
         batch.delete(filDecl);
     }
+
+    // Déclaration d'une campagne PASSÉE (SoC 4) — pour que le sélecteur de
+    // KvkGoalsPanel (piloté par les déclarations) propose SoC 4, et vérifier que ses
+    // stats viennent de l'archive figée (join par jeton « soc4 »), pas du scan live.
+    const PAST_KVK = 'kvk_soc4_2026';
+    batch.set(db.doc(`war_availabilities/${PAST_KVK}_${UID}_${WAR.gid}`), {
+        governorId: WAR.gid, governorName: WAR.name, accountType: 'war',
+        availability: 'Available', marches: [{ type: 'Cavalry' }],
+        userId: UID, kvkId: PAST_KVK, kvkName: 'SoC 4', updatedAt: Timestamp.now(),
+    });
     await batch.commit();
 
     // Custom token pour se connecter côté app (émulateur : signature non vérifiée).
