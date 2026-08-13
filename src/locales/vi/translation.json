@@ -641,6 +641,10 @@
       "label": "Chiến dịch",
       "current": "Chiến dịch hiện tại",
       "current_named": "{{name}} (hiện tại)"
+    },
+    "declare": {
+      "edit": "Sửa đăng ký của tôi",
+      "collapse": "Thu gọn"
     }
   },
   "pilotage": {

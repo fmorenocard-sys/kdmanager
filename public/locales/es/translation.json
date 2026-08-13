@@ -279,6 +279,10 @@
             "label": "Campaña",
             "current": "Campaña actual",
             "current_named": "{{name}} (actual)"
+        },
+        "declare": {
+            "edit": "Editar mi declaración",
+            "collapse": "Contraer"
         }
     },
     "pilotage": {

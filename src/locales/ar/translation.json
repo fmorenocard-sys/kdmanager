@@ -641,6 +641,10 @@
       "label": "الحملة",
       "current": "الحملة الحالية",
       "current_named": "{{name}} (الحالية)"
+    },
+    "declare": {
+      "edit": "تعديل إعلاني",
+      "collapse": "طيّ"
     }
   },
   "pilotage": {

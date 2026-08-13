@@ -641,6 +641,10 @@
       "label": "Campagna",
       "current": "Campagna attuale",
       "current_named": "{{name}} (in corso)"
+    },
+    "declare": {
+      "edit": "Modifica la mia dichiarazione",
+      "collapse": "Comprimi"
     }
   },
   "pilotage": {

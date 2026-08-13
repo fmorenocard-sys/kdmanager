@@ -641,6 +641,10 @@
       "label": "Kampania",
       "current": "Bieżąca kampania",
       "current_named": "{{name}} (bieżąca)"
+    },
+    "declare": {
+      "edit": "Edytuj moje zgłoszenie",
+      "collapse": "Zwiń"
     }
   },
   "pilotage": {

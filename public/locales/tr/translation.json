@@ -279,6 +279,10 @@
             "label": "Kampanya",
             "current": "Mevcut kampanya",
             "current_named": "{{name}} (güncel)"
+        },
+        "declare": {
+            "edit": "Bildirimimi düzenle",
+            "collapse": "Daralt"
         }
     },
     "pilotage": {

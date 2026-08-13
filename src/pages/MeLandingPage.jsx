@@ -8,7 +8,7 @@ import { useRole } from '../context/RoleContext';
 import { useData } from '../context/DataContext';
 import { BRANDING } from '../config/branding';
 import PageHeader from '../components/ui/PageHeader';
-import { House, History } from '../components/ui/icons';
+import { House, History, Sword, ChevronDown, ChevronUp } from '../components/ui/icons';
 import AvailabilityForm from '../components/war/AvailabilityForm';
 import CampaignTimelineBanner from '../components/war/CampaignTimelineBanner';
 import NextActionCard from '../components/me/NextActionCard';
@@ -49,6 +49,9 @@ const MeLandingPage = () => {
     // Lot 3 : état de déclaration de TOUS les comptes réclamés (pas seulement le
     // principal). [{ governorId, name, type, isPrimary, declared, declaredAt, marchesCount }]
     const [myAccounts, setMyAccounts] = useState([]);
+    // DA : le formulaire de déclaration (volumineux) est REPLIÉ par défaut — /me
+    // reste un dashboard action-first (mock), la déclaration est à un clic.
+    const [formOpen, setFormOpen] = useState(false);
     const formRef = useRef(null);
 
     useEffect(() => {
@@ -123,8 +126,9 @@ const MeLandingPage = () => {
         return () => { alive = false; };
     }, [currentUser, governorId, accounts]);
 
-    const scrollToForm = useCallback(() => {
-        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const openForm = useCallback(() => {
+        setFormOpen(true);
+        requestAnimationFrame(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     }, []);
 
     // Login-only (décision 2 / spec §3) : l'aiguillage de « / » envoie déjà un
@@ -171,7 +175,7 @@ const MeLandingPage = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4 lg:gap-6 items-start">
                             {/* Colonne gauche : quoi faire et quand */}
                             <div className="flex flex-col gap-4 min-w-0">
-                                <NextActionCard accounts={myAccounts} kvkName={kvkName} onDeclareClick={scrollToForm} />
+                                <NextActionCard accounts={myAccounts} kvkName={kvkName} onDeclareClick={openForm} />
                                 <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
                             </div>
                             {/* Colonne droite : ce qu'on attend de moi et qui je suis */}
@@ -179,13 +183,13 @@ const MeLandingPage = () => {
                                 {/* Sélecteur de campagne (F-032) : campagne courante + campagnes
                                     passées (kvk_history). Pilote l'objectif + Mes stats. */}
                                 {campaigns.length > 1 && (
-                                    <div className="flex items-center gap-2">
-                                        <History size={15} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
+                                    <div className="relative w-full">
+                                        <History size={15} className="absolute start-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] pointer-events-none" aria-hidden="true" />
                                         <select
                                             aria-label={t('me.campaign.label')}
                                             value={selectedKey}
                                             onChange={(e) => selectCampaign(e.target.value)}
-                                            className="flex-1 min-w-0 bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 min-h-[40px]"
+                                            className="w-full ps-9 pe-3 py-2 min-h-[40px] bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg text-sm text-slate-200"
                                         >
                                             {campaigns.map((c) => (
                                                 <option key={c.key} value={c.key}>
@@ -208,10 +212,28 @@ const MeLandingPage = () => {
                                 <MyAccountsSummary />
                             </div>
                         </div>
-                        {/* Formulaire de déclaration complet, pleine largeur sous le
-                            dashboard (contraint en lecture). Cible du CTA « Déclarer ». */}
+                        {/* Formulaire de déclaration — REPLIÉ par défaut (DA) : /me reste
+                            un dashboard, la déclaration est à un clic (CTA de la carte
+                            action ou cette barre). */}
                         <div ref={formRef} className="scroll-mt-20 w-full max-w-2xl mx-auto">
-                            <AvailabilityForm />
+                            {formOpen ? (
+                                <div className="flex flex-col gap-2">
+                                    <button type="button" onClick={() => setFormOpen(false)}
+                                        className="self-end inline-flex items-center gap-1 text-xs font-semibold text-[var(--text-secondary)] hover:text-white transition-colors">
+                                        {t('me.declare.collapse')} <ChevronUp size={14} aria-hidden="true" />
+                                    </button>
+                                    <AvailabilityForm />
+                                </div>
+                            ) : (
+                                <button type="button" onClick={openForm}
+                                    className="v2-glass w-full p-4 flex items-center gap-3 text-start transition-all hover:brightness-110">
+                                    <Sword size={18} weight="fill" className="text-amber-400 shrink-0" aria-hidden="true" />
+                                    <span className="flex-1 text-sm font-bold text-white">
+                                        {myAccounts.some((a) => !a.declared) ? t('me.next_action.cta') : t('me.declare.edit')}
+                                    </span>
+                                    <ChevronDown size={18} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
+                                </button>
+                            )}
                         </div>
                     </>
                 )}

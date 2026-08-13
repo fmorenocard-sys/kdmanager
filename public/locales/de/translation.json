@@ -279,6 +279,10 @@
             "label": "Kampagne",
             "current": "Aktuelle Kampagne",
             "current_named": "{{name}} (aktuell)"
+        },
+        "declare": {
+            "edit": "Meine Meldung bearbeiten",
+            "collapse": "Einklappen"
         }
     },
     "pilotage": {

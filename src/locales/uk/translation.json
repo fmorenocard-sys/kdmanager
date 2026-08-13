@@ -641,6 +641,10 @@
       "label": "Кампанія",
       "current": "Поточна кампанія",
       "current_named": "{{name}} (поточна)"
+    },
+    "declare": {
+      "edit": "Редагувати мою заявку",
+      "collapse": "Згорнути"
     }
   },
   "pilotage": {
