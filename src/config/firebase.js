@@ -17,7 +17,7 @@ const firebaseConfig = {
 
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import { connectAuthEmulator } from "firebase/auth";
+import { connectAuthEmulator, signInWithCustomToken } from "firebase/auth";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -34,6 +34,20 @@ if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
     connectAuthEmulator(auth, "http://127.0.0.1:9099");
     connectFirestoreEmulator(db, '127.0.0.1', 8082);
     connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+
+    // BUG-008 — test-login ÉMULATEUR UNIQUEMENT : rendre/tester les écrans
+    // connectés sans OAuth. `?testToken=<custom token>` (minté par
+    // scripts/seed-emulator.mjs) connecte l'utilisateur de fixtures. Ce bloc est
+    // gardé par VITE_USE_FIREBASE_EMULATOR, qui n'est vrai qu'en `npm run
+    // test:serve` — JAMAIS dans un build de production.
+    try {
+        const testToken = new URLSearchParams(window.location.search).get('testToken');
+        if (testToken) {
+            signInWithCustomToken(auth, testToken)
+                .then(() => console.log('[testLogin] connecté (fixtures)'))
+                .catch((e) => console.error('[testLogin] échec', e));
+        }
+    } catch { /* pas de window / pas de param : ignore */ }
 } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     // Legacy local dev without full emulators (just functions)
     connectFunctionsEmulator(functions, '127.0.0.1', 5001);
