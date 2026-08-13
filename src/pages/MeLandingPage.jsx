@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
-import { useRole } from '../context/RoleContext';
+import { useRole, ROLES } from '../context/RoleContext';
 import { useData } from '../context/DataContext';
 import { BRANDING } from '../config/branding';
 import PageHeader from '../components/ui/PageHeader';
@@ -131,9 +131,10 @@ const MeLandingPage = () => {
         requestAnimationFrame(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     }, []);
 
-    // Login-only (décision 2 / spec §3) : l'aiguillage de « / » envoie déjà un
-    // visiteur vers /royaume ; ce garde couvre l'accès direct à /me par URL.
-    if (!currentUser) return <Navigate to="/royaume" replace />;
+    // Login-only (décision 2 / spec §3) : un visiteur — ou un aperçu « en tant que
+    // Guest » (F-033) — est renvoyé sur la vitrine du royaume. Couvre aussi l'accès
+    // direct à /me par URL.
+    if (!currentUser || role === ROLES.GUEST) return <Navigate to="/royaume" replace />;
 
     const kvkName = kvkConfig?.name || null;
     const isOff = !kvkConfig || kvkConfig.status === 'closed';
