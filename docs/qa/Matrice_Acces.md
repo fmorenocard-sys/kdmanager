@@ -108,6 +108,13 @@ certaines pages (Deadweight, Timeline) est **UI seulement**.
   **désactivés par instance** (marque blanche) : sur une instance donnée, une page « autorisée
   par le rôle » peut être **absente** si le module n'est pas activé — c'est une couche
   orthogonale au rôle (autorité fournisseur, pas King).
+- **« Voir en tant que » (F-033/BR-021, proposé le 2026-08-13, non construit).** Idée du Roi : une
+  bascule King-only du **rôle affiché** (`RoleContext`), avec bandeau et sortie, pour prévisualiser
+  le gating de nav/`AccessGate` de chaque rôle. **Présentation uniquement** — même principe que la
+  note « UI vs règles » ci-dessus : l'override ne touche jamais `firestore.rules`, les
+  lectures/écritures pendant la prévisualisation restent celles du **vrai** uid du Roi. Ne prévisualise
+  pas BR-008 (Discord-vérifié), le multi-compte (F-025) ni les modules par instance (BR-015) — rôle
+  seul (A-043). Complémentaire, pas substitut, à BUG-008. Voir `Brief_View_As_Role.md`.
 - **Nav interim F-032 résolue (2026-08-12 → 2026-08-13, `feat/espace-perso-moi`).** Le slot
   « Guerre » de `BottomNav`/Sidebar avait été repointé vers `/me` au Lot 1 (2026-08-12), le
   War Dashboard leadership perdant temporairement sa place dans la barre (joignable par
