@@ -86,7 +86,7 @@ async function seed() {
     });
     batch.set(db.doc('kvk_config/current'), {
         id: KVK_ID, name: 'SoC 5 - Storm of Stratagems',
-        status: null, // active
+        status: SCENARIO === 'offcampaign' ? 'closed' : null, // 'closed' = inter-saison (BR-013)
         startDate: Timestamp.fromDate(new Date('2026-08-01T00:00:00Z')), // passée → campagne commencée
         endDate: Timestamp.fromDate(new Date('2026-10-17T00:00:00Z')),
         revealGoalStatus: true, // statut visible pour le test
