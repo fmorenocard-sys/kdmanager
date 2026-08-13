@@ -56,10 +56,13 @@ async function seed() {
     await auth.createUser({ uid: UID, email: 'test-king@example.com', displayName: 'Federico (test)', emailVerified: true });
 
     // Composition des comptes selon le scénario.
+    // Le compte PRINCIPAL est volontairement réclamé SANS nom stocké (cas réel :
+    // ex. gouverneur 14809021 sur le pilote) — le pseudo doit être résolu depuis les
+    // données live `players`, pas retomber sur l'ID (régression corrigée dans /me).
     const accountsList = SCENARIO === 'single'
-        ? [{ governorId: WAR.gid, type: 'war', name: WAR.name }]
+        ? [{ governorId: WAR.gid, type: 'war' }]
         : [
-            { governorId: WAR.gid, type: 'war', name: WAR.name },
+            { governorId: WAR.gid, type: 'war' },
             { governorId: FIL.gid, type: 'filler', name: FIL.name },
         ];
     const declare = SCENARIO === 'declared';

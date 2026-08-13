@@ -37,7 +37,7 @@ const MeLandingPage = () => {
     const { t } = useTranslation();
     const { currentUser, governorId, accounts } = useAuth();
     const { role, isAuthorized } = useRole();
-    const { error: dataError, lastUpdated } = useData();
+    const { error: dataError, lastUpdated, players } = useData();
 
     const [configLoading, setConfigLoading] = useState(true);
     const [kvkConfig, setKvkConfig] = useState(null);
@@ -60,6 +60,14 @@ const MeLandingPage = () => {
         });
         return m;
     }, [myAccounts]);
+
+    // Pseudo LIVE pour l'affichage : un compte (souvent le principal) peut être
+    // réclamé sans nom stocké → sans ça, l'ID s'affiche à la place du pseudo. Résolu
+    // depuis `players`, comme MyAccountsSummary. Réactif (players charge après le montage).
+    const myAccountsResolved = useMemo(() => myAccounts.map((a) => {
+        const p = (players || []).find((x) => String(x.id) === String(a.governorId));
+        return p?.name ? { ...a, name: p.name } : a;
+    }), [myAccounts, players]);
 
     // Objectif & stats KvK : le hook réutilise le `config` et les `fillerDecls`
     // déjà chargés ici (pas de double lecture kvk_config/war_availabilities).
@@ -212,7 +220,7 @@ const MeLandingPage = () => {
                                 concentre alors sur le suivi (objectif + stats). */}
                             <div className="flex flex-col gap-4 min-w-0">
                                 {!campaignStarted && (
-                                    <NextActionCard accounts={myAccounts} kvkName={kvkName} nextMilestone={nextMilestone} onDeclareClick={openForm} />
+                                    <NextActionCard accounts={myAccountsResolved} kvkName={kvkName} nextMilestone={nextMilestone} onDeclareClick={openForm} />
                                 )}
                                 <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
                             </div>

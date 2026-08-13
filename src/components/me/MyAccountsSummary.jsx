@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useData } from '../../context/DataContext';
 import { Users, ChevronRight } from '../ui/icons';
 
 /**
@@ -12,7 +13,16 @@ import { Users, ChevronRight } from '../ui/icons';
 const MyAccountsSummary = () => {
     const { t } = useTranslation();
     const { accounts, governorId } = useAuth();
+    const { players } = useData();
     const list = accounts || [];
+
+    // Pseudo LIVE (données synchro) prioritaire — le nom stocké dans accounts[] peut
+    // être vide ou = l'ID (cas du compte principal réclamé sans nom), d'où l'ID affiché
+    // à la place du pseudo. Même résolution que les autres cartes (AvailabilityForm).
+    const resolveName = (gid, storedName) => {
+        const p = (players || []).find((x) => String(x.id) === String(gid));
+        return p?.name || storedName || gid;
+    };
 
     return (
         <div className="v2-glass p-4 lg:p-5 flex flex-col gap-3">
@@ -39,7 +49,7 @@ const MyAccountsSummary = () => {
                         return (
                             <div key={gid} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-white/5 min-h-11">
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-[13px] font-semibold text-white truncate">{a.name || gid}</p>
+                                    <p className="text-[13px] font-semibold text-white truncate">{resolveName(gid, a.name)}</p>
                                     <p className="text-[10px] text-[var(--text-secondary)] font-mono">{gid}</p>
                                 </div>
                                 {isPrimary && (
