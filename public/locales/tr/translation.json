@@ -222,7 +222,8 @@
             "edit": "Düzenle",
             "marches": "{{count}} yürüyüş",
             "declare_account": "{{name}} bildir",
-            "all_declared": "Tüm hesapların bildirildi"
+            "all_declared": "Tüm hesapların bildirildi",
+            "filler_stacks": "{{t4}} T4 · {{t5}} T5"
         },
         "error": {
             "badge": "Taramaya ulaşılamıyor",
@@ -262,6 +263,13 @@
             "manage": "Yönet",
             "none": "Talep edilen hesap yok"
         },
-        "rollup": "{{done}}/{{total}} bildirildi"
+        "rollup": "{{done}}/{{total}} bildirildi",
+        "stats": {
+            "title": "İstatistiklerim",
+            "note": "= /mystats",
+            "power": "Güç",
+            "kp_gained": "Kazanılan ÖP",
+            "deaths": "Ölümler"
+        }
     }
 }

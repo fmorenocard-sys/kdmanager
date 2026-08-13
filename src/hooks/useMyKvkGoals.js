@@ -188,7 +188,19 @@ export function useMyKvkGoals() {
         return rows.find((r) => r.governorId === String(governorId || '')) || rows[0];
     }, [rows, governorId]);
 
-    return { loading, revealed, kvkId, campaignName, statsCurrent, rows, primaryRow };
+    // Stats de campagne condensées du compte principal (F-032 Lot 4 / « Mes stats
+    // web », parité /mystats SANS Kingdom rank — décision Roi §12.4). Mêmes données
+    // que l'objectif → cohérentes avec statsCurrent (masquées si scan périmé).
+    const primaryStats = (() => {
+        if (!livePrimary) return null;
+        return {
+            powerM: (Number(livePrimary.finalPower) || Number(livePrimary.initialPower) || 0) / 1e6,
+            kpGainedM: (Number(livePrimary.totalKpGained) || 0) / 1e6,
+            deaths: Number(livePrimary.totalDead) || 0,
+        };
+    })();
+
+    return { loading, revealed, kvkId, campaignName, statsCurrent, rows, primaryRow, primaryStats };
 }
 
 export default useMyKvkGoals;

@@ -584,7 +584,8 @@
       "edit": "Chỉnh sửa",
       "marches": "{{count}} cánh quân",
       "declare_account": "Đăng ký {{name}}",
-      "all_declared": "Tất cả tài khoản của bạn đã đăng ký"
+      "all_declared": "Tất cả tài khoản của bạn đã đăng ký",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "Không thể kết nối bản quét",
@@ -624,6 +625,13 @@
       "manage": "Quản lý",
       "none": "Chưa yêu cầu tài khoản nào"
     },
-    "rollup": "{{done}}/{{total}} đã đăng ký"
+    "rollup": "{{done}}/{{total}} đã đăng ký",
+    "stats": {
+      "title": "Thống kê của tôi",
+      "note": "= /mystats",
+      "power": "Sức mạnh",
+      "kp_gained": "KP đạt được",
+      "deaths": "Tổn thất"
+    }
   }
 }

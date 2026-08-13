@@ -584,7 +584,8 @@
       "edit": "تعديل",
       "marches": "{{count}} زحوف",
       "declare_account": "إعلان {{name}}",
-      "all_declared": "جميع حساباتك أعلنت"
+      "all_declared": "جميع حساباتك أعلنت",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "تعذّر الوصول إلى المسح",
@@ -624,6 +625,13 @@
       "manage": "إدارة",
       "none": "لم تتم المطالبة بأي حساب"
     },
-    "rollup": "{{done}}/{{total}} معلن"
+    "rollup": "{{done}}/{{total}} معلن",
+    "stats": {
+      "title": "إحصائياتي",
+      "note": "= /mystats",
+      "power": "القوة",
+      "kp_gained": "نقاط القتل المكتسبة",
+      "deaths": "القتلى"
+    }
   }
 }

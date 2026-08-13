@@ -17,6 +17,7 @@ import ErrorCard from '../components/me/ErrorCard';
 import OffCampaignCard from '../components/me/OffCampaignCard';
 import MyGoalCard from '../components/me/MyGoalCard';
 import NoGoalPublishedCard from '../components/me/NoGoalPublishedCard';
+import MyStatsCard from '../components/me/MyStatsCard';
 import MyAccountsSummary from '../components/me/MyAccountsSummary';
 import { useMyKvkGoals } from '../hooks/useMyKvkGoals';
 
@@ -37,7 +38,7 @@ const MeLandingPage = () => {
     const { currentUser, governorId, accounts } = useAuth();
     const { role } = useRole();
     const { error: dataError, lastUpdated } = useData();
-    const { rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName } = useMyKvkGoals();
+    const { rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName, primaryStats } = useMyKvkGoals();
 
     const [configLoading, setConfigLoading] = useState(true);
     const [kvkConfig, setKvkConfig] = useState(null);
@@ -99,6 +100,9 @@ const MeLandingPage = () => {
                             declared: !!d,
                             declaredAt: d?.updatedAt?.toDate ? d.updatedAt.toDate() : null,
                             marchesCount: d && Array.isArray(d.marches) ? d.marches.length : null,
+                            // Stacks filler déclarés (pour l'affichage enrichi des comptes déclarés)
+                            fillerT4: d?.filler?.t4 ?? null,
+                            fillerT5: d?.filler?.t5 ?? null,
                         };
                     }));
                     if (!alive) return;
@@ -126,14 +130,16 @@ const MeLandingPage = () => {
 
     const kvkName = kvkConfig?.name || null;
     const isOff = !kvkConfig || kvkConfig.status === 'closed';
-    const subtitle = [currentUser.displayName, role, BRANDING.kingdomName].filter(Boolean).join(' · ');
+    // Rollup « X/Y déclarés » dans le sous-titre du header (mock desktop), plutôt
+    // qu'une barre séparée. Seulement en campagne active et multi-compte.
+    const declaredCount = myAccounts.filter((a) => a.declared).length;
+    const subtitleParts = [currentUser.displayName, role, BRANDING.kingdomName];
+    if (!configLoading && !isOff && myAccounts.length > 1) {
+        subtitleParts.push(t('me.rollup', { done: declaredCount, total: myAccounts.length }));
+    }
+    const subtitle = subtitleParts.filter(Boolean).join(' · ');
 
-    // Objectif publié ? → carte objectif, sinon placeholder « pas encore publié ».
-    const goalBlock = goalRows.some((r) => r.published) ? (
-        <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
-    ) : (
-        <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />
-    );
+    const goalPublished = goalRows.some((r) => r.published);
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -167,7 +173,14 @@ const MeLandingPage = () => {
                             </div>
                             {/* Colonne droite : ce qu'on attend de moi et qui je suis */}
                             <div className="flex flex-col gap-4 min-w-0">
-                                {goalBlock}
+                                {goalPublished ? (
+                                    <>
+                                        <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
+                                        <MyStatsCard stats={primaryStats} />
+                                    </>
+                                ) : (
+                                    <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />
+                                )}
                                 <MyAccountsSummary />
                             </div>
                         </div>

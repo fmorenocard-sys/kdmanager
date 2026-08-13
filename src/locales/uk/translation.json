@@ -584,7 +584,8 @@
       "edit": "Редагувати",
       "marches": "{{count}} маршів",
       "declare_account": "Заявити {{name}}",
-      "all_declared": "Усі твої акаунти заявлено"
+      "all_declared": "Усі твої акаунти заявлено",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "Немає доступу до сканування",
@@ -624,6 +625,13 @@
       "manage": "Керувати",
       "none": "Немає прив’язаних акаунтів"
     },
-    "rollup": "{{done}}/{{total}} заявлено"
+    "rollup": "{{done}}/{{total}} заявлено",
+    "stats": {
+      "title": "Моя статистика",
+      "note": "= /mystats",
+      "power": "Сила",
+      "kp_gained": "Здобуті ОВ",
+      "deaths": "Втрати"
+    }
   }
 }

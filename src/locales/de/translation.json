@@ -584,7 +584,8 @@
       "edit": "Bearbeiten",
       "marches": "{{count}} Märsche",
       "declare_account": "{{name}} melden",
-      "all_declared": "Alle deine Konten haben gemeldet"
+      "all_declared": "Alle deine Konten haben gemeldet",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "Scan nicht erreichbar",
@@ -624,6 +625,13 @@
       "manage": "Verwalten",
       "none": "Kein Konto beansprucht"
     },
-    "rollup": "{{done}}/{{total}} gemeldet"
+    "rollup": "{{done}}/{{total}} gemeldet",
+    "stats": {
+      "title": "Meine Werte",
+      "note": "= /mystats",
+      "power": "Macht",
+      "kp_gained": "KP erzielt",
+      "deaths": "Verluste"
+    }
   }
 }

@@ -584,7 +584,8 @@
       "edit": "Editar",
       "marches": "{{count}} marchas",
       "declare_account": "Declarar {{name}}",
-      "all_declared": "Todas tus cuentas han declarado"
+      "all_declared": "Todas tus cuentas han declarado",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "No se puede acceder al escaneo",
@@ -624,6 +625,13 @@
       "manage": "Gestionar",
       "none": "Ninguna cuenta reclamada"
     },
-    "rollup": "{{done}}/{{total}} declarados"
+    "rollup": "{{done}}/{{total}} declarados",
+    "stats": {
+      "title": "Mis estadísticas",
+      "note": "= /mystats",
+      "power": "Poder",
+      "kp_gained": "PK ganados",
+      "deaths": "Muertes"
+    }
   }
 }

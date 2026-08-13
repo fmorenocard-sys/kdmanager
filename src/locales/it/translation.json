@@ -584,7 +584,8 @@
       "edit": "Modifica",
       "marches": "{{count}} marce",
       "declare_account": "Dichiara {{name}}",
-      "all_declared": "Tutti i tuoi account hanno dichiarato"
+      "all_declared": "Tutti i tuoi account hanno dichiarato",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "Scansione irraggiungibile",
@@ -624,6 +625,13 @@
       "manage": "Gestisci",
       "none": "Nessun account rivendicato"
     },
-    "rollup": "{{done}}/{{total}} dichiarati"
+    "rollup": "{{done}}/{{total}} dichiarati",
+    "stats": {
+      "title": "Le mie statistiche",
+      "note": "= /mystats",
+      "power": "Potere",
+      "kp_gained": "PU guadagnati",
+      "deaths": "Morti"
+    }
   }
 }

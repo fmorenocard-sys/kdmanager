@@ -584,7 +584,8 @@
       "edit": "Modifier",
       "marches": "{{count}} marches",
       "declare_account": "Déclarer {{name}}",
-      "all_declared": "Tous tes comptes ont déclaré"
+      "all_declared": "Tous tes comptes ont déclaré",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "Scan injoignable",
@@ -624,6 +625,13 @@
       "manage": "Gérer",
       "none": "Aucun compte réclamé"
     },
-    "rollup": "{{done}}/{{total}} déclarés"
+    "rollup": "{{done}}/{{total}} déclarés",
+    "stats": {
+      "title": "Mes stats",
+      "note": "= /mystats",
+      "power": "Puissance",
+      "kp_gained": "KP gagné",
+      "deaths": "Morts"
+    }
   }
 }

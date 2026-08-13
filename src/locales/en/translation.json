@@ -584,7 +584,8 @@
       "edit": "Edit",
       "marches": "{{count}} marches",
       "declare_account": "Declare {{name}}",
-      "all_declared": "All your accounts have declared"
+      "all_declared": "All your accounts have declared",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "Can't reach the scan",
@@ -624,6 +625,13 @@
       "manage": "Manage",
       "none": "No account claimed"
     },
-    "rollup": "{{done}}/{{total}} declared"
+    "rollup": "{{done}}/{{total}} declared",
+    "stats": {
+      "title": "My stats",
+      "note": "= /mystats",
+      "power": "Power",
+      "kp_gained": "KP gained",
+      "deaths": "Deaths"
+    }
   }
 }

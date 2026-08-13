@@ -584,7 +584,8 @@
       "edit": "Edytuj",
       "marches": "{{count}} marszów",
       "declare_account": "Zgłoś {{name}}",
-      "all_declared": "Wszystkie Twoje konta zgłoszone"
+      "all_declared": "Wszystkie Twoje konta zgłoszone",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
     },
     "error": {
       "badge": "Brak dostępu do skanu",
@@ -624,6 +625,13 @@
       "manage": "Zarządzaj",
       "none": "Brak przypisanego konta"
     },
-    "rollup": "{{done}}/{{total}} zgłoszono"
+    "rollup": "{{done}}/{{total}} zgłoszono",
+    "stats": {
+      "title": "Moje statystyki",
+      "note": "= /mystats",
+      "power": "Moc",
+      "kp_gained": "Zdobyte PZ",
+      "deaths": "Straty"
+    }
   }
 }

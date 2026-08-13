@@ -43,6 +43,15 @@ const NextActionCard = ({ accounts = [], kvkName, onDeclareClick }) => {
     const fmtDate = (d) => d
         ? new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }).format(d)
         : null;
+    const nfInt = (n) => new Intl.NumberFormat(i18n.language).format(Number(n) || 0);
+
+    // Métadonnée d'un compte déclaré : stacks T4/T5 pour un filler, sinon date + marches.
+    const declaredMeta = (a) => {
+        if (a.type === 'filler' && (a.fillerT4 != null || a.fillerT5 != null)) {
+            return t('me.next_action.filler_stacks', { t4: nfInt(a.fillerT4 || 0), t5: nfInt(a.fillerT5 || 0) });
+        }
+        return [fmtDate(a.declaredAt), a.marchesCount != null ? t('me.next_action.marches', { count: a.marchesCount }) : null].filter(Boolean).join(' · ');
+    };
 
     // ── Compte unique (ou aucun compte réclamé) : forme d'origine ──────────────
     if (accounts.length <= 1) {
@@ -87,24 +96,14 @@ const NextActionCard = ({ accounts = [], kvkName, onDeclareClick }) => {
         );
     }
 
-    // ── Multi-compte : rollup + comptes en attente (ambre) + déclarés (vert) ────
-    const total = accounts.length;
+    // ── Multi-compte : comptes en attente (ambre) + déclarés (vert) ────────────
+    // Le rollup « X/Y déclarés » vit désormais dans le sous-titre du header (§D).
     const done = accounts.filter((a) => a.declared);
     const pending = accounts.filter((a) => !a.declared);
     const allDone = pending.length === 0;
 
     return (
         <div className="flex flex-col gap-3">
-            {/* Rollup + barre de progression */}
-            <div className="flex items-center gap-2.5">
-                <span className={`${meType.meta} font-bold shrink-0`}>
-                    {t('me.rollup', { done: done.length, total })}
-                </span>
-                <div className="flex-1 h-1 rounded-full bg-slate-700/60 overflow-hidden">
-                    <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${(done.length / total) * 100}%` }} />
-                </div>
-            </div>
-
             {allDone ? (
                 <div className="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-500/[0.08] border border-emerald-500/30">
                     <CheckCircle size={22} weight="fill" className="text-emerald-400 shrink-0" aria-hidden="true" />
@@ -138,11 +137,7 @@ const NextActionCard = ({ accounts = [], kvkName, onDeclareClick }) => {
                             <CheckCircle size={16} weight="fill" className="text-emerald-400 shrink-0" aria-hidden="true" />
                             <div className="flex-1 min-w-0">
                                 <p className="text-[13px] font-semibold text-white truncate">{a.name}</p>
-                                {(a.declaredAt || a.marchesCount != null) && (
-                                    <p className={meType.meta}>
-                                        {[fmtDate(a.declaredAt), a.marchesCount != null ? t('me.next_action.marches', { count: a.marchesCount }) : null].filter(Boolean).join(' · ')}
-                                    </p>
-                                )}
+                                {declaredMeta(a) && <p className={`${meType.meta} truncate`}>{declaredMeta(a)}</p>}
                             </div>
                             <TypeBadge type={a.type} isPrimary={a.isPrimary} t={t} />
                         </div>
