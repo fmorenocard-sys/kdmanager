@@ -227,7 +227,8 @@
             "marches": "{{count}} زحوف",
             "declare_account": "إعلان {{name}}",
             "all_declared": "جميع حساباتك أعلنت",
-            "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+            "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+            "opens_in": "{{label}} يبدأ خلال"
         },
         "error": {
             "badge": "تعذّر الوصول إلى المسح",

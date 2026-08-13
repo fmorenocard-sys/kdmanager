@@ -589,7 +589,8 @@
       "marches": "{{count}} marce",
       "declare_account": "Dichiara {{name}}",
       "all_declared": "Tutti i tuoi account hanno dichiarato",
-      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} apre tra"
     },
     "error": {
       "badge": "Scansione irraggiungibile",

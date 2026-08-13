@@ -589,7 +589,8 @@
       "marches": "{{count}} marszów",
       "declare_account": "Zgłoś {{name}}",
       "all_declared": "Wszystkie Twoje konta zgłoszone",
-      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} za"
     },
     "error": {
       "badge": "Brak dostępu do skanu",

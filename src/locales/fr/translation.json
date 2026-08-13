@@ -589,7 +589,8 @@
       "marches": "{{count}} marches",
       "declare_account": "Déclarer {{name}}",
       "all_declared": "Tous tes comptes ont déclaré",
-      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} ouvre dans"
     },
     "error": {
       "badge": "Scan injoignable",

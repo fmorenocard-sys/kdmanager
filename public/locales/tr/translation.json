@@ -227,7 +227,8 @@
             "marches": "{{count}} yürüyüş",
             "declare_account": "{{name}} bildir",
             "all_declared": "Tüm hesapların bildirildi",
-            "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+            "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+            "opens_in": "{{label}} için kalan:"
         },
         "error": {
             "badge": "Taramaya ulaşılamıyor",

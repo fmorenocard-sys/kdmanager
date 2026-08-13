@@ -589,7 +589,8 @@
       "marches": "{{count}} marchas",
       "declare_account": "Declarar {{name}}",
       "all_declared": "Todas tus cuentas han declarado",
-      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} abre en"
     },
     "error": {
       "badge": "No se puede acceder al escaneo",

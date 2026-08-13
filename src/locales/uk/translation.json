@@ -589,7 +589,8 @@
       "marches": "{{count}} маршів",
       "declare_account": "Заявити {{name}}",
       "all_declared": "Усі твої акаунти заявлено",
-      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} через"
     },
     "error": {
       "badge": "Немає доступу до сканування",

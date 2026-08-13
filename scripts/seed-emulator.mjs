@@ -20,6 +20,11 @@ process.env.FIREBASE_AUTH_EMULATOR_HOST = process.env.FIREBASE_AUTH_EMULATOR_HOS
 
 const PROJECT = process.env.GCLOUD_PROJECT || 'kd-97-manager';
 const DB_NAME = process.env.SEED_DB || 'kdmanagerdb';
+// Scénario de fixtures (DA / états) :
+//   declared   (défaut) : 2 comptes (war+filler), tous déclarés
+//   undeclared           : 2 comptes, aucun déclaré (carte action multi-compte)
+//   single               : 1 compte war, non déclaré (carte ambre « héros »)
+const SCENARIO = process.env.SEED_SCENARIO || 'declared';
 
 const app = initializeApp({ projectId: PROJECT });
 const db = getFirestore(app, DB_NAME);
@@ -50,14 +55,20 @@ async function seed() {
     try { await auth.deleteUser(UID); } catch { /* n'existait pas */ }
     await auth.createUser({ uid: UID, email: 'test-king@example.com', displayName: 'Federico (test)', emailVerified: true });
 
+    // Composition des comptes selon le scénario.
+    const accountsList = SCENARIO === 'single'
+        ? [{ governorId: WAR.gid, type: 'war', name: WAR.name }]
+        : [
+            { governorId: WAR.gid, type: 'war', name: WAR.name },
+            { governorId: FIL.gid, type: 'filler', name: FIL.name },
+        ];
+    const declare = SCENARIO === 'declared';
+
     const batch = db.batch();
     batch.set(db.doc(`roles/${UID}`), { role: 'King' });
     batch.set(db.doc(`user_profiles/${UID}`), {
         governorId: WAR.gid,
-        accounts: [
-            { governorId: WAR.gid, type: 'war', name: WAR.name },
-            { governorId: FIL.gid, type: 'filler', name: FIL.name },
-        ],
+        accounts: accountsList,
         updatedAt: new Date().toISOString(),
     });
     batch.set(db.doc('static_data/players'), { list: players, updatedAt: Timestamp.now() });
@@ -84,17 +95,25 @@ async function seed() {
         list: pastKvk, fillerList: pastFiller,
         archivedAt: '2026-07-20T10:21:47.892Z',
     });
-    // Déclarations (2/2 déclarés)
-    batch.set(db.doc(`war_availabilities/${KVK_ID}_${UID}_${WAR.gid}`), {
-        governorId: WAR.gid, governorName: WAR.name, accountType: 'war',
-        availability: 'Available', marches: [{ type: 'Cavalry' }, { type: 'Infantry' }, { type: 'Archer' }],
-        userId: UID, kvkId: KVK_ID, kvkName: 'SoC 5 - Storm of Stratagems', updatedAt: Timestamp.now(),
-    });
-    batch.set(db.doc(`war_availabilities/${KVK_ID}_${UID}_${FIL.gid}`), {
-        governorId: FIL.gid, governorName: FIL.name, accountType: 'filler',
-        filler: { t4: 174_000, t5: 2_100_000 },
-        userId: UID, kvkId: KVK_ID, kvkName: 'SoC 5 - Storm of Stratagems', updatedAt: Timestamp.now(),
-    });
+    // Déclarations : posées pour « declared », effacées sinon (repart propre — un
+    // seed précédent ne doit pas laisser un compte « déclaré » par erreur).
+    const warDecl = db.doc(`war_availabilities/${KVK_ID}_${UID}_${WAR.gid}`);
+    const filDecl = db.doc(`war_availabilities/${KVK_ID}_${UID}_${FIL.gid}`);
+    if (declare) {
+        batch.set(warDecl, {
+            governorId: WAR.gid, governorName: WAR.name, accountType: 'war',
+            availability: 'Available', marches: [{ type: 'Cavalry' }, { type: 'Infantry' }, { type: 'Archer' }],
+            userId: UID, kvkId: KVK_ID, kvkName: 'SoC 5 - Storm of Stratagems', updatedAt: Timestamp.now(),
+        });
+        batch.set(filDecl, {
+            governorId: FIL.gid, governorName: FIL.name, accountType: 'filler',
+            filler: { t4: 174_000, t5: 2_100_000 },
+            userId: UID, kvkId: KVK_ID, kvkName: 'SoC 5 - Storm of Stratagems', updatedAt: Timestamp.now(),
+        });
+    } else {
+        batch.delete(warDecl);
+        batch.delete(filDecl);
+    }
     await batch.commit();
 
     // Custom token pour se connecter côté app (émulateur : signature non vérifiée).

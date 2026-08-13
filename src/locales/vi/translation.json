@@ -589,7 +589,8 @@
       "marches": "{{count}} cánh quân",
       "declare_account": "Đăng ký {{name}}",
       "all_declared": "Tất cả tài khoản của bạn đã đăng ký",
-      "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} mở sau"
     },
     "error": {
       "badge": "Không thể kết nối bản quét",

@@ -227,7 +227,8 @@
             "marches": "{{count}} marches",
             "declare_account": "Declare {{name}}",
             "all_declared": "All your accounts have declared",
-            "filler_stacks": "{{t4}} T4 · {{t5}} T5"
+            "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+            "opens_in": "{{label}} opens in"
         },
         "error": {
             "badge": "Can't reach the scan",

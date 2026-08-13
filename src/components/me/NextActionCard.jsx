@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, Sword, CheckCircle } from '../ui/icons';
 import { BRANDING } from '../../config/branding';
@@ -37,8 +38,26 @@ const Identity = ({ account, t }) => (
     </div>
 );
 
-const NextActionCard = ({ accounts = [], kvkName, onDeclareClick }) => {
+const NextActionCard = ({ accounts = [], kvkName, nextMilestone, onDeclareClick }) => {
     const { t, i18n } = useTranslation();
+
+    // Horloge capturée en state (pure au render) + rafraîchie chaque minute quand
+    // un compte à rebours est affiché — évite un appel impur à Date.now() au render.
+    const [now, setNow] = useState(() => Date.now());
+    useEffect(() => {
+        if (!nextMilestone) return undefined;
+        const id = setInterval(() => setNow(Date.now()), 60000);
+        return () => clearInterval(id);
+    }, [nextMilestone]);
+
+    // Compte à rebours compact « 3j 2h 32m » jusqu'à un instant (ms epoch).
+    const fmtCountdown = (ts) => {
+        let s = Math.max(0, Math.floor((ts - now) / 1000));
+        const d = Math.floor(s / 86400); s -= d * 86400;
+        const h = Math.floor(s / 3600); s -= h * 3600;
+        const m = Math.floor(s / 60);
+        return [d ? `${d}j` : null, `${h}h`, `${m}m`].filter(Boolean).join(' ');
+    };
 
     const fmtDate = (d) => d
         ? new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }).format(d)
@@ -77,14 +96,22 @@ const NextActionCard = ({ accounts = [], kvkName, onDeclareClick }) => {
             );
         }
         return (
-            <div className="v2-glass v2-amber p-4 md:p-5 flex flex-col gap-3.5">
+            <div className="v2-glass v2-amber p-5 lg:p-6 flex flex-col gap-4">
                 <div className="flex items-center gap-2">
-                    <AlertCircle size={15} weight="fill" className="text-amber-400 shrink-0" aria-hidden="true" />
+                    <AlertCircle size={16} weight="fill" className="text-amber-400 shrink-0" aria-hidden="true" />
                     <span className={`${meType.label} text-amber-400`}>{t('me.next_action.badge')}</span>
                 </div>
                 <div>
-                    <p className={meType.title}>{t('me.next_action.not_declared_title', { name: kvkName })}</p>
-                    <p className={`${meType.body} text-[var(--text-secondary)] mt-1.5`}>{t('me.next_action.not_declared_desc')}</p>
+                    <p className="text-xl lg:text-2xl font-bold text-white leading-snug text-pretty">
+                        {t('me.next_action.not_declared_title', { name: kvkName })}
+                    </p>
+                    <p className={`${meType.body} text-[var(--text-secondary)] mt-2`}>
+                        {nextMilestone && (
+                            <>{t('me.next_action.opens_in', { label: nextMilestone.label })}{' '}
+                                <span className="font-mono font-bold text-amber-400">{fmtCountdown(nextMilestone.ts)}</span>. </>
+                        )}
+                        {t('me.next_action.not_declared_desc')}
+                    </p>
                 </div>
                 <button type="button" onClick={onDeclareClick}
                     className="btn-grad-primary min-h-12 rounded-lg text-white text-[15px] font-bold flex items-center justify-center gap-2 transition-all hover:brightness-110">

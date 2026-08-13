@@ -137,6 +137,15 @@ const MeLandingPage = () => {
 
     const kvkName = kvkConfig?.name || null;
     const isOff = !kvkConfig || kvkConfig.status === 'closed';
+    // Prochain jalon (pour le compte à rebours de la carte « prochaine action »).
+    const nextMilestone = (() => {
+        const now = Date.now();
+        const up = (timeline || [])
+            .map((e) => ({ label: e.label, ts: Date.parse(e.at) }))
+            .filter((e) => e.label && Number.isFinite(e.ts) && e.ts > now)
+            .sort((a, b) => a.ts - b.ts);
+        return up[0] || null;
+    })();
     // Rollup « X/Y déclarés » dans le sous-titre du header (mock desktop), plutôt
     // qu'une barre séparée. Seulement en campagne active et multi-compte.
     const declaredCount = myAccounts.filter((a) => a.declared).length;
@@ -175,7 +184,7 @@ const MeLandingPage = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4 lg:gap-6 items-start">
                             {/* Colonne gauche : quoi faire et quand */}
                             <div className="flex flex-col gap-4 min-w-0">
-                                <NextActionCard accounts={myAccounts} kvkName={kvkName} onDeclareClick={openForm} />
+                                <NextActionCard accounts={myAccounts} kvkName={kvkName} nextMilestone={nextMilestone} onDeclareClick={openForm} />
                                 <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
                             </div>
                             {/* Colonne droite : ce qu'on attend de moi et qui je suis */}
