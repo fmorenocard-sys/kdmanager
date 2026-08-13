@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "Guardar fillers",
     "account_selector": "Cuentas de guerra",
-    "filler_declared_power": "Poder declarado"
+    "filler_declared_power": "Poder declarado",
+    "leadership_only_title": "Área de liderazgo",
+    "leadership_only_desc": "El War Dashboard y los objetivos de campaña están reservados al Rey y los Oficiales.",
+    "leadership_only_hint": "Tu declaración y tu objetivo personal están en «Yo»."
   },
   "trophies": {
     "title": "Trofeos del Reino",

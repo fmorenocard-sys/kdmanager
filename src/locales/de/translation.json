@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "Filler speichern",
     "account_selector": "Kriegskonten",
-    "filler_declared_power": "Deklarierte Macht"
+    "filler_declared_power": "Deklarierte Macht",
+    "leadership_only_title": "Führungsbereich",
+    "leadership_only_desc": "Das War Dashboard und die Kampagnenziele sind dem König und den Offizieren vorbehalten.",
+    "leadership_only_hint": "Deine Meldung und dein persönliches Ziel sind unter „Ich\"."
   },
   "trophies": {
     "title": "Königreich-Trophäen",

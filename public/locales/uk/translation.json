@@ -136,7 +136,10 @@
         "active_hours_to": "Do",
         "active_hours_from": "Vid",
         "active_hours_utc": "Aktyvni hodyny (UTC)",
-        "active_hours_hint": "Vash pik aktyvnosti v UTC pid chas KvK."
+        "active_hours_hint": "Vash pik aktyvnosti v UTC pid chas KvK.",
+        "leadership_only_title": "Зона керівництва",
+        "leadership_only_desc": "War Dashboard і цілі кампанії доступні лише Королю та Офіцерам.",
+        "leadership_only_hint": "Твоя заявка й особиста ціль — у розділі «Я»."
     },
     "trophies": {
         "title": "Трофеї Королівства",

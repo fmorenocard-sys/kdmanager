@@ -136,7 +136,10 @@
         "active_hours_to": "الى",
         "active_hours_from": "من",
         "active_hours_utc": "ساعات النشاط (UTC)",
-        "active_hours_hint": "نافذة اللعب الاكثر نشاطا بتوقيت UTC خلال KvK."
+        "active_hours_hint": "نافذة اللعب الاكثر نشاطا بتوقيت UTC خلال KvK.",
+        "leadership_only_title": "منطقة القيادة",
+        "leadership_only_desc": "لوحة الحرب وأهداف الحملة مخصّصة للملك والضباط.",
+        "leadership_only_hint": "إعلانك وهدفك الشخصي في «أنا»."
     },
     "trophies": {
         "title": "كؤوس المملكة",

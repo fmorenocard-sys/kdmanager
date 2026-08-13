@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "Зберегти філлери",
     "account_selector": "Бойові акаунти",
-    "filler_declared_power": "Заявлена сила"
+    "filler_declared_power": "Заявлена сила",
+    "leadership_only_title": "Зона керівництва",
+    "leadership_only_desc": "War Dashboard і цілі кампанії доступні лише Королю та Офіцерам.",
+    "leadership_only_hint": "Твоя заявка й особиста ціль — у розділі «Я»."
   },
   "trophies": {
     "title": "Трофеї Королівства",

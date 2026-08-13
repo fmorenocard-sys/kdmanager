@@ -136,7 +136,10 @@
         "active_hours_to": "To",
         "active_hours_from": "From",
         "active_hours_utc": "Active Hours (UTC)",
-        "active_hours_hint": "Your peak gaming window in UTC — when you will be most active during the KvK."
+        "active_hours_hint": "Your peak gaming window in UTC — when you will be most active during the KvK.",
+        "leadership_only_title": "Leadership area",
+        "leadership_only_desc": "The War Dashboard and campaign goals are reserved for the King and Officers.",
+        "leadership_only_hint": "Your declaration and personal goal are in \"Me\"."
     },
     "trophies": {
         "title": "Kingdom Trophies",

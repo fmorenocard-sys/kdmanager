@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "Zapisz fillery",
     "account_selector": "Konta wojenne",
-    "filler_declared_power": "Zadeklarowana moc"
+    "filler_declared_power": "Zadeklarowana moc",
+    "leadership_only_title": "Strefa dowództwa",
+    "leadership_only_desc": "War Dashboard i cele kampanii są zarezerwowane dla Króla i Oficerów.",
+    "leadership_only_hint": "Twoje zgłoszenie i cel osobisty są w „Ja\"."
   },
   "trophies": {
     "title": "Trofea Królestwa",

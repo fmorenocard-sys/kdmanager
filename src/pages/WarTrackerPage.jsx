@@ -1,25 +1,31 @@
-
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 import { useRole, ROLES } from '../context/RoleContext';
-import AvailabilityForm from '../components/war/AvailabilityForm';
 import WarDashboard from '../components/war/WarDashboard';
 import KvkGoalsPanel from '../components/war/KvkGoalsPanel';
-import { Shield, Swords, LayoutDashboard, Target } from '../components/ui/icons';
-
+import { Shield, LayoutDashboard, Target, ShieldAlert } from '../components/ui/icons';
 import PageHeader from '../components/ui/PageHeader';
+import AccessGate from '../components/ui/AccessGate';
 
-// Refonte navigation : le War Tracker est recentré sur la préparation
-// (déclaration + War Dashboard). La config KvK vit désormais dans /admin (M3).
+// F-032 Lot 5 — scission du War Tracker (spec Espace_Perso §4).
+// La part PERSO (déclaration F-006 + objectif perso F-014) a migré dans /me.
+// Cette page ne conserve que les surfaces LEADERSHIP — War Dashboard (déclarations
+// du royaume) + objectifs de campagne (vue Déclarants / Top du royaume) — et passe
+// derrière un AccessGate leadership au niveau PAGE. Elle n'est plus dans la nav
+// (interim §7.3) : accessible par URL, en attendant la fusion « Pilotage » (Lot 6).
 const WarTrackerPage = () => {
+    const { currentUser } = useAuth();
     const { isAuthorized } = useRole();
     const { t } = useTranslation();
+    const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
+
     // Onglet persisté dans l'URL (#/war-tracker?tab=goals) : un rechargement revient au même onglet.
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeTab, setActiveTab] = useState(() => {
         const t0 = searchParams.get('tab');
-        return ['declaration', 'goals', 'dashboard'].includes(t0) ? t0 : 'declaration';
+        return ['goals', 'dashboard'].includes(t0) ? t0 : 'dashboard';
     });
     const goTab = (id) => {
         setActiveTab(id);
@@ -28,20 +34,29 @@ const WarTrackerPage = () => {
         setSearchParams(p, { replace: true });
     };
 
-    const showDashboard = isAuthorized([ROLES.KING, ROLES.OFFICER]);
+    // Visiteur → vitrine du royaume. (Le rôle est déjà résolu ici : RoleProvider
+    // ne rend ses enfants qu'une fois chargé.)
+    if (!currentUser) return <Navigate to="/royaume" replace />;
 
-    // Le Tableau de Bord de Guerre est réservé King/Officer : si l'URL le demande sans le rôle, on retombe.
-    React.useEffect(() => {
-        if (activeTab === 'dashboard' && !showDashboard) goTab('declaration');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, showDashboard]);
+    // Utilisateur connecté SANS rôle leadership : la déclaration et l'objectif
+    // perso sont désormais dans « Moi » — on le lui indique plutôt qu'une page vide.
+    if (!isLeadership) {
+        return (
+            <div className="space-y-6">
+                <PageHeader icon={Shield} title={t('war.tracker_title')} />
+                <AccessGate
+                    icon={ShieldAlert}
+                    title={t('war.leadership_only_title')}
+                    description={t('war.leadership_only_desc')}
+                    hint={t('war.leadership_only_hint')}
+                />
+            </div>
+        );
+    }
 
     const tabs = [
-        { id: 'declaration', label: t('war.declaration_form'), icon: Swords },
-        // F-014 / US-009 : les objectifs vivent ici, au moment où le joueur déclare
-        // ses troupes — c'est là qu'il se demande ce qu'on attend de lui.
         { id: 'goals', label: t('goals.tab_label'), icon: Target },
-        ...(showDashboard ? [{ id: 'dashboard', label: t('war.dashboard_title'), icon: LayoutDashboard }] : [])
+        { id: 'dashboard', label: t('war.dashboard_title'), icon: LayoutDashboard },
     ];
 
     return (
@@ -59,8 +74,8 @@ const WarTrackerPage = () => {
                             onClick={() => goTab(tab.id)}
                             aria-pressed={isActive}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border select-none ${
-                                isActive 
-                                    ? 'ring-1 ring-indigo-500/20 shadow-lg shadow-indigo-500/10 text-indigo-400 bg-indigo-500/10 border-indigo-500/20' 
+                                isActive
+                                    ? 'ring-1 ring-indigo-500/20 shadow-lg shadow-indigo-500/10 text-indigo-400 bg-indigo-500/10 border-indigo-500/20'
                                     : 'bg-[var(--border-flat)] text-slate-400 border-[var(--border-flat)] hover:border-slate-500 hover:bg-slate-700/50 hover:text-slate-200'
                             }`}
                         >
@@ -73,19 +88,13 @@ const WarTrackerPage = () => {
 
             {/* Content Area */}
             <div className="min-h-[500px]">
-                {activeTab === 'declaration' && (
-                    <div className="animate-in fade-in duration-300">
-                        <AvailabilityForm />
-                    </div>
-                )}
-
                 {activeTab === 'goals' && (
                     <div className="animate-in fade-in duration-300">
                         <KvkGoalsPanel />
                     </div>
                 )}
 
-                {activeTab === 'dashboard' && showDashboard && (
+                {activeTab === 'dashboard' && (
                     <div className="animate-in fade-in duration-300">
                         <WarDashboard />
                     </div>

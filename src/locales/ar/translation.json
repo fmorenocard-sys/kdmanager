@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "حفظ الحسابات الثانوية",
     "account_selector": "حسابات الحرب",
-    "filler_declared_power": "القوة المعلنة"
+    "filler_declared_power": "القوة المعلنة",
+    "leadership_only_title": "منطقة القيادة",
+    "leadership_only_desc": "لوحة الحرب وأهداف الحملة مخصّصة للملك والضباط.",
+    "leadership_only_hint": "إعلانك وهدفك الشخصي في «أنا»."
   },
   "trophies": {
     "title": "كؤوس المملكة",

@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "Lưu filler",
     "account_selector": "Tài khoản chiến",
-    "filler_declared_power": "Sức mạnh khai báo"
+    "filler_declared_power": "Sức mạnh khai báo",
+    "leadership_only_title": "Khu vực chỉ huy",
+    "leadership_only_desc": "War Dashboard và mục tiêu chiến dịch chỉ dành cho Vua và Sĩ quan.",
+    "leadership_only_hint": "Đăng ký và mục tiêu cá nhân của bạn ở mục \"Tôi\"."
   },
   "trophies": {
     "title": "Cúp vương quốc",

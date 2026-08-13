@@ -136,7 +136,10 @@
         "active_hours_to": "Bis",
         "active_hours_from": "Von",
         "active_hours_utc": "Aktive Stunden (UTC)",
-        "active_hours_hint": "Dein aktivstes Spielfenster in UTC."
+        "active_hours_hint": "Dein aktivstes Spielfenster in UTC.",
+        "leadership_only_title": "Führungsbereich",
+        "leadership_only_desc": "Das War Dashboard und die Kampagnenziele sind dem König und den Offizieren vorbehalten.",
+        "leadership_only_hint": "Deine Meldung und dein persönliches Ziel sind unter „Ich\"."
     },
     "trophies": {
         "title": "Königreich-Trophäen",

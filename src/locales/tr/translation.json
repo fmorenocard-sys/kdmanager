@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "Filler hesaplarını kaydet",
     "account_selector": "Savaş hesapları",
-    "filler_declared_power": "Bildirilen güç"
+    "filler_declared_power": "Bildirilen güç",
+    "leadership_only_title": "Liderlik alanı",
+    "leadership_only_desc": "War Dashboard ve kampanya hedefleri Kral ve Subaylara özeldir.",
+    "leadership_only_hint": "Bildirimin ve kişisel hedefin \"Ben\" bölümünde."
   },
   "trophies": {
     "title": "Krallık Kupaları",

@@ -174,7 +174,10 @@
     "filler_t5": "T5",
     "filler_save": "Save fillers",
     "account_selector": "War accounts",
-    "filler_declared_power": "Declared power"
+    "filler_declared_power": "Declared power",
+    "leadership_only_title": "Leadership area",
+    "leadership_only_desc": "The War Dashboard and campaign goals are reserved for the King and Officers.",
+    "leadership_only_hint": "Your declaration and personal goal are in \"Me\"."
   },
   "trophies": {
     "title": "Kingdom Trophies",
