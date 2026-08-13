@@ -338,16 +338,24 @@ async function syncUserRolesFromDiscord(uid, discordId) {
         const memberData = await response.json();
         const memberRoles = memberData.roles || [];
 
-        // Épinglage Roi par ID utilisateur (marque blanche / amorçage pilote) :
-        // certains royaumes n'ont pas de rôle Discord « King » dédié. Les IDs listés
-        // dans ROLE_KING_USER_IDS (séparés par des virgules, env par projet) obtiennent
-        // le niveau Roi quels que soient leurs rôles Discord. Vide pour 2997 → sans effet.
+        // Épinglage par ID utilisateur (marque blanche / amorçage pilote) : certains
+        // royaumes n'ont pas de rôle Discord dédié. Les IDs listés dans ces env (séparés
+        // par des virgules, par projet) obtiennent le niveau voulu quels que soient leurs
+        // rôles Discord. Vides pour 2997 → sans effet.
+        //  - ROLE_ADMIN_USER_IDS : rôle Admin (opérateur/super-admin au-dessus du Roi,
+        //    A-033/BR-020) — permet à l'éditeur d'opérer l'instance sans être le Roi in-game.
+        //  - ROLE_KING_USER_IDS  : niveau Roi.
+        // eslint-disable-next-line no-undef
+        const adminUserIds = String(process.env.ROLE_ADMIN_USER_IDS || '')
+            .split(',').map((s) => s.trim()).filter(Boolean);
         // eslint-disable-next-line no-undef
         const kingUserIds = String(process.env.ROLE_KING_USER_IDS || '')
             .split(',').map((s) => s.trim()).filter(Boolean);
 
         let assignedRole = 'Guest';
-        if (kingUserIds.includes(String(discordId))) {
+        if (adminUserIds.includes(String(discordId))) {
+            assignedRole = 'Admin';
+        } else if (kingUserIds.includes(String(discordId))) {
             assignedRole = 'King';
         } else if (memberRoles.includes(roleKing)) {
             assignedRole = 'King';

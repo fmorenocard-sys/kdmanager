@@ -6,11 +6,26 @@ import { doc, onSnapshot } from "firebase/firestore";
 const RoleContext = createContext();
 
 export const ROLES = {
+    // Admin (opérateur) au-dessus du Roi : super-admin qui hérite de TOUS les pouvoirs
+    // du Roi + opère l'instance. Se distingue du Roi par son attribution (env
+    // ROLE_ADMIN_USER_IDS, cf. functions/discordAuth.js) et sa vocation « opérer sans
+    // être le Roi in-game » (A-033 / BR-020). Décision Roi 2026-08-13.
+    ADMIN: 'Admin',
     KING: 'King',
     OFFICER: 'Officer',
     WARRIOR: 'Warrior',
     GUEST: 'Guest'
 };
+
+// Hiérarchie par niveau — un gate est satisfait par le niveau requis OU plus haut.
+const ROLE_LEVEL = {
+    [ROLES.ADMIN]: 5,
+    [ROLES.KING]: 4,
+    [ROLES.OFFICER]: 3,
+    [ROLES.WARRIOR]: 2,
+    [ROLES.GUEST]: 1,
+};
+const levelOf = (r) => ROLE_LEVEL[r] || 0;
 
 export const useRole = () => {
     return useContext(RoleContext);
@@ -59,11 +74,11 @@ export const RoleProvider = ({ children }) => {
         return () => unsubscribe();
     }, [currentUser]);
 
-    // Seul un VRAI Roi peut activer l'aperçu.
-    const canImpersonate = realRole === ROLES.KING;
+    // Le Roi OU l'Admin (niveau Roi+) peut activer l'aperçu de rôle (F-033, outil ops/QA).
+    const canImpersonate = levelOf(realRole) >= ROLE_LEVEL[ROLES.KING];
 
-    // Garde-fou sans effet : l'aperçu n'a d'effet que pour un vrai Roi. Si le rôle
-    // réel n'est plus Roi, `impersonatedRole` retombe à null de lui-même.
+    // Garde-fou sans effet : l'aperçu n'a d'effet qu'au niveau Roi+. Si le rôle réel
+    // retombe plus bas, `impersonatedRole` redevient null de lui-même.
     const impersonatedRole = canImpersonate ? impersonatedRoleState : null;
 
     // Setter gardé : null (ou choisir son propre rôle) = revenir à sa vue.
@@ -76,14 +91,19 @@ export const RoleProvider = ({ children }) => {
     // (nav, AccessGate, isKing/isOfficer/isAuthorized) s'appuie dessus.
     const role = impersonatedRole || realRole;
 
+    // Gating HIÉRARCHIQUE : le rôle satisfait le gate s'il est au moins au niveau le
+    // plus BAS de la liste requise (les appels n'utilisent que [KING] et [KING, OFFICER]
+    // = « ce niveau ou au-dessus »). L'Admin (niveau 5) satisfait donc tous les gates Roi.
     const isAuthorized = (requiredRoles) => {
         if (!Array.isArray(requiredRoles)) requiredRoles = [requiredRoles];
-        return requiredRoles.includes(role);
+        if (!requiredRoles.length) return false;
+        const minReq = Math.min(...requiredRoles.map(levelOf));
+        return levelOf(role) >= minReq;
     };
 
-    const isKing = role === ROLES.KING;
-    const isOfficer = role === ROLES.OFFICER;
-    const isAdmin = isKing;
+    const isKing = levelOf(role) >= ROLE_LEVEL[ROLES.KING]; // Roi OU Admin (niveau Roi+)
+    const isOfficer = role === ROLES.OFFICER;               // exact (affichage/badges)
+    const isAdmin = isKing;                                  // pouvoirs admin = Roi ou Admin
 
     return (
         <RoleContext.Provider value={{

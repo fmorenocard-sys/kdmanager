@@ -27,6 +27,7 @@ let env;
 
 // Rôles : les documents roles/{uid} sont écrits hors règles (comme le fait
 // l'Admin SDK en production via la synchro Discord).
+const ADMIN = 'uid_admin';
 const KING = 'uid_king';
 const OFFICER = 'uid_officer';
 const WARRIOR = 'uid_warrior';
@@ -47,6 +48,7 @@ before(async () => {
 
     await env.withSecurityRulesDisabled(async (ctx) => {
         const db = ctx.firestore();
+        await setDoc(doc(db, 'roles', ADMIN), { role: 'Admin' });
         await setDoc(doc(db, 'roles', KING), { role: 'King' });
         await setDoc(doc(db, 'roles', OFFICER), { role: 'Officer' });
         await setDoc(doc(db, 'roles', WARRIOR), { role: 'Warrior' });
@@ -301,6 +303,27 @@ describe(`Règles Firestore — ${RULES_FILE}`, () => {
         });
         it('USAGE — le Roi (admin) peut toujours corriger la déclaration d\'un Warrior', async () => {
             await assertSucceeds(updateDoc(doc(as(KING), 'war_availabilities', 'soc4_' + WARRIOR), { governorId: '333' }));
+        });
+        it('USAGE — l\'Admin (super-admin) peut aussi corriger après le démarrage', async () => {
+            await assertSucceeds(setDoc(doc(as(ADMIN), 'war_availabilities', 'soc_started_' + ADMIN), {
+                userId: ADMIN, kvkId: 'soc_started', governorId: '444'
+            }));
+        });
+    });
+
+    describe('Admin · super-admin hérite des pouvoirs Roi', () => {
+        it('USAGE — l\'Admin écrit la config de campagne (pouvoir Roi, BR-020/M-2)', async () => {
+            await assertSucceeds(
+                setDoc(doc(as(ADMIN), 'kvk_config', 'active'), { name: 'SoC 5 by admin' }, { merge: true })
+            );
+        });
+        it('USAGE — l\'Admin saisit le résultat officiel d\'une archive (pouvoir Roi, BR-012)', async () => {
+            await assertSucceeds(
+                setDoc(doc(as(ADMIN), 'kvk_history', 'soc3'), { outcome: 'Victory' }, { merge: true })
+            );
+        });
+        it('USAGE — l\'Admin lit les agrégats de course (leadership)', async () => {
+            await assertSucceeds(getDoc(doc(as(ADMIN), 'kvk_race', 'soc4', 'scans', '6')));
         });
     });
 

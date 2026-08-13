@@ -106,7 +106,8 @@ const ProfilePage = () => {
                     <div>
                         <div className="flex items-center gap-3">
                             <h2 className="text-xl font-bold text-white">{currentUser.displayName}</h2>
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${role === 'King' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${role === 'Admin' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' :
+                                role === 'King' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
                                 role === 'Officer' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
                                     role === 'Warrior' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
                                         'bg-slate-500/20 text-slate-400 border-slate-500/30'

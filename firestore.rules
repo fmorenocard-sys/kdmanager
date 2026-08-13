@@ -29,12 +29,15 @@ service cloud.firestore {
         : 'Guest';
     }
 
+    // Admin (opérateur) = super-admin AU-DESSUS du Roi : hérite de tous les pouvoirs
+    // du Roi côté serveur (décision Roi 2026-08-13, A-033/BR-020). Attribué par env
+    // ROLE_ADMIN_USER_IDS dans functions/discordAuth.js. Les helpers Roi l'incluent donc.
     function isKingOrOfficer() {
-      return role() in ['King', 'Officer'];
+      return role() in ['King', 'Officer', 'Admin'];
     }
 
     function isKing() {
-      return role() == 'King';
+      return role() in ['King', 'Admin'];
     }
 
     // BR-022 : les déclarations (war_availabilities) sont GELÉES dès que la campagne

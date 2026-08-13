@@ -7,11 +7,12 @@ import { useRole, ROLES } from '../context/RoleContext';
 const DataRefreshControl = () => {
     const { refreshData, triggerSync, loading, lastUpdated, error } = useData();
     const { t } = useTranslation();
-    const { role } = useRole();
+    const { isAuthorized: hasRole } = useRole();
     const fileInputRef = useRef(null);
     const [uploadStatus, setUploadStatus] = useState('idle');
 
-    const isAuthorized = [ROLES.KING].includes(role);
+    // Ingestion = pouvoir de niveau Roi (BR-020) → l'Admin (opérateur) l'a aussi.
+    const isAuthorized = hasRole([ROLES.KING]);
 
     const handleFile = async (file) => {
         if (!file || !isAuthorized) return;
@@ -61,7 +62,7 @@ const DataRefreshControl = () => {
                 {/* Action buttons — only for authorized roles */}
                 {isAuthorized && (
                     <div className="flex gap-2 w-full sm:w-auto">
-                        {role === ROLES.KING && (
+                        {isAuthorized && (
                             <button
                                 onClick={async () => {
                                     setUploadStatus('uploading');
