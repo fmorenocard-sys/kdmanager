@@ -274,6 +274,11 @@
             "power": "Сила",
             "kp_gained": "Здобуті ОВ",
             "deaths": "Втрати"
+        },
+        "campaign": {
+            "label": "Кампанія",
+            "current": "Поточна кампанія",
+            "current_named": "{{name}} (поточна)"
         }
     },
     "pilotage": {

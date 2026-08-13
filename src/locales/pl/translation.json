@@ -636,6 +636,11 @@
       "power": "Moc",
       "kp_gained": "Zdobyte PZ",
       "deaths": "Straty"
+    },
+    "campaign": {
+      "label": "Kampania",
+      "current": "Bieżąca kampania",
+      "current_named": "{{name}} (bieżąca)"
     }
   },
   "pilotage": {

@@ -274,6 +274,11 @@
             "power": "Poder",
             "kp_gained": "PK ganados",
             "deaths": "Muertes"
+        },
+        "campaign": {
+            "label": "Campaña",
+            "current": "Campaña actual",
+            "current_named": "{{name}} (actual)"
         }
     },
     "pilotage": {

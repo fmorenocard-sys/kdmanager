@@ -7,24 +7,25 @@ import { computeKvkGoals, computeFillerGoal } from '../lib/kvkGoals';
 import { rateFromGoalPct } from '../lib/kvkScoring';
 
 /**
- * F-032 / F-014 / F-027 — objectif KvK de l'UTILISATEUR COURANT, exposé sans
- * dépendance à un composant de table (spec Espace_Perso §5.2).
+ * F-032 / F-014 / F-027 — objectif & stats KvK de l'UTILISATEUR COURANT, exposés
+ * sans dépendance à un composant de table (spec Espace_Perso §5.2).
  *
- * Source unique de calcul partagée avec le War Tracker : `computeKvkGoals` (war)
- * et `computeFillerGoal` (filler, extrait en lib) — aucune duplication de barème.
- * Le hook se contente de la JOINTURE scopée aux comptes réclamés de l'utilisateur
- * (une ligne par compte, war et filler mêlés, chacun avec son barème / BR-016/018).
+ * Sélecteur de campagne (F-032) : la campagne COURANTE lit les stats live
+ * (static_data/kvk) ; les campagnes PASSÉES lisent leur copie FIGÉE dans
+ * kvk_history (données par campagne, cohérentes). Expose `campaigns`,
+ * `selectedKey`, `selectCampaign`.
  *
- * « Publié » (war) = présence d'un `initialPower` figé au snapshot Pass 1 dans
- * kvkStats (spec §6.2) — sinon l'objectif n'existe pas encore et l'espace perso
- * montre `NoGoalPublishedCard`. « Publié » (filler) = déclaration de stacks T4/T5
- * présente (target > 0).
+ * Cohérence de la campagne courante : `static_data/kvk` ne porte aucun id de
+ * campagne — si le scan live est en réalité encore celui de la dernière campagne
+ * archivée (mêmes chiffres) ou si la campagne n'a pas commencé, l'objectif courant
+ * est « pas encore publié » (statsCurrent=false) plutôt que d'afficher des chiffres
+ * périmés. Les campagnes passées, elles, sont toujours « publiées » (figées).
  *
- * BR-019 : `revealed` reflète `kvk_config.revealGoalStatus` (King-only) — les
- * CHIFFRES restent toujours visibles, seul le LABEL de statut est gaté côté UI.
+ * BR-019 : `revealed` gate le LABEL de statut (jamais les chiffres). Une campagne
+ * passée est toujours révélée (combats terminés).
  *
- * @returns {{loading:boolean, revealed:boolean, kvkId:string|null,
- *   campaignName:string|null, rows:Array<object>, primaryRow:object|null}}
+ * Barème filler : dépend des stacks T4/T5 DÉCLARÉS (war_availabilities), qui
+ * n'existent que pour la campagne courante → pas d'objectif filler pour le passé.
  */
 export function useMyKvkGoals() {
     const { currentUser, governorId, accounts } = useAuth();
@@ -33,15 +34,13 @@ export function useMyKvkGoals() {
     const [loading, setLoading] = useState(true);
     const [config, setConfig] = useState(null);
     const [fillerDecls, setFillerDecls] = useState({}); // { [governorId]: { t4, t5 } }
-    // Dernière campagne archivée (kvk_history) : { title, archivedAt, byId:Map }.
-    // Sert de signal robuste de cohérence campagne (cf. statsCurrent plus bas).
-    const [archiveInfo, setArchiveInfo] = useState(null);
+    const [archives, setArchives] = useState([]); // [{ key, name, order, archivedAt, byId:Map }]
+    const [selectedKey, setSelectedKey] = useState('current');
 
     useEffect(() => {
         let alive = true;
         (async () => {
-            // Réservé aux utilisateurs connectés (kvk_config n'est pas public) —
-            // évite les permission-denied sur /me pour un visiteur avant redirection.
+            // Réservé aux utilisateurs connectés (kvk_config n'est pas public).
             if (!currentUser) { setLoading(false); return; }
             setLoading(true);
             try {
@@ -51,12 +50,10 @@ export function useMyKvkGoals() {
                 setConfig(cur);
 
                 const kvkId = cur?.id || 'default_kvk';
-                // Lecture bornée : uniquement les déclarations des comptes FILLER
-                // (leur objectif dépend des stacks T4/T5 déclarés). Les comptes de
-                // guerre tirent leur objectif de kvkStats, pas d'une déclaration.
+                // Déclarations filler (stacks T4/T5) de l'utilisateur, campagne courante.
                 const fillerAccts = (accounts || []).filter((a) => a.type === 'filler');
                 const entries = {};
-                if (currentUser && fillerAccts.length) {
+                if (fillerAccts.length) {
                     await Promise.all(fillerAccts.map(async (a) => {
                         const gid = String(a.governorId);
                         let sn = await getDoc(doc(db, 'war_availabilities', `${kvkId}_${currentUser.uid}_${gid}`));
@@ -72,24 +69,22 @@ export function useMyKvkGoals() {
                 if (!alive) return;
                 setFillerDecls(entries);
 
-                // Dernière campagne archivée (une seule lecture : order desc, limit 1).
-                // Sa `list`/`fillerList` est une copie FIGÉE du scan au moment de
-                // l'archivage → référence pour savoir si le scan live est encore
-                // celui de cette campagne passée.
+                // Toutes les campagnes archivées (récentes) : chacune porte une copie
+                // FIGÉE du scan (list/fillerList) → source par campagne pour le passé,
+                // et la plus récente sert de signal de cohérence de la campagne courante.
                 try {
-                    const aSnap = await getDocs(query(collection(db, 'kvk_history'), orderBy('order', 'desc'), limit(1)));
+                    const aSnap = await getDocs(query(collection(db, 'kvk_history'), orderBy('order', 'desc'), limit(12)));
                     if (!alive) return;
-                    const latest = aSnap.docs[0]?.data();
-                    if (latest) {
+                    const list = aSnap.docs.map((d) => {
+                        const data = d.data();
                         const byId = new Map();
-                        [...(latest.list || []), ...(latest.fillerList || [])].forEach((k) => byId.set(String(k.id), k));
-                        setArchiveInfo({ title: latest.title || null, archivedAt: latest.archivedAt || null, byId });
-                    } else {
-                        setArchiveInfo(null);
-                    }
+                        [...(data.list || []), ...(data.fillerList || [])].forEach((k) => byId.set(String(k.id), k));
+                        return { key: d.id, name: data.title || d.id, order: data.order || 0, archivedAt: data.archivedAt || null, byId };
+                    });
+                    setArchives(list);
                 } catch (e) {
-                    // Archive optionnelle : son absence ne doit pas casser l'objectif.
                     console.warn('[useMyKvkGoals] kvk_history indisponible (non bloquant)', e);
+                    setArchives([]);
                 }
             } catch (e) {
                 console.error('[useMyKvkGoals] échec lecture config/déclarations filler', e);
@@ -100,6 +95,7 @@ export function useMyKvkGoals() {
         return () => { alive = false; };
     }, [currentUser, governorId, accounts]);
 
+    // Index des stats LIVE (campagne courante), par id de gouverneur.
     const statsById = useMemo(() => {
         const m = new Map();
         [...(kvkStats || []), ...(kvkFillerStats || [])].forEach((k) => m.set(String(k.id), k));
@@ -107,37 +103,35 @@ export function useMyKvkGoals() {
     }, [kvkStats, kvkFillerStats]);
 
     const ratio = config?.fillerDeathRatio ?? 0.5;
-    const revealed = config?.revealGoalStatus === true;
-    const kvkId = config?.id || null;
-    const campaignName = config?.name || null;
+    const primaryGid = String(governorId || '');
 
-    // F-032 — cohérence de contexte campagne. `static_data/kvk` (les stats live)
-    // ne porte AUCUN identifiant de campagne : on ne peut pas lire dessus à quelle
-    // campagne il appartient. On détecte donc si le scan live est PÉRIMÉ (chiffres
-    // d'une campagne passée) par deux signaux robustes et indépendants :
-    //
-    //  1. scanIsArchived — les chiffres live du compte principal (puissance
-    //     initiale + morts totales) sont IDENTIQUES à ceux figés dans la dernière
-    //     archive kvk_history → le scan live EST cette campagne passée. Décisif :
-    //     le total de morts d'une campagne finie ne coïncide pas avec celui d'une
-    //     campagne fraîchement démarrée.
-    //  2. campaignNotStarted — la campagne courante a une date de début dans le
-    //     futur → elle n'a par définition aucune stat encore.
-    //
-    // Dans les deux cas, l'objectif est « pas encore publié » pour la campagne
-    // courante (NoGoalPublishedCard) plutôt que d'afficher des chiffres périmés.
-    // (Le champ static_data/kvk.updatedAt s'est révélé absent/inexploitable en
-    // prod — d'où le choix de ces deux signaux et non d'une heuristique de date.)
+    // ── Cohérence de la campagne COURANTE (cf. en-tête) ────────────────────────
+    const latestArchive = archives[0] || null;
     const startDate = config?.startDate?.toDate ? config.startDate.toDate() : null;
     const campaignNotStarted = !!(startDate && startDate.getTime() > new Date().getTime());
-    const primaryGid = String(governorId || '');
     const livePrimary = statsById.get(primaryGid) || null;
-    const archPrimary = archiveInfo?.byId?.get(primaryGid) || null;
+    const archPrimary = latestArchive?.byId?.get(primaryGid) || null;
     const scanIsArchived = !!(livePrimary && archPrimary
         && Number(livePrimary.initialPower || 0) > 0
         && Number(livePrimary.initialPower || 0) === Number(archPrimary.initialPower || 0)
         && Number(livePrimary.totalDead || 0) === Number(archPrimary.totalDead || 0));
     const statsCurrent = !(scanIsArchived || campaignNotStarted);
+
+    // ── Sélecteur de campagne ──────────────────────────────────────────────────
+    const campaigns = useMemo(() => {
+        const cur = config ? [{ key: 'current', name: config.name || null, isCurrent: true }] : [];
+        return [...cur, ...archives.map((a) => ({ key: a.key, name: a.name, isCurrent: false }))];
+    }, [config, archives]);
+
+    const effectiveKey = campaigns.some((c) => c.key === selectedKey) ? selectedKey : 'current';
+    const selectedArchive = archives.find((a) => a.key === effectiveKey) || null;
+    const isPast = !!selectedArchive;
+
+    // Source de données de la campagne sélectionnée + son contexte.
+    const source = isPast ? selectedArchive.byId : statsById;
+    const revealed = isPast ? true : (config?.revealGoalStatus === true);
+    const publishedGate = isPast ? true : statsCurrent;
+    const campaignName = isPast ? selectedArchive.name : (config?.name || null);
 
     const rows = useMemo(() => {
         const list = (accounts && accounts.length)
@@ -146,23 +140,24 @@ export function useMyKvkGoals() {
 
         return list.map((a) => {
             const gid = String(a.governorId);
-            const kvk = statsById.get(gid) || null;
+            const kvk = source.get(gid) || null;
             const name = kvk?.name || a.name || gid;
 
             if (a.type === 'filler') {
-                const decl = fillerDecls[gid];
+                // Objectif filler : stacks déclarés — connus seulement pour la
+                // campagne COURANTE. Pour une campagne passée : pas d'objectif.
+                const decl = isPast ? null : fillerDecls[gid];
                 const { declaredPower, target, achieved, attainment } =
                     computeFillerGoal(decl?.t4, decl?.t5, kvk?.t4Dead, kvk?.t5Dead, ratio);
                 const { rate, uncertain } = rateFromGoalPct(attainment);
                 return {
                     governorId: gid, name, type: 'filler',
-                    published: statsCurrent && target > 0,
+                    published: publishedGate && target > 0,
                     declaredPower, target, achieved, pct: attainment, rate, uncertain,
                 };
             }
 
-            // Compte de guerre : objectif calé sur la puissance INITIALE figée
-            // (référence officielle) — pas la puissance courante. Absente = pas publié.
+            // Compte de guerre : objectif calé sur la puissance INITIALE figée.
             const power = kvk?.initialPower || 0;
             const goals = computeKvkGoals(power);
             const kpGained = kvk?.totalKpGained ?? null;
@@ -172,7 +167,7 @@ export function useMyKvkGoals() {
             const { rate, uncertain } = rateFromGoalPct(goalPct);
             return {
                 governorId: gid, name, type: 'war',
-                published: statsCurrent && power > 0,
+                published: publishedGate && power > 0,
                 powerM: goals.powerM,
                 minKp: goals.minKp,
                 goalKp: goals.goalKp,
@@ -181,26 +176,29 @@ export function useMyKvkGoals() {
                 kpGained, pct: goalPct, rate, uncertain,
             };
         });
-    }, [accounts, governorId, statsById, fillerDecls, ratio, statsCurrent]);
+    }, [accounts, governorId, source, fillerDecls, ratio, publishedGate, isPast]);
 
     const primaryRow = useMemo(() => {
         if (!rows.length) return null;
-        return rows.find((r) => r.governorId === String(governorId || '')) || rows[0];
-    }, [rows, governorId]);
+        return rows.find((r) => r.governorId === primaryGid) || rows[0];
+    }, [rows, primaryGid]);
 
-    // Stats de campagne condensées du compte principal (F-032 Lot 4 / « Mes stats
-    // web », parité /mystats SANS Kingdom rank — décision Roi §12.4). Mêmes données
-    // que l'objectif → cohérentes avec statsCurrent (masquées si scan périmé).
+    // Stats condensées du compte principal (Lot 4, parité /mystats sans rank),
+    // pour la campagne sélectionnée. Masquées si non publié (gérées par l'appelant).
     const primaryStats = (() => {
-        if (!livePrimary) return null;
+        const p = source.get(primaryGid);
+        if (!p || !publishedGate) return null;
         return {
-            powerM: (Number(livePrimary.finalPower) || Number(livePrimary.initialPower) || 0) / 1e6,
-            kpGainedM: (Number(livePrimary.totalKpGained) || 0) / 1e6,
-            deaths: Number(livePrimary.totalDead) || 0,
+            powerM: (Number(p.finalPower) || Number(p.initialPower) || 0) / 1e6,
+            kpGainedM: (Number(p.totalKpGained) || 0) / 1e6,
+            deaths: Number(p.totalDead) || 0,
         };
     })();
 
-    return { loading, revealed, kvkId, campaignName, statsCurrent, rows, primaryRow, primaryStats };
+    return {
+        loading, revealed, campaignName, statsCurrent, rows, primaryRow, primaryStats,
+        campaigns, selectedKey: effectiveKey, selectCampaign: setSelectedKey, isPast,
+    };
 }
 
 export default useMyKvkGoals;

@@ -636,6 +636,11 @@
       "power": "Sức mạnh",
       "kp_gained": "KP đạt được",
       "deaths": "Tổn thất"
+    },
+    "campaign": {
+      "label": "Chiến dịch",
+      "current": "Chiến dịch hiện tại",
+      "current_named": "{{name}} (hiện tại)"
     }
   },
   "pilotage": {

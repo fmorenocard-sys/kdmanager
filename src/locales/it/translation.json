@@ -636,6 +636,11 @@
       "power": "Potere",
       "kp_gained": "PU guadagnati",
       "deaths": "Morti"
+    },
+    "campaign": {
+      "label": "Campagna",
+      "current": "Campagna attuale",
+      "current_named": "{{name}} (in corso)"
     }
   },
   "pilotage": {

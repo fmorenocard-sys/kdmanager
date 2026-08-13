@@ -636,6 +636,11 @@
       "power": "القوة",
       "kp_gained": "نقاط القتل المكتسبة",
       "deaths": "القتلى"
+    },
+    "campaign": {
+      "label": "الحملة",
+      "current": "الحملة الحالية",
+      "current_named": "{{name}} (الحالية)"
     }
   },
   "pilotage": {

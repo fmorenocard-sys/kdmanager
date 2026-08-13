@@ -8,7 +8,7 @@ import { useRole } from '../context/RoleContext';
 import { useData } from '../context/DataContext';
 import { BRANDING } from '../config/branding';
 import PageHeader from '../components/ui/PageHeader';
-import { House } from '../components/ui/icons';
+import { House, History } from '../components/ui/icons';
 import AvailabilityForm from '../components/war/AvailabilityForm';
 import CampaignTimelineBanner from '../components/war/CampaignTimelineBanner';
 import NextActionCard from '../components/me/NextActionCard';
@@ -38,7 +38,10 @@ const MeLandingPage = () => {
     const { currentUser, governorId, accounts } = useAuth();
     const { role } = useRole();
     const { error: dataError, lastUpdated } = useData();
-    const { rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName, primaryStats } = useMyKvkGoals();
+    const {
+        rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName, primaryStats,
+        campaigns, selectedKey, selectCampaign,
+    } = useMyKvkGoals();
 
     const [configLoading, setConfigLoading] = useState(true);
     const [kvkConfig, setKvkConfig] = useState(null);
@@ -173,6 +176,27 @@ const MeLandingPage = () => {
                             </div>
                             {/* Colonne droite : ce qu'on attend de moi et qui je suis */}
                             <div className="flex flex-col gap-4 min-w-0">
+                                {/* Sélecteur de campagne (F-032) : campagne courante + campagnes
+                                    passées (kvk_history). Pilote l'objectif + Mes stats. */}
+                                {campaigns.length > 1 && (
+                                    <div className="flex items-center gap-2">
+                                        <History size={15} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
+                                        <select
+                                            aria-label={t('me.campaign.label')}
+                                            value={selectedKey}
+                                            onChange={(e) => selectCampaign(e.target.value)}
+                                            className="flex-1 min-w-0 bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg px-3 py-2 text-sm text-slate-200 min-h-[40px]"
+                                        >
+                                            {campaigns.map((c) => (
+                                                <option key={c.key} value={c.key}>
+                                                    {c.isCurrent
+                                                        ? (c.name ? t('me.campaign.current_named', { name: c.name }) : t('me.campaign.current'))
+                                                        : c.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
                                 {goalPublished ? (
                                     <>
                                         <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />

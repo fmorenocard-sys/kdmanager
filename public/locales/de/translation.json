@@ -274,6 +274,11 @@
             "power": "Macht",
             "kp_gained": "KP erzielt",
             "deaths": "Verluste"
+        },
+        "campaign": {
+            "label": "Kampagne",
+            "current": "Aktuelle Kampagne",
+            "current_named": "{{name}} (aktuell)"
         }
     },
     "pilotage": {

@@ -636,6 +636,11 @@
       "power": "Güç",
       "kp_gained": "Kazanılan ÖP",
       "deaths": "Ölümler"
+    },
+    "campaign": {
+      "label": "Kampanya",
+      "current": "Mevcut kampanya",
+      "current_named": "{{name}} (güncel)"
     }
   },
   "pilotage": {
