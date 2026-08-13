@@ -1,9 +1,14 @@
 # Brief — « Voir en tant que rôle » (impersonation UI, King-only)
 
 > Date : 2026-08-13
-> Statut : **Brief de cadrage, idée non arbitrée.** Pas de décision d'exécution engagée — ce document
-> pose le périmètre, la nuance critique (présentation vs sécurité) et une recommandation de
-> placement, pour trancher **si** et **comment** construire.
+> Statut : **V1 LIVRÉE (2026-08-13)** sur branche `feat/espace-perso-moi` + canal de preview staging,
+> à valider avant fusion `main`. Voir F-033 (`FeatureInventory.md`) et US-045 (`ProductBacklog.md`)
+> pour le détail de ce qui a été construit. Ce brief reste la référence de cadrage — les 3 points
+> ouverts du §6 ont été tranchés **par défaut** (recommandations de ce brief retenues telles
+> quelles, sans arbitrage Roi explicite distinct) : **King-only strict** (pas d'extension Officier),
+> **persistance en mémoire** (option (a), reset au rechargement). Le 3ᵉ point — disponibilité sur
+> les instances pilotes en marque blanche (KD 3341) — **reste ouvert**, non tranché, la V1 n'a été
+> déployée que sur 2997/staging.
 > Origine : proposition du Roi, inspirée de la fonctionnalité Discord « Visualiser le serveur en
 > tant que rôle ».
 
@@ -163,15 +168,18 @@ multi-compte, sans module) reste utile en pratique — un Roi qui veut vérifier
 vérifier « que voit un Warrior avec 2 comptes fillers non déclarés » ne le pourra pas avec cet
 outil seul (il faudrait un vrai compte de test — le terrain de BUG-008, pas de celui-ci).
 
-**Non tranché, à poser au Roi** :
-- Accès **King-only strict**, ou extensible à l'Officer plus tard (utile pour un Officer qui veut
-  vérifier ce que voit un Warrior avant de communiquer une consigne) ? Défaut recommandé :
-  King-only pour la V1 — cohérent avec BR-020 (les outils d'ops restent au sommet de la hiérarchie
-  tant qu'aucun rôle opérateur dédié n'existe, A-033).
-- Persistance en mémoire vs `sessionStorage` (§5.3).
+**Tranché par défaut pour la V1 livrée (2026-08-13, sans arbitrage Roi distinct — recommandations
+de ce brief retenues telles quelles)** :
+- Accès **King-only strict** — pas d'extension Officier en V1. `canImpersonate` est câblé sur
+  `realRole === King` dans le code livré (`RoleContext.jsx`). Rouvrir l'extension Officier reste
+  possible plus tard mais suppose une décision Roi explicite, pas un acquis de la V1.
+- Persistance **en mémoire** (option (a)) — reset au rechargement, pas de `sessionStorage`.
+
+**Reste non tranché** :
 - Faut-il aussi le proposer sur les instances pilotes en marque blanche (KD 3341) ou le réserver à
   2997 pour l'instant ? Aucun blocage technique identifié, mais pas demandé explicitement par le
-  Roi à ce stade — à confirmer plutôt que supposé inclus.
+  Roi à ce stade — à confirmer plutôt que supposé inclus. La V1 livrée n'a été déployée que sur
+  2997/staging ; extension à 3341 non engagée.
 
 ---
 
