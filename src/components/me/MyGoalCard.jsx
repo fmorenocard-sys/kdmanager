@@ -60,7 +60,7 @@ const MyGoalCard = ({ rows, primaryId, revealed, campaignName }) => {
     }
 
     return (
-        <div className="v2-glass p-4 flex flex-col gap-3">
+        <div className="v2-glass p-4 lg:p-5 flex flex-col gap-3">
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                     <Target size={15} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
