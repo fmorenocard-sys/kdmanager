@@ -10,7 +10,8 @@
         "bank": "Банк",
         "war": "Війна",
         "me": "Я",
-        "royaume": "Королівство"
+        "royaume": "Королівство",
+        "pilotage": "Командування"
     },
     "auth": {
         "sign_in": "Увійти",
@@ -274,5 +275,8 @@
             "kp_gained": "Здобуті ОВ",
             "deaths": "Втрати"
         }
+    },
+    "pilotage": {
+        "subtitle": "War Dashboard, цілі кампанії та deadweight — лише для керівництва."
     }
 }

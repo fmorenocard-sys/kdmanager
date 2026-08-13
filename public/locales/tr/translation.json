@@ -10,7 +10,8 @@
         "bank": "Banka",
         "war": "Savaş",
         "me": "Ben",
-        "royaume": "Krallık"
+        "royaume": "Krallık",
+        "pilotage": "Komuta"
     },
     "auth": {
         "sign_in": "Giriş Yap",
@@ -274,5 +275,8 @@
             "kp_gained": "Kazanılan ÖP",
             "deaths": "Ölümler"
         }
+    },
+    "pilotage": {
+        "subtitle": "War Dashboard, kampanya hedefleri ve deadweight — yalnızca liderlik."
     }
 }

@@ -11,7 +11,8 @@
     "bank": "Banca",
     "war": "Guerra",
     "me": "Io",
-    "royaume": "Regno"
+    "royaume": "Regno",
+    "pilotage": "Comando"
   },
   "auth": {
     "sign_in": "Accedi",
@@ -636,5 +637,8 @@
       "kp_gained": "PU guadagnati",
       "deaths": "Morti"
     }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, obiettivi di campagna e deadweight — solo leadership."
   }
 }

@@ -11,7 +11,8 @@
     "bank": "Bank",
     "war": "War",
     "me": "Me",
-    "royaume": "Kingdom"
+    "royaume": "Kingdom",
+    "pilotage": "Command"
   },
   "auth": {
     "sign_in": "Sign In",
@@ -636,5 +637,8 @@
       "kp_gained": "KP gained",
       "deaths": "Deaths"
     }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, campaign goals and deadweight — leadership only."
   }
 }

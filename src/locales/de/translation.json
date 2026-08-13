@@ -11,7 +11,8 @@
     "bank": "Bank",
     "war": "Krieg",
     "me": "Ich",
-    "royaume": "Königreich"
+    "royaume": "Königreich",
+    "pilotage": "Kommando"
   },
   "auth": {
     "sign_in": "Anmelden",
@@ -636,5 +637,8 @@
       "kp_gained": "KP erzielt",
       "deaths": "Verluste"
     }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, Kampagnenziele und Deadweight — nur Führung."
   }
 }

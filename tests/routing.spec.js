@@ -12,10 +12,13 @@ test.describe('Routing & Navigation', () => {
         await expect(page.locator('h1')).toContainText(/Treasury|Bank/i);
     });
 
-    test('should navigate to Deadweight page', async ({ page }) => {
-        await page.getByRole('link', { name: /Deadweight/i }).first().click();
-        await expect(page).toHaveURL(/.*\/deadweight/);
-        await expect(page.locator('h1')).toContainText(/Deadweight/i);
+    // F-032 Lot 6 : Deadweight n'est plus une entrée de nav dédiée — c'est un
+    // onglet du hub leadership « Pilotage » (Command). On y accède via Pilotage.
+    test('should reach Deadweight via the Pilotage hub', async ({ page }) => {
+        await page.getByRole('link', { name: /Command|Pilotage/i }).first().click();
+        await expect(page).toHaveURL(/.*\/pilotage/);
+        await page.getByRole('button', { name: /Deadweight/i }).click();
+        await expect(page).toHaveURL(/tab=deadweight/);
     });
 
     test('should navigate to Trophies page - TC-014', async ({ page }) => {

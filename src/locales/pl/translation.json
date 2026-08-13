@@ -11,7 +11,8 @@
     "bank": "Bank",
     "war": "Wojna",
     "me": "Ja",
-    "royaume": "Królestwo"
+    "royaume": "Królestwo",
+    "pilotage": "Dowodzenie"
   },
   "auth": {
     "sign_in": "Zaloguj",
@@ -636,5 +637,8 @@
       "kp_gained": "Zdobyte PZ",
       "deaths": "Straty"
     }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, cele kampanii i deadweight — tylko dowództwo."
   }
 }

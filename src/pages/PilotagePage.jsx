@@ -3,29 +3,31 @@ import { useSearchParams, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useRole, ROLES } from '../context/RoleContext';
+import { isModuleEnabled } from '../config/modules';
 import WarDashboard from '../components/war/WarDashboard';
 import KvkGoalsPanel from '../components/war/KvkGoalsPanel';
-import { Shield, LayoutDashboard, Target, ShieldAlert } from '../components/ui/icons';
+import DeadweightPage from './DeadweightPage';
+import { LayoutDashboard, Target, Skull, ShieldAlert } from '../components/ui/icons';
 import PageHeader from '../components/ui/PageHeader';
 import AccessGate from '../components/ui/AccessGate';
 
-// F-032 Lot 5 — scission du War Tracker (spec Espace_Perso §4).
-// La part PERSO (déclaration F-006 + objectif perso F-014) a migré dans /me.
-// Cette page ne conserve que les surfaces LEADERSHIP — War Dashboard (déclarations
-// du royaume) + objectifs de campagne (vue Déclarants / Top du royaume) — et passe
-// derrière un AccessGate leadership au niveau PAGE. Elle n'est plus dans la nav
-// (interim §7.3) : accessible par URL, en attendant la fusion « Pilotage » (Lot 6).
-const WarTrackerPage = () => {
+// F-032 Lot 6 — hub « Pilotage » (spec Espace_Perso §7.2 / E-009 §3.1).
+// Regroupe sous UNE entrée de nav leadership les surfaces de pilotage du royaume :
+// War Dashboard (déclarations du royaume), Objectifs de campagne (Déclarants /
+// Top du royaume) et Deadweight. Remplace le slot « Deadweight » et remet
+// l'ex-War Tracker dans une nav propre (fin de l'interim §7.3). Leadership-only.
+const PilotagePage = () => {
     const { currentUser } = useAuth();
     const { isAuthorized } = useRole();
     const { t } = useTranslation();
     const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
+    const showDeadweight = isModuleEnabled('deadweight');
 
-    // Onglet persisté dans l'URL (#/war-tracker?tab=goals) : un rechargement revient au même onglet.
     const [searchParams, setSearchParams] = useSearchParams();
+    const validTabs = ['dashboard', 'goals', ...(showDeadweight ? ['deadweight'] : [])];
     const [activeTab, setActiveTab] = useState(() => {
         const t0 = searchParams.get('tab');
-        return ['goals', 'dashboard'].includes(t0) ? t0 : 'dashboard';
+        return validTabs.includes(t0) ? t0 : 'dashboard';
     });
     const goTab = (id) => {
         setActiveTab(id);
@@ -34,16 +36,12 @@ const WarTrackerPage = () => {
         setSearchParams(p, { replace: true });
     };
 
-    // Visiteur → vitrine du royaume. (Le rôle est déjà résolu ici : RoleProvider
-    // ne rend ses enfants qu'une fois chargé.)
+    // Visiteur → vitrine du royaume ; connecté non-leadership → Espace leadership.
     if (!currentUser) return <Navigate to="/royaume" replace />;
-
-    // Utilisateur connecté SANS rôle leadership : la déclaration et l'objectif
-    // perso sont désormais dans « Moi » — on le lui indique plutôt qu'une page vide.
     if (!isLeadership) {
         return (
             <div className="space-y-6">
-                <PageHeader icon={Shield} title={t('war.tracker_title')} />
+                <PageHeader icon={LayoutDashboard} title={t('nav.pilotage')} />
                 <AccessGate
                     icon={ShieldAlert}
                     title={t('war.leadership_only_title')}
@@ -55,16 +53,17 @@ const WarTrackerPage = () => {
     }
 
     const tabs = [
-        { id: 'goals', label: t('goals.tab_label'), icon: Target },
         { id: 'dashboard', label: t('war.dashboard_title'), icon: LayoutDashboard },
+        { id: 'goals', label: t('goals.tab_label'), icon: Target },
+        ...(showDeadweight ? [{ id: 'deadweight', label: t('nav.deadweight'), icon: Skull }] : []),
     ];
 
     return (
         <div className="space-y-6">
-            <PageHeader icon={Shield} title={t('war.tracker_title')} subtitle={t('war.tracker_subtitle')} />
+            <PageHeader icon={LayoutDashboard} title={t('nav.pilotage')} subtitle={t('pilotage.subtitle')} />
 
             {/* Navigation Tabs */}
-            <div className="flex flex-wrap gap-2 mb-6 pb-2" role="group" aria-label="War Tracker Views">
+            <div className="flex flex-wrap gap-2 mb-6 pb-2" role="group" aria-label={t('nav.pilotage')}>
                 {tabs.map(tab => {
                     const isActive = activeTab === tab.id;
                     return (
@@ -88,20 +87,18 @@ const WarTrackerPage = () => {
 
             {/* Content Area */}
             <div className="min-h-[500px]">
-                {activeTab === 'goals' && (
-                    <div className="animate-in fade-in duration-300">
-                        <KvkGoalsPanel />
-                    </div>
-                )}
-
                 {activeTab === 'dashboard' && (
-                    <div className="animate-in fade-in duration-300">
-                        <WarDashboard />
-                    </div>
+                    <div className="animate-in fade-in duration-300"><WarDashboard /></div>
+                )}
+                {activeTab === 'goals' && (
+                    <div className="animate-in fade-in duration-300"><KvkGoalsPanel /></div>
+                )}
+                {activeTab === 'deadweight' && showDeadweight && (
+                    <div className="animate-in fade-in duration-300"><DeadweightPage embedded /></div>
                 )}
             </div>
         </div>
     );
 };
 
-export default WarTrackerPage;
+export default PilotagePage;

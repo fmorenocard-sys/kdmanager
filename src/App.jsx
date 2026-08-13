@@ -8,16 +8,16 @@ import { BRANDING } from './config/branding';
 import { isModuleEnabled } from './config/modules';
 import ModuleDisabled from './components/ui/ModuleDisabled';
 import { LangProvider } from './context/LangContext';
-import { CastleTurret, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Hammer, House } from './components/ui/icons';
+import { CastleTurret, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, LayoutDashboard, Hammer, House } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
 import MeLandingPage from './pages/MeLandingPage';
+import PilotagePage from './pages/PilotagePage';
 import RootRedirect from './components/RootRedirect';
 import KvKPerformancePage from './pages/KvKPerformancePage';
 import KingdomTrophiesPage from './pages/KingdomTrophiesPage';
 import DeadweightPage from './pages/DeadweightPage';
 import BankPage from './pages/BankPage';
 import ProfilePage from './pages/ProfilePage';
-import WarTrackerPage from './pages/WarTrackerPage';
 import KvKRacePage from './pages/KvKRacePage';
 import AdminPage from './pages/AdminPage';
 import BottomNav from './components/BottomNav';
@@ -40,10 +40,11 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
     { id: 'royaume', path: '/royaume', icon: CastleTurret, label: t('nav.royaume') },
     { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.kvk') },
     { id: 'trophies', path: '/trophies', icon: Trophy, label: t('nav.trophies') },
-    // BR-009: deadweight is leadership-only (roles come from Discord sync).
-    // Refonte nav : la Course vit dans le Hub KvK (onglet), plus d'entrée dédiée.
+    // F-032 Lot 6 : « Pilotage » (leadership) regroupe War Dashboard + Objectifs +
+    // Deadweight sous une entrée unique (spec §7.2), en remplacement du slot
+    // Deadweight. Course/Progression vivent dans le Hub KvK.
     ...(isAuthorized([ROLES.KING, ROLES.OFFICER]) ? [
-        { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
+        { id: 'pilotage', path: '/pilotage', icon: LayoutDashboard, label: t('nav.pilotage') },
     ] : []),
     { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
   // Activation de modules par instance (F-023) : masque les modules optionnels
@@ -298,7 +299,9 @@ const MainContent = () => {
               {/* /royaume = Dashboard renommé d'intention, contenu inchangé (spec §3) */}
               <Route path="/royaume" element={<DashboardPage />} />
               <Route path="/kvk" element={<KvKPerformancePage />} />
-              <Route path="/war-tracker" element={<WarTrackerPage />} />
+              {/* F-032 Lot 6 : hub Pilotage (leadership). /war-tracker redirige ici (compat). */}
+              <Route path="/pilotage" element={<PilotagePage />} />
+              <Route path="/war-tracker" element={<Navigate to="/pilotage" replace />} />
               <Route path="/trophies" element={isModuleEnabled('trophies') ? <KingdomTrophiesPage /> : <ModuleDisabled />} />
               <Route path="/deadweight" element={isModuleEnabled('deadweight') ? <DeadweightPage /> : <ModuleDisabled />} />
               <Route path="/kvk-race" element={<KvKRacePage />} />

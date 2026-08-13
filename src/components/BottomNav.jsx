@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { House, CastleTurret, TrendingUp, Trophy, Skull, Bank } from './ui/icons';
+import { House, CastleTurret, TrendingUp, Trophy, LayoutDashboard, Bank } from './ui/icons';
 import { useRole, ROLES } from '../context/RoleContext';
 import { isModuleEnabled, ROUTE_MODULE } from '../config/modules';
 
@@ -15,7 +15,9 @@ const NAV_ITEMS = [
     { path: '/kvk', iconComp: TrendingUp, key: 'nav.kvk' },
     { path: '/trophies', iconComp: Trophy, key: 'nav.trophies' },
     { path: '/bank', iconComp: Bank, key: 'nav.bank' },
-    { path: '/deadweight', iconComp: Skull, key: 'nav.deadweight', leadership: true },
+    // F-032 Lot 6 : « Pilotage » (leadership) remplace le slot Deadweight —
+    // regroupe War Dashboard + Objectifs + Deadweight.
+    { path: '/pilotage', iconComp: LayoutDashboard, key: 'nav.pilotage', leadership: true },
 ];
 
 const BottomNav = () => {

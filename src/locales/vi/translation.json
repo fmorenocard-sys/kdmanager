@@ -11,7 +11,8 @@
     "bank": "Ngân hàng",
     "war": "Chiến tranh",
     "me": "Tôi",
-    "royaume": "Vương quốc"
+    "royaume": "Vương quốc",
+    "pilotage": "Chỉ huy"
   },
   "auth": {
     "sign_in": "Đăng nhập",
@@ -636,5 +637,8 @@
       "kp_gained": "KP đạt được",
       "deaths": "Tổn thất"
     }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, mục tiêu chiến dịch và deadweight — chỉ ban chỉ huy."
   }
 }
