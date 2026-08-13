@@ -603,7 +603,8 @@
     "nogoal": {
       "badge": "Mój cel KvK",
       "title": "Dowództwo nie opublikowało jeszcze celów.",
-      "desc": "Cele są ustalane na podstawie migawki mocy z Przejścia 1. Twój pojawi się tutaj zaraz po publikacji — nic nie musisz robić."
+      "desc": "Cele są ustalane na podstawie migawki mocy z Przejścia 1. Twój pojawi się tutaj zaraz po publikacji — nic nie musisz robić.",
+      "title_campaign": "Cele dla {{name}} nie zostały jeszcze opublikowane."
     },
     "goal": {
       "kp": "Punkty zabójstw",

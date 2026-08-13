@@ -241,7 +241,8 @@
         "nogoal": {
             "badge": "Mi objetivo KvK",
             "title": "El liderazgo aún no ha publicado los objetivos.",
-            "desc": "Los objetivos se calculan a partir de la instantánea de poder del Pase 1. El tuyo aparecerá aquí en cuanto salga — nada que hacer de tu parte."
+            "desc": "Los objetivos se calculan a partir de la instantánea de poder del Pase 1. El tuyo aparecerá aquí en cuanto salga — nada que hacer de tu parte.",
+            "title_campaign": "Los objetivos de {{name}} aún no se han publicado."
         },
         "goal": {
             "kp": "PK ganados",

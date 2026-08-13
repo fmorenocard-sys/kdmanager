@@ -28,6 +28,10 @@ export const DataProvider = ({ children }) => {
         deadweight: null,
         kvkStats: [],
         kvkFillerStats: [],
+        // Horodatage serveur du DERNIER scan KvK (static_data/kvk.updatedAt).
+        // Sert à savoir si le scan live appartient à la campagne courante
+        // (F-032 — cohérence de contexte campagne, cf. useMyKvkGoals).
+        kvkUpdatedAt: null,
         stats: null,
         avatars: {},
         loading: true,
@@ -102,7 +106,9 @@ export const DataProvider = ({ children }) => {
         const unsubKvk = onSnapshot(doc(db, "static_data", "kvk"), (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
-                if (data.list) setState(prev => ({ ...prev, kvkStats: data.list, lastUpdated: new Date() }));
+                // updatedAt = Timestamp serveur écrit par la Cloud Function au scan.
+                const scanAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : null;
+                if (data.list) setState(prev => ({ ...prev, kvkStats: data.list, kvkUpdatedAt: scanAt, lastUpdated: new Date() }));
             }
         });
 

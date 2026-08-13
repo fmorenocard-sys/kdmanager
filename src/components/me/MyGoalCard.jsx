@@ -24,7 +24,7 @@ const RATE_STYLES = {
 };
 const rateKey = (rate) => `goals.rate_${rate.toLowerCase().replace(/\s+/g, '_')}`;
 
-const MyGoalCard = ({ rows, primaryId, revealed }) => {
+const MyGoalCard = ({ rows, primaryId, revealed, campaignName }) => {
     const { t, i18n } = useTranslation();
     const nf = (n, d = 1) => (n == null || !Number.isFinite(n))
         ? '—'
@@ -67,8 +67,13 @@ const MyGoalCard = ({ rows, primaryId, revealed }) => {
                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)] truncate">
                         {t('me.nogoal.badge')}
                     </span>
+                    {campaignName && (
+                        <span className="font-mono text-[10px] text-[var(--text-secondary)] border border-white/10 rounded px-1.5 py-0.5 truncate">
+                            {campaignName}
+                        </span>
+                    )}
                 </div>
-                <span className="font-mono text-lg font-bold text-white">{pct == null ? '—' : `${nf(pct * 100, 0)} %`}</span>
+                <span className="font-mono text-lg font-bold text-white shrink-0">{pct == null ? '—' : `${nf(pct * 100, 0)} %`}</span>
             </div>
 
             {/* Sélecteur de compte (pills) si plusieurs comptes avec objectif publié */}

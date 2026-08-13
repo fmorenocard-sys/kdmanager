@@ -241,7 +241,8 @@
         "nogoal": {
             "badge": "My KvK goal",
             "title": "Leadership hasn't published targets yet.",
-            "desc": "Goals are set from the power snapshot taken at Pass 1. Yours lands here as soon as it's out — nothing for you to do."
+            "desc": "Goals are set from the power snapshot taken at Pass 1. Yours lands here as soon as it's out — nothing for you to do.",
+            "title_campaign": "Targets for {{name}} aren't published yet."
         },
         "goal": {
             "kp": "Kill points",

@@ -28,7 +28,7 @@ import { rateFromGoalPct } from '../lib/kvkScoring';
  */
 export function useMyKvkGoals() {
     const { currentUser, governorId, accounts } = useAuth();
-    const { kvkStats, kvkFillerStats } = useData();
+    const { kvkStats, kvkFillerStats, kvkUpdatedAt } = useData();
 
     const [loading, setLoading] = useState(true);
     const [config, setConfig] = useState(null);
@@ -88,6 +88,16 @@ export function useMyKvkGoals() {
     const kvkId = config?.id || null;
     const campaignName = config?.name || null;
 
+    // F-032 — cohérence de contexte campagne : les stats live (static_data/kvk)
+    // ne portent aucun identifiant de campagne. On déduit si le dernier scan
+    // appartient à la campagne COURANTE en comparant son horodatage à la date de
+    // début de campagne : un scan antérieur au début = chiffres d'une campagne
+    // précédente → objectif « pas encore publié » pour la campagne courante,
+    // plutôt que d'afficher des chiffres périmés comme s'ils étaient à jour.
+    // Repli prudent : signal manquant (pas de date) → on n'invalide pas (comportement d'avant).
+    const startDate = config?.startDate?.toDate ? config.startDate.toDate() : null;
+    const statsCurrent = (kvkUpdatedAt && startDate) ? kvkUpdatedAt >= startDate : true;
+
     const rows = useMemo(() => {
         const list = (accounts && accounts.length)
             ? accounts
@@ -105,7 +115,7 @@ export function useMyKvkGoals() {
                 const { rate, uncertain } = rateFromGoalPct(attainment);
                 return {
                     governorId: gid, name, type: 'filler',
-                    published: target > 0,
+                    published: statsCurrent && target > 0,
                     declaredPower, target, achieved, pct: attainment, rate, uncertain,
                 };
             }
@@ -121,7 +131,7 @@ export function useMyKvkGoals() {
             const { rate, uncertain } = rateFromGoalPct(goalPct);
             return {
                 governorId: gid, name, type: 'war',
-                published: power > 0,
+                published: statsCurrent && power > 0,
                 powerM: goals.powerM,
                 minKp: goals.minKp,
                 goalKp: goals.goalKp,
@@ -130,14 +140,14 @@ export function useMyKvkGoals() {
                 kpGained, pct: goalPct, rate, uncertain,
             };
         });
-    }, [accounts, governorId, statsById, fillerDecls, ratio]);
+    }, [accounts, governorId, statsById, fillerDecls, ratio, statsCurrent]);
 
     const primaryRow = useMemo(() => {
         if (!rows.length) return null;
         return rows.find((r) => r.governorId === String(governorId || '')) || rows[0];
     }, [rows, governorId]);
 
-    return { loading, revealed, kvkId, campaignName, rows, primaryRow };
+    return { loading, revealed, kvkId, campaignName, statsCurrent, rows, primaryRow };
 }
 
 export default useMyKvkGoals;

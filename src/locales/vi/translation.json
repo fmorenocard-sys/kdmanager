@@ -603,7 +603,8 @@
     "nogoal": {
       "badge": "Mục tiêu KvK của tôi",
       "title": "Ban chỉ huy chưa công bố mục tiêu.",
-      "desc": "Mục tiêu được tính từ ảnh chụp sức mạnh ở Lượt 1. Mục tiêu của bạn sẽ xuất hiện ở đây ngay khi công bố — bạn không cần làm gì."
+      "desc": "Mục tiêu được tính từ ảnh chụp sức mạnh ở Lượt 1. Mục tiêu của bạn sẽ xuất hiện ở đây ngay khi công bố — bạn không cần làm gì.",
+      "title_campaign": "Mục tiêu cho {{name}} chưa được công bố."
     },
     "goal": {
       "kp": "Điểm tiêu diệt",

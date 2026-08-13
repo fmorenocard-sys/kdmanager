@@ -241,7 +241,8 @@
         "nogoal": {
             "badge": "KvK hedefim",
             "title": "Liderlik henüz hedefleri yayınlamadı.",
-            "desc": "Hedefler 1. Geçiş güç anlık görüntüsünden hesaplanır. Seninki yayınlanır yayınlanmaz burada görünecek — yapman gereken bir şey yok."
+            "desc": "Hedefler 1. Geçiş güç anlık görüntüsünden hesaplanır. Seninki yayınlanır yayınlanmaz burada görünecek — yapman gereken bir şey yok.",
+            "title_campaign": "{{name}} hedefleri henüz yayınlanmadı."
         },
         "goal": {
             "kp": "Öldürme puanı",

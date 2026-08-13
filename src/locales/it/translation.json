@@ -603,7 +603,8 @@
     "nogoal": {
       "badge": "Il mio obiettivo KvK",
       "title": "La leadership non ha ancora pubblicato gli obiettivi.",
-      "desc": "Gli obiettivi si calcolano dall'istantanea di potere del Passaggio 1. Il tuo apparirà qui appena pubblicato — non devi fare nulla."
+      "desc": "Gli obiettivi si calcolano dall'istantanea di potere del Passaggio 1. Il tuo apparirà qui appena pubblicato — non devi fare nulla.",
+      "title_campaign": "Gli obiettivi di {{name}} non sono ancora pubblicati."
     },
     "goal": {
       "kp": "Punti uccisione",

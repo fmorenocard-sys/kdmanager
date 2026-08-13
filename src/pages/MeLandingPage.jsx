@@ -37,7 +37,7 @@ const MeLandingPage = () => {
     const { currentUser, governorId, accounts } = useAuth();
     const { role } = useRole();
     const { error: dataError, lastUpdated } = useData();
-    const { rows: goalRows, revealed: goalRevealed } = useMyKvkGoals();
+    const { rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName } = useMyKvkGoals();
 
     const [configLoading, setConfigLoading] = useState(true);
     const [kvkConfig, setKvkConfig] = useState(null);
@@ -153,9 +153,9 @@ const MeLandingPage = () => {
                             (war = initialPower figé, filler = stacks déclarés), sinon
                             le placeholder « pas encore publié » (spec §5.2 / §6.2). */}
                         {goalRows.some((r) => r.published) ? (
-                            <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} />
+                            <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
                         ) : (
-                            <NoGoalPublishedCard />
+                            <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />
                         )}
                         <div ref={formRef} className="scroll-mt-20">
                             <AvailabilityForm />

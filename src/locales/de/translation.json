@@ -603,7 +603,8 @@
     "nogoal": {
       "badge": "Mein KvK-Ziel",
       "title": "Die Führung hat noch keine Ziele veröffentlicht.",
-      "desc": "Ziele werden aus dem Machtwert von Pass 1 berechnet. Deins erscheint hier, sobald es veröffentlicht ist — du musst nichts tun."
+      "desc": "Ziele werden aus dem Machtwert von Pass 1 berechnet. Deins erscheint hier, sobald es veröffentlicht ist — du musst nichts tun.",
+      "title_campaign": "Die Ziele für {{name}} sind noch nicht veröffentlicht."
     },
     "goal": {
       "kp": "Killpunkte",

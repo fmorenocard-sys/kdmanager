@@ -603,7 +603,8 @@
     "nogoal": {
       "badge": "Mon objectif KvK",
       "title": "Le leadership n'a pas encore publié les objectifs.",
-      "desc": "Les objectifs sont calculés à partir du snapshot de puissance du Pass 1. Le tien apparaîtra ici dès sa publication — rien à faire de ton côté."
+      "desc": "Les objectifs sont calculés à partir du snapshot de puissance du Pass 1. Le tien apparaîtra ici dès sa publication — rien à faire de ton côté.",
+      "title_campaign": "Les objectifs de {{name}} ne sont pas encore publiés."
     },
     "goal": {
       "kp": "KP gagné",
