@@ -128,11 +128,20 @@ const MeLandingPage = () => {
     const isOff = !kvkConfig || kvkConfig.status === 'closed';
     const subtitle = [currentUser.displayName, role, BRANDING.kingdomName].filter(Boolean).join(' · ');
 
+    // Objectif publié ? → carte objectif, sinon placeholder « pas encore publié ».
+    const goalBlock = goalRows.some((r) => r.published) ? (
+        <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
+    ) : (
+        <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />
+    );
+
     return (
         <div className="space-y-6 animate-fade-in">
             <PageHeader icon={House} title={t('nav.me')} subtitle={subtitle} />
 
-            <div className="max-w-2xl mx-auto w-full flex flex-col gap-3.5">
+            {/* Étroit en mobile/tablette (colonne unique), élargi en desktop pour
+                les 2 colonnes (spec §6.3). */}
+            <div className="mx-auto w-full max-w-2xl lg:max-w-5xl flex flex-col gap-4">
                 {dataError && (
                     <ErrorCard lastScan={lastUpdated || null} onRetry={() => window.location.reload()} />
                 )}
@@ -140,32 +149,35 @@ const MeLandingPage = () => {
                 {configLoading ? (
                     <LoadingSkeleton />
                 ) : isOff ? (
-                    <OffCampaignCard kvkName={kvkName} />
+                    <div className="flex flex-col gap-4">
+                        <OffCampaignCard kvkName={kvkName} />
+                        <MyAccountsSummary />
+                    </div>
                 ) : (
                     <>
-                        <NextActionCard
-                            accounts={myAccounts}
-                            kvkName={kvkName}
-                            onDeclareClick={scrollToForm}
-                        />
-                        <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
-                        {/* Lot 2 — objectif perso : carte si un objectif est publié
-                            (war = initialPower figé, filler = stacks déclarés), sinon
-                            le placeholder « pas encore publié » (spec §5.2 / §6.2). */}
-                        {goalRows.some((r) => r.published) ? (
-                            <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
-                        ) : (
-                            <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />
-                        )}
-                        <div ref={formRef} className="scroll-mt-20">
+                        {/* Dashboard 2 colonnes en desktop (spec §6.3 / mock « desktop 1a ») :
+                            gauche = action + calendrier ; droite = objectif + (Mes stats, Lot 4)
+                            + comptes. Même ordre DOM qu'en mobile — la grille ne fait que
+                            refluer (mock : « the grid only reflows it »). */}
+                        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4 lg:gap-6 items-start">
+                            {/* Colonne gauche : quoi faire et quand */}
+                            <div className="flex flex-col gap-4 min-w-0">
+                                <NextActionCard accounts={myAccounts} kvkName={kvkName} onDeclareClick={scrollToForm} />
+                                <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
+                            </div>
+                            {/* Colonne droite : ce qu'on attend de moi et qui je suis */}
+                            <div className="flex flex-col gap-4 min-w-0">
+                                {goalBlock}
+                                <MyAccountsSummary />
+                            </div>
+                        </div>
+                        {/* Formulaire de déclaration complet, pleine largeur sous le
+                            dashboard (contraint en lecture). Cible du CTA « Déclarer ». */}
+                        <div ref={formRef} className="scroll-mt-20 w-full max-w-2xl mx-auto">
                             <AvailabilityForm />
                         </div>
                     </>
                 )}
-
-                {/* Lot 3 — résumé « Mes comptes » (roster + lien Gérer). Toujours
-                    utile, en/hors campagne ; masqué seulement pendant le chargement. */}
-                {!configLoading && <MyAccountsSummary />}
             </div>
         </div>
     );
