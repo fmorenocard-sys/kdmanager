@@ -114,6 +114,7 @@
     "dashboard_title": "Tableau de Bord de Guerre (Officiers)",
     "declaration_form": "Déclarer ma Disponibilité",
     "form_description": "Fournissez des données précises pour aider la direction à planifier.",
+    "declarations_frozen": "Les déclarations sont closes — la campagne a démarré.",
     "no_active_campaign": "Aucune campagne KvK active — les déclarations rouvriront à la prochaine saison.",
     "campaign_closed": "Campagne clôturée — inter-saison",
     "form_required": "Le nom et l'ID sont requis.",

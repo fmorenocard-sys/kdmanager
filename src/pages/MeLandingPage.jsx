@@ -36,7 +36,7 @@ import { useMyKvkGoals } from '../hooks/useMyKvkGoals';
 const MeLandingPage = () => {
     const { t } = useTranslation();
     const { currentUser, governorId, accounts } = useAuth();
-    const { role } = useRole();
+    const { role, isAuthorized } = useRole();
     const { error: dataError, lastUpdated } = useData();
 
     const [configLoading, setConfigLoading] = useState(true);
@@ -154,6 +154,14 @@ const MeLandingPage = () => {
 
     const kvkName = kvkConfig?.name || null;
     const isOff = !kvkConfig || kvkConfig.status === 'closed';
+    // BR-022 : dès que la campagne a DÉMARRÉ (startDate passée), les déclarations
+    // sont gelées et /me bascule en mode « suivi » (objectif + stats), sans plus de
+    // carte d'action ni de rollup « X/Y déclarés ». Le leadership (Roi/Officiers)
+    // garde l'accès au formulaire pour corriger (décision Roi 2026-08-13).
+    const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
+    const startDate = kvkConfig?.startDate?.toDate ? kvkConfig.startDate.toDate() : null;
+    const campaignStarted = !!(startDate && startDate.getTime() <= Date.now());
+    const canDeclare = !campaignStarted || isLeadership;
     // Prochain jalon (pour le compte à rebours de la carte « prochaine action »).
     const nextMilestone = (() => {
         const now = Date.now();
@@ -167,7 +175,7 @@ const MeLandingPage = () => {
     // qu'une barre séparée. Seulement en campagne active et multi-compte.
     const declaredCount = myAccounts.filter((a) => a.declared).length;
     const subtitleParts = [currentUser.displayName, role, BRANDING.kingdomName];
-    if (!configLoading && !isOff && myAccounts.length > 1) {
+    if (!configLoading && !isOff && !campaignStarted && myAccounts.length > 1) {
         subtitleParts.push(t('me.rollup', { done: declaredCount, total: myAccounts.length }));
     }
     const subtitle = subtitleParts.filter(Boolean).join(' · ');
@@ -199,9 +207,13 @@ const MeLandingPage = () => {
                             + comptes. Même ordre DOM qu'en mobile — la grille ne fait que
                             refluer (mock : « the grid only reflows it »). */}
                         <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4 lg:gap-6 items-start">
-                            {/* Colonne gauche : quoi faire et quand */}
+                            {/* Colonne gauche : quoi faire et quand. La carte d'action
+                                disparaît une fois la campagne démarrée (BR-022) — /me se
+                                concentre alors sur le suivi (objectif + stats). */}
                             <div className="flex flex-col gap-4 min-w-0">
-                                <NextActionCard accounts={myAccounts} kvkName={kvkName} nextMilestone={nextMilestone} onDeclareClick={openForm} />
+                                {!campaignStarted && (
+                                    <NextActionCard accounts={myAccounts} kvkName={kvkName} nextMilestone={nextMilestone} onDeclareClick={openForm} />
+                                )}
                                 <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
                             </div>
                             {/* Colonne droite : ce qu'on attend de moi et qui je suis */}
@@ -238,9 +250,10 @@ const MeLandingPage = () => {
                                 <MyAccountsSummary />
                             </div>
                         </div>
-                        {/* Formulaire de déclaration — REPLIÉ par défaut (DA) : /me reste
-                            un dashboard, la déclaration est à un clic (CTA de la carte
-                            action ou cette barre). */}
+                        {/* Formulaire de déclaration — REPLIÉ par défaut (DA). Masqué une
+                            fois la campagne démarrée (BR-022) SAUF pour le leadership, qui
+                            garde le droit de corriger une déclaration (canDeclare). */}
+                        {canDeclare && (
                         <div ref={formRef} className="scroll-mt-20 w-full max-w-2xl mx-auto">
                             {formOpen ? (
                                 <div className="flex flex-col gap-2">
@@ -261,6 +274,7 @@ const MeLandingPage = () => {
                                 </button>
                             )}
                         </div>
+                        )}
                     </>
                 )}
             </div>

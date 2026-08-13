@@ -114,6 +114,7 @@
     "dashboard_title": "Pannello Guerra (Ufficiali)",
     "declaration_form": "Dichiara la mia disponibilità",
     "form_description": "Fornisci dati accurati per aiutare la leadership a pianificare il prossimo KvK. Inserisci le risorse in milioni (es. 100 = 100M).",
+    "declarations_frozen": "Dichiarazioni chiuse — la campagna è iniziata.",
     "no_active_campaign": "Nessuna campagna KvK attiva — le dichiarazioni riapriranno la prossima stagione.",
     "campaign_closed": "Campagna chiusa — tra le stagioni",
     "form_required": "Nome e ID sono obbligatori.",

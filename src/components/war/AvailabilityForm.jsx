@@ -5,6 +5,7 @@ import { db } from '../../config/firebase';
 import { doc, getDoc, setDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
+import { useRole, ROLES } from '../../context/RoleContext';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
@@ -20,6 +21,7 @@ const AvailabilityForm = () => {
     const { currentUser, governorId, accounts, linkGovernor } = useAuth();
 
     const { players } = useData();
+    const { isAuthorized } = useRole();
     const { t, i18n } = useTranslation();
 
     const [loading, setLoading] = useState(false);
@@ -98,6 +100,7 @@ const AvailabilityForm = () => {
                         id: data.id,
                         name: data.name,
                         startDate: startDateStr,
+                        startDateMs: data.startDate ? data.startDate.seconds * 1000 : null, // BR-022 : gel au démarrage
                         endDate: endDateStr,
                         status: data.status || null // BR-013: 'closed' hors saison
                     };
@@ -146,7 +149,16 @@ const AvailabilityForm = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser, selectedGovernorId]);
 
-
+    // Gel des déclarations : BR-013 (saison close, tout le monde) + BR-022 (campagne
+    // démarrée, tout le monde SAUF leadership qui peut corriger). Défense en profondeur —
+    // /me masque déjà le formulaire aux non-leadership une fois la campagne démarrée.
+    const isClosedSeason = kvkConfig?.status === 'closed';
+    const campaignStarted = kvkConfig?.startDateMs != null && kvkConfig.startDateMs <= Date.now();
+    const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
+    const declarationsLocked = isClosedSeason || (campaignStarted && !isLeadership);
+    const activeKvkId = kvkConfig
+        ? (kvkConfig.id || `${kvkConfig.name}_${kvkConfig.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_'))
+        : 'default_kvk';
 
     const handleResourceChange = (e) => {
         const { name, value } = e.target;
@@ -189,7 +201,7 @@ const AvailabilityForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (kvkConfig?.status === 'closed') return; // BR-013
+        if (declarationsLocked) return; // BR-013 (saison close) / BR-022 (campagne démarrée)
         setLoading(true);
         setErrorMsg('');
         setSuccessMsg('');
@@ -280,12 +292,6 @@ const AvailabilityForm = () => {
     const getCmdImage = (id) => COMMANDERS.find(c => c.id === id)?.image || null;
     const getCmdName = (id) => COMMANDERS.find(c => c.id === id)?.name || id;
 
-    // BR-013: campagne clôturée par le Roi — déclarations gelées jusqu'à la prochaine saison
-    const isClosedSeason = kvkConfig?.status === 'closed';
-    const activeKvkId = kvkConfig
-        ? (kvkConfig.id || `${kvkConfig.name}_${kvkConfig.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_'))
-        : 'default_kvk';
-
     if (!currentUser) {
         return (
             <AccessGate
@@ -316,6 +322,14 @@ const AvailabilityForm = () => {
                             <Calendar size={24} />
                         </div>
                         <p className="text-sm text-slate-300">{t('war.no_active_campaign')}</p>
+                    </div>
+                )}
+
+                {/* BR-022 : campagne démarrée et utilisateur non-leadership → déclarations gelées. */}
+                {campaignStarted && !isLeadership && !isClosedSeason && (
+                    <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl flex items-center gap-3">
+                        <Calendar size={20} className="text-amber-400 shrink-0" />
+                        <p className="text-sm text-amber-200">{t('war.declarations_frozen')}</p>
                     </div>
                 )}
 
@@ -531,7 +545,7 @@ const AvailabilityForm = () => {
 
             {/* Submit */}
             <div className="flex justify-end pt-4">
-                <Button onClick={handleSubmit} disabled={loading || isClosedSeason} className="w-full md:w-auto bg-green-600 hover:bg-green-700">
+                <Button onClick={handleSubmit} disabled={loading || declarationsLocked} className="w-full md:w-auto bg-green-600 hover:bg-green-700">
                     <Save size={18} className="me-2" />
                     {loading ? t('common.loading') : t('war.save_declaration')}
                 </Button>
@@ -549,7 +563,7 @@ const AvailabilityForm = () => {
                     kvkId={activeKvkId}
                     kvkName={kvkConfig?.name}
                     resolveName={resolveName}
-                    disabled={isClosedSeason}
+                    disabled={declarationsLocked}
                 />
             )}
         </Card>

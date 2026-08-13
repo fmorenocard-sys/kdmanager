@@ -19,7 +19,7 @@ import {
     assertSucceeds,
     initializeTestEnvironment
 } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 const RULES_FILE = process.env.RULES_FILE || 'firestore.rules';
 
@@ -266,6 +266,41 @@ describe(`Règles Firestore — ${RULES_FILE}`, () => {
 
         it('REFUS — lire les jetons de liaison (refus par défaut)', async () => {
             await assertFails(getDoc(doc(as(KING), '_discord_link_tokens', 'whatever')));
+        });
+    });
+
+    describe('BR-022 · war_availabilities : gel au démarrage de la campagne', () => {
+        // Campagne COURANTE démarrée (startDate dans le passé). Posée ici seulement
+        // (pas dans le before global) pour ne pas geler les autres cas M-1, et
+        // nettoyée après pour ne pas fuiter sur le test « méta ».
+        before(async () => {
+            await env.withSecurityRulesDisabled(async (ctx) => {
+                await setDoc(doc(ctx.firestore(), 'kvk_config', 'current'), {
+                    id: 'soc_started', name: 'SoC Started', startDate: new Date('2020-01-01T00:00:00Z'),
+                });
+            });
+        });
+        after(async () => {
+            await env.withSecurityRulesDisabled(async (ctx) => {
+                await deleteDoc(doc(ctx.firestore(), 'kvk_config', 'current'));
+            });
+        });
+
+        it('REFUS — un Warrior ne peut plus créer sa déclaration après le démarrage', async () => {
+            await assertFails(setDoc(doc(as(WARRIOR), 'war_availabilities', 'soc_started_' + WARRIOR), {
+                userId: WARRIOR, kvkId: 'soc_started', governorId: '111'
+            }));
+        });
+        it('REFUS — un Warrior ne peut plus modifier sa déclaration après le démarrage', async () => {
+            await assertFails(updateDoc(doc(as(WARRIOR), 'war_availabilities', 'soc4_' + WARRIOR), { governorId: '999' }));
+        });
+        it('USAGE — un Officier peut toujours écrire (correction leadership)', async () => {
+            await assertSucceeds(setDoc(doc(as(OFFICER), 'war_availabilities', 'soc_started_' + OFFICER), {
+                userId: OFFICER, kvkId: 'soc_started', governorId: '222'
+            }));
+        });
+        it('USAGE — le Roi peut toujours corriger la déclaration d\'un Warrior', async () => {
+            await assertSucceeds(updateDoc(doc(as(KING), 'war_availabilities', 'soc4_' + WARRIOR), { governorId: '333' }));
         });
     });
 

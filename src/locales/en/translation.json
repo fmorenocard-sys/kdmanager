@@ -114,6 +114,7 @@
     "dashboard_title": "War Dashboard (Officers)",
     "declaration_form": "Declare My Availability",
     "form_description": "Provide accurate data to help leadership plan for the upcoming KvK. Input resources in millions (e.g. 100 = 100M).",
+    "declarations_frozen": "Declarations are closed — the campaign has started.",
     "no_active_campaign": "No active KvK campaign — declarations will reopen next season.",
     "campaign_closed": "Campaign closed — inter-season",
     "form_required": "Name and ID are required.",

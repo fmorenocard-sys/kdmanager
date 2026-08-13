@@ -65,7 +65,7 @@ async function seed() {
     const declare = SCENARIO === 'declared';
 
     const batch = db.batch();
-    batch.set(db.doc(`roles/${UID}`), { role: 'King' });
+    batch.set(db.doc(`roles/${UID}`), { role: process.env.SEED_ROLE || 'King' });
     batch.set(db.doc(`user_profiles/${UID}`), {
         governorId: WAR.gid,
         accounts: accountsList,

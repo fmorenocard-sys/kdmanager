@@ -37,6 +37,20 @@ service cloud.firestore {
       return role() == 'King';
     }
 
+    // BR-022 : les déclarations (war_availabilities) sont GELÉES dès que la campagne
+    // active a démarré (startDate passée). Le leadership garde le droit de corriger
+    // (exception gérée au point d'usage). `startDate` absente / pas de campagne
+    // courante → ouvert (rien à geler).
+    function activeStartDate() {
+      return exists(/databases/$(database)/documents/kvk_config/current)
+        ? get(/databases/$(database)/documents/kvk_config/current).data.get('startDate', null)
+        : null;
+    }
+
+    function declarationsOpen() {
+      return activeStartDate() == null || request.time < activeStartDate();
+    }
+
     // M-3 : garde-fou de forme. `keys()` couvre la création, `diff()` la mise à jour.
     function writesOnly(fields) {
       return request.resource.data.keys().hasOnly(fields);
@@ -96,12 +110,16 @@ service cloud.firestore {
     // Le leadership garde le droit d'écrire pour autrui : l'outil de fusion de
     // campagnes (MaintenanceTools) recrée des déclarations sous le userId d'origine,
     // et l'historique contient des déclarations 'guest'.
+    // BR-022 : gel des écritures dès que la campagne a démarré — sauf leadership
+    // (Roi/Officiers), qui peut toujours corriger une déclaration.
     match /war_availabilities/{document} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated()
-        && (request.resource.data.userId == request.auth.uid || isKingOrOfficer());
+        && (request.resource.data.userId == request.auth.uid || isKingOrOfficer())
+        && (declarationsOpen() || isKingOrOfficer());
       allow update, delete: if isAuthenticated()
-        && (resource.data.userId == request.auth.uid || isKingOrOfficer());
+        && (resource.data.userId == request.auth.uid || isKingOrOfficer())
+        && (declarationsOpen() || isKingOrOfficer());
     }
 
     // ---------- Leadership ----------
