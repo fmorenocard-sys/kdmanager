@@ -651,5 +651,17 @@
   "pilotage": {
     "subtitle": "War Dashboard, mục tiêu chiến dịch và deadweight — chỉ ban chỉ huy.",
     "tab_dashboard": "Bảng chiến tranh"
+  },
+  "view_as": {
+    "rail": "Xem với vai trò",
+    "desc": "Xem trước giao diện như một vai trò khác nhìn thấy.",
+    "exit": "Thoát xem trước",
+    "banner": "Xem trước: bạn đang xem với vai trò {{role}}",
+    "banner_note": "Xem trước hình ảnh — dữ liệu của bạn không đổi.",
+    "caveat": "Chỉ xem trước HÌNH ẢNH: không kiểm tra hạn chế dữ liệu (quy tắc máy chủ vẫn áp dụng vai trò Vua thật của bạn).",
+    "role_king": "Vua",
+    "role_officer": "Sĩ quan",
+    "role_warrior": "Chiến binh",
+    "role_guest": "Khách"
   }
 }

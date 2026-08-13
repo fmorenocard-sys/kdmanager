@@ -651,5 +651,17 @@
   "pilotage": {
     "subtitle": "War Dashboard, cele kampanii i deadweight — tylko dowództwo.",
     "tab_dashboard": "Panel wojny"
+  },
+  "view_as": {
+    "rail": "Zobacz jako rola",
+    "desc": "Podgląd interfejsu tak, jak widzi go inna rola.",
+    "exit": "Zakończ podgląd",
+    "banner": "Podgląd: oglądasz jako {{role}}",
+    "banner_note": "Podgląd wizualny — Twoje dane się nie zmieniają.",
+    "caveat": "Tylko podgląd WIZUALNY: nie testuje ograniczeń danych (reguły serwera stosują Twoją prawdziwą rolę Króla).",
+    "role_king": "Król",
+    "role_officer": "Oficer",
+    "role_warrior": "Wojownik",
+    "role_guest": "Gość"
   }
 }

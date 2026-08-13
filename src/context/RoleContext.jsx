@@ -18,7 +18,15 @@ export const useRole = () => {
 
 export const RoleProvider = ({ children }) => {
     const { currentUser } = useAuth();
-    const [role, setRole] = useState(ROLES.GUEST);
+    // Rôle RÉEL (depuis Firestore roles/{uid}) — la source de vérité.
+    const [realRole, setRealRole] = useState(ROLES.GUEST);
+    // F-033 « Voir en tant que » : rôle SIMULÉ (Roi-only, PRÉSENTATION UNIQUEMENT).
+    // Override client-side du rôle effectif pour prévisualiser le gating UI d'un
+    // autre rôle. Ne change RIEN aux règles Firestore (elles évaluent toujours le
+    // vrai uid) — ce n'est donc jamais un test des restrictions de DONNÉES (BR-021).
+    // En mémoire seulement : réinitialisé au rechargement (on évite qu'un Roi oublie
+    // qu'il visualise en Warrior).
+    const [impersonatedRoleState, setImpersonatedRoleState] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -31,60 +39,58 @@ export const RoleProvider = ({ children }) => {
             unsubscribe = onSnapshot(roleRef, (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    console.log("[RoleContext] User Role Data:", data);
-
-                    // Normalize: find the matching ROLE constant regardless of case
                     const fetchedRole = data.role;
                     const normalizedRole = Object.values(ROLES).find(r => r.toLowerCase() === (fetchedRole || "").toLowerCase()) || ROLES.WARRIOR;
-
-                    setRole(normalizedRole);
+                    setRealRole(normalizedRole);
                 } else {
-                    console.log("[RoleContext] No role document found for UID:", currentUser.uid);
-                    setRole(ROLES.GUEST); // Or Warrior, depending on default policy. Sticking to Guest for safety.
+                    setRealRole(ROLES.GUEST);
                 }
                 setLoading(false);
             }, (error) => {
                 console.error("[RoleContext] Error fetching role:", error);
-                setRole(ROLES.GUEST);
+                setRealRole(ROLES.GUEST);
                 setLoading(false);
             });
         } else {
-            setRole(ROLES.GUEST);
+            setRealRole(ROLES.GUEST);
             setLoading(false);
         }
 
         return () => unsubscribe();
     }, [currentUser]);
 
+    // Seul un VRAI Roi peut activer l'aperçu.
+    const canImpersonate = realRole === ROLES.KING;
+
+    // Garde-fou sans effet : l'aperçu n'a d'effet que pour un vrai Roi. Si le rôle
+    // réel n'est plus Roi, `impersonatedRole` retombe à null de lui-même.
+    const impersonatedRole = canImpersonate ? impersonatedRoleState : null;
+
+    // Setter gardé : null (ou choisir son propre rôle) = revenir à sa vue.
+    const setImpersonatedRole = (r) => {
+        if (!canImpersonate) return;
+        setImpersonatedRoleState(r && Object.values(ROLES).includes(r) && r !== realRole ? r : null);
+    };
+
+    // Rôle EFFECTIF : le simulé s'il est actif, sinon le réel. Tout le gating UI
+    // (nav, AccessGate, isKing/isOfficer/isAuthorized) s'appuie dessus.
+    const role = impersonatedRole || realRole;
+
     const isAuthorized = (requiredRoles) => {
         if (!Array.isArray(requiredRoles)) requiredRoles = [requiredRoles];
-        // Hierarchy: King > Officer > Warrior > Guest
-        // If required is Officer, King is also authorized.
-        // Actually, let's keep it simple: exact match or explict list.
-        // But commonly checking "at least Officer"
-
-        const roleHierarchy = {
-            [ROLES.KING]: 4,
-            [ROLES.OFFICER]: 3,
-            [ROLES.WARRIOR]: 2,
-            [ROLES.GUEST]: 1
-        };
-
-        const currentLevel = roleHierarchy[role] || 0;
-
-        // Check if any of the required roles is met by level or exact match
-        // For simplicity in this app, let's say we pass the *minimum* role required.
-        // But usually we pass "allowed roles".
-
         return requiredRoles.includes(role);
     };
 
     const isKing = role === ROLES.KING;
     const isOfficer = role === ROLES.OFFICER;
-    const isAdmin = isKing; // King is Admin for now, or we can add specific Admin role.
+    const isAdmin = isKing;
 
     return (
-        <RoleContext.Provider value={{ role, isKing, isOfficer, isAdmin, loading, isAuthorized }}>
+        <RoleContext.Provider value={{
+            role, realRole, isKing, isOfficer, isAdmin, loading, isAuthorized,
+            // F-033 « Voir en tant que »
+            impersonatedRole, isImpersonating: !!impersonatedRole, canImpersonate, setImpersonatedRole,
+        }}>
             {!loading && children}
         </RoleContext.Provider>
     );

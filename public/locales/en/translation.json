@@ -289,5 +289,17 @@
     "pilotage": {
         "subtitle": "War Dashboard, campaign goals and deadweight — leadership only.",
         "tab_dashboard": "War Dashboard"
+    },
+    "view_as": {
+        "rail": "View as role",
+        "desc": "Preview the interface as another role sees it.",
+        "exit": "Exit preview",
+        "banner": "Preview: you're viewing as {{role}}",
+        "banner_note": "Visual preview — your data doesn't change.",
+        "caveat": "VISUAL preview only: it does not test data restrictions (server rules still apply your real King role).",
+        "role_king": "King",
+        "role_officer": "Officer",
+        "role_warrior": "Warrior",
+        "role_guest": "Guest"
     }
 }

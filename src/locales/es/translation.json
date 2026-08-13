@@ -651,5 +651,17 @@
   "pilotage": {
     "subtitle": "War Dashboard, objetivos de campaña y deadweight — solo liderazgo.",
     "tab_dashboard": "Panel de guerra"
+  },
+  "view_as": {
+    "rail": "Ver como rol",
+    "desc": "Previsualiza la interfaz como la ve otro rol.",
+    "exit": "Salir de la vista previa",
+    "banner": "Vista previa: estás viendo como {{role}}",
+    "banner_note": "Vista previa visual — tus datos no cambian.",
+    "caveat": "Solo vista previa VISUAL: no prueba las restricciones de datos (las reglas del servidor aplican siempre tu rol real de Rey).",
+    "role_king": "Rey",
+    "role_officer": "Oficial",
+    "role_warrior": "Guerrero",
+    "role_guest": "Invitado"
   }
 }

@@ -21,6 +21,7 @@ import ProfilePage from './pages/ProfilePage';
 import KvKRacePage from './pages/KvKRacePage';
 import AdminPage from './pages/AdminPage';
 import BottomNav from './components/BottomNav';
+import ImpersonationBanner from './components/admin/ImpersonationBanner';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
 import ThemeToggle from './components/ui/ThemeToggle';
 
@@ -289,6 +290,9 @@ const MainContent = () => {
             <UserProfile />
           </div>
         </header>
+
+        {/* F-033 « Voir en tant que » — bandeau global d'aperçu de rôle (Roi-only) */}
+        <ImpersonationBanner />
 
         <div className="flex-1 w-full max-w-7xl mx-auto flex flex-col p-4 md:p-6 lg:p-10 pb-24 md:pb-6 lg:pb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 min-w-0">
           <div className="flex-1 min-w-0">

@@ -289,5 +289,17 @@
     "pilotage": {
         "subtitle": "War Dashboard, Kampagnenziele und Deadweight — nur Führung.",
         "tab_dashboard": "War Dashboard"
+    },
+    "view_as": {
+        "rail": "Als Rolle ansehen",
+        "desc": "Vorschau der Oberfläche aus Sicht einer anderen Rolle.",
+        "exit": "Vorschau beenden",
+        "banner": "Vorschau: Du siehst als {{role}}",
+        "banner_note": "Visuelle Vorschau — deine Daten ändern sich nicht.",
+        "caveat": "Nur VISUELLE Vorschau: testet keine Datenbeschränkungen (Server-Regeln gelten weiter für deine echte König-Rolle).",
+        "role_king": "König",
+        "role_officer": "Offizier",
+        "role_warrior": "Krieger",
+        "role_guest": "Gast"
     }
 }

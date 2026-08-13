@@ -9,7 +9,8 @@ import CampaignArchiveControl from '../components/war/CampaignArchiveControl';
 import RaceConfigForm from '../components/kvk/RaceConfigForm';
 import MaintenanceTools from '../components/admin/MaintenanceTools';
 import CampaignTimelineEditor from '../components/war/CampaignTimelineEditor';
-import { ShieldAlert, Database, Flag, Hammer, Shield, Calendar } from '../components/ui/icons';
+import ViewAsControl from '../components/admin/ViewAsControl';
+import { ShieldAlert, Database, Flag, Hammer, Shield, Calendar, User } from '../components/ui/icons';
 
 // Refonte navigation (maquette M3) — page Administration, Roi uniquement,
 // accessible via la zone « Administration » de la sidebar (pas de bottom nav).
@@ -34,7 +35,8 @@ const AdminPage = () => {
         { id: 'campaign', label: t('admin.rail_campaign'), icon: Shield },
         { id: 'calendar', label: t('admin.rail_calendar'), icon: Calendar },
         { id: 'race', label: t('admin.rail_race'), icon: Flag },
-        { id: 'maintenance', label: t('admin.rail_maintenance'), icon: Hammer }
+        { id: 'maintenance', label: t('admin.rail_maintenance'), icon: Hammer },
+        { id: 'viewas', label: t('view_as.rail'), icon: User }
     ];
 
     const scrollTo = (id) => document.getElementById(`admin-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -103,6 +105,14 @@ const AdminPage = () => {
                             {t('admin.rail_maintenance')}
                         </h2>
                         <MaintenanceTools />
+                    </section>
+
+                    <section id="admin-viewas" className="scroll-mt-[88px]">
+                        <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-3">
+                            <User size={20} weight="duotone" className="text-indigo-400" />
+                            {t('view_as.rail')}
+                        </h2>
+                        <ViewAsControl />
                     </section>
                 </div>
             </div>

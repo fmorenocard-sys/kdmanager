@@ -289,5 +289,17 @@
     "pilotage": {
         "subtitle": "War Dashboard, kampanya hedefleri ve deadweight — yalnızca liderlik.",
         "tab_dashboard": "Savaş paneli"
+    },
+    "view_as": {
+        "rail": "Rol olarak görüntüle",
+        "desc": "Arayüzü başka bir rolün gördüğü gibi önizle.",
+        "exit": "Önizlemeden çık",
+        "banner": "Önizleme: {{role}} olarak görüntülüyorsun",
+        "banner_note": "Görsel önizleme — verilerin değişmez.",
+        "caveat": "Yalnızca GÖRSEL önizleme: veri kısıtlamalarını test etmez (sunucu kuralları hep gerçek Kral rolünü uygular).",
+        "role_king": "Kral",
+        "role_officer": "Subay",
+        "role_warrior": "Savaşçı",
+        "role_guest": "Misafir"
     }
 }

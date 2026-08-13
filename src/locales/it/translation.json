@@ -651,5 +651,17 @@
   "pilotage": {
     "subtitle": "War Dashboard, obiettivi di campagna e deadweight — solo leadership.",
     "tab_dashboard": "Cruscotto di guerra"
+  },
+  "view_as": {
+    "rail": "Visualizza come ruolo",
+    "desc": "Anteprima dell'interfaccia come la vede un altro ruolo.",
+    "exit": "Esci dall'anteprima",
+    "banner": "Anteprima: stai visualizzando come {{role}}",
+    "banner_note": "Anteprima visiva — i tuoi dati non cambiano.",
+    "caveat": "Solo anteprima VISIVA: non verifica le restrizioni sui dati (le regole del server applicano sempre il tuo vero ruolo di Re).",
+    "role_king": "Re",
+    "role_officer": "Ufficiale",
+    "role_warrior": "Guerriero",
+    "role_guest": "Ospite"
   }
 }
