@@ -134,7 +134,7 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
 const UserProfile = () => {
   const { currentUser, loginWithGoogle, loginWithDiscord, logout } = useAuth();
   const { t } = useTranslation();
-  const { isAuthorized } = useRole();
+  const { role, isAuthorized } = useRole();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   // Raccourci Admin dans le menu de compte : le drawer reste l'accès canonique
   // (M4), mais il n'a aucune affordance en mobile — cf. question ouverte §6 du
@@ -221,7 +221,7 @@ const UserProfile = () => {
               >
                 <Hammer size={16} />
                 <span className="truncate">{t('nav.admin')}</span>
-                <span className="ms-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/30">King</span>
+                <span className={`ms-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold border ${role === ROLES.ADMIN ? 'text-rose-300 bg-rose-500/10 border-rose-500/30' : 'text-red-400 bg-red-500/10 border-red-500/30'}`}>{role}</span>
               </Link>
             )}
             <div className="my-1 border-t border-slate-700/60" />
