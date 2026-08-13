@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:serve": "cross-env VITE_USE_FIREBASE_EMULATOR=true vite --port 5174",
+    "emu:seed": "node scripts/seed-emulator.mjs",
     "test:render": "node tests/render-smoke/run.mjs",
     "test:goals": "node --test tests/kvkGoals.test.mjs tests/kvkGoals.parity.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-rules.test.mjs\"",
@@ -49,6 +50,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "firebase-admin": "^14.2.0",
     "globals": "^16.5.0",
     "vite": "^7.3.1"
   }

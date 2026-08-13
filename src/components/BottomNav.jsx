@@ -1,19 +1,23 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CastleTurret, Shield, TrendingUp, Trophy, Skull, Bank, Flag } from './ui/icons';
+import { House, CastleTurret, TrendingUp, Trophy, LayoutDashboard, Bank } from './ui/icons';
 import { useRole, ROLES } from '../context/RoleContext';
 import { isModuleEnabled, ROUTE_MODULE } from '../config/modules';
 
 // v2 domain iconography + active gradient pill (maquette M4 : 6 entrées max,
 // grille fixe sans scroll — la Course vit dans le Hub KvK, l'Admin dans le drawer)
 // leadership: true = réservé King/Officer (BR-009 deadweight)
+// F-032 nav interim (§7.3) : « Moi » en tête (action-first), « Royaume » remplace
+// le Dashboard ; le War Dashboard reste joignable par URL (/war-tracker).
 const NAV_ITEMS = [
-    { path: '/', iconComp: CastleTurret, key: 'nav.dashboard' },
-    { path: '/war-tracker', iconComp: Shield, key: 'nav.war' },
+    { path: '/me', iconComp: House, key: 'nav.me' },
+    { path: '/royaume', iconComp: CastleTurret, key: 'nav.royaume' },
     { path: '/kvk', iconComp: TrendingUp, key: 'nav.kvk' },
     { path: '/trophies', iconComp: Trophy, key: 'nav.trophies' },
     { path: '/bank', iconComp: Bank, key: 'nav.bank' },
-    { path: '/deadweight', iconComp: Skull, key: 'nav.deadweight', leadership: true },
+    // F-032 Lot 6 : « Pilotage » (leadership) remplace le slot Deadweight —
+    // regroupe War Dashboard + Objectifs + Deadweight.
+    { path: '/pilotage', iconComp: LayoutDashboard, key: 'nav.pilotage', leadership: true },
 ];
 
 const BottomNav = () => {

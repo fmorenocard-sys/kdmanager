@@ -6,10 +6,10 @@ import { BRANDING } from '../../config/branding';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { useRole, ROLES } from '../../context/RoleContext';
-import { computeKvkGoals, DEAD_POINTS_PER_T5 } from '../../lib/kvkGoals';
+import { computeKvkGoals, computeFillerGoal, DEAD_POINTS_PER_T5 } from '../../lib/kvkGoals';
 import { rateFromGoalPct, RATES } from '../../lib/kvkScoring';
 import { sortRows, nextSort } from '../../lib/sortRows';
-import { resolveCampaignName } from '../../lib/campaignLabel';
+import { resolveCampaignName, resolveCampaignArchive } from '../../lib/campaignLabel';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
 import SortHead from '../ui/SortHead';
 import Card from '../ui/Card';
@@ -65,6 +65,7 @@ const KvkGoalsPanel = () => {
 
     const [declarations, setDeclarations] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
+    const [history, setHistory] = useState([]); // kvk_history complet (list/fillerList) — stats figées par campagne
     const [config, setConfig] = useState(null); // F-027 : kvk_config (fillerDeathRatio)
     const [timelineEvents, setTimelineEvents] = useState([]); // F-031 : kvk_config/timeline (doc dédié)
     const [kvkId, setKvkId] = useState('');
@@ -102,7 +103,14 @@ const KvkGoalsPanel = () => {
                 setTimelineEvents((!tlCid || tlCid === (cfg?.id || null)) && Array.isArray(tlData?.events) ? tlData.events : []);
                 // Libellé résolu depuis le titre d'archive (kvk_history) quand possible, pour que
                 // Goals et Performance affichent le même nom de campagne (voir lib/campaignLabel).
-                const historyDocs = histSnap.docs.map((h) => ({ id: h.id, title: h.data().title }));
+                // Archives complètes (avec list/fillerList) — pour sourcer les stats
+                // FIGÉES d'une campagne passée au lieu du dernier scan (F-032).
+                const historyFull = histSnap.docs.map((h) => {
+                    const hd = h.data();
+                    return { id: h.id, title: hd.title, order: hd.order || 0, list: hd.list || [], fillerList: hd.fillerList || [] };
+                });
+                setHistory(historyFull);
+                const historyDocs = historyFull;
                 const map = {};
                 if (cfg?.id) map[cfg.id] = { id: cfg.id, name: resolveCampaignName(cfg.id, cfg.name, historyDocs) };
                 list.forEach((d) => {
@@ -135,6 +143,22 @@ const KvkGoalsPanel = () => {
         return index;
     }, [players]);
 
+    // F-032 — stats de la campagne SÉLECTIONNÉE : courante → scan live ; passée →
+    // copie FIGÉE de l'archive kvk_history. Sans ça, toutes les campagnes affichaient
+    // les chiffres du DERNIER scan (le sélecteur ne changeait que les déclarations).
+    const selectedIsCurrent = !kvkId || kvkId === (config?.id || '');
+    const selectedArchive = useMemo(() => {
+        if (selectedIsCurrent) return null;
+        const kvkName = declarations.find((d) => d.kvkId === kvkId)?.kvkName || config?.name || kvkId;
+        return resolveCampaignArchive(kvkId, kvkName, history);
+    }, [selectedIsCurrent, kvkId, declarations, config, history]);
+    const activeStatsById = useMemo(() => {
+        if (!selectedArchive) return statsById;
+        const m = new Map();
+        [...(selectedArchive.list || []), ...(selectedArchive.fillerList || [])].forEach((k) => m.set(String(k.id), k));
+        return m;
+    }, [selectedArchive, statsById]);
+
     const rows = useMemo(() => {
         // Le lien déclaration → joueur se fait par ID de gouverneur, pas par userId :
         // une déclaration peut être posée en invité (`{kvk}_guest_{gov}`) puis refaite
@@ -158,10 +182,11 @@ const KvkGoalsPanel = () => {
             .filter((d) => d.accountType !== 'filler')
             .map((d) => {
                 const gid = String(d.governorId || '');
-                const kvk = statsById.get(gid) || null;
+                const kvk = activeStatsById.get(gid) || null;
                 // Puissance de DÉBUT de campagne quand elle existe : c'est sur elle
-                // que le barème est calé, et elle ne bouge plus une fois le KvK lancé.
-                const power = kvk?.initialPower || powerById.get(gid) || 0;
+                // que le barème est calé. Repli sur la puissance live UNIQUEMENT pour
+                // la campagne courante (pour une campagne passée, l'archive fait foi).
+                const power = kvk?.initialPower || (selectedIsCurrent ? powerById.get(gid) : 0) || 0;
                 const goals = computeKvkGoals(power);
                 const kpGained = kvk?.totalKpGained ?? null;
                 const goalPct = (kpGained != null && goals.goalKp > 0)
@@ -186,7 +211,7 @@ const KvkGoalsPanel = () => {
                     hasPower: power > 0,
                     // L'ID est-il connu du royaume ? Sépare « ID introuvable » de
                     // « joueur connu mais sans puissance remontée ».
-                    knownPlayer: !!kvk || powerById.has(gid),
+                    knownPlayer: !!kvk || (selectedIsCurrent && powerById.has(gid)),
                     outOfDomain: goals.outOfDomain,
                     kpGained,
                     goalPct,
@@ -205,7 +230,7 @@ const KvkGoalsPanel = () => {
             : scoped;
 
         return sortRows(filtered, sort);
-    }, [declarations, kvkId, statsById, powerById, governorId, isLeadership, search, sort]);
+    }, [declarations, kvkId, activeStatsById, powerById, selectedIsCurrent, governorId, isLeadership, search, sort]);
 
     // F-027 : objectifs des comptes filler. Barème dédié (BR-018), jamais mélangé
     // au barème puissance des comptes de guerre : pouvoir déclaré = 4×T4 + 10×T5 ;
@@ -224,13 +249,11 @@ const KvkGoalsPanel = () => {
             });
         const built = [...latest.values()].map((d) => {
             const gid = String(d.governorId);
-            const kvk = statsById.get(gid) || null;
+            const kvk = activeStatsById.get(gid) || null;
             const t4 = d.filler?.t4 || 0;
             const t5 = d.filler?.t5 || 0;
-            const declaredPower = t4 * 4 + t5 * 10;
-            const target = ratio * declaredPower;
-            const achieved = (Number(kvk?.t4Dead) || 0) * 4 + (Number(kvk?.t5Dead) || 0) * 10;
-            const attainment = target > 0 ? achieved / target : null;
+            // Barème filler partagé avec l'espace perso (lib/kvkGoals.computeFillerGoal).
+            const { declaredPower, target, achieved, attainment } = computeFillerGoal(t4, t5, kvk?.t4Dead, kvk?.t5Dead, ratio);
             const { rate } = rateFromGoalPct(attainment);
             return {
                 key: d.id, governorId: gid,
@@ -242,14 +265,16 @@ const KvkGoalsPanel = () => {
         const scoped = isLeadership ? built : built.filter((r) => r.isMe);
         const q = search.trim().toLowerCase();
         return q ? scoped.filter((r) => r.name.toLowerCase().includes(q) || r.governorId.includes(q)) : scoped;
-    }, [declarations, kvkId, statsById, config, governorId, isLeadership, search]);
+    }, [declarations, kvkId, activeStatsById, config, governorId, isLeadership, search]);
 
     // Vue « Top du royaume » (F-029) : objectifs des N plus puissants du roster, pris de
     // static_data/kvk (initialPower figé = référence, totalKpGained = KP gagné du KvK).
     // Aucune dépendance aux déclarations — un joueur non inscrit a quand même sa cible.
     const topRows = useMemo(() => {
         if (!isLeadership || viewMode !== 'top') return [];
-        const built = (kvkStats || [])
+        // Campagne passée → roster figé de l'archive ; courante → scan live.
+        const source = selectedArchive ? selectedArchive.list : (kvkStats || []);
+        const built = source
             .filter((k) => (k.initialPower || 0) > 0)
             .sort((a, b) => (b.initialPower || 0) - (a.initialPower || 0))
             .slice(0, topN)
@@ -272,14 +297,15 @@ const KvkGoalsPanel = () => {
         const q = search.trim().toLowerCase();
         const filtered = q ? built.filter((r) => r.name.toLowerCase().includes(q) || r.governorId.includes(q)) : built;
         return sortRows(filtered, sort);
-    }, [kvkStats, viewMode, topN, isLeadership, governorId, search, sort]);
+    }, [kvkStats, selectedArchive, viewMode, topN, isLeadership, governorId, search, sort]);
 
     const displayRows = viewMode === 'top' ? topRows : rows;
 
     // Option B (BR-019) : le Roi révèle les statuts d'objectifs une fois les combats
     // terminés, via un interrupteur dédié (`kvk_config.revealGoalStatus`), indépendant
     // de la clôture/archivage. Défaut absent → masqués (safe pendant la campagne).
-    const revealStatus = config?.revealGoalStatus === true;
+    // Campagne passée (archive) : combats terminés → statut toujours révélé.
+    const revealStatus = selectedArchive ? true : (config?.revealGoalStatus === true);
 
     // Nommer les joueurs non rattachés : un simple compteur n'est pas actionnable,
     // le Roi doit savoir quel ID vérifier. On distingue aussi les deux causes —

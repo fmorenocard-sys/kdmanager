@@ -1,7 +1,9 @@
 # Spec — Espace perso « Moi » (ex-« My Space »)
 
-> Date : 2026-08-12 · Statut : **prête à découper en lots d'implémentation**, sous réserve des
-> décisions listées en §12 (nav bottom-bar, War Dashboard, paliers, rappels, Mes stats web).
+> Date : 2026-08-12 · Statut : **§12 tranché par le Roi le 2026-08-12 — en implémentation (Lot 1)**.
+> Les 4 décisions restantes sont verrouillées (voir §12) : nav interim puis Pilotage · paliers différés
+> (cible unique 100 %) · rappels différés (US-036) · Mes stats web dans le périmètre MVP (Lot 4).
+> Chantier mené **sur branche `feat/espace-perso-moi` + canal de preview staging**, jamais direct en prod.
 > Prolonge **E-009** (`Etude_Architecture_Information.md`) et son prolongement `Brief_Espace_Joueur.md`
 > (**US-038**). Matérialise la section « Mon jeu » de la grille E-009 en une page réelle.
 > Entrée fixe : **F-032**, épic **E-009** (pas de nouvel épic — c'est l'exécution de son prolongement).
@@ -418,22 +420,19 @@ indépendamment reportables sans casser le reste.
 
 ---
 
-## 12. Décisions à trancher (Roi)
+## 12. Décisions du Roi — TRANCHÉES le 2026-08-12
 
-1. **Placement du War Dashboard dans la nav** — lancer Moi avec l'option interim §7.3 (slot Guerre
-   repointé vers Moi, War Dashboard temporairement hors barre, accessible par URL) puis enchaîner sur
-   la fusion « Pilotage » (§7.2, Lot 6) en suivi rapproché ; **ou** livrer les deux d'un bloc avant de
-   lancer Moi (repousse la mise en prod de Moi du temps du Lot 6). **Recommandation : séquencer, ne pas
-   bloquer Moi sur le chantier nav.**
-2. **Paliers 60/100/150 % + récompenses** — mécanique leadership à concevoir avant de la dessiner
-   (aucune brique existante). **Confirmé différé** par le périmètre déjà acté (§1) — cette ligne demande
-   juste un accusé de réception, pas un nouvel arbitrage.
-3. **Rappels de déclaration** — **confirmé différé** (US-036, dépend de Cloud Scheduler + A-031) — même
-   remarque, accusé de réception.
-4. **Mes stats web (Lot 4)** — construire la parité `/mystats` en web est demandé dans le périmètre
-   MVP transmis (§1) ; je le note comme **acté sauf objection explicite**, plutôt que redemander un
-   arbitrage sur un point déjà instruit par la commande — à confirmer en un mot si le Roi veut au
-   contraire le repousser après Lot 1-3.
+| # | Sujet | Décision | Conséquence |
+|---|---|---|---|
+| 1 | **Placement du War Dashboard dans la nav** | **Interim (§7.3)** : lancer Moi en repointant le slot « Guerre » vers `/me` ; War Dashboard reste joignable par URL. **Puis** fusion « Pilotage » (§7.2, Lot 6) en **suivi rapproché**, pas en différé indéfini. | Lot 1 embarque la nav interim (effort S). Lot 6 programmé juste après Lot 5. Ne bloque pas Moi. |
+| 2 | **Paliers 60/100/150 % + récompenses** | **Différé** — MVP = **cible unique 100 %** + repère 60 % (déjà calculé par le barème war). Palier 150 % + récompenses attendent une vraie mécanique leadership. | `MyGoalCard` livre la version simple (§5.2). Hors périmètre (§9). |
+| 3 | **Rappels de déclaration** | **Différé** — = US-036 (F-031 V2), dépend de Cloud Scheduler + fallback in-app A-031. Chantier séparé déjà tracké. | Aucun impact sur le MVP de Moi (§9). |
+| 4 | **Mes stats web (Lot 4)** | **Dans le périmètre MVP** — parité `/mystats` en web (puissance, KP gagné, morts T5), **sans Kingdom rank**. | Lot 4 confirmé (effort S, front pur). Retirable sans trou de layout si besoin (§5.3). |
+
+**Cadre d'exécution acté avec ces décisions** : chantier sur branche **`feat/espace-perso-moi`**,
+validé sur le **canal de preview staging** (`firebase hosting:channel:deploy staging`) avant toute
+fusion dans `main`. Comme `/me` n'introduit **aucune nouvelle règle Firestore ni Cloud Function** (§13),
+le staging front couvre l'intégralité du risque de ce chantier — rien à déployer côté backend prod.
 
 ---
 

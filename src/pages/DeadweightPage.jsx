@@ -14,7 +14,10 @@ import Avatar from '../components/ui/Avatar';
 import PageHeader from '../components/ui/PageHeader';
 import AccessGate from '../components/ui/AccessGate';
 
-const DeadweightPage = () => {
+// `embedded` : monté comme onglet du hub Pilotage (F-032 Lot 6) — on masque alors
+// son propre PageHeader (Pilotage fournit l'entête) ; le reste (gate, refresh,
+// stats, table) est identique à la page autonome /deadweight.
+const DeadweightPage = ({ embedded = false }) => {
     const { deadweight, loading, error } = useData();
     const { isAuthorized, loading: roleLoading } = useRole();
     const { t } = useTranslation();
@@ -118,8 +121,10 @@ const DeadweightPage = () => {
 
     return (
         <div className="space-y-8 animate-fade-in">
-            {/* Header */}
-            <PageHeader icon={Skull} title={t('deadweight.title')} subtitle={t('deadweight.subtitle', { count: dwList.length })} />
+            {/* Header — masqué en mode embarqué (le hub Pilotage fournit l'entête) */}
+            {!embedded && (
+                <PageHeader icon={Skull} title={t('deadweight.title')} subtitle={t('deadweight.subtitle', { count: dwList.length })} />
+            )}
             <DataRefreshControl
                 pageId="deadweight"
                 title="Update List"

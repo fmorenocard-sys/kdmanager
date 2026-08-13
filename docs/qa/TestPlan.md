@@ -34,3 +34,21 @@ This document outlines the testing strategy for the KD Manager application. The 
 - Firebase Local Emulator Suite
 - Chrome DevTools (Console errors, Network)
 - React Testing Library (If Unit Tests implemented in the future)
+
+## 7. Known gap — fixtures & connected-screen coverage (BUG-008, tracked 2026-08-13)
+
+Authenticated screens (`/me`, `/pilotage`, published goals, multi-account state…)
+cannot be previewed or tested today without a real OAuth login (Discord/Google) —
+`tests/rbac.spec.js` only asserts the Guest state (`TC-011`/`TC-017` are still
+pending a King/Officer authenticated context per that spec's own inline note).
+`npm run test:serve` (emulator-backed dev server, port 5174) and `npm run test:e2e`
+(Playwright inside `firebase emulators:exec`) already exist, and
+`docs/qa/Playwright_Setup.md` documents an emulator seed/export mechanism
+(`firebase emulators:export ./emulators_data`) — but no `emulators_data/` fixture
+set is committed to the repo. Closing this gap requires (a) a versioned Firestore
+fixture set (`roles`, `war_availabilities`, `static_data/kvk` + `kvk_filler`,
+`kvk_config/current` + `kvk_config/timeline`, `kvk_history`, multi-account
+`user_profiles`) and (b) an auth bypass to sign in as a given role in the
+emulator without the real Discord OAuth flow (feasibility of representing
+BR-008's Discord-verified state this way is an open assumption — see
+`docs/pm/Assumptions_Log.md` A-042). See `docs/pm/ProductBacklog.md` BUG-008.

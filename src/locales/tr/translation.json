@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "Yönetim",
     "bank": "Banka",
-    "war": "Savaş"
+    "war": "Savaş",
+    "me": "Ben",
+    "royaume": "Krallık",
+    "pilotage": "Komuta"
   },
   "auth": {
     "sign_in": "Giriş Yap",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "Filler hesaplarını kaydet",
     "account_selector": "Savaş hesapları",
-    "filler_declared_power": "Bildirilen güç"
+    "filler_declared_power": "Bildirilen güç",
+    "leadership_only_title": "Liderlik alanı",
+    "leadership_only_desc": "War Dashboard ve kampanya hedefleri Kral ve Subaylara özeldir.",
+    "leadership_only_hint": "Bildirimin ve kişisel hedefin \"Ben\" bölümünde."
   },
   "trophies": {
     "title": "Krallık Kupaları",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} kilometre taşı",
     "local": "Yerel",
     "toggle_timezone": "UTC / yerel saati değiştir"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Sonraki eylem",
+      "not_declared_title": "{{name}} için henüz bildirim yapmadın.",
+      "not_declared_desc": "Liderlik yürüyüşleri yalnızca bildirimlere göre planlar.",
+      "cta": "Uygunluğumu bildir",
+      "declared_title": "Uygunluk bildirildi",
+      "edit": "Düzenle",
+      "marches": "{{count}} yürüyüş",
+      "declare_account": "{{name}} bildir",
+      "all_declared": "Tüm hesapların bildirildi",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} için kalan:"
+    },
+    "error": {
+      "badge": "Taramaya ulaşılamıyor",
+      "title": "Verilerin güncel olmayabilir.",
+      "last_scan": "Son başarılı tarama:",
+      "retry": "Tekrar dene"
+    },
+    "offcampaign": {
+      "badge": "Kampanyalar arası",
+      "title": "{{name}} sona erdi. Bildirilecek bir şey yok.",
+      "title_generic": "Devam eden kampanya yok. Bildirilecek bir şey yok.",
+      "desc": "Liderlik bir sonraki kampanyayı burada duyuracak.",
+      "next_badge": "Sonraki kampanya",
+      "next_none": "Henüz duyurulmadı"
+    },
+    "nogoal": {
+      "badge": "KvK hedefim",
+      "title": "Liderlik henüz hedefleri yayınlamadı.",
+      "desc": "Hedefler 1. Geçiş güç anlık görüntüsünden hesaplanır. Seninki yayınlanır yayınlanmaz burada görünecek — yapman gereken bir şey yok.",
+      "title_campaign": "{{name}} hedefleri henüz yayınlanmadı."
+    },
+    "goal": {
+      "kp": "Öldürme puanı",
+      "dead": "Ölüm hedefi",
+      "marker_min": "%60 min",
+      "marker_target": "%100 hedef",
+      "hidden_short": "durum gizli",
+      "reveal_note": "Puan, savaş bittiğinde açıklanır"
+    },
+    "account": {
+      "primary": "Birincil",
+      "war": "Savaş",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Hesaplarım",
+      "manage": "Yönet",
+      "none": "Talep edilen hesap yok"
+    },
+    "rollup": "{{done}}/{{total}} bildirildi",
+    "stats": {
+      "title": "İstatistiklerim",
+      "note": "= /mystats",
+      "power": "Güç",
+      "kp_gained": "Kazanılan ÖP",
+      "deaths": "Ölümler"
+    },
+    "campaign": {
+      "label": "Kampanya",
+      "current": "Mevcut kampanya",
+      "current_named": "{{name}} (güncel)"
+    },
+    "declare": {
+      "edit": "Bildirimimi düzenle",
+      "collapse": "Daralt"
+    }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, kampanya hedefleri ve deadweight — yalnızca liderlik.",
+    "tab_dashboard": "Savaş paneli"
+  },
+  "view_as": {
+    "rail": "Rol olarak görüntüle",
+    "desc": "Arayüzü başka bir rolün gördüğü gibi önizle.",
+    "exit": "Önizlemeden çık",
+    "banner": "Önizleme: {{role}} olarak görüntülüyorsun",
+    "banner_note": "Görsel önizleme — verilerin değişmez.",
+    "caveat": "Yalnızca GÖRSEL önizleme: veri kısıtlamalarını test etmez (sunucu kuralları hep gerçek Kral rolünü uygular).",
+    "role_king": "Kral",
+    "role_officer": "Subay",
+    "role_warrior": "Savaşçı",
+    "role_guest": "Misafir"
   }
 }

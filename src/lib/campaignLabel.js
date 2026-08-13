@@ -43,3 +43,24 @@ export function resolveCampaignName(kvkId, kvkName, historyDocs = []) {
     // 3. Repli : le nom figé de la déclaration (comportement d'origine).
     return fallback;
 }
+
+/**
+ * Retrouve l'ARCHIVE kvk_history correspondant à une campagne (même heuristique
+ * que resolveCampaignName : docId direct, sinon jeton de saison « SoC N »). Sert à
+ * sourcer les stats FIGÉES d'une campagne passée au lieu du dernier scan live.
+ * @param {string} kvkId
+ * @param {string} kvkName
+ * @param {Array<{id:string,title:string}>} historyDocs docs kvk_history complets
+ * @returns {object|null} l'archive (avec list/fillerList) ou null
+ */
+export function resolveCampaignArchive(kvkId, kvkName, historyDocs = []) {
+    if (!Array.isArray(historyDocs) || historyDocs.length === 0) return null;
+    const byId = historyDocs.find((h) => h && h.id && h.id === kvkId);
+    if (byId) return byId;
+    const tok = seasonToken(kvkName);
+    if (tok) {
+        const bySeason = historyDocs.find((h) => h && seasonToken(h.title) === tok);
+        if (bySeason) return bySeason;
+    }
+    return null;
+}

@@ -24,6 +24,9 @@ const PlayerDetailPanel = ({ player, onClose }) => {
     if (!player) return null;
 
     const format = (num) => new Intl.NumberFormat('en-US').format(num);
+    // Notation compacte pour les grands nombres des cartes (KP peut atteindre le
+    // milliard → « 10.4B » tient dans la demi-carte mobile ; exact au survol).
+    const compact = (num) => new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(num || 0);
 
     return (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-sm transition-all duration-300" onClick={onClose}>
@@ -55,24 +58,24 @@ const PlayerDetailPanel = ({ player, onClose }) => {
 
                     {/* Key Stats */}
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                        <div className="min-w-0 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
                             <div className="flex items-center gap-2 text-blue-400 mb-2">
                                 <TrendingUp size={18} />
                                 <span className="text-xs font-bold uppercase tracking-wider">{t('player_panel.power')}</span>
                             </div>
-                            <div className="text-xl font-bold text-white">{format(player.power)}</div>
+                            <div className="text-xl font-bold text-white tabular-nums truncate" title={format(player.power)}>{compact(player.power)}</div>
                             {player.powerDiff !== 0 && (
                                 <div className={`text-xs mt-1 ${player.powerDiff > 0 ? 'text-green-400' : 'text-red-400'}`}>
                                     {player.powerDiff > 0 ? '+' : ''}{format(player.powerDiff)}
                                 </div>
                             )}
                         </div>
-                        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                        <div className="min-w-0 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
                             <div className="flex items-center gap-2 text-red-400 mb-2">
                                 <Swords size={18} />
                                 <span className="text-xs font-bold uppercase tracking-wider">{t('player_panel.kill_points')}</span>
                             </div>
-                            <div className="text-xl font-bold text-white">{format(player.kp)}</div>
+                            <div className="text-xl font-bold text-white tabular-nums truncate" title={format(player.kp)}>{compact(player.kp)}</div>
                         </div>
                     </div>
 

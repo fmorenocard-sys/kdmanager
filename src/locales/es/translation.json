@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "Administración",
     "bank": "Banco",
-    "war": "Guerra"
+    "war": "Guerra",
+    "me": "Yo",
+    "royaume": "Reino",
+    "pilotage": "Mando"
   },
   "auth": {
     "sign_in": "Iniciar sesión",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "Guardar fillers",
     "account_selector": "Cuentas de guerra",
-    "filler_declared_power": "Poder declarado"
+    "filler_declared_power": "Poder declarado",
+    "leadership_only_title": "Área de liderazgo",
+    "leadership_only_desc": "El War Dashboard y los objetivos de campaña están reservados al Rey y los Oficiales.",
+    "leadership_only_hint": "Tu declaración y tu objetivo personal están en «Yo»."
   },
   "trophies": {
     "title": "Trofeos del Reino",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} hitos",
     "local": "Local",
     "toggle_timezone": "Cambiar UTC / hora local"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Próxima acción",
+      "not_declared_title": "Aún no has declarado para {{name}}.",
+      "not_declared_desc": "El liderazgo planifica las marchas solo con las declaraciones.",
+      "cta": "Declarar mi disponibilidad",
+      "declared_title": "Disponibilidad declarada",
+      "edit": "Editar",
+      "marches": "{{count}} marchas",
+      "declare_account": "Declarar {{name}}",
+      "all_declared": "Todas tus cuentas han declarado",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} abre en"
+    },
+    "error": {
+      "badge": "No se puede acceder al escaneo",
+      "title": "Tus cifras pueden estar desactualizadas.",
+      "last_scan": "Último escaneo correcto:",
+      "retry": "Reintentar"
+    },
+    "offcampaign": {
+      "badge": "Entre campañas",
+      "title": "{{name}} ha terminado. Nada que declarar.",
+      "title_generic": "Ninguna campaña en curso. Nada que declarar.",
+      "desc": "El liderazgo anunciará la próxima campaña aquí.",
+      "next_badge": "Próxima campaña",
+      "next_none": "Aún sin anunciar"
+    },
+    "nogoal": {
+      "badge": "Mi objetivo KvK",
+      "title": "El liderazgo aún no ha publicado los objetivos.",
+      "desc": "Los objetivos se calculan a partir de la instantánea de poder del Pase 1. El tuyo aparecerá aquí en cuanto salga — nada que hacer de tu parte.",
+      "title_campaign": "Los objetivos de {{name}} aún no se han publicado."
+    },
+    "goal": {
+      "kp": "PK ganados",
+      "dead": "Objetivo muertes",
+      "marker_min": "60 % mín",
+      "marker_target": "100 % objetivo",
+      "hidden_short": "estado oculto",
+      "reveal_note": "Puntuación revelada al terminar la campaña"
+    },
+    "account": {
+      "primary": "Principal",
+      "war": "Guerra",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Mis cuentas",
+      "manage": "Gestionar",
+      "none": "Ninguna cuenta reclamada"
+    },
+    "rollup": "{{done}}/{{total}} declarados",
+    "stats": {
+      "title": "Mis estadísticas",
+      "note": "= /mystats",
+      "power": "Poder",
+      "kp_gained": "PK ganados",
+      "deaths": "Muertes"
+    },
+    "campaign": {
+      "label": "Campaña",
+      "current": "Campaña actual",
+      "current_named": "{{name}} (actual)"
+    },
+    "declare": {
+      "edit": "Editar mi declaración",
+      "collapse": "Contraer"
+    }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, objetivos de campaña y deadweight — solo liderazgo.",
+    "tab_dashboard": "Panel de guerra"
+  },
+  "view_as": {
+    "rail": "Ver como rol",
+    "desc": "Previsualiza la interfaz como la ve otro rol.",
+    "exit": "Salir de la vista previa",
+    "banner": "Vista previa: estás viendo como {{role}}",
+    "banner_note": "Vista previa visual — tus datos no cambian.",
+    "caveat": "Solo vista previa VISUAL: no prueba las restricciones de datos (las reglas del servidor aplican siempre tu rol real de Rey).",
+    "role_king": "Rey",
+    "role_officer": "Oficial",
+    "role_warrior": "Guerrero",
+    "role_guest": "Invitado"
   }
 }

@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "Quản trị",
     "bank": "Ngân hàng",
-    "war": "Chiến tranh"
+    "war": "Chiến tranh",
+    "me": "Tôi",
+    "royaume": "Vương quốc",
+    "pilotage": "Chỉ huy"
   },
   "auth": {
     "sign_in": "Đăng nhập",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "Lưu filler",
     "account_selector": "Tài khoản chiến",
-    "filler_declared_power": "Sức mạnh khai báo"
+    "filler_declared_power": "Sức mạnh khai báo",
+    "leadership_only_title": "Khu vực chỉ huy",
+    "leadership_only_desc": "War Dashboard và mục tiêu chiến dịch chỉ dành cho Vua và Sĩ quan.",
+    "leadership_only_hint": "Đăng ký và mục tiêu cá nhân của bạn ở mục \"Tôi\"."
   },
   "trophies": {
     "title": "Cúp vương quốc",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} mốc",
     "local": "Giờ địa phương",
     "toggle_timezone": "Chuyển UTC / giờ địa phương"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Hành động tiếp theo",
+      "not_declared_title": "Bạn chưa đăng ký cho {{name}}.",
+      "not_declared_desc": "Ban chỉ huy lên kế hoạch hành quân dựa trên đăng ký.",
+      "cta": "Đăng ký khả dụng",
+      "declared_title": "Đã đăng ký khả dụng",
+      "edit": "Chỉnh sửa",
+      "marches": "{{count}} cánh quân",
+      "declare_account": "Đăng ký {{name}}",
+      "all_declared": "Tất cả tài khoản của bạn đã đăng ký",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} mở sau"
+    },
+    "error": {
+      "badge": "Không thể kết nối bản quét",
+      "title": "Số liệu của bạn có thể đã lỗi thời.",
+      "last_scan": "Lần quét thành công gần nhất:",
+      "retry": "Thử lại"
+    },
+    "offcampaign": {
+      "badge": "Giữa các chiến dịch",
+      "title": "{{name}} đã kết thúc. Không có gì để đăng ký.",
+      "title_generic": "Không có chiến dịch nào đang diễn ra. Không có gì để đăng ký.",
+      "desc": "Ban chỉ huy sẽ thông báo chiến dịch tiếp theo tại đây.",
+      "next_badge": "Chiến dịch tiếp theo",
+      "next_none": "Chưa được thông báo"
+    },
+    "nogoal": {
+      "badge": "Mục tiêu KvK của tôi",
+      "title": "Ban chỉ huy chưa công bố mục tiêu.",
+      "desc": "Mục tiêu được tính từ ảnh chụp sức mạnh ở Lượt 1. Mục tiêu của bạn sẽ xuất hiện ở đây ngay khi công bố — bạn không cần làm gì.",
+      "title_campaign": "Mục tiêu cho {{name}} chưa được công bố."
+    },
+    "goal": {
+      "kp": "Điểm tiêu diệt",
+      "dead": "Mục tiêu tổn thất",
+      "marker_min": "60% tối thiểu",
+      "marker_target": "100% mục tiêu",
+      "hidden_short": "trạng thái ẩn",
+      "reveal_note": "Điểm hiển thị khi trận chiến kết thúc"
+    },
+    "account": {
+      "primary": "Chính",
+      "war": "Chiến đấu",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Tài khoản của tôi",
+      "manage": "Quản lý",
+      "none": "Chưa yêu cầu tài khoản nào"
+    },
+    "rollup": "{{done}}/{{total}} đã đăng ký",
+    "stats": {
+      "title": "Thống kê của tôi",
+      "note": "= /mystats",
+      "power": "Sức mạnh",
+      "kp_gained": "KP đạt được",
+      "deaths": "Tổn thất"
+    },
+    "campaign": {
+      "label": "Chiến dịch",
+      "current": "Chiến dịch hiện tại",
+      "current_named": "{{name}} (hiện tại)"
+    },
+    "declare": {
+      "edit": "Sửa đăng ký của tôi",
+      "collapse": "Thu gọn"
+    }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, mục tiêu chiến dịch và deadweight — chỉ ban chỉ huy.",
+    "tab_dashboard": "Bảng chiến tranh"
+  },
+  "view_as": {
+    "rail": "Xem với vai trò",
+    "desc": "Xem trước giao diện như một vai trò khác nhìn thấy.",
+    "exit": "Thoát xem trước",
+    "banner": "Xem trước: bạn đang xem với vai trò {{role}}",
+    "banner_note": "Xem trước hình ảnh — dữ liệu của bạn không đổi.",
+    "caveat": "Chỉ xem trước HÌNH ẢNH: không kiểm tra hạn chế dữ liệu (quy tắc máy chủ vẫn áp dụng vai trò Vua thật của bạn).",
+    "role_king": "Vua",
+    "role_officer": "Sĩ quan",
+    "role_warrior": "Chiến binh",
+    "role_guest": "Khách"
   }
 }

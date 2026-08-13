@@ -9,6 +9,7 @@
   * [DONE] Premier test de collecte de disponibilités KvK via le nouveau "Active Campaign set".
 * **Nouveau Focus :** Pivot sur l'Epic E-003 pour les interactions Discord.
 * **Focus d'implémentation actuel (2026-08-10) :** **F-031 — Calendrier KvK (MVP frise)**, E-008/US-035 — prioritaire **avant E-007** (multi-comptes) par décision du Roi, pour capter la fenêtre du KvK 3341 live (jusqu'au 19/09). Frise Warriors+ + countdown + bascule UTC/local, config Firestore par campagne, saisie King pré-remplie ; pings/ICS différés. Puis E-007 (spec prête). Voir `Etude_Calendrier_KvK.md`.
+* **Chantiers de suivi tracés le 2026-08-13 (demandés par le Roi, en parallèle du feature work, non encore ordonnancés)** : **BUG-007** évaluation/priorisation de la dette technique post-F-032 (nav dupliquée, i18n `public/locales` vestige, lint non nettoyé, bundle non code-splitté, SSOT P-002 obsolète…) et **BUG-008** harnais de test/preview des écrans connectés avec fixtures (comble l'angle mort visuel + e2e sur `/me`/`/pilotage`, révélé par F-032). Voir `docs/pm/ProductBacklog.md` §Bugs/Dette.
 
 ### Moyen terme (1–3 mois)
 * **Objectif :** Historique KvK & Automatisation Discord (Repriorisation 2026-07-11)

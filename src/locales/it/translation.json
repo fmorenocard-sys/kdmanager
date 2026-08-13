@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "Amministrazione",
     "bank": "Banca",
-    "war": "Guerra"
+    "war": "Guerra",
+    "me": "Io",
+    "royaume": "Regno",
+    "pilotage": "Comando"
   },
   "auth": {
     "sign_in": "Accedi",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "Salva filler",
     "account_selector": "Account di guerra",
-    "filler_declared_power": "Potenza dichiarata"
+    "filler_declared_power": "Potenza dichiarata",
+    "leadership_only_title": "Area leadership",
+    "leadership_only_desc": "La War Dashboard e gli obiettivi di campagna sono riservati al Re e agli Ufficiali.",
+    "leadership_only_hint": "La tua dichiarazione e il tuo obiettivo personale sono in «Io»."
   },
   "trophies": {
     "title": "Trofei del Regno",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} tappe",
     "local": "Locale",
     "toggle_timezone": "Alterna UTC / ora locale"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Prossima azione",
+      "not_declared_title": "Non hai ancora dichiarato per {{name}}.",
+      "not_declared_desc": "La leadership pianifica le marce solo dalle dichiarazioni.",
+      "cta": "Dichiara la mia disponibilità",
+      "declared_title": "Disponibilità dichiarata",
+      "edit": "Modifica",
+      "marches": "{{count}} marce",
+      "declare_account": "Dichiara {{name}}",
+      "all_declared": "Tutti i tuoi account hanno dichiarato",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} apre tra"
+    },
+    "error": {
+      "badge": "Scansione irraggiungibile",
+      "title": "I tuoi dati potrebbero essere obsoleti.",
+      "last_scan": "Ultima scansione riuscita:",
+      "retry": "Riprova"
+    },
+    "offcampaign": {
+      "badge": "Tra le campagne",
+      "title": "{{name}} è finita. Niente da dichiarare.",
+      "title_generic": "Nessuna campagna in corso. Niente da dichiarare.",
+      "desc": "La leadership annuncerà qui la prossima campagna.",
+      "next_badge": "Prossima campagna",
+      "next_none": "Non ancora annunciata"
+    },
+    "nogoal": {
+      "badge": "Il mio obiettivo KvK",
+      "title": "La leadership non ha ancora pubblicato gli obiettivi.",
+      "desc": "Gli obiettivi si calcolano dall'istantanea di potere del Passaggio 1. Il tuo apparirà qui appena pubblicato — non devi fare nulla.",
+      "title_campaign": "Gli obiettivi di {{name}} non sono ancora pubblicati."
+    },
+    "goal": {
+      "kp": "Punti uccisione",
+      "dead": "Obiettivo morti",
+      "marker_min": "60% min",
+      "marker_target": "100% obiettivo",
+      "hidden_short": "stato nascosto",
+      "reveal_note": "Valutazione svelata a fine campagna"
+    },
+    "account": {
+      "primary": "Principale",
+      "war": "Guerra",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "I miei account",
+      "manage": "Gestisci",
+      "none": "Nessun account rivendicato"
+    },
+    "rollup": "{{done}}/{{total}} dichiarati",
+    "stats": {
+      "title": "Le mie statistiche",
+      "note": "= /mystats",
+      "power": "Potere",
+      "kp_gained": "PU guadagnati",
+      "deaths": "Morti"
+    },
+    "campaign": {
+      "label": "Campagna",
+      "current": "Campagna attuale",
+      "current_named": "{{name}} (in corso)"
+    },
+    "declare": {
+      "edit": "Modifica la mia dichiarazione",
+      "collapse": "Comprimi"
+    }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, obiettivi di campagna e deadweight — solo leadership.",
+    "tab_dashboard": "Cruscotto di guerra"
+  },
+  "view_as": {
+    "rail": "Visualizza come ruolo",
+    "desc": "Anteprima dell'interfaccia come la vede un altro ruolo.",
+    "exit": "Esci dall'anteprima",
+    "banner": "Anteprima: stai visualizzando come {{role}}",
+    "banner_note": "Anteprima visiva — i tuoi dati non cambiano.",
+    "caveat": "Solo anteprima VISIVA: non verifica le restrizioni sui dati (le regole del server applicano sempre il tuo vero ruolo di Re).",
+    "role_king": "Re",
+    "role_officer": "Ufficiale",
+    "role_warrior": "Guerriero",
+    "role_guest": "Ospite"
   }
 }

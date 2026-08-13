@@ -100,6 +100,13 @@ Modèle de données principal (basé sur Cloud Firestore) :
 | **Structure des données Excel** | 🔴 Critique | Le système est extrêmement couplé au format exact d'un `.xlsx` exporté de ROK. Les headers et tab-names évoluent et requièrent une maintenance du `data-mapping.js`. |
 | **Coût Firestore (Reads)** | 🟠 Important | L'affichage du leaderboard demande de charger tout le `player_data`. Il est important de maintenir le batching et la compression côté Cloud Functions. |
 | **Complexité OAuth2 (React Router)** | 🟢 Améliorable | Le hack pour parse le token (gestion du `#` dans HashRouter via Redirect) fonctionne mais méritrait peut-être une lib Auth0 ou refactoring si la complexité augmente. |
+| **Navigation dupliquée** | 🟠 Important | `BottomNav.jsx` et `App.jsx` (Sidebar) maintiennent chacun leur propre tableau `NAV_ITEMS`, non partagé — risque de désync à chaque évolution de nav (déjà touché deux fois séparément lors de F-032). |
+| **i18n : deux dossiers de locales** | 🟢 Améliorable | `public/locales` (6/10 langues) n'est pas chargé au runtime — le bundle réellement servi est `src/locales`. Vestige à compléter ou supprimer ; source de vérité à trancher avant d'y toucher. |
+| **Dette de lint non nettoyée** | 🟢 Améliorable | 2 erreurs ESLint pré-existantes dans `DataContext.jsx` (`react-refresh/only-export-components`, paramètre `type` inutilisé) + warnings `useMemo`/dépendances dans `DeadweightPage.jsx`. Non bloquant pour le build. |
+| **Bundle non code-splitté** | 🟠 Important | Bundle front > 500 kB (avertissement Vite au build), aucun découpage par route — coût croissant à mesure que de nouvelles pages (`/me`, `/pilotage`) s'ajoutent au bundle principal. |
+| **Couverture e2e des écrans connectés** | 🟠 Important | `tests/rbac.spec.js` ne couvre que l'état Guest — aucun test e2e ni preview visuel des écrans authentifiés (`/me`, `/pilotage`, multi-compte…) faute de fixtures Firestore + bypass d'auth en émulateur. Angle mort révélé par F-032. |
+
+**Chantiers de suivi tracés le 2026-08-13** (demandés par le Roi, parallèles au feature work, non exécutés à ce stade) : **BUG-007** — évaluation et priorisation de la dette technique post-F-032 (regroupe entre autres les 4 lignes ci-dessus + les points déjà trackés ailleurs, UXA11Y-010/A-041) ; **BUG-008** — harnais de test/preview des écrans connectés avec fixtures (comble la ligne « Couverture e2e » ci-dessus). Voir `docs/pm/ProductBacklog.md` §Bugs/Dette.
 
 ---
 

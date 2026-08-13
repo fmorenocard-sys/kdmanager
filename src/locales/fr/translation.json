@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "Administration",
     "bank": "Banque",
-    "war": "Guerre"
+    "war": "Guerre",
+    "me": "Moi",
+    "royaume": "Royaume",
+    "pilotage": "Pilotage"
   },
   "auth": {
     "sign_in": "Se Connecter",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "Enregistrer les fillers",
     "account_selector": "Comptes de guerre",
-    "filler_declared_power": "Puissance déclarée"
+    "filler_declared_power": "Puissance déclarée",
+    "leadership_only_title": "Espace leadership",
+    "leadership_only_desc": "Le War Dashboard et les objectifs de campagne sont réservés au Roi et aux Officiers.",
+    "leadership_only_hint": "Ta déclaration et ton objectif perso sont dans « Moi »."
   },
   "trophies": {
     "title": "Trophées du Royaume",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} jalons",
     "local": "Local",
     "toggle_timezone": "Basculer UTC / heure locale"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Prochaine action",
+      "not_declared_title": "Tu n'as pas encore déclaré pour {{name}}.",
+      "not_declared_desc": "Le leadership planifie les marches à partir des déclarations.",
+      "cta": "Déclarer ma disponibilité",
+      "declared_title": "Disponibilité déclarée",
+      "edit": "Modifier",
+      "marches": "{{count}} marches",
+      "declare_account": "Déclarer {{name}}",
+      "all_declared": "Tous tes comptes ont déclaré",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} ouvre dans"
+    },
+    "error": {
+      "badge": "Scan injoignable",
+      "title": "Tes chiffres sont peut-être périmés.",
+      "last_scan": "Dernier scan réussi :",
+      "retry": "Réessayer"
+    },
+    "offcampaign": {
+      "badge": "Entre deux campagnes",
+      "title": "{{name}} est terminé. Rien à déclarer.",
+      "title_generic": "Aucune campagne en cours. Rien à déclarer.",
+      "desc": "Le leadership annoncera la prochaine campagne ici.",
+      "next_badge": "Prochaine campagne",
+      "next_none": "Pas encore annoncée"
+    },
+    "nogoal": {
+      "badge": "Mon objectif KvK",
+      "title": "Le leadership n'a pas encore publié les objectifs.",
+      "desc": "Les objectifs sont calculés à partir du snapshot de puissance du Pass 1. Le tien apparaîtra ici dès sa publication — rien à faire de ton côté.",
+      "title_campaign": "Les objectifs de {{name}} ne sont pas encore publiés."
+    },
+    "goal": {
+      "kp": "KP gagné",
+      "dead": "Objectif morts",
+      "marker_min": "60 % min",
+      "marker_target": "100 % cible",
+      "hidden_short": "statut masqué",
+      "reveal_note": "Note révélée en fin de campagne"
+    },
+    "account": {
+      "primary": "Principal",
+      "war": "Guerre",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Mes comptes",
+      "manage": "Gérer",
+      "none": "Aucun compte réclamé"
+    },
+    "rollup": "{{done}}/{{total}} déclarés",
+    "stats": {
+      "title": "Mes stats",
+      "note": "= /mystats",
+      "power": "Puissance",
+      "kp_gained": "KP gagné",
+      "deaths": "Morts"
+    },
+    "campaign": {
+      "label": "Campagne",
+      "current": "Campagne courante",
+      "current_named": "{{name}} (en cours)"
+    },
+    "declare": {
+      "edit": "Modifier ma déclaration",
+      "collapse": "Réduire"
+    }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, objectifs de campagne et deadweight — réservé au leadership.",
+    "tab_dashboard": "Tableau de bord"
+  },
+  "view_as": {
+    "rail": "Voir en tant que",
+    "desc": "Prévisualise l'interface telle que la voit un autre rôle.",
+    "exit": "Quitter l'aperçu",
+    "banner": "Aperçu : tu visualises en tant que {{role}}",
+    "banner_note": "Aperçu visuel — tes données ne changent pas.",
+    "caveat": "Aperçu VISUEL uniquement : ne teste pas les restrictions de données (les règles serveur appliquent toujours ton vrai rôle de Roi).",
+    "role_king": "Roi",
+    "role_officer": "Officier",
+    "role_warrior": "Guerrier",
+    "role_guest": "Invité"
   }
 }

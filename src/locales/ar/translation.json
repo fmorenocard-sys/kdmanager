@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "الإدارة",
     "bank": "البنك",
-    "war": "الحرب"
+    "war": "الحرب",
+    "me": "أنا",
+    "royaume": "المملكة",
+    "pilotage": "القيادة"
   },
   "auth": {
     "sign_in": "تسجيل الدخول",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "حفظ الحسابات الثانوية",
     "account_selector": "حسابات الحرب",
-    "filler_declared_power": "القوة المعلنة"
+    "filler_declared_power": "القوة المعلنة",
+    "leadership_only_title": "منطقة القيادة",
+    "leadership_only_desc": "لوحة الحرب وأهداف الحملة مخصّصة للملك والضباط.",
+    "leadership_only_hint": "إعلانك وهدفك الشخصي في «أنا»."
   },
   "trophies": {
     "title": "كؤوس المملكة",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} مرحلة",
     "local": "محلي",
     "toggle_timezone": "تبديل UTC / التوقيت المحلي"
+  },
+  "me": {
+    "next_action": {
+      "badge": "الإجراء التالي",
+      "not_declared_title": "لم تُعلن مشاركتك في {{name}} بعد.",
+      "not_declared_desc": "تخطط القيادة للزحوف بناءً على الإعلانات فقط.",
+      "cta": "إعلان جاهزيتي",
+      "declared_title": "تم إعلان الجاهزية",
+      "edit": "تعديل",
+      "marches": "{{count}} زحوف",
+      "declare_account": "إعلان {{name}}",
+      "all_declared": "جميع حساباتك أعلنت",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} يبدأ خلال"
+    },
+    "error": {
+      "badge": "تعذّر الوصول إلى المسح",
+      "title": "قد تكون أرقامك قديمة.",
+      "last_scan": "آخر مسح ناجح:",
+      "retry": "إعادة المحاولة"
+    },
+    "offcampaign": {
+      "badge": "بين الحملات",
+      "title": "انتهت {{name}}. لا شيء لإعلانه.",
+      "title_generic": "لا توجد حملة جارية. لا شيء لإعلانه.",
+      "desc": "ستعلن القيادة عن الحملة القادمة هنا.",
+      "next_badge": "الحملة القادمة",
+      "next_none": "لم يُعلن عنها بعد"
+    },
+    "nogoal": {
+      "badge": "هدفي في KvK",
+      "title": "لم تنشر القيادة الأهداف بعد.",
+      "desc": "تُحدَّد الأهداف من لقطة القوة في المرور 1. سيظهر هدفك هنا فور صدوره — لا شيء عليك فعله.",
+      "title_campaign": "لم تُنشر أهداف {{name}} بعد."
+    },
+    "goal": {
+      "kp": "نقاط القتل",
+      "dead": "هدف القتلى",
+      "marker_min": "60٪ حد أدنى",
+      "marker_target": "100٪ الهدف",
+      "hidden_short": "الحالة مخفية",
+      "reveal_note": "يظهر التقييم بعد انتهاء القتال"
+    },
+    "account": {
+      "primary": "رئيسي",
+      "war": "حرب",
+      "filler": "داعم"
+    },
+    "accounts": {
+      "title": "حساباتي",
+      "manage": "إدارة",
+      "none": "لم تتم المطالبة بأي حساب"
+    },
+    "rollup": "{{done}}/{{total}} معلن",
+    "stats": {
+      "title": "إحصائياتي",
+      "note": "= /mystats",
+      "power": "القوة",
+      "kp_gained": "نقاط القتل المكتسبة",
+      "deaths": "القتلى"
+    },
+    "campaign": {
+      "label": "الحملة",
+      "current": "الحملة الحالية",
+      "current_named": "{{name}} (الحالية)"
+    },
+    "declare": {
+      "edit": "تعديل إعلاني",
+      "collapse": "طيّ"
+    }
+  },
+  "pilotage": {
+    "subtitle": "لوحة الحرب وأهداف الحملة والوزن الميت — للقيادة فقط.",
+    "tab_dashboard": "لوحة الحرب"
+  },
+  "view_as": {
+    "rail": "العرض كدور",
+    "desc": "معاينة الواجهة كما يراها دور آخر.",
+    "exit": "إنهاء المعاينة",
+    "banner": "معاينة: أنت تشاهد كـ {{role}}",
+    "banner_note": "معاينة بصرية — بياناتك لا تتغير.",
+    "caveat": "معاينة بصرية فقط: لا تختبر قيود البيانات (قواعد الخادم تطبّق دائمًا دورك الحقيقي كملك).",
+    "role_king": "الملك",
+    "role_officer": "ضابط",
+    "role_warrior": "محارب",
+    "role_guest": "زائر"
   }
 }

@@ -199,6 +199,13 @@
     background: var(--border-gradient-indigo);
   }
 
+  /* v2 — variante ambre « forte » : bordure gradient d'appel à l'action.
+     Doctrine espace perso (F-032) : l'ambre soutenu = « tu as quelque chose à
+     faire » (déclarer). Réservée à la carte « prochaine action », pas décorative. */
+  .v2-glass.v2-amber::before {
+    background: linear-gradient(160deg, rgba(251, 191, 36, .55), rgba(245, 158, 11, .16) 45%, rgba(194, 65, 12, .35));
+  }
+
   /* v2 — boutons gradient */
   .btn-grad-primary {
     background: var(--grad-primary);

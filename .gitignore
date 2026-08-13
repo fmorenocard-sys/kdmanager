@@ -70,3 +70,11 @@ functions/dumpUsers*.js
 functions/fix_name.js
 functions/testAdminDb.js
 scripts/fix_name.js
+
+# BUG-008 : token de test émulateur (généré, non versionné)
+tests/.testlogin.json
+
+# Artefacts d'outil de design (export .dc.html + runtime généré dc-runtime) — pas
+# du code app. Les VRAIES références de design (images/captures) restent versionnées.
+design_references/*.dc.html
+design_references/support.js

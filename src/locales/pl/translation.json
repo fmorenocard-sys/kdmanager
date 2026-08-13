@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "Administracja",
     "bank": "Bank",
-    "war": "Wojna"
+    "war": "Wojna",
+    "me": "Ja",
+    "royaume": "Królestwo",
+    "pilotage": "Dowodzenie"
   },
   "auth": {
     "sign_in": "Zaloguj",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "Zapisz fillery",
     "account_selector": "Konta wojenne",
-    "filler_declared_power": "Zadeklarowana moc"
+    "filler_declared_power": "Zadeklarowana moc",
+    "leadership_only_title": "Strefa dowództwa",
+    "leadership_only_desc": "War Dashboard i cele kampanii są zarezerwowane dla Króla i Oficerów.",
+    "leadership_only_hint": "Twoje zgłoszenie i cel osobisty są w „Ja\"."
   },
   "trophies": {
     "title": "Trofea Królestwa",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} etapów",
     "local": "Lokalny",
     "toggle_timezone": "Przełącz UTC / czas lokalny"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Następne działanie",
+      "not_declared_title": "Nie zgłosiłeś jeszcze gotowości na {{name}}.",
+      "not_declared_desc": "Dowództwo planuje marsze wyłącznie na podstawie zgłoszeń.",
+      "cta": "Zgłoś moją gotowość",
+      "declared_title": "Gotowość zgłoszona",
+      "edit": "Edytuj",
+      "marches": "{{count}} marszów",
+      "declare_account": "Zgłoś {{name}}",
+      "all_declared": "Wszystkie Twoje konta zgłoszone",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} za"
+    },
+    "error": {
+      "badge": "Brak dostępu do skanu",
+      "title": "Twoje dane mogą być nieaktualne.",
+      "last_scan": "Ostatni udany skan:",
+      "retry": "Spróbuj ponownie"
+    },
+    "offcampaign": {
+      "badge": "Między kampaniami",
+      "title": "{{name}} zakończona. Nic do zgłoszenia.",
+      "title_generic": "Brak trwającej kampanii. Nic do zgłoszenia.",
+      "desc": "Dowództwo ogłosi tutaj następną kampanię.",
+      "next_badge": "Następna kampania",
+      "next_none": "Jeszcze nieogłoszona"
+    },
+    "nogoal": {
+      "badge": "Mój cel KvK",
+      "title": "Dowództwo nie opublikowało jeszcze celów.",
+      "desc": "Cele są ustalane na podstawie migawki mocy z Przejścia 1. Twój pojawi się tutaj zaraz po publikacji — nic nie musisz robić.",
+      "title_campaign": "Cele dla {{name}} nie zostały jeszcze opublikowane."
+    },
+    "goal": {
+      "kp": "Punkty zabójstw",
+      "dead": "Cel strat",
+      "marker_min": "60% min",
+      "marker_target": "100% cel",
+      "hidden_short": "status ukryty",
+      "reveal_note": "Ocena ujawniana po zakończeniu walk"
+    },
+    "account": {
+      "primary": "Główne",
+      "war": "Wojna",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Moje konta",
+      "manage": "Zarządzaj",
+      "none": "Brak przypisanego konta"
+    },
+    "rollup": "{{done}}/{{total}} zgłoszono",
+    "stats": {
+      "title": "Moje statystyki",
+      "note": "= /mystats",
+      "power": "Moc",
+      "kp_gained": "Zdobyte PZ",
+      "deaths": "Straty"
+    },
+    "campaign": {
+      "label": "Kampania",
+      "current": "Bieżąca kampania",
+      "current_named": "{{name}} (bieżąca)"
+    },
+    "declare": {
+      "edit": "Edytuj moje zgłoszenie",
+      "collapse": "Zwiń"
+    }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, cele kampanii i deadweight — tylko dowództwo.",
+    "tab_dashboard": "Panel wojny"
+  },
+  "view_as": {
+    "rail": "Zobacz jako rola",
+    "desc": "Podgląd interfejsu tak, jak widzi go inna rola.",
+    "exit": "Zakończ podgląd",
+    "banner": "Podgląd: oglądasz jako {{role}}",
+    "banner_note": "Podgląd wizualny — Twoje dane się nie zmieniają.",
+    "caveat": "Tylko podgląd WIZUALNY: nie testuje ograniczeń danych (reguły serwera stosują Twoją prawdziwą rolę Króla).",
+    "role_king": "Król",
+    "role_officer": "Oficer",
+    "role_warrior": "Wojownik",
+    "role_guest": "Gość"
   }
 }

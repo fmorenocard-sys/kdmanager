@@ -8,17 +8,20 @@ import { BRANDING } from './config/branding';
 import { isModuleEnabled } from './config/modules';
 import ModuleDisabled from './components/ui/ModuleDisabled';
 import { LangProvider } from './context/LangContext';
-import { CastleTurret, Shield, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, Skull, Hammer } from './components/ui/icons';
+import { CastleTurret, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, LayoutDashboard, Hammer, House } from './components/ui/icons';
 import DashboardPage from './pages/DashboardPage';
+import MeLandingPage from './pages/MeLandingPage';
+import PilotagePage from './pages/PilotagePage';
+import RootRedirect from './components/RootRedirect';
 import KvKPerformancePage from './pages/KvKPerformancePage';
 import KingdomTrophiesPage from './pages/KingdomTrophiesPage';
 import DeadweightPage from './pages/DeadweightPage';
 import BankPage from './pages/BankPage';
 import ProfilePage from './pages/ProfilePage';
-import WarTrackerPage from './pages/WarTrackerPage';
 import KvKRacePage from './pages/KvKRacePage';
 import AdminPage from './pages/AdminPage';
 import BottomNav from './components/BottomNav';
+import ImpersonationBanner from './components/admin/ImpersonationBanner';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
 import ThemeToggle from './components/ui/ThemeToggle';
 
@@ -30,14 +33,19 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
   // v2 domain iconography (Claude Design v2/foundations/iconography.html)
   const { isAuthorized } = useRole();
   const menuItems = [
-    { id: 'dashboard', path: '/', icon: CastleTurret, label: t('nav.dashboard') },
-    { id: 'war-tracker', path: '/war-tracker', icon: Shield, label: t('nav.war_tracker') },
+    // F-032 nav interim (§7.3, décision Roi 2026-08-12) : slot « Moi » en tête
+    // (action-first), le slot « Guerre » est repointé vers /me et le Dashboard
+    // devient « Royaume ». Le War Dashboard reste joignable par URL (/war-tracker),
+    // en attendant la fusion « Pilotage » (Lot 6).
+    { id: 'me', path: '/me', icon: House, label: t('nav.me') },
+    { id: 'royaume', path: '/royaume', icon: CastleTurret, label: t('nav.royaume') },
     { id: 'kvk', path: '/kvk', icon: TrendingUp, label: t('nav.kvk') },
     { id: 'trophies', path: '/trophies', icon: Trophy, label: t('nav.trophies') },
-    // BR-009: deadweight is leadership-only (roles come from Discord sync).
-    // Refonte nav : la Course vit dans le Hub KvK (onglet), plus d'entrée dédiée.
+    // F-032 Lot 6 : « Pilotage » (leadership) regroupe War Dashboard + Objectifs +
+    // Deadweight sous une entrée unique (spec §7.2), en remplacement du slot
+    // Deadweight. Course/Progression vivent dans le Hub KvK.
     ...(isAuthorized([ROLES.KING, ROLES.OFFICER]) ? [
-        { id: 'deadweight', path: '/deadweight', icon: Skull, label: t('nav.deadweight') },
+        { id: 'pilotage', path: '/pilotage', icon: LayoutDashboard, label: t('nav.pilotage') },
     ] : []),
     { id: 'bank', path: '/bank', icon: Bank, label: t('nav.bank') },
   // Activation de modules par instance (F-023) : masque les modules optionnels
@@ -283,12 +291,21 @@ const MainContent = () => {
           </div>
         </header>
 
+        {/* F-033 « Voir en tant que » — bandeau global d'aperçu de rôle (Roi-only) */}
+        <ImpersonationBanner />
+
         <div className="flex-1 w-full max-w-7xl mx-auto flex flex-col p-4 md:p-6 lg:p-10 pb-24 md:pb-6 lg:pb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 min-w-0">
           <div className="flex-1 min-w-0">
             <Routes>
-              <Route path="/" element={<DashboardPage />} />
+              {/* Aiguillage auth-dépendant (décision 4) : connecté → /me, visiteur → /royaume */}
+              <Route path="/" element={<RootRedirect />} />
+              <Route path="/me" element={<MeLandingPage />} />
+              {/* /royaume = Dashboard renommé d'intention, contenu inchangé (spec §3) */}
+              <Route path="/royaume" element={<DashboardPage />} />
               <Route path="/kvk" element={<KvKPerformancePage />} />
-              <Route path="/war-tracker" element={<WarTrackerPage />} />
+              {/* F-032 Lot 6 : hub Pilotage (leadership). /war-tracker redirige ici (compat). */}
+              <Route path="/pilotage" element={<PilotagePage />} />
+              <Route path="/war-tracker" element={<Navigate to="/pilotage" replace />} />
               <Route path="/trophies" element={isModuleEnabled('trophies') ? <KingdomTrophiesPage /> : <ModuleDisabled />} />
               <Route path="/deadweight" element={isModuleEnabled('deadweight') ? <DeadweightPage /> : <ModuleDisabled />} />
               <Route path="/kvk-race" element={<KvKRacePage />} />

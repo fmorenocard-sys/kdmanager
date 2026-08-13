@@ -9,7 +9,10 @@
     "kvk": "KvK",
     "admin": "Verwaltung",
     "bank": "Bank",
-    "war": "Krieg"
+    "war": "Krieg",
+    "me": "Ich",
+    "royaume": "Königreich",
+    "pilotage": "Kommando"
   },
   "auth": {
     "sign_in": "Anmelden",
@@ -172,7 +175,10 @@
     "filler_t5": "T5",
     "filler_save": "Filler speichern",
     "account_selector": "Kriegskonten",
-    "filler_declared_power": "Deklarierte Macht"
+    "filler_declared_power": "Deklarierte Macht",
+    "leadership_only_title": "Führungsbereich",
+    "leadership_only_desc": "Das War Dashboard und die Kampagnenziele sind dem König und den Offizieren vorbehalten.",
+    "leadership_only_hint": "Deine Meldung und dein persönliches Ziel sind unter „Ich\"."
   },
   "trophies": {
     "title": "Königreich-Trophäen",
@@ -571,5 +577,91 @@
     "milestones_done": "{{done}}/{{total}} Meilensteine",
     "local": "Lokal",
     "toggle_timezone": "UTC / Ortszeit umschalten"
+  },
+  "me": {
+    "next_action": {
+      "badge": "Nächste Aktion",
+      "not_declared_title": "Du hast dich noch nicht für {{name}} gemeldet.",
+      "not_declared_desc": "Die Führung plant Märsche nur anhand der Meldungen.",
+      "cta": "Verfügbarkeit melden",
+      "declared_title": "Verfügbarkeit gemeldet",
+      "edit": "Bearbeiten",
+      "marches": "{{count}} Märsche",
+      "declare_account": "{{name}} melden",
+      "all_declared": "Alle deine Konten haben gemeldet",
+      "filler_stacks": "{{t4}} T4 · {{t5}} T5",
+      "opens_in": "{{label}} beginnt in"
+    },
+    "error": {
+      "badge": "Scan nicht erreichbar",
+      "title": "Deine Zahlen sind möglicherweise veraltet.",
+      "last_scan": "Letzter erfolgreicher Scan:",
+      "retry": "Erneut versuchen"
+    },
+    "offcampaign": {
+      "badge": "Zwischen den Kampagnen",
+      "title": "{{name}} ist vorbei. Nichts zu melden.",
+      "title_generic": "Keine laufende Kampagne. Nichts zu melden.",
+      "desc": "Die Führung kündigt die nächste Kampagne hier an.",
+      "next_badge": "Nächste Kampagne",
+      "next_none": "Noch nicht angekündigt"
+    },
+    "nogoal": {
+      "badge": "Mein KvK-Ziel",
+      "title": "Die Führung hat noch keine Ziele veröffentlicht.",
+      "desc": "Ziele werden aus dem Machtwert von Pass 1 berechnet. Deins erscheint hier, sobald es veröffentlicht ist — du musst nichts tun.",
+      "title_campaign": "Die Ziele für {{name}} sind noch nicht veröffentlicht."
+    },
+    "goal": {
+      "kp": "Killpunkte",
+      "dead": "Todesziel",
+      "marker_min": "60 % Min.",
+      "marker_target": "100 % Ziel",
+      "hidden_short": "Status verborgen",
+      "reveal_note": "Wertung nach Kampfende sichtbar"
+    },
+    "account": {
+      "primary": "Primär",
+      "war": "Krieg",
+      "filler": "Filler"
+    },
+    "accounts": {
+      "title": "Meine Konten",
+      "manage": "Verwalten",
+      "none": "Kein Konto beansprucht"
+    },
+    "rollup": "{{done}}/{{total}} gemeldet",
+    "stats": {
+      "title": "Meine Werte",
+      "note": "= /mystats",
+      "power": "Macht",
+      "kp_gained": "KP erzielt",
+      "deaths": "Verluste"
+    },
+    "campaign": {
+      "label": "Kampagne",
+      "current": "Aktuelle Kampagne",
+      "current_named": "{{name}} (aktuell)"
+    },
+    "declare": {
+      "edit": "Meine Meldung bearbeiten",
+      "collapse": "Einklappen"
+    }
+  },
+  "pilotage": {
+    "subtitle": "War Dashboard, Kampagnenziele und Deadweight — nur Führung.",
+    "tab_dashboard": "War Dashboard"
+  },
+  "view_as": {
+    "rail": "Als Rolle ansehen",
+    "desc": "Vorschau der Oberfläche aus Sicht einer anderen Rolle.",
+    "exit": "Vorschau beenden",
+    "banner": "Vorschau: Du siehst als {{role}}",
+    "banner_note": "Visuelle Vorschau — deine Daten ändern sich nicht.",
+    "caveat": "Nur VISUELLE Vorschau: testet keine Datenbeschränkungen (Server-Regeln gelten weiter für deine echte König-Rolle).",
+    "role_king": "König",
+    "role_officer": "Offizier",
+    "role_warrior": "Krieger",
+    "role_guest": "Gast"
   }
 }
