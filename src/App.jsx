@@ -31,7 +31,7 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
   const { t } = useTranslation();
 
   // v2 domain iconography (Claude Design v2/foundations/iconography.html)
-  const { isAuthorized } = useRole();
+  const { role, isAuthorized } = useRole();
   const menuItems = [
     // F-032 nav interim (§7.3, décision Roi 2026-08-12) : slot « Moi » en tête
     // (action-first), le slot « Guerre » est repointé vers /me et le Dashboard
@@ -107,7 +107,7 @@ const Sidebar = ({ isOpen, onNavigate, onClose }) => {
                 {isOpen && (
                   <>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{t('nav.admin')}</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/30">King</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${role === ROLES.ADMIN ? 'text-rose-300 bg-rose-500/10 border-rose-500/30' : 'text-red-400 bg-red-500/10 border-red-500/30'}`}>{role}</span>
                   </>
                 )}
               </div>
