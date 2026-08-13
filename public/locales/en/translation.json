@@ -287,6 +287,7 @@
         }
     },
     "pilotage": {
-        "subtitle": "War Dashboard, campaign goals and deadweight — leadership only."
+        "subtitle": "War Dashboard, campaign goals and deadweight — leadership only.",
+        "tab_dashboard": "War Dashboard"
     }
 }

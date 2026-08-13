@@ -649,6 +649,7 @@
     }
   },
   "pilotage": {
-    "subtitle": "War Dashboard, obiettivi di campagna e deadweight — solo leadership."
+    "subtitle": "War Dashboard, obiettivi di campagna e deadweight — solo leadership.",
+    "tab_dashboard": "Cruscotto di guerra"
   }
 }

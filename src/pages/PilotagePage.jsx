@@ -53,7 +53,7 @@ const PilotagePage = () => {
     }
 
     const tabs = [
-        { id: 'dashboard', label: t('war.dashboard_title'), icon: LayoutDashboard },
+        { id: 'dashboard', label: t('pilotage.tab_dashboard'), icon: LayoutDashboard },
         { id: 'goals', label: t('goals.tab_label'), icon: Target },
         ...(showDeadweight ? [{ id: 'deadweight', label: t('nav.deadweight'), icon: Skull }] : []),
     ];

@@ -649,6 +649,7 @@
     }
   },
   "pilotage": {
-    "subtitle": "War Dashboard, cele kampanii i deadweight — tylko dowództwo."
+    "subtitle": "War Dashboard, cele kampanii i deadweight — tylko dowództwo.",
+    "tab_dashboard": "Panel wojny"
   }
 }

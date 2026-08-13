@@ -649,6 +649,7 @@
     }
   },
   "pilotage": {
-    "subtitle": "War Dashboard, mục tiêu chiến dịch và deadweight — chỉ ban chỉ huy."
+    "subtitle": "War Dashboard, mục tiêu chiến dịch và deadweight — chỉ ban chỉ huy.",
+    "tab_dashboard": "Bảng chiến tranh"
   }
 }

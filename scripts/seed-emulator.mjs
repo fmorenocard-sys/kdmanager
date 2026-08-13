@@ -74,6 +74,16 @@ async function seed() {
     batch.set(db.doc('static_data/players'), { list: players, updatedAt: Timestamp.now() });
     batch.set(db.doc('static_data/kvk'), { list: liveKvk, updatedAt: Timestamp.now() });
     batch.set(db.doc('static_data/kvk_filler'), { list: liveFiller, updatedAt: Timestamp.now() });
+    // Deadweight (pour l'onglet Deadweight du hub Pilotage).
+    batch.set(db.doc('static_data/deadweight'), {
+        list: [
+            { id: '9001', name: 'SleepyOx', power: 31_000_000, kp: 4_000_000, status: 'Zeroed', accountAvailable: 'Available', note: 'Inactif 3 KvK' },
+            { id: '9002', name: 'GhostFarmer', power: 45_500_000, kp: 12_000_000, status: 'Refused', accountAvailable: 'Available', note: '-' },
+            { id: '9003', name: 'OldGuard', power: 62_000_000, kp: 20_000_000, status: 'King Pardon', accountAvailable: 'Available', note: 'Vétéran' },
+            { id: '9004', name: 'GoneAway', power: 18_000_000, kp: 1_000_000, status: 'Migrated', accountAvailable: 'Disappeared', note: '-' },
+        ],
+        updatedAt: Timestamp.now(),
+    });
     batch.set(db.doc('kvk_config/current'), {
         id: KVK_ID, name: 'SoC 5 - Storm of Stratagems',
         status: null, // active

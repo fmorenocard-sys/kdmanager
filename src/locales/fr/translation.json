@@ -649,6 +649,7 @@
     }
   },
   "pilotage": {
-    "subtitle": "War Dashboard, objectifs de campagne et deadweight — réservé au leadership."
+    "subtitle": "War Dashboard, objectifs de campagne et deadweight — réservé au leadership.",
+    "tab_dashboard": "Tableau de bord"
   }
 }
