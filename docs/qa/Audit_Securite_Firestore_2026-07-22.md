@@ -309,7 +309,12 @@ une minute de propagation sur `kdmanagerdb` ; `(default)` bascule immédiatement
 ## Suite
 
 - **B-1** — seul constat encore ouvert. Fermer `static_data` et `kvk_history` suppose de décider du
-  sort du Dashboard visiteur, aujourd'hui servi sans authentification.
+  sort du Dashboard visiteur, aujourd'hui servi sans authentification. *(Ajout 2026-08-13)* :
+  l'angle RGPD de ce constat — au-delà de la sécurité — est traité dans
+  `docs/legal/Note_Mitigation_Donnees_Tierces.md` (§2.1), avec une proposition technique
+  (`isAuthenticated()` au minimum, `isKingOrOfficer()` pour `static_data/deadweight` en particulier
+  — ce document contient des notes libres d'officier et des statuts de performance individuels,
+  la donnée la plus sensible du produit, pas seulement la plus exposée en volume).
 - **Non-régression** — `npm run test:rules` (29 cas sur émulateur) est à lancer à chaque
   modification de `firestore.rules`. À câbler en CI si un workflow GitHub Actions est mis en place.
 - **Données existantes** — le durcissement empêche d'écrire `discordId` depuis un client, mais ne
