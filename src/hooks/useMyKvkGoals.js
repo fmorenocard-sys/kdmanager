@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { doc, getDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
@@ -9,6 +9,12 @@ import { rateFromGoalPct } from '../lib/kvkScoring';
 /**
  * F-032 / F-014 / F-027 — objectif & stats KvK de l'UTILISATEUR COURANT, exposés
  * sans dépendance à un composant de table (spec Espace_Perso §5.2).
+ *
+ * Chargement des données : `config` (kvk_config/current) et `fillerDecls` (stacks
+ * T4/T5 déclarés par gid) sont FOURNIS par l'appelant (MeLandingPage), qui les lit
+ * déjà pour composer la page — le hook ne relit donc PAS ces docs (une seule lecture
+ * Firestore par montage de /me). Le hook ne lit que `kvk_history` (archives figées),
+ * dont il est le seul consommateur ici.
  *
  * Sélecteur de campagne (F-032) : la campagne COURANTE lit les stats live
  * (static_data/kvk) ; les campagnes PASSÉES lisent leur copie FIGÉE dans
@@ -26,74 +32,49 @@ import { rateFromGoalPct } from '../lib/kvkScoring';
  *
  * Barème filler : dépend des stacks T4/T5 DÉCLARÉS (war_availabilities), qui
  * n'existent que pour la campagne courante → pas d'objectif filler pour le passé.
+ *
+ * @param {object} [args]
+ * @param {object|null} [args.config] doc `kvk_config/current` déjà chargé par l'appelant.
+ * @param {Object<string,{t4:number,t5:number}>} [args.fillerDecls] stacks filler
+ *   déclarés, indexés par id de gouverneur, dérivés des war_availabilities déjà lues.
  */
-export function useMyKvkGoals() {
+export function useMyKvkGoals({ config = null, fillerDecls = {} } = {}) {
     const { currentUser, governorId, accounts } = useAuth();
     const { kvkStats, kvkFillerStats } = useData();
 
     const [loading, setLoading] = useState(true);
-    const [config, setConfig] = useState(null);
-    const [fillerDecls, setFillerDecls] = useState({}); // { [governorId]: { t4, t5 } }
     const [archives, setArchives] = useState([]); // [{ key, name, order, archivedAt, byId:Map }]
     const [selectedKey, setSelectedKey] = useState('current');
 
     useEffect(() => {
         let alive = true;
         (async () => {
-            // Réservé aux utilisateurs connectés (kvk_config n'est pas public).
-            if (!currentUser) { setLoading(false); return; }
+            // Réservé aux utilisateurs connectés (comme MeLandingPage, qui redirige
+            // les visiteurs vers /royaume avant tout).
+            if (!currentUser) { setArchives([]); setLoading(false); return; }
             setLoading(true);
+            // Toutes les campagnes archivées (récentes) : chacune porte une copie
+            // FIGÉE du scan (list/fillerList) → source par campagne pour le passé,
+            // et la plus récente sert de signal de cohérence de la campagne courante.
             try {
-                const curSnap = await getDoc(doc(db, 'kvk_config', 'current'));
+                const aSnap = await getDocs(query(collection(db, 'kvk_history'), orderBy('order', 'desc'), limit(12)));
                 if (!alive) return;
-                const cur = curSnap.exists() ? curSnap.data() : null;
-                setConfig(cur);
-
-                const kvkId = cur?.id || 'default_kvk';
-                // Déclarations filler (stacks T4/T5) de l'utilisateur, campagne courante.
-                const fillerAccts = (accounts || []).filter((a) => a.type === 'filler');
-                const entries = {};
-                if (fillerAccts.length) {
-                    await Promise.all(fillerAccts.map(async (a) => {
-                        const gid = String(a.governorId);
-                        let sn = await getDoc(doc(db, 'war_availabilities', `${kvkId}_${currentUser.uid}_${gid}`));
-                        if (!sn.exists() && gid === String(governorId || '')) {
-                            sn = await getDoc(doc(db, 'war_availabilities', `${kvkId}_${currentUser.uid}`));
-                        }
-                        if (sn.exists()) {
-                            const dd = sn.data();
-                            entries[gid] = { t4: dd.filler?.t4 || 0, t5: dd.filler?.t5 || 0 };
-                        }
-                    }));
-                }
-                if (!alive) return;
-                setFillerDecls(entries);
-
-                // Toutes les campagnes archivées (récentes) : chacune porte une copie
-                // FIGÉE du scan (list/fillerList) → source par campagne pour le passé,
-                // et la plus récente sert de signal de cohérence de la campagne courante.
-                try {
-                    const aSnap = await getDocs(query(collection(db, 'kvk_history'), orderBy('order', 'desc'), limit(12)));
-                    if (!alive) return;
-                    const list = aSnap.docs.map((d) => {
-                        const data = d.data();
-                        const byId = new Map();
-                        [...(data.list || []), ...(data.fillerList || [])].forEach((k) => byId.set(String(k.id), k));
-                        return { key: d.id, name: data.title || d.id, order: data.order || 0, archivedAt: data.archivedAt || null, byId };
-                    });
-                    setArchives(list);
-                } catch (e) {
-                    console.warn('[useMyKvkGoals] kvk_history indisponible (non bloquant)', e);
-                    setArchives([]);
-                }
+                const list = aSnap.docs.map((d) => {
+                    const data = d.data();
+                    const byId = new Map();
+                    [...(data.list || []), ...(data.fillerList || [])].forEach((k) => byId.set(String(k.id), k));
+                    return { key: d.id, name: data.title || d.id, order: data.order || 0, archivedAt: data.archivedAt || null, byId };
+                });
+                setArchives(list);
             } catch (e) {
-                console.error('[useMyKvkGoals] échec lecture config/déclarations filler', e);
+                console.warn('[useMyKvkGoals] kvk_history indisponible (non bloquant)', e);
+                setArchives([]);
             } finally {
                 if (alive) setLoading(false);
             }
         })();
         return () => { alive = false; };
-    }, [currentUser, governorId, accounts]);
+    }, [currentUser]);
 
     // Index des stats LIVE (campagne courante), par id de gouverneur.
     const statsById = useMemo(() => {

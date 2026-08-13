@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { doc, getDoc } from 'firebase/firestore';
@@ -38,10 +38,6 @@ const MeLandingPage = () => {
     const { currentUser, governorId, accounts } = useAuth();
     const { role } = useRole();
     const { error: dataError, lastUpdated } = useData();
-    const {
-        rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName, primaryStats,
-        campaigns, selectedKey, selectCampaign,
-    } = useMyKvkGoals();
 
     const [configLoading, setConfigLoading] = useState(true);
     const [kvkConfig, setKvkConfig] = useState(null);
@@ -53,6 +49,24 @@ const MeLandingPage = () => {
     // reste un dashboard action-first (mock), la déclaration est à un clic.
     const [formOpen, setFormOpen] = useState(false);
     const formRef = useRef(null);
+
+    // Stacks filler déclarés, dérivés des war_availabilities DÉJÀ lues pour composer
+    // la page — évite au hook objectif de relire les mêmes docs (une seule lecture
+    // Firestore par montage de /me).
+    const fillerDecls = useMemo(() => {
+        const m = {};
+        myAccounts.forEach((a) => {
+            if (a.type === 'filler' && a.declared) m[a.governorId] = { t4: a.fillerT4 || 0, t5: a.fillerT5 || 0 };
+        });
+        return m;
+    }, [myAccounts]);
+
+    // Objectif & stats KvK : le hook réutilise le `config` et les `fillerDecls`
+    // déjà chargés ici (pas de double lecture kvk_config/war_availabilities).
+    const {
+        rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName, primaryStats,
+        campaigns, selectedKey, selectCampaign,
+    } = useMyKvkGoals({ config: kvkConfig, fillerDecls });
 
     useEffect(() => {
         let alive = true;
@@ -71,8 +85,10 @@ const MeLandingPage = () => {
                 ]);
                 if (!alive) return;
 
+                // Config COMPLÈTE (le hook objectif y lit fillerDeathRatio,
+                // revealGoalStatus, startDate — plus de relecture de kvk_config).
                 const cur = curSnap.exists() ? curSnap.data() : null;
-                setKvkConfig(cur ? { id: cur.id, name: cur.name, status: cur.status || null } : null);
+                setKvkConfig(cur);
 
                 // Garde anti-frise-périmée : n'afficher les jalons que s'ils sont
                 // estampillés pour la campagne courante (ou non estampillés).
