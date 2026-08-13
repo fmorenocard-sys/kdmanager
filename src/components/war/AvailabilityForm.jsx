@@ -150,12 +150,12 @@ const AvailabilityForm = () => {
     }, [currentUser, selectedGovernorId]);
 
     // Gel des déclarations : BR-013 (saison close, tout le monde) + BR-022 (campagne
-    // démarrée, tout le monde SAUF leadership qui peut corriger). Défense en profondeur —
-    // /me masque déjà le formulaire aux non-leadership une fois la campagne démarrée.
+    // démarrée, tout le monde SAUF le Roi/admin qui peut corriger). Défense en profondeur —
+    // /me masque déjà le formulaire aux non-admin une fois la campagne démarrée.
     const isClosedSeason = kvkConfig?.status === 'closed';
     const campaignStarted = kvkConfig?.startDateMs != null && kvkConfig.startDateMs <= Date.now();
-    const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
-    const declarationsLocked = isClosedSeason || (campaignStarted && !isLeadership);
+    const isAdmin = isAuthorized([ROLES.KING]);
+    const declarationsLocked = isClosedSeason || (campaignStarted && !isAdmin);
     const activeKvkId = kvkConfig
         ? (kvkConfig.id || `${kvkConfig.name}_${kvkConfig.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_'))
         : 'default_kvk';
@@ -325,8 +325,8 @@ const AvailabilityForm = () => {
                     </div>
                 )}
 
-                {/* BR-022 : campagne démarrée et utilisateur non-leadership → déclarations gelées. */}
-                {campaignStarted && !isLeadership && !isClosedSeason && (
+                {/* BR-022 : campagne démarrée et utilisateur non-admin → déclarations gelées. */}
+                {campaignStarted && !isAdmin && !isClosedSeason && (
                     <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl flex items-center gap-3">
                         <Calendar size={20} className="text-amber-400 shrink-0" />
                         <p className="text-sm text-amber-200">{t('war.declarations_frozen')}</p>

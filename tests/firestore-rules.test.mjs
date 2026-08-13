@@ -294,12 +294,12 @@ describe(`Règles Firestore — ${RULES_FILE}`, () => {
         it('REFUS — un Warrior ne peut plus modifier sa déclaration après le démarrage', async () => {
             await assertFails(updateDoc(doc(as(WARRIOR), 'war_availabilities', 'soc4_' + WARRIOR), { governorId: '999' }));
         });
-        it('USAGE — un Officier peut toujours écrire (correction leadership)', async () => {
-            await assertSucceeds(setDoc(doc(as(OFFICER), 'war_availabilities', 'soc_started_' + OFFICER), {
+        it('REFUS — un Officier est gelé comme un Warrior (seul le Roi corrige)', async () => {
+            await assertFails(setDoc(doc(as(OFFICER), 'war_availabilities', 'soc_started_' + OFFICER), {
                 userId: OFFICER, kvkId: 'soc_started', governorId: '222'
             }));
         });
-        it('USAGE — le Roi peut toujours corriger la déclaration d\'un Warrior', async () => {
+        it('USAGE — le Roi (admin) peut toujours corriger la déclaration d\'un Warrior', async () => {
             await assertSucceeds(updateDoc(doc(as(KING), 'war_availabilities', 'soc4_' + WARRIOR), { governorId: '333' }));
         });
     });
