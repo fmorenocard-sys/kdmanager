@@ -190,6 +190,34 @@ const MeLandingPage = () => {
 
     const goalPublished = goalRows.some((r) => r.published);
 
+    // Sélecteur de campagne (F-032) — extrait pour être réutilisé dans les 2 modes
+    // de mise en page (déclaration / suivi). Pilote l'objectif + Mes stats.
+    const campaignSelector = campaigns.length > 1 ? (
+        <div className="relative w-full">
+            <History size={15} className="absolute start-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] pointer-events-none" aria-hidden="true" />
+            <select
+                aria-label={t('me.campaign.label')}
+                value={selectedKey}
+                onChange={(e) => selectCampaign(e.target.value)}
+                className="w-full ps-9 pe-3 py-2 min-h-[40px] bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg text-sm text-slate-200"
+            >
+                {campaigns.map((c) => (
+                    <option key={c.key} value={c.key}>
+                        {c.isCurrent
+                            ? (c.name ? t('me.campaign.current_named', { name: c.name }) : t('me.campaign.current'))
+                            : c.name}
+                    </option>
+                ))}
+            </select>
+        </div>
+    ) : null;
+
+    // Cartes objectif / stats — mêmes composants, arrangés différemment selon le mode.
+    const goalCard = goalPublished
+        ? <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
+        : <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />;
+    const statsCard = goalPublished ? <MyStatsCard stats={primaryStats} /> : null;
+
     return (
         <div className="space-y-6 animate-fade-in">
             <PageHeader icon={House} title={t('nav.me')} subtitle={subtitle} />
@@ -210,54 +238,41 @@ const MeLandingPage = () => {
                     </div>
                 ) : (
                     <>
-                        {/* Dashboard 2 colonnes en desktop (spec §6.3 / mock « desktop 1a ») :
-                            gauche = action + calendrier ; droite = objectif + (Mes stats, Lot 4)
-                            + comptes. Même ordre DOM qu'en mobile — la grille ne fait que
-                            refluer (mock : « the grid only reflows it »). */}
-                        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4 lg:gap-6 items-start">
-                            {/* Colonne gauche : quoi faire et quand. La carte d'action
-                                disparaît une fois la campagne démarrée (BR-022) — /me se
-                                concentre alors sur le suivi (objectif + stats). */}
-                            <div className="flex flex-col gap-4 min-w-0">
-                                {!campaignStarted && (
-                                    <NextActionCard accounts={myAccountsResolved} kvkName={kvkName} nextMilestone={nextMilestone} onDeclareClick={openForm} />
-                                )}
+                        {campaignStarted ? (
+                            /* ── Mode SUIVI (campagne démarrée, BR-022) : plus d'action à
+                               faire → l'OBJECTIF devient le héros. Progression en bandeau
+                               pleine largeur, puis 2 colonnes équilibrées (gauche = objectif ;
+                               droite = stats + comptes) — fini la colonne de gauche vide. */
+                            <>
                                 <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
-                            </div>
-                            {/* Colonne droite : ce qu'on attend de moi et qui je suis */}
-                            <div className="flex flex-col gap-4 min-w-0">
-                                {/* Sélecteur de campagne (F-032) : campagne courante + campagnes
-                                    passées (kvk_history). Pilote l'objectif + Mes stats. */}
-                                {campaigns.length > 1 && (
-                                    <div className="relative w-full">
-                                        <History size={15} className="absolute start-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] pointer-events-none" aria-hidden="true" />
-                                        <select
-                                            aria-label={t('me.campaign.label')}
-                                            value={selectedKey}
-                                            onChange={(e) => selectCampaign(e.target.value)}
-                                            className="w-full ps-9 pe-3 py-2 min-h-[40px] bg-[var(--surface-input)] border border-[var(--border-flat)] rounded-lg text-sm text-slate-200"
-                                        >
-                                            {campaigns.map((c) => (
-                                                <option key={c.key} value={c.key}>
-                                                    {c.isCurrent
-                                                        ? (c.name ? t('me.campaign.current_named', { name: c.name }) : t('me.campaign.current'))
-                                                        : c.name}
-                                                </option>
-                                            ))}
-                                        </select>
+                                <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4 lg:gap-6 items-start">
+                                    <div className="flex flex-col gap-4 min-w-0">
+                                        {campaignSelector}
+                                        {goalCard}
                                     </div>
-                                )}
-                                {goalPublished ? (
-                                    <>
-                                        <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
-                                        <MyStatsCard stats={primaryStats} />
-                                    </>
-                                ) : (
-                                    <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />
-                                )}
-                                <MyAccountsSummary />
+                                    <div className="flex flex-col gap-4 min-w-0">
+                                        {statsCard}
+                                        <MyAccountsSummary />
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            /* ── Mode DÉCLARATION (avant démarrage) : action-first (spec §6.3 /
+                               mock « desktop 1a »). Gauche = action + calendrier ; droite =
+                               sélecteur + objectif + stats + comptes. */
+                            <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4 lg:gap-6 items-start">
+                                <div className="flex flex-col gap-4 min-w-0">
+                                    <NextActionCard accounts={myAccountsResolved} kvkName={kvkName} nextMilestone={nextMilestone} onDeclareClick={openForm} />
+                                    <CampaignTimelineBanner timeline={timeline} campaignName={kvkName} />
+                                </div>
+                                <div className="flex flex-col gap-4 min-w-0">
+                                    {campaignSelector}
+                                    {goalCard}
+                                    {statsCard}
+                                    <MyAccountsSummary />
+                                </div>
                             </div>
-                        </div>
+                        )}
                         {/* Formulaire de déclaration — REPLIÉ par défaut (DA). Masqué une
                             fois la campagne démarrée (BR-022) SAUF pour le Roi (admin), qui
                             garde le droit de corriger une déclaration (canDeclare). */}
