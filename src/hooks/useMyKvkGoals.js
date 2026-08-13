@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
@@ -28,11 +28,14 @@ import { rateFromGoalPct } from '../lib/kvkScoring';
  */
 export function useMyKvkGoals() {
     const { currentUser, governorId, accounts } = useAuth();
-    const { kvkStats, kvkFillerStats, kvkUpdatedAt } = useData();
+    const { kvkStats, kvkFillerStats } = useData();
 
     const [loading, setLoading] = useState(true);
     const [config, setConfig] = useState(null);
     const [fillerDecls, setFillerDecls] = useState({}); // { [governorId]: { t4, t5 } }
+    // Dernière campagne archivée (kvk_history) : { title, archivedAt, byId:Map }.
+    // Sert de signal robuste de cohérence campagne (cf. statsCurrent plus bas).
+    const [archiveInfo, setArchiveInfo] = useState(null);
 
     useEffect(() => {
         let alive = true;
@@ -68,6 +71,26 @@ export function useMyKvkGoals() {
                 }
                 if (!alive) return;
                 setFillerDecls(entries);
+
+                // Dernière campagne archivée (une seule lecture : order desc, limit 1).
+                // Sa `list`/`fillerList` est une copie FIGÉE du scan au moment de
+                // l'archivage → référence pour savoir si le scan live est encore
+                // celui de cette campagne passée.
+                try {
+                    const aSnap = await getDocs(query(collection(db, 'kvk_history'), orderBy('order', 'desc'), limit(1)));
+                    if (!alive) return;
+                    const latest = aSnap.docs[0]?.data();
+                    if (latest) {
+                        const byId = new Map();
+                        [...(latest.list || []), ...(latest.fillerList || [])].forEach((k) => byId.set(String(k.id), k));
+                        setArchiveInfo({ title: latest.title || null, archivedAt: latest.archivedAt || null, byId });
+                    } else {
+                        setArchiveInfo(null);
+                    }
+                } catch (e) {
+                    // Archive optionnelle : son absence ne doit pas casser l'objectif.
+                    console.warn('[useMyKvkGoals] kvk_history indisponible (non bloquant)', e);
+                }
             } catch (e) {
                 console.error('[useMyKvkGoals] échec lecture config/déclarations filler', e);
             } finally {
@@ -88,15 +111,33 @@ export function useMyKvkGoals() {
     const kvkId = config?.id || null;
     const campaignName = config?.name || null;
 
-    // F-032 — cohérence de contexte campagne : les stats live (static_data/kvk)
-    // ne portent aucun identifiant de campagne. On déduit si le dernier scan
-    // appartient à la campagne COURANTE en comparant son horodatage à la date de
-    // début de campagne : un scan antérieur au début = chiffres d'une campagne
-    // précédente → objectif « pas encore publié » pour la campagne courante,
-    // plutôt que d'afficher des chiffres périmés comme s'ils étaient à jour.
-    // Repli prudent : signal manquant (pas de date) → on n'invalide pas (comportement d'avant).
+    // F-032 — cohérence de contexte campagne. `static_data/kvk` (les stats live)
+    // ne porte AUCUN identifiant de campagne : on ne peut pas lire dessus à quelle
+    // campagne il appartient. On détecte donc si le scan live est PÉRIMÉ (chiffres
+    // d'une campagne passée) par deux signaux robustes et indépendants :
+    //
+    //  1. scanIsArchived — les chiffres live du compte principal (puissance
+    //     initiale + morts totales) sont IDENTIQUES à ceux figés dans la dernière
+    //     archive kvk_history → le scan live EST cette campagne passée. Décisif :
+    //     le total de morts d'une campagne finie ne coïncide pas avec celui d'une
+    //     campagne fraîchement démarrée.
+    //  2. campaignNotStarted — la campagne courante a une date de début dans le
+    //     futur → elle n'a par définition aucune stat encore.
+    //
+    // Dans les deux cas, l'objectif est « pas encore publié » pour la campagne
+    // courante (NoGoalPublishedCard) plutôt que d'afficher des chiffres périmés.
+    // (Le champ static_data/kvk.updatedAt s'est révélé absent/inexploitable en
+    // prod — d'où le choix de ces deux signaux et non d'une heuristique de date.)
     const startDate = config?.startDate?.toDate ? config.startDate.toDate() : null;
-    const statsCurrent = (kvkUpdatedAt && startDate) ? kvkUpdatedAt >= startDate : true;
+    const campaignNotStarted = !!(startDate && startDate.getTime() > new Date().getTime());
+    const primaryGid = String(governorId || '');
+    const livePrimary = statsById.get(primaryGid) || null;
+    const archPrimary = archiveInfo?.byId?.get(primaryGid) || null;
+    const scanIsArchived = !!(livePrimary && archPrimary
+        && Number(livePrimary.initialPower || 0) > 0
+        && Number(livePrimary.initialPower || 0) === Number(archPrimary.initialPower || 0)
+        && Number(livePrimary.totalDead || 0) === Number(archPrimary.totalDead || 0));
+    const statsCurrent = !(scanIsArchived || campaignNotStarted);
 
     const rows = useMemo(() => {
         const list = (accounts && accounts.length)
