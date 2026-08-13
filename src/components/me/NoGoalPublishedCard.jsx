@@ -14,7 +14,7 @@ const NoGoalPublishedCard = ({ campaignName }) => {
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                     <Target size={15} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
                         {t('me.nogoal.badge')}
                     </span>
                 </div>

@@ -19,7 +19,7 @@ const MyAccountsSummary = () => {
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                     <Users size={15} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
                         {t('me.accounts.title')}
                     </span>
                 </div>
@@ -43,11 +43,11 @@ const MyAccountsSummary = () => {
                                     <p className="text-[10px] text-[var(--text-secondary)] font-mono">{gid}</p>
                                 </div>
                                 {isPrimary && (
-                                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shrink-0">
+                                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shrink-0">
                                         {t('me.account.primary')}
                                     </span>
                                 )}
-                                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-white/5 text-[var(--text-secondary)] border border-white/10 shrink-0">
+                                <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-white/5 text-[var(--text-secondary)] border border-white/10 shrink-0">
                                     {t(a.type === 'filler' ? 'me.account.filler' : 'me.account.war')}
                                 </span>
                             </div>

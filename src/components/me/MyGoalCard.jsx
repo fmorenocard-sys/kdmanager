@@ -64,16 +64,16 @@ const MyGoalCard = ({ rows, primaryId, revealed, campaignName }) => {
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                     <Target size={15} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)] truncate">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)] truncate">
                         {t('me.nogoal.badge')}
                     </span>
                     {campaignName && (
-                        <span className="font-mono text-[10px] text-[var(--text-secondary)] border border-white/10 rounded px-1.5 py-0.5 truncate">
+                        <span className="font-mono text-[11px] text-[var(--text-secondary)] border border-white/10 rounded px-1.5 py-0.5 truncate">
                             {campaignName}
                         </span>
                     )}
                 </div>
-                <span className="font-mono text-lg font-bold text-white shrink-0">{pct == null ? '—' : `${nf(pct * 100, 0)} %`}</span>
+                <span className="font-mono text-2xl font-bold text-white shrink-0">{pct == null ? '—' : `${nf(pct * 100, 0)} %`}</span>
             </div>
 
             {/* Sélecteur de compte (pills) si plusieurs comptes avec objectif publié */}
@@ -104,7 +104,7 @@ const MyGoalCard = ({ rows, primaryId, revealed, campaignName }) => {
                 <div className="absolute -top-0.5 -bottom-0.5 w-0.5 bg-white/45" style={{ insetInlineStart: '60%' }} />
                 <div className="absolute -top-0.5 -bottom-0.5 w-0.5 bg-emerald-400/80" style={{ insetInlineStart: '100%' }} />
             </div>
-            <div className="flex justify-between font-mono text-[10px] text-[var(--text-secondary)]">
+            <div className="flex justify-between font-mono text-[11px] text-[var(--text-secondary)]">
                 <span>0</span>
                 <span>{t('me.goal.marker_min')}</span>
                 <span>{t('me.goal.marker_target')}</span>
@@ -114,29 +114,29 @@ const MyGoalCard = ({ rows, primaryId, revealed, campaignName }) => {
             {row.type === 'filler' ? (
                 <div className="grid grid-cols-3 gap-2">
                     <div className="bg-white/5 rounded-lg px-2.5 py-2">
-                        <div className="text-[10px] text-[var(--text-secondary)]">{t('goals.declared_power')}</div>
-                        <div className="font-mono text-[13px] text-[var(--text-primary)] font-bold">{nf(row.declaredPower, 0)}</div>
+                        <div className="text-[11px] text-[var(--text-secondary)]">{t('goals.declared_power')}</div>
+                        <div className="font-mono text-[15px] text-[var(--text-primary)] font-bold">{nf(row.declaredPower, 0)}</div>
                     </div>
                     <div className="bg-white/5 rounded-lg px-2.5 py-2">
-                        <div className="text-[10px] text-[var(--text-secondary)]">{t('goals.dead_target')}</div>
-                        <div className="font-mono text-[13px] text-white font-bold">{nf(row.target, 0)}</div>
+                        <div className="text-[11px] text-[var(--text-secondary)]">{t('goals.dead_target')}</div>
+                        <div className="font-mono text-[15px] text-white font-bold">{nf(row.target, 0)}</div>
                     </div>
                     <div className="bg-white/5 rounded-lg px-2.5 py-2">
-                        <div className="text-[10px] text-[var(--text-secondary)]">{t('goals.achieved')}</div>
-                        <div className="font-mono text-[13px] text-red-400 font-bold">{nf(row.achieved, 0)}</div>
+                        <div className="text-[11px] text-[var(--text-secondary)]">{t('goals.achieved')}</div>
+                        <div className="font-mono text-[15px] text-red-400 font-bold">{nf(row.achieved, 0)}</div>
                     </div>
                 </div>
             ) : (
                 <div className="grid grid-cols-2 gap-2">
                     <div className="bg-white/5 rounded-lg px-2.5 py-2">
-                        <div className="text-[10px] text-[var(--text-secondary)]">{t('me.goal.kp')}</div>
-                        <div className="font-mono text-[13px] text-[var(--text-primary)]">
+                        <div className="text-[11px] text-[var(--text-secondary)]">{t('me.goal.kp')}</div>
+                        <div className="font-mono text-[15px] text-[var(--text-primary)]">
                             <span className="font-bold">{nf(row.kpGained != null ? row.kpGained / 1e6 : null)}</span> / {nf(row.goalKp)} M
                         </div>
                     </div>
                     <div className="bg-white/5 rounded-lg px-2.5 py-2">
-                        <div className="text-[10px] text-[var(--text-secondary)]">{t('me.goal.dead')}</div>
-                        <div className="font-mono text-[13px] text-red-400">≈ {nf(row.minDeadTroops / 1000, 0)} k T5</div>
+                        <div className="text-[11px] text-[var(--text-secondary)]">{t('me.goal.dead')}</div>
+                        <div className="font-mono text-[15px] text-red-400">≈ {nf(row.minDeadTroops / 1000, 0)} k T5</div>
                     </div>
                 </div>
             )}

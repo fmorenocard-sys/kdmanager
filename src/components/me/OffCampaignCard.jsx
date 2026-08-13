@@ -15,7 +15,7 @@ const OffCampaignCard = ({ kvkName }) => {
             <div className="v2-glass v2-indigo p-4 md:p-5 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                     <Flag size={15} className="text-indigo-300 shrink-0" aria-hidden="true" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-300">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-indigo-300">
                         {t('me.offcampaign.badge')}
                     </span>
                 </div>
@@ -32,7 +32,7 @@ const OffCampaignCard = ({ kvkName }) => {
             <div className="v2-glass p-4 flex flex-col gap-2.5">
                 <div className="flex items-center gap-2">
                     <Calendar size={15} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
                         {t('me.offcampaign.next_badge')}
                     </span>
                 </div>

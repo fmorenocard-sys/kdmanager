@@ -19,7 +19,7 @@ const ErrorCard = ({ lastScan, onRetry }) => {
         <div className="rounded-xl p-4 md:p-5 bg-red-500/[0.06] border border-red-500/30 flex flex-col gap-3.5">
             <div className="flex items-center gap-2">
                 <AlertTriangle size={15} weight="fill" className="text-red-400 shrink-0" aria-hidden="true" />
-                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-red-400">
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-red-400">
                     {t('me.error.badge')}
                 </span>
             </div>
