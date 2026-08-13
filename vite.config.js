@@ -1,5 +1,17 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import { execSync } from 'node:child_process'
+
+// Métadonnées de build (branche / commit / date), résolues au BUILD via git, pour
+// pouvoir lire « quelle version est déployée » directement dans l'app (footer).
+// Robuste hors dépôt git (fallback 'unknown').
+function git(cmd, fallback = 'unknown') {
+  try { return execSync('git ' + cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() }
+  catch { return fallback }
+}
+const BUILD_BRANCH = process.env.VITE_BUILD_BRANCH || git('rev-parse --abbrev-ref HEAD')
+const BUILD_SHA = process.env.VITE_BUILD_SHA || git('rev-parse --short HEAD')
+const BUILD_TIME = new Date().toISOString()
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -52,6 +64,13 @@ export default defineConfig(({ mode }) => {
         },
       },
     ],
+    // Stamp de version exposé au runtime (footer) — voir git(...) au-dessus.
+    define: {
+      'import.meta.env.VITE_BUILD_BRANCH': JSON.stringify(BUILD_BRANCH),
+      'import.meta.env.VITE_BUILD_SHA': JSON.stringify(BUILD_SHA),
+      'import.meta.env.VITE_BUILD_TIME': JSON.stringify(BUILD_TIME),
+      'import.meta.env.VITE_BUILD_MODE': JSON.stringify(mode),
+    },
     base: './',
     server: {
       proxy: {

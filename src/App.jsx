@@ -324,6 +324,15 @@ const MainContent = () => {
             <p className="text-xs text-slate-500">
               Designed & Developed for Kingdom {BRANDING.kingdomNumber}
             </p>
+            {/* Stamp de version (injecté au build par vite.config.js) — permet de voir
+                d'un coup d'œil quelle branche/commit est déployé. */}
+            <p
+              className="text-[10px] font-mono text-slate-600"
+              title={`branch ${import.meta.env.VITE_BUILD_BRANCH} · built ${import.meta.env.VITE_BUILD_TIME}`}
+            >
+              {import.meta.env.VITE_BUILD_BRANCH} · {import.meta.env.VITE_BUILD_SHA}
+              {import.meta.env.VITE_BUILD_TIME ? ` · ${String(import.meta.env.VITE_BUILD_TIME).slice(0, 10)}` : ''}
+            </p>
           </footer>
         </div>
       </main>
