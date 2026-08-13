@@ -4,8 +4,8 @@
 > règles `BR-xxx` du [SSOT](SSOT.md), et l'**application réelle** dans
 > [`firestore.rules`](../../firestore.rules) (données) + `RoleContext.jsx` (UI).
 > Ce fichier est un récapitulatif dérivé — en cas de doute, les règles Firestore
-> et le SSOT font foi. Dernière synchro : 2026-08-13 (F-032 Lot 5 — scission du
-> War Tracker, page repassée leadership-only).
+> et le SSOT font foi. Dernière synchro : 2026-08-13 (F-032 Lot 6 — hub nav
+> « Pilotage », dernier lot structurel du chantier).
 
 ## Rôles (SSOT §4, hiérarchie BR-002)
 
@@ -34,15 +34,17 @@ de liste (pas de hiérarchie) — mais tous les checks « leadership » passent 
 | Surface | Guest | Warrior | Officer | King | Base / source |
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Dashboard** `/` | ✅ | ✅ | ✅ | ✅ | Public. Bloc Banque en cascade du module (BR-015). Renommé « Royaume » (`/royaume`) ; connecté → aiguillé vers **Moi** (`/me`, décision Roi 2026-08-12 #4). |
-| **Espace perso « Moi »** `/me` | 🔑 | ✅ | ✅ | ✅ | **Login requis**, pas de rôle : **même espace pour tous** (décision Roi 2026-08-12 #2) — Warrior/Officer/King identiques, aucune couche leadership. Compose Déclaration (F-006), Mon objectif (F-014, Lot 2), Calendrier (F-031), Mes comptes (F-025, Lot 3), Mes stats (Lot 4) — vue scopée sur l'utilisateur courant uniquement, jamais de roster tiers (A-039, pas de gate BR-008). Depuis le **Lot 5 (2026-08-13)**, `/me` est l'**unique** surface de déclaration et d'objectif perso : le War Tracker ne les héberge plus. **F-032, Lots 1-5 livrés** sur branche `feat/espace-perso-moi` + staging. Section IA cible (E-009 §5.3) : **Mon jeu**. |
-| **War Tracker (page)** `/war-tracker` | 🔒 → redirigé vers `/royaume` | 🔒 → carte « Espace leadership » (lien vers `/me`) | ✅ | ✅ | **Leadership-only au niveau PAGE** depuis **F-032 Lot 5 (2026-08-13)**, livré sur `feat/espace-perso-moi` + staging — remplace l'ancien gate mixte par onglet. `AccessGate` leadership : visiteur non connecté → redirect `/royaume` ; connecté non-leadership (Warrior) → carte « Espace leadership » renvoyant vers **Moi**, pas de redirect forcé. L'onglet **Déclaration est retiré** (F-006, part perso exclusivement dans `/me` désormais). Ne conserve que les onglets Objectifs et War Dashboard (détail ci-dessous). Section IA cible (E-009 §5.3) : **Pilotage**. Reste **hors nav** (interim §7.3, `Spec_Espace_Perso.md` §7) — accessible par URL directe, en attendant la fusion « Pilotage » (Lot 6, US-043). |
-| War Tracker — Objectifs `?tab=goals` | 🔒 | 🔒 | ✅ | ✅ | Devient **leadership-only avec la page** (Lot 5 — avant : le Warrior voyait sa propre ligne, `👁️`). Deux vues : **Déclarants** (table complète des inscrits, `KvkGoalsPanel`) et **Top du royaume** (F-029, sans inscription). L'objectif perso du Warrior est désormais porté exclusivement par `MyGoalCard` dans `/me` (F-014, Lot 2). Statuts masqués tant que non révélés (BR-019). |
-| War Tracker — War Dashboard `?tab=dashboard` | 🔒 | 🔒 | ✅ | ✅ | Inchangé par le Lot 5 : leadership (`AccessGate` + redirect si deep-link). Actions de migration = King seul. |
+| **Espace perso « Moi »** `/me` | 🔑 | ✅ | ✅ | ✅ | **Login requis**, pas de rôle : **même espace pour tous** (décision Roi 2026-08-12 #2) — Warrior/Officer/King identiques, aucune couche leadership. Compose Déclaration (F-006), Mon objectif (F-014, Lot 2), Calendrier (F-031), Mes comptes (F-025, Lot 3), Mes stats (Lot 4) — vue scopée sur l'utilisateur courant uniquement, jamais de roster tiers (A-039, pas de gate BR-008). Depuis le **Lot 5 (2026-08-13)**, `/me` est l'**unique** surface de déclaration et d'objectif perso : le War Tracker/Pilotage ne les héberge plus. **F-032, Lots 1-6 livrés — chantier complet.** Section IA cible (E-009 §5.3) : **Mon jeu**. |
+| **Pilotage (hub)** `/pilotage` | 🔒 | 🔒 | ✅ | ✅ | **Nouveau depuis F-032 Lot 6 (2026-08-13)**, livré sur `feat/espace-perso-moi` + staging — **entrée de navigation leadership** (`PilotagePage`) en **remplacement du slot nav « Deadweight »**, `AccessGate` niveau page. Fédère en onglets URL-persistants **War Dashboard**, **Objectifs** (Déclarants + Top du royaume, F-029) et **Deadweight** (embarqué via une prop `embedded` qui masque son propre header — même page que `/deadweight`, gate module inchangé). `/war-tracker` **redirige** vers `/pilotage`. C'est la **cible nav** de `Etude_Architecture_Information.md` §7.2 : fin de l'**interim §7.3** (le War Dashboard n'est plus joignable seulement par URL directe, il a retrouvé une entrée dédiée dans la barre). Section IA : **Pilotage**. |
+| Pilotage — Objectifs `?tab=goals` | 🔒 | 🔒 | ✅ | ✅ | Identique à l'ancien War Tracker — Objectifs (Lot 5) : **Déclarants** (`KvkGoalsPanel`) + **Top du royaume** (F-029). L'objectif perso du Warrior reste porté exclusivement par `MyGoalCard` dans `/me`. Statuts masqués tant que non révélés (BR-019). |
+| Pilotage — War Dashboard `?tab=dashboard` | 🔒 | 🔒 | ✅ | ✅ | Identique à l'ancien War Tracker — War Dashboard (Lot 5). Actions de migration = King seul. |
+| Pilotage — Deadweight `?tab=deadweight` | 🔒 | 🔒 | ✅ | ✅ | Rend `DeadweightPage` en mode `embedded` (BR-009 + module gate inchangés) — même donnée/gate que `/deadweight` en autonome, simple point d'entrée supplémentaire. |
+| **War Tracker (page)** `/war-tracker` | — | — | — | — | **Route de redirection** depuis F-032 Lot 6 (2026-08-13) : renvoie systématiquement vers `/pilotage` (plus de rendu propre). Gate/comportement historique (Lot 5, leadership-only) conservés jusqu'au Lot 6 — voir Pilotage ci-dessus pour l'état courant. |
 | **KvK Hub — Performance** `/kvk?tab=performance` | ✅ | ✅ | ✅ | ✅ | Public. Sous-chip **Fillers** = comptes **Discord-vérifiés** (BR-008). |
 | **KvK Hub — Progressions** `?tab=progressions` | 🔒 | ✅ᵈ | ✅ | ✅ | ᵈ**Discord-vérifié OU leadership**. Sous-vue « Progression du Royaume » = leadership seul (BR-011). |
 | **KvK Hub — Course** `?tab=course` | 🔒 | 🔒 | ✅ | ✅ | Leadership (redirect si deep-link). **Dépôt de scan** = King **et** Officer (`RaceView`). |
 | **Trophies** `/trophies` | ✅ | ✅ | ✅ | ✅ | Public + module (BR-015). |
-| **Deadweight** `/deadweight` | 🔒 | 🔒 | ✅ | ✅ | Leadership (`AccessGate`, BR-009) + module. |
+| **Deadweight** `/deadweight` | 🔒 | 🔒 | ✅ | ✅ | Leadership (`AccessGate`, BR-009) + module. Depuis **F-032 Lot 6 (2026-08-13)**, sort de la nav (remplacée par le slot **Pilotage**) mais reste accessible en **autonome par URL directe** (module-gated, non supprimée) ; embarquée aussi comme onglet de `/pilotage` (rendu `embedded`, même donnée/gate). |
 | **Bank** `/bank` | 🔑 | 👁️ | ✅ | ✅ | Page visible (module) ; lecture = authentifié ; **dépôts = Officer+**. |
 | **Profil** `/profile` | 🔑 | ✅ | ✅ | ✅ | Login ; chacun gère **son** profil (F-025). |
 | **Administration** `/admin` | 🔒 | 🔒 | 🔒 | ✅ | **King only** (`AccessGate`). Détail ci-dessous. |
@@ -106,11 +108,14 @@ certaines pages (Deadweight, Timeline) est **UI seulement**.
   **désactivés par instance** (marque blanche) : sur une instance donnée, une page « autorisée
   par le rôle » peut être **absente** si le module n'est pas activé — c'est une couche
   orthogonale au rôle (autorité fournisseur, pas King).
-- **Nav interim F-032 (2026-08-12, `feat/espace-perso-moi`).** Le slot « Guerre » de
-  `BottomNav`/Sidebar est **repointé vers `/me`** pour tout le monde — le War Dashboard
-  (leadership) **perd sa place dans la barre** mais reste joignable par son URL directe
-  `/war-tracker`, sur le même précédent que `/admin` (rail desktop hors plafond des 6 slots,
-  absent du mobile). Dette de navigabilité temporaire pour le leadership, le temps que la
-  fusion « Pilotage » (US-043, Lot 6) réintroduise un point d'entrée dédié dans la barre —
-  décision Roi 2026-08-12 §12.1 (`Spec_Espace_Perso.md` §7). Ne pas lire cet interim comme
-  la cible : c'est une étape assumée, pas la fin de la bascule de nav.
+- **Nav interim F-032 résolue (2026-08-12 → 2026-08-13, `feat/espace-perso-moi`).** Le slot
+  « Guerre » de `BottomNav`/Sidebar avait été repointé vers `/me` au Lot 1 (2026-08-12), le
+  War Dashboard leadership perdant temporairement sa place dans la barre (joignable par
+  `/war-tracker` seul, sur le précédent `/admin`). Cette dette de navigabilité est **résolue
+  par le Lot 6 (2026-08-13, US-043)** : la nouvelle entrée **Pilotage** (`/pilotage`) réintroduit
+  un point d'entrée leadership dédié dans la barre — en **remplacement du slot « Deadweight »**
+  (Deadweight n'a pas disparu : elle reste accessible en autonome par URL, module-gated, et est
+  aussi embarquée comme onglet de Pilotage). `/war-tracker` redirige désormais vers `/pilotage`.
+  C'est la **cible nav §7.2** de `Etude_Architecture_Information.md`/`Spec_Espace_Perso.md` §7 —
+  décision Roi 2026-08-12 §12.1. **Dernier lot structurel du chantier F-032** : plus d'interim
+  de navigation en cours.
