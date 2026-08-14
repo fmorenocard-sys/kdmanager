@@ -277,7 +277,7 @@ const MeLandingPage = () => {
                             fois la campagne démarrée (BR-022) SAUF pour le Roi (admin), qui
                             garde le droit de corriger une déclaration (canDeclare). */}
                         {canDeclare && (
-                        <div ref={formRef} className="scroll-mt-20 w-full max-w-2xl mx-auto">
+                        <div ref={formRef} className="scroll-mt-20 w-full">
                             {formOpen ? (
                                 <div className="flex flex-col gap-2">
                                     <button type="button" onClick={() => setFormOpen(false)}
