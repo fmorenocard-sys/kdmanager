@@ -2,6 +2,65 @@
 
 Ce fichier logue les évolutions majeures et décisions stratégiques modifiant le cap du produit.
 
+## 2026-08-13 (suite 2) — Arbitrage go-to-market : partenariat ProKingdoms écarté (pas maintenant)
+* **Question du Roi** : proposer un partenariat au fondateur de ProKingdoms (audience/distribution
+  établie de l'écosystème RoK) plutôt que continuer en solo à chercher des royaumes intéressés ?
+  **Arbitrage conjoint `commercial` + `product-manager`, verdict : non, pas maintenant.** Détail :
+  `Arbitrage_Partenariat_ProKingdoms.md`.
+* **Raisonnement clé** : (1) « solo + royaumes intéressés » n'est pas une alternative à trancher —
+  c'est **déjà** la décision 1 du Roi (freemium, pas de démarchage à froid), en cours d'exécution
+  sur le pilote 3341 ; (2) un partenariat ajouterait de la distribution à un entonnoir de conversion
+  **non prouvé** (A-032 non levée) — ça déplace le problème, ça ne le résout pas ; (3) ProKingdoms
+  est déjà fournisseur *et* concurrent (`Etude_Commercialisation_SaaS.md` §4) — un partenariat
+  formaliserait une double dépendance (donnée + canal) au même acteur, avec un rapport de force nul
+  côté KD Manager (zéro royaume payant à ce jour) ; (4) risque de copie réel — notre wedge
+  (« console qu'on opère vs observatoire qu'on regarde », `Etude_Differenciation_Visuelle.md`) est
+  une couche produit, pas une techno protégée, et leur montrer qu'elle convertit leur donnerait le
+  business case pour la construire eux-mêmes.
+* **Convergence produit actée** : un co-branding ProKingdoms **diluerait le wedge de nature**
+  (console vs observatoire) — toute relation future doit rester une **couche data/technique**
+  (intégration BYO, API), **jamais une couche de marque**. Ligne rouge commerciale ET produit.
+* **Nuance A-029 précisée** : la clarification des CGU ProKingdoms sur la fourniture de scans à
+  l'échelle ne doit **pas** passer par l'ouverture d'un partenariat (risque de transformer une
+  tolérance implicite en refus explicite, qui tuerait le modèle B d'amorçage « je scanne pour
+  toi ») — uniquement par une lecture factuelle discrète des CGU publiques.
+* **Séquencement retenu** : maintenant = terminer le test de paiement sur 3341 (A-032, chemin
+  critique déjà acté), rien d'autre ; préalable à tout contact = A-032 levée positivement (2-3
+  royaumes) + outillage d'onboarding minimal + blocages légaux RGPD en cours (A-044 à A-049) ;
+  déclencheur = signal de demande/paiement confirmé, et alors une demande ciblée (intégration BYO),
+  jamais un partenariat de marque large.
+* Nouvelles hypothèses **A-050** (distribution ProKingdoms sans valeur nette avant A-032, tranchée)
+  et **A-051** (ProKingdoms accepterait une relation technique sans marque — non vérifié) loguées
+  dans `Assumptions_Log.md`. Renvoi ajouté depuis `Etude_Commercialisation_SaaS.md` §8bis.
+
+## 2026-08-13 (suite 3) — F-036 : les 2 hypothèses bloquantes sont RÉSOLUES, gate levé
+* **Vérification sur données réelles** : scan **006 (SoC 4) de 2997** comparé à `static_data/kvk` (feuille), 46/47 joueurs retrouvés, médiane des ratios par joueur.
+* **A-052 (échelle des morts) RÉSOLUE** : `sheet.totalDead / scan.dead_diff = 1,0000` — `dead_diff` est en **têtes**, même échelle que la feuille (ex. Lord Guineapig : 3 262 800 feuille vs 3 262 802 scan, écart de bruit de timing). **Aucune conversion ×200.** Mapping figé : `totalDead ← dead_diff`.
+* **A-055 (colonne KP) RÉSOLUE** : `sheet.totalKpGained / scan.kill_points_diff = 1,0000` — c'est **`kill_points_diff`** (feuille « Full Data ») qui nourrit `totalKpGained`. `points_difference` donne le même chiffre sur ce scan mais on retient la colonne nommée KP. Mapping figé : `totalKpGained ← kill_points_diff`.
+* **Structure du scan précisée au parse** : 2 feuilles — **Basic Data** (tous les gouverneurs : identité, puissance, `points_difference`) et **Full Data** (sous-ensemble haut-tier : + morts/KP-diff détaillés). Plan de construction (§4 de la spec) finalisé sur cette base : filtre `kingdom`, LEFT JOIN Full sur Basic par `governor_id`, repli documenté pour les gouverneurs bas-tier (`totalDead` omis, `totalKpGained` sur `points_difference` de Basic — 1/47 sur l'échantillon vérifié).
+* **A-053 (couverture Full Data) et A-054 (fillers, split T4/T5 absent)** restent **ouvertes**, mais **ne bloquent pas** ce périmètre — gérées par repli documenté (A-053) ou exclusion de périmètre déjà actée (A-054).
+* **Gate retiré** : `Spec_Performance_KvK_Source_Scan.md` passe de « cadrage, effort/risque avant construction » à « prêt à construire ». Effort revu à M (la persistance de `Basic Data` dans le pipeline de course n'existe pas encore — §4.4 de la spec, note d'implémentation). Risque revu de « moyen-élevé » à « faible-à-moyen ».
+* **Pas de commit** — fichiers laissés pour revue du Roi.
+
+## 2026-08-13 (suite 2) — Cadrage : Performance KvK dérivée du scan ProKingdoms (F-036/US-047)
+* **Nouvelle demande du Roi, décision de direction déjà prise** : le scan ProKingdoms qui alimente déjà la course (`kvk_race`, E-005) doit aussi alimenter `static_data/kvk` (onglet Performance), à la place de la feuille Google maintenue à la main — une seule source pour course **et** performance. Cadrage produit livré le jour même : `docs/pm/Spec_Performance_KvK_Source_Scan.md`, généralise **F-030/US-034** (`Spec_Ingestion_Progression_Unifiee.md`, 2026-08-08) qui ne couvrait que la progression du KP, pas l'ensemble du document.
+* **Constat technique le plus notable** : aucun document Firestore actuel ne contient le détail complet de notre seul royaume avec les diffs nets par gouverneur — `players_top` (course) est tronqué au Top 200 **mondial** de la coalition, pas filtré par royaume. La donnée complète existe déjà en mémoire côté Cloud Function (`buildAll`) mais n'est jamais persistée — premier trou technique à combler, indépendant du reste.
+* **Deux hypothèses bloquantes nommées** avant toute mise en prod : **A-052** (l'échelle des morts du scan — têtes brutes ou points pondérés — n'a jamais été comparée à la colonne Sheet, déjà résolue en points par A-005) et **A-055** (deux colonnes de diff distinctes dans le moteur de course, `kill_points_diff` vs `points_difference`, laquelle correspond au KP gagné n'est pas vérifié). Les deux se lèvent par comparaison manuelle sur 2997 (seule instance ayant les deux sources en parallèle), effort S, préalable non négociable.
+* **Fillers explicitement descopés** (A-054) : le scan ProKingdoms n'expose pas le split T4/T5 des morts requis par la formule filler (BR-018) — une unification produirait un objectif faux plutôt qu'absent, pire que le statu quo.
+* **Recommandation** : coexistence avec `syncKvk`/la feuille Google (pas de dépréciation), via le flag « source Performance » par instance déjà cadré pour F-030 (`sheet`/`scan`) — 2997 reste `sheet` par défaut (zéro risque), le pilote bascule `scan` (répare son manque actuel). Migrer 2997 est un chantier ultérieur séparé, conditionné à la levée d'A-052/A-055.
+* **IDs créés** : F-036 (rattaché à E-005), US-047, A-052 à A-055 — numérotées après A-050/A-051, déjà pris le même jour par `Arbitrage_Partenariat_ProKingdoms.md` (chantier commercial concurrent).
+* **Lien commercial signalé, non traité** : renforce le modèle « BYO scans → une source alimente tout » (`Etude_Commercialisation_SaaS.md` §4) — à chiffrer séparément par l'agent `commercial` si utile.
+* **Pas de commit** — fichiers laissés pour revue du Roi.
+
+## 2026-08-13 (suite) — Point produit : F-032/F-033 mergés, BR-022/BR-023 livrées, dette technique inventoriée
+* **Merge — F-032 (Espace perso « Moi », 6 lots) et F-033 (« Voir en tant que ») dans `main`** (`--no-ff`), après une **revue de branche** qui a corrigé 2 constats avant fusion : lecture Firestore unique sur `/me` (l'ancienne double lecture recréait le bug BR-008 déjà corrigé ailleurs — BUG-006) et purge du miroir mort `public/locales` (6/10 langues, jamais chargé au runtime — le bundle i18n réel est `src/locales`). Chantier complet : socle `/me`, objectif perso, multi-compte, Mes stats web, scission du War Tracker en surface leadership, fusion nav « Pilotage ». Voir `FeatureInventory.md` F-032/F-033, `ProductBacklog.md` US-039→US-045.
+* **BR-022 — gel des déclarations au démarrage de campagne (décidé et livré le jour même)** : dès `kvk_config/current.startDate` passée, plus aucune soumission/édition de disponibilité pour Warrior/Officer/Guest — seul le Roi/Admin garde l'écriture pour corriger. Double enforcement (UI `/me` + règles Firestore serveur), 34/34 tests `firestore-rules.test.mjs`. Révision du jour : le périmètre a été resserré de « tout le leadership » à **King-only** en cours de journée. Déployé sur le pilote 41, dont la campagne live (démarrée le 31/07) avait révélé le trou. Voir SSOT `BR-022`.
+* **BR-023 — rôle Admin/opérateur, super-admin au-dessus du Roi (V1 livrée et ACTIVÉE sur le pilote 41)** : répond à A-033 (couche opérateur orthogonale aux rôles de jeu, demandée par le Roi le 2026-08-09). Attribution par env `ROLE_ADMIN_USER_IDS`, hérite de tous les pouvoirs Roi (niveau 5 dans une hiérarchie désormais `RoleContext` par niveau plutôt que par égalité stricte). L'opérateur du pilote 41 est passé Admin le jour même. V1 = équivalent Roi en pouvoirs, par instance — le split fin ops/jeu et un super-admin cross-tenant restent à concevoir. Voir SSOT `BR-023`/`R-005`, `FeatureInventory.md` F-034.
+* **Outil de version** : footer affichant branche · commit court · date de build (résolu via `git rev-parse` au build dans `vite.config.js`), pour savoir quelle version tourne sur quelle instance sans consulter les logs de déploiement.
+* **Inventaire priorisé de la dette technique (BUG-007)** livré en **exécutant réellement** ESLint/build sur le code mergé (pas seulement sur les notes) : `docs/qa/Dette_Technique_2026-08.md`, 11 items classés P0→P5. Constat le plus notable : `npm run lint` est **rouge** (masqué jusqu'ici) et `static_data/deadweight` est en lecture publique — le même fait que l'étude légale du matin qualifie de bloquant RGPD (voir entrée précédente du jour, A-045/A-047/A-048). Items backend/rules **parqués** tant que 2997 reste gelé.
+* **État de déploiement à la clôture de session** : `main` (avec F-032/F-033) **n'est pas encore poussé sur le remote** ; le **pilote 41 est à jour** (front + rules + functions, terrain de validation) ; **2997 est volontairement non déployé** (période de déclarations en cours — décision de ne pas perturber un cycle actif). Le travail livré aujourd'hui n'est donc pas encore visible sur le royaume principal.
+* **Arbitrages à soumettre au Roi** : ordonnancement des 6 priorités listées dans `Roadmap.md` (pousser `main` + déployer 2997 hors gel ; fermer la lecture publique des rules ; dérouler BUG-007 ; engager la rédaction des documents réglementaires ; raffiner le rôle Admin — split ops/jeu et cross-tenant ; reprendre F-031 V2/E-007) — et decision de prioriser BUG-008 (harnais de fixtures) dans cette liste ou après.
+
 ## 2026-08-13
 * **Première étude de cadrage juridique — lancement UE (agent `legal`)** : à la demande du Roi, en vue du lancement commercial du Kingdom Manager dans l'UE, cartographie complète des traitements de données personnelles (accent sur le point sensible du projet — l'ingestion de données de joueurs tiers via les scans, sans consentement individuel), liste des documents réglementaires à produire (politique de confidentialité, notice art. 14, CGU/CGV, mentions légales, registre des traitements, DPA/accord de coresponsabilité), risques priorisés et séquencement recommandé avant/après l'ouverture commerciale. **Statut : cadrage seulement, aucun document contractuel encore rédigé, rien de tranché sans avocat.** Deux découvertes notables faites pendant l'étude, formalisées en A-044/A-045/A-046 : (1) la qualification éditeur/royaume-client penche vers une **coresponsabilité (art. 26)** plutôt qu'une sous-traitance simple, faute d'être tranchée par un avocat ; (2) des collections Firestore portant des données de joueurs tiers sont **lisibles sans authentification** — fait déjà connu côté sécurité (`BUG-002`, « B-1 non traité ») mais **jamais requalifié RGPD avant cette étude**, et documenté comme bloquant avant l'ouverture commerciale. Voir `docs/legal/Etude_Cadrage_Juridique_Lancement_UE.md`.
 

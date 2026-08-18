@@ -443,8 +443,15 @@ Le concierge (modèle B) se facture en plus, au temps.
   d'usage, de payer 25-30 $ (cf. §8 objection 1). **Chemin critique du go-to-market.**
 - **Fixer le quota de scans exact du gratuit** (ex. _N_ scans/campagne) — détail de packaging,
   à caler à l'implémentation des plafonds.
-- **Vérifier les CGU ProKingdoms** sur la fourniture de scans à l'échelle (A-029, §5bis).
+- **Vérifier les CGU ProKingdoms** sur la fourniture de scans à l'échelle (A-029, §5bis) — **par
+  lecture factuelle discrète des CGU publiques uniquement**, jamais en ouvrant un partenariat (voir
+  `Arbitrage_Partenariat_ProKingdoms.md`, la nuance affinée de A-029).
 - Prérequis produit du premium Discord : **fallback in-app** (chantier L, §3 item 8).
+- **Partenariat de distribution ProKingdoms — arbitré séparément et écarté pour l'instant**
+  (2026-08-13) : voir `Arbitrage_Partenariat_ProKingdoms.md`. Verdict : pas de valeur nette tant que
+  A-032 n'est pas levée (A-050) ; toute relation future doit rester une couche data/technique,
+  jamais de marque (dilution du wedge « console vs observatoire »,
+  `Etude_Differenciation_Visuelle.md`).
 
 ## 8. Recommandation & prochaines étapes
 
