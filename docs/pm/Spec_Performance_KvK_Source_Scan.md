@@ -1,6 +1,10 @@
 # Spec — Performance KvK dérivée du scan ProKingdoms (source unique course + performance)
 
 > Date : 2026-08-13 · Auteur : PM · Statut : **cadrage validé, GATE LEVÉ — prêt pour construction (§4 finalisé)**
+> Mise à jour 2026-08-18 : ajout de **`totalPowerDiff`** au mapping §4.2 (champ **vivant**, sommé
+> par la carte « TOTAL POWER DIFF » de l'onglet Performance, mais absent du tableau de mapping
+> initial). Révélé par l'aperçu manuel du pilote qui affichait **0** faute de dériver ce champ ;
+> corrigé en stopgap le 2026-08-18. Dérivation figée : `finalPower − initialPower`.
 > Mise à jour 2026-08-13 : **A-052 et A-055 RÉSOLUES** par vérification sur données réelles
 > (scan 006 SoC 4 de 2997 vs `static_data/kvk`, 46/47 joueurs, médiane des ratios = 1,0000
 > sur les deux mappings). Le gate qui bloquait toute mise en prod tant que ces deux
@@ -192,6 +196,7 @@ d'instance = `scan` :
 |---|---|---|
 | `initialPower` / `initialKp` | valeurs au scan de base (`baseIdx`) | idem, depuis `Basic Data` (`power`/`min_points`) |
 | `finalPower` | `latest_power`/`power` au dernier scan | idem, `Basic Data` |
+| `totalPowerDiff` | **`finalPower − initialPower`**, calculé à l'écriture (équivaut au `net_power_diff` du moteur de course, §2/`engine.js` — value au scan N − value au scan de base) | idem, sur les puissances `Basic Data` (**disponible pour tout le royaume** — la puissance est dans `Basic Data`, contrairement aux morts) |
 | `totalKpGained` | **`kill_points_diff`** *(figé — A-055)* | `points_difference` de `Basic Data` (≈ même valeur sur l'échantillon vérifié, mais source distincte — repli documenté, pas une garantie générale sur tous les royaumes/scans) |
 | `totalDead` | **`dead_diff`** *(figé — A-052, aucune conversion)* | **absent** (`undefined`, jamais `0` — pas de morts détaillées hors `Full Data`) |
 | `goalPercent` / `rate` | **calculés à l'écriture** via `src/lib/kvkGoals.js` `computeKvkGoals()` + `kvkScoring.js` `rateFromGoalPct()` (miroir `functions/kvkGoals.js`, déjà testé en parité) | calculés si `totalDead` disponible ; sinon `goalPercent` reste calculable sur KP seul si le composant le permet, `rate` (BR-019, qui dépend des deux) omis proprement |
@@ -206,6 +211,17 @@ d'instance = `scan` :
 **Simplification actée** : `totalKills` et `totalAcclaim` ne sont **pas portés** dans le
 nouveau schéma — champs déjà morts côté UI sur le format Sheet actuel (aucun composant ne
 les lit, sur aucun tier). Les reconduire serait de la dette ajoutée pour rien.
+
+**`totalPowerDiff` — piège vérifié en conditions réelles (2026-08-18)** : contrairement à
+`totalDead` (limité au haut-tier), ce champ est **dérivable pour tout le royaume** (la
+puissance est dans `Basic Data`). La carte « TOTAL POWER DIFF » (`KvKPerformancePage.jsx`,
+`stats.totalPowerDiff = Σ curr.totalPowerDiff`) **somme le champ stocké tel quel** — elle ne
+recalcule pas `final − init` à la volée. Conséquence observée : l'aperçu manuel du pilote,
+qui n'écrivait pas ce champ, affichait un total à **0** alors que toute la donnée existait
+(initialPower figé + `latest_power` du scan récent). La construction §4 **doit** écrire ce
+champ explicitement (stopgap posé le 2026-08-18 : Σ = −109 M sur le pilote, cohérent avec la
+perte de puissance liée aux morts). Signe usuel **négatif** en KvK (perte), la carte le rend
+en rouge (BR-non-numérotée d'affichage, cf. `KvKPerformancePage`).
 
 **Garde-fou BR-010 (rappel, non négociable)** : `totalKpGained` (domaine DKP **interne**,
 F-014) ne doit **jamais** être confondu avec `dkp_net` (domaine DKP **de course**,
