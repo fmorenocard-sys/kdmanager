@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { BRANDING } from '../config/branding';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/ui/Avatar';
@@ -54,6 +56,16 @@ const KvKPerformancePage = () => {
     const [progView, setProgView] = useState('player'); // player | kingdom
     const [selectedCampaignId, setSelectedCampaignId] = useState('current');
     const [selectedPlayerId, setSelectedPlayerId] = useState(null);
+    // BR-019 : le Roi révèle les LABELS de rating (kvk_config/current.revealGoalStatus).
+    // Tant que non révélé sur la campagne courante, le label est masqué (les % restent).
+    const [revealGoalStatus, setRevealGoalStatus] = useState(false);
+    React.useEffect(() => {
+        let alive = true;
+        getDoc(doc(db, 'kvk_config', 'current'))
+            .then((s) => { if (alive) setRevealGoalStatus(s.exists() && s.data().revealGoalStatus === true); })
+            .catch(() => { });
+        return () => { alive = false; };
+    }, []);
 
     // BR-008 : les vues Discord-verified retombent sur les vues publiques
     React.useEffect(() => {
@@ -272,7 +284,11 @@ const KvKPerformancePage = () => {
         { k: 'goalPercent', L: t('performance.goal_percent') },
     ];
 
-    const columns = perfView === 'main' ? mainColumns : fillerColumns;
+    // BR-019 : rating affiché seulement si la campagne est ARCHIVÉE (résultat final) ou
+    // si le Roi a révélé les statuts sur la courante. Sinon on retire la colonne rate,
+    // les chips de statut et le badge — les % et chiffres, eux, restent toujours visibles.
+    const showRate = !selectedCampaign.isCurrent || revealGoalStatus === true;
+    const columns = (perfView === 'main' ? mainColumns : fillerColumns).filter(c => c.k !== 'rate' || showRate);
 
     const hubTabs = [
         { id: 'performance', label: t('kvk_hub.tab_performance'), icon: TrendingUp },
@@ -430,7 +446,7 @@ const KvKPerformancePage = () => {
                             leftIcon={<Search size={16} />}
                         />
                     </div>
-                    {perfView === 'main' && (
+                    {perfView === 'main' && showRate && (
                         <StatusFilter
                             options={statusOptions}
                             selected={statusFilter}
@@ -471,7 +487,7 @@ const KvKPerformancePage = () => {
                                                 <span className="text-[10px] text-slate-500 truncate">{row.id}</span>
                                             </div>
                                         </div>
-                                        {perfView === 'main' && row.rate && (
+                                        {perfView === 'main' && showRate && row.rate && (
                                             <span className={`shrink-0 ${getRateClass(row.rate)}`}>
                                                 {rateLabel(row.rate)}
                                             </span>
