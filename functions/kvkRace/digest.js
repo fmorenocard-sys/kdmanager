@@ -28,6 +28,7 @@ import {parseScanFilename, readScanWorkbook} from "./parse.js";
 import {buildAll} from "./engine.js";
 import {resolveDkpWeights, DIFF_METRIC_COLS} from "./metrics.js";
 import {postDuelSnapshot} from "./snapshot.js";
+import {writeKvkPerformanceFromScan} from "./perfExport.js";
 
 // US-021 : le snapshot Discord réutilise le jeton du bot déjà en Secret Manager.
 const DISCORD_BOT_TOKEN = defineSecret("DISCORD_BOT_TOKEN");
@@ -138,6 +139,20 @@ export async function recomputeRace(campaignId, bucket, opts = {}) {
     await batch.commit();
     logger.info(`recomputeRace(${campaignId}) : ${seqs.length} scans agrégés, ` +
         `base=${data.baseSeq}, latest=${seqs[seqs.length - 1]}`);
+
+    // F-036 — rafraîchit static_data/kvk (Performance) depuis le dernier scan, si l'instance
+    // est en source `scan` (jamais 2997). Isolé : un échec ici ne casse pas le digest de course.
+    try {
+        const perf = await writeKvkPerformanceFromScan({
+            campaignId, players, seqs, cfg, db: db(),
+            info: (msg) => logger.info(`[${campaignId}] ${msg}`),
+        });
+        if (perf.status !== "success") {
+            logger.info(`[${campaignId}] F-036 static_data/kvk : ${perf.status} (${perf.reason})`);
+        }
+    } catch (e) {
+        logger.error(`[${campaignId}] F-036 écriture static_data/kvk échouée (course intacte)`, e);
+    }
 
     // US-021 — snapshot Discord, après commit : on n'annonce que ce qui est écrit.
     if (opts.postSnapshot) {

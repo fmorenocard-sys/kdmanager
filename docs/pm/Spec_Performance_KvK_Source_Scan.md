@@ -255,6 +255,29 @@ fichiers `derived/*.json` — `Basic Data` (nécessaire pour couvrir les gouvern
 §4.1/§4.2) n'est pas persistée par le pipeline de course actuel. Ajouter cette lecture est
 un détail d'implémentation du chantier dev, pas une nouvelle hypothèse produit.
 
+### 4.5 État de construction — Phase 1 livrée (2026-08-18, code)
+
+**Construit** (`functions/kvkRace/perfExport.js`, branché dans `recomputeRace` en fin de
+digest, isolé en try/catch) : à chaque scan de course, si le flag d'instance
+`PERFORMANCE_SOURCE=scan` (pilote ; **jamais 2997** — garde-fou dur sur `PROJECT_ID`),
+`static_data/kvk` est rafraîchi depuis le **dernier scan** pour `cfg.pinned_kingdoms[0]` :
+`finalPower ← latest_power`, `totalDead ← dead_diff`, `totalKpGained ← kill_points_diff`
+(colonnes **brutes** du scan, BR-010 — jamais `dkp_net`/`net_*`), `totalPowerDiff =
+finalPower − initialPower`, `goalPercent`/`rate` via `kvkGoals.js`. `initialPower`/`initialKp`
+**préservés** (jamais recalculés, §4.3.1). Test : `tests/perfExport.test.mjs` (mapping pur, 4/4).
+
+**Approche « préserver la référence figée + rafraîchir le courant »** : F-036 ne **crée** pas
+la référence d'objectifs — elle vient toujours du scan de base manuel (`ingest-soc-scan.mjs
+--kvk-base`, §3.5) ; F-036 la maintient fraîche à chaque scan. Sans référence figée → no-op.
+
+**Reporté hors Phase 1** (assumé) : join `Basic Data` pour les bas-tiers (§4.4 — le dérivé de
+course ne persiste que `Full Data`, donc seuls les gouverneurs de la référence figée présents
+dans `Full Data` sont rafraîchis) ; fillers (A-054) ; bascule 2997.
+
+**Reste avant « live »** : `PERFORMANCE_SOURCE=scan` posé (`functions/.env.kd-41-manager`) →
+déployer les functions du pilote (**⚠️ resupprimer `scheduledSync` après** — cf. runbook,
+Annexe cross-tenant) → `recomputeRaceCampaign` pour peupler.
+
 ---
 
 ## 5. Zones d'ombre nommées (2 résolues, 2 restent ouvertes sans bloquer)
