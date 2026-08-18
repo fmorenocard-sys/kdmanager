@@ -490,6 +490,13 @@ A-031) :
 
 ---
 
+> **Complément opérationnel (2026-08-18)** : `docs/pm/Runbook_Onboarding_Royaume.md`
+> capture désormais le processus vécu sur le pilote KD 3341 phase par phase,
+> commandes exactes et pièges compris (dont le registre cross-tenant complet).
+> Cette étude reste le cadrage stratégique (faut-il industrialiser, quelle
+> voie, quel coût) ; le runbook répond à « comment fait-on aujourd'hui, pas à
+> pas » — les deux se lisent ensemble.
+
 ## Sources
 `Etude_Commercialisation_SaaS.md` (décisions du Roi 2026-07-24, §0, §3, §5bis,
 §5ter, §8) · `Plan_Pilote_KvK.md` (runbook vécu KD 3341, Phases 0–5) ·
