@@ -274,9 +274,13 @@ la référence d'objectifs — elle vient toujours du scan de base manuel (`inge
 course ne persiste que `Full Data`, donc seuls les gouverneurs de la référence figée présents
 dans `Full Data` sont rafraîchis) ; fillers (A-054) ; bascule 2997.
 
-**Reste avant « live »** : `PERFORMANCE_SOURCE=scan` posé (`functions/.env.kd-41-manager`) →
-déployer les functions du pilote (**⚠️ resupprimer `scheduledSync` après** — cf. runbook,
-Annexe cross-tenant) → `recomputeRaceCampaign` pour peupler.
+**✅ LIVE sur le pilote (2026-08-18)** : `PERFORMANCE_SOURCE=scan` posé, functions déployées
+**en ciblé** (`--only functions:digestRaceScan,recomputeRaceCampaign` → `scheduledSync` **NON
+recréé**, piège cron évité sans avoir à le resupprimer). Pipeline **vérifié bout-en-bout** en
+re-déposant le scan seq 4 : `static_data/kvk` réécrit **par la fonction** (`perfSource=scan`,
+`lastScanSeq=4`, 421 joueurs, Σmorts 13,5 M, Σpower-diff −109 M — identiques au stopgap
+manuel). Auto-rafraîchi désormais à chaque scan. Reporté inchangé (Basic Data bas-tier,
+fillers, bascule 2997).
 
 ---
 
