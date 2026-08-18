@@ -72,9 +72,13 @@ const MeLandingPage = () => {
     // Objectif & stats KvK : le hook réutilise le `config` et les `fillerDecls`
     // déjà chargés ici (pas de double lecture kvk_config/war_availabilities).
     const {
-        rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName, primaryStats,
+        rows: goalRows, revealed: goalRevealed, campaignName: goalCampaignName, primaryStats, statsByGid,
         campaigns, selectedKey, selectCampaign,
     } = useMyKvkGoals({ config: kvkConfig, fillerDecls });
+
+    // F-032 multi-compte : compte sélectionné dans l'objectif — PARTAGÉ, il pilote
+    // aussi « Mes stats » (les deux cartes décrivent le même compte). null = défaut.
+    const [selectedGid, setSelectedGid] = useState(null);
 
     useEffect(() => {
         let alive = true;
@@ -189,6 +193,11 @@ const MeLandingPage = () => {
     const subtitle = subtitleParts.filter(Boolean).join(' · ');
 
     const goalPublished = goalRows.some((r) => r.published);
+    // Compte effectif partagé objectif ↔ stats : la sélection utilisateur si elle est
+    // encore valide (un compte avec objectif publié), sinon le principal (ou le 1er publié).
+    const publishedGoalRows = goalRows.filter((r) => r.published);
+    const defaultGid = (publishedGoalRows.find((r) => r.governorId === String(governorId || '')) || publishedGoalRows[0])?.governorId || null;
+    const effectiveGid = publishedGoalRows.some((r) => r.governorId === selectedGid) ? selectedGid : defaultGid;
 
     // Sélecteur de campagne (F-032) — extrait pour être réutilisé dans les 2 modes
     // de mise en page (déclaration / suivi). Pilote l'objectif + Mes stats.
@@ -214,9 +223,9 @@ const MeLandingPage = () => {
 
     // Cartes objectif / stats — mêmes composants, arrangés différemment selon le mode.
     const goalCard = goalPublished
-        ? <MyGoalCard rows={goalRows} primaryId={governorId} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
+        ? <MyGoalCard rows={goalRows} primaryId={governorId} selectedId={effectiveGid} onSelect={setSelectedGid} revealed={goalRevealed} campaignName={goalCampaignName || kvkName} />
         : <NoGoalPublishedCard campaignName={goalCampaignName || kvkName} />;
-    const statsCard = goalPublished ? <MyStatsCard stats={primaryStats} /> : null;
+    const statsCard = goalPublished ? <MyStatsCard stats={(statsByGid && statsByGid.get(effectiveGid)) || primaryStats} /> : null;
 
     return (
         <div className="space-y-6 animate-fade-in">

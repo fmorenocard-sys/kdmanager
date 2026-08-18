@@ -164,20 +164,31 @@ export function useMyKvkGoals({ config = null, fillerDecls = {} } = {}) {
         return rows.find((r) => r.governorId === primaryGid) || rows[0];
     }, [rows, primaryGid]);
 
-    // Stats condensées du compte principal (Lot 4, parité /mystats sans rank),
-    // pour la campagne sélectionnée. Masquées si non publié (gérées par l'appelant).
-    const primaryStats = (() => {
-        const p = source.get(primaryGid);
-        if (!p || !publishedGate) return null;
-        return {
-            powerM: (Number(p.finalPower) || Number(p.initialPower) || 0) / 1e6,
-            kpGainedM: (Number(p.totalKpGained) || 0) / 1e6,
-            deaths: Number(p.totalDead) || 0,
-        };
-    })();
+    // Stats condensées PAR COMPTE (Lot 4, parité /mystats sans rank) pour la campagne
+    // sélectionnée : power / KP gagné / morts de CHAQUE compte réclamé, indexé par id de
+    // gouverneur. Permet à « Mes stats » de suivre le compte choisi dans l'objectif (pas
+    // seulement le principal). Vide si non publié (l'appelant gère l'affichage).
+    const statsByGid = useMemo(() => {
+        const m = new Map();
+        if (!publishedGate) return m;
+        const list = (accounts && accounts.length) ? accounts : (governorId ? [{ governorId }] : []);
+        list.forEach((a) => {
+            const p = source.get(String(a.governorId));
+            if (!p) return;
+            m.set(String(a.governorId), {
+                powerM: (Number(p.finalPower) || Number(p.initialPower) || 0) / 1e6,
+                kpGainedM: (Number(p.totalKpGained) || 0) / 1e6,
+                deaths: Number(p.totalDead) || 0,
+            });
+        });
+        return m;
+    }, [accounts, governorId, source, publishedGate]);
+
+    // Compte principal — conservé comme valeur par défaut (parité /mystats).
+    const primaryStats = statsByGid.get(primaryGid) || null;
 
     return {
-        loading, revealed, campaignName, statsCurrent, rows, primaryRow, primaryStats,
+        loading, revealed, campaignName, statsCurrent, rows, primaryRow, primaryStats, statsByGid,
         campaigns, selectedKey: effectiveKey, selectCampaign: setSelectedKey, isPast,
     };
 }

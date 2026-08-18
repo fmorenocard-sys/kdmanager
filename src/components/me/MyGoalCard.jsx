@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Target } from '../ui/icons';
 
@@ -24,16 +23,17 @@ const RATE_STYLES = {
 };
 const rateKey = (rate) => `goals.rate_${rate.toLowerCase().replace(/\s+/g, '_')}`;
 
-const MyGoalCard = ({ rows, primaryId, revealed, campaignName }) => {
+const MyGoalCard = ({ rows, primaryId, revealed, campaignName, selectedId = null, onSelect }) => {
     const { t, i18n } = useTranslation();
     const nf = (n, d = 1) => (n == null || !Number.isFinite(n))
         ? '—'
         : new Intl.NumberFormat(i18n.language, { maximumFractionDigits: d }).format(n);
 
     const published = (rows || []).filter((r) => r.published);
-    const [selectedId, setSelectedId] = useState(null);
     if (!published.length) return null; // l'appelant montre NoGoalPublishedCard
 
+    // Sélection CONTRÔLÉE par l'appelant (MeLandingPage) : les mêmes pills pilotent
+    // aussi « Mes stats » → les deux cartes décrivent toujours le même compte.
     const defaultRow = published.find((r) => r.governorId === String(primaryId || '')) || published[0];
     const row = published.find((r) => r.governorId === selectedId) || defaultRow;
 
@@ -85,7 +85,7 @@ const MyGoalCard = ({ rows, primaryId, revealed, campaignName }) => {
                             <button
                                 key={r.governorId}
                                 type="button"
-                                onClick={() => setSelectedId(r.governorId)}
+                                onClick={() => onSelect && onSelect(r.governorId)}
                                 className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-colors ${active ? 'border-amber-500/50 bg-amber-500/10 text-amber-300' : 'border-white/10 text-[var(--text-secondary)] hover:text-white'}`}
                             >
                                 {r.name}
