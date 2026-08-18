@@ -16,7 +16,7 @@ Community management dashboard for a Rise of Kingdoms kingdom: war attendance (W
 - `npm run lint` — eslint
 - `npm run test:e2e` — Playwright suite inside `firebase emulators:exec` (specs in `tests/`)
 - `npm run test:serve` — dev server pointed at the Firebase emulator (port 5174)
-- `node scripts/deploy-rules.cjs` — deploy `firestore.rules` to BOTH Firestore databases (plain `firebase deploy` only covers what `firebase.json` lists; renamed from `.js` when the package went ESM)
+- `node scripts/deploy-rules.cjs <prod|pilot>` (or `npm run deploy-rules:prod` / `deploy-rules:pilot`) — deploy `firestore.rules` to BOTH Firestore databases `(default)` + `kdmanagerdb` of the given project, via the Rules REST API. **The project is required** (no default — never deploy to prod by accident). Use this, NOT `firebase deploy --only firestore:rules`: the plain CLI deploy silently misses the named `kdmanagerdb` database the app actually uses (this bit the pilot on 2026-08-18 — Admin/BR-022 rules never reached kd-41's `kdmanagerdb` until deployed this way). A 404 on a project's `(default)` release is expected (the pilot only has `kdmanagerdb`) and skipped.
 - `firebase hosting:channel:deploy staging --expires 30d` — deploy the current build to the **staging preview channel** instead of prod (see `docs/DEVOPS.md` §Branching & Staging). `main` = prod; big evolutions go on `feat/*` branches (current: `feat/refonte-navigation`) and are validated on a channel before merge. Channels only stage the FRONT — Firestore/Functions/Rules stay prod. Never push `backup/pre-secret-scrub-20260711`.
 
 ## Shared brain with Antigravity (READ THIS FIRST)
