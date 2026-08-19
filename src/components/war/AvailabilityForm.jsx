@@ -261,8 +261,17 @@ const AvailabilityForm = () => {
                 to: formData.activeHoursUTC?.to || ''
             };
 
+            // Filet anti-perte : une marche configurée dans le constructeur mais NON
+            // ajoutée (l'utilisateur choisit des commandants puis clique « Enregistrer »
+            // sans « Ajouter la marche ») serait silencieusement perdue — malgré la
+            // confirmation de succès. On l'inclut à l'enregistrement, mais SEULEMENT si un
+            // commandant est sélectionné (intention claire ; pas de marche par défaut vide).
+            const pendingMarch = (marchInput.primary || marchInput.secondary) ? [{ ...marchInput }] : [];
+            const marchesToSave = [...formData.marches, ...pendingMarch];
+
             await setDoc(doc(db, "war_availabilities", docId), {
                 ...formData,
+                marches: marchesToSave,
                 accountType: 'war',
                 resources: sanitizedResources,
                 speedups: sanitizedSpeedups,
@@ -279,6 +288,13 @@ const AvailabilityForm = () => {
             if (currentUser && String(formData.governorId) === String(governorId)) {
                 try { await deleteDoc(doc(db, "war_availabilities", `${localKvkId}_${currentUser.uid}`)); }
                 catch { /* pas d'ancien doc : rien à faire */ }
+            }
+
+            // Reflète le flush dans l'UI : la marche en attente rejoint la liste et le
+            // constructeur est réinitialisé (cohérent avec ce qui vient d'être enregistré).
+            if (pendingMarch.length) {
+                setFormData(prev => ({ ...prev, marches: marchesToSave }));
+                setMarchInput({ type: 'Infantry', primary: '', secondary: '' });
             }
 
             setSuccessMsg(t('war.submit_success'));
