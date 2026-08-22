@@ -213,13 +213,14 @@ export const digestRaceScan = onObjectFinalized(
     },
 );
 
-/** Vérifie que l'appelant est King/Officer (roles/{uid}). Renvoie le rôle. */
+/** Vérifie que l'appelant est King/Officer/Admin (roles/{uid}). Renvoie le rôle.
+ * Admin = super-opérateur au-dessus du Roi (BR-023) → hérite des droits leadership. */
 async function requireLeadership(request) {
     const uid = request.auth && request.auth.uid;
     if (!uid) throw new HttpsError("unauthenticated", "Login required.");
     const roleSnap = await db().doc(`roles/${uid}`).get();
     const role = roleSnap.exists ? roleSnap.data().role : null;
-    if (role !== "King" && role !== "Officer") {
+    if (role !== "King" && role !== "Officer" && role !== "Admin") {
         throw new HttpsError("permission-denied", "Leadership role required (BR-014).");
     }
     return {uid, role};
