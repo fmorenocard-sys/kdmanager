@@ -99,7 +99,7 @@ export const DATA_CONFIG = {
 
     KVK: {
         FILE: 'SoC_4_KingOfAllBritain_2026.xlsx',
-        TITLE: 'SoC 4: King of All Britain (2026)',
+        TITLE: import.meta.env.VITE_KVK_TITLE || 'SoC 4: King of All Britain (2026)', // marque blanche : chaque instance surcharge via VITE_KVK_TITLE (défaut = 2997)
         START_DATE: '2026-06-11', // Base scan (from the workbook's BS_Report)
         END_DATE: '2026-07-07',   // Kings Land fight end (Pass 7 & KL report)
         SHEET_NAME: 'Performance Analysis',
