@@ -1,7 +1,8 @@
 {
   "projects": {
     "default": "kd-97-manager",
-    "pilot": "kd-41-manager"
+    "pilot": "kd-41-manager",
+    "arcelia": "kd-2293-manager"
   },
   "targets": {},
   "etags": {}
