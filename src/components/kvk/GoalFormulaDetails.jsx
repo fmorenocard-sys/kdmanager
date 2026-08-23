@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     GOAL_CURVES, DOMAIN_MIN_MPOWER, VALIDATED_RANGE_MPOWER, DEAD_POINTS_PER_T5,
@@ -50,6 +50,9 @@ const GoalFormulaDetails = ({ powerM = null, className = '', defaultOpen = false
     const lang = i18n.language;
     const [open, setOpen] = useState(defaultOpen);
     const [showMath, setShowMath] = useState(defaultShowMath);
+    // Motif « disclosure » : aria-expanded seul ne dit pas CE QUI s'ouvre.
+    const panelId = useId();
+    const mathId = useId();
 
     const isPlayer = Number.isFinite(powerM) && powerM > 0;
     const shownPowerM = isPlayer ? powerM : SAMPLE_MPOWER;
@@ -85,7 +88,8 @@ const GoalFormulaDetails = ({ powerM = null, className = '', defaultOpen = false
                 type="button"
                 onClick={() => setOpen((v) => !v)}
                 aria-expanded={open}
-                className="inline-flex items-center gap-1.5 min-h-[44px] text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60"
+                aria-controls={panelId}
+                className="inline-flex items-center gap-1.5 min-h-[44px] text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors rounded"
             >
                 <Info size={13} aria-hidden="true" />
                 {t('goals.formula_cta')}
@@ -93,7 +97,7 @@ const GoalFormulaDetails = ({ powerM = null, className = '', defaultOpen = false
             </button>
 
             {open && (
-                <div className="mt-1 rounded-xl border border-white/10 bg-white/[0.03] p-3 lg:p-4 space-y-3">
+                <div id={panelId} className="mt-1 rounded-xl border border-[var(--border-flat)] bg-white/[0.03] p-3 lg:p-4 space-y-3">
                     <p className="text-xs text-[var(--text-secondary)]">
                         {t('goals.formula_intro')}
                     </p>
@@ -109,7 +113,7 @@ const GoalFormulaDetails = ({ powerM = null, className = '', defaultOpen = false
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             {rows.map((r) => (
                                 <div key={r.key} className="bg-white/5 rounded-lg px-2.5 py-2">
-                                    <div className="text-[11px] text-[var(--text-secondary)] truncate">{r.label}</div>
+                                    <div className="text-[11px] text-[var(--text-secondary)] leading-tight">{r.label}</div>
                                     <div className="font-mono text-[15px] text-[var(--text-primary)]">
                                         <span className="font-bold">{r.value}</span> {r.unit}
                                     </div>
@@ -123,7 +127,7 @@ const GoalFormulaDetails = ({ powerM = null, className = '', defaultOpen = false
                         <p className="text-[11px] text-[var(--text-secondary)]">{t('goals.formula_thresholds_note')}</p>
                         <ul className="flex flex-wrap gap-1.5">
                             {bands.map((b) => (
-                                <li key={b.rate} className="rounded-full border border-white/10 px-2 py-0.5 text-[11px] text-[var(--text-secondary)]">
+                                <li key={b.rate} className="rounded-full border border-[var(--border-flat)] px-2 py-0.5 text-[11px] text-[var(--text-secondary)]">
                                     {t(`goals.${b.rate}`)} <span className="font-mono">{b.label}</span>
                                 </li>
                             ))}
@@ -136,21 +140,22 @@ const GoalFormulaDetails = ({ powerM = null, className = '', defaultOpen = false
                             type="button"
                             onClick={() => setShowMath((v) => !v)}
                             aria-expanded={showMath}
-                            className="inline-flex items-center gap-1.5 min-h-[44px] text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60"
+                            aria-controls={mathId}
+                            className="inline-flex items-center gap-1.5 min-h-[44px] text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors rounded"
                         >
                             {t('goals.formula_math_toggle')}
                             {showMath ? <ChevronUp size={12} aria-hidden="true" /> : <ChevronDown size={12} aria-hidden="true" />}
                         </button>
                         {showMath && (
-                            <div className="mt-1.5 space-y-2 border-t border-white/10 pt-2">
+                            <div id={mathId} className="mt-1.5 space-y-2 border-t border-[var(--border-flat)] pt-2">
                                 <ul className="space-y-1">
                                     {rows.map((r) => (
-                                        <li key={r.key} className="font-mono text-[10px] text-[var(--text-secondary)] break-words">
+                                        <li key={r.key} className="font-mono text-[11px] text-[var(--text-secondary)] break-words">
                                             <span className="text-[var(--text-primary)]">{r.label}</span> = {r.formula}
                                         </li>
                                     ))}
                                 </ul>
-                                <p className="text-[10px] text-[var(--text-secondary)]">
+                                <p className="text-[11px] text-[var(--text-secondary)]">
                                     {t('goals.formula_variable_note')}{' '}
                                     {t('goals.formula_validated_note', {
                                         min: nf(lang, VALIDATED_RANGE_MPOWER.min, 1),
