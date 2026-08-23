@@ -100,8 +100,9 @@ export const DATA_CONFIG = {
     KVK: {
         FILE: 'SoC_4_KingOfAllBritain_2026.xlsx',
         TITLE: import.meta.env.VITE_KVK_TITLE || 'SoC 4: King of All Britain (2026)', // marque blanche : chaque instance surcharge via VITE_KVK_TITLE (défaut = 2997)
-        START_DATE: '2026-06-11', // Base scan (from the workbook's BS_Report)
-        END_DATE: '2026-07-07',   // Kings Land fight end (Pass 7 & KL report)
+        // START_DATE/END_DATE retirées le 2026-08-23 (BUG-009) : ces dates étaient
+        // celles du 2997 et s'affichaient sur les instances clientes. La fenêtre de
+        // campagne vit dans `kvk_config/current` (voir src/lib/currentCampaign.js).
         SHEET_NAME: 'Performance Analysis',
         JSON_OUTPUT: 'kvk_stats.json',
         COLUMNS: {

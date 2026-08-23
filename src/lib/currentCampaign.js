@@ -5,11 +5,21 @@ import { DATA_CONFIG } from '../config/data-mapping';
 // Identité de la campagne KvK en cours (nom + fenêtre de dates).
 //
 // Marque blanche : la source de vérité est `kvk_config/current`, saisi par le Roi
-// dans chaque instance. Les constantes de build `DATA_CONFIG.KVK` portent les
-// valeurs du royaume 2997 (SoC 4, 11/06 → 07/07) : elles n'ont aucun sens sur une
-// autre instance et ne servent plus que de repli quand le doc est absent ou muet.
-// Même famille de correctif que VITE_KVK_TITLE (fin du leak 2997) — les dates
-// étaient restées en dur.
+// dans chaque instance.
+//
+// **Les dates ne viennent QUE de Firestore.** Aucun repli sur le build : les
+// constantes `DATA_CONFIG.KVK` portent la fenêtre du 2997 (SoC 4, 11/06 → 07/07)
+// et l'afficher sur une autre instance est un leak de marque blanche (BUG-009).
+// Une date absente est honnête, une date fausse ne l'est pas — donc doc illisible,
+// absent ou muet ⇒ aucune date affichée.
+//
+// Le cas n'est pas théorique : `kvk_config` est en `allow read: if isAuthenticated()`
+// (firestore.rules), donc un visiteur non connecté n'y a JAMAIS accès. Il ne voit
+// pas de date aujourd'hui parce que l'onglet Progressions lui est fermé — le repli
+// silencieux ne tenait qu'à ce gating.
+//
+// Le titre, lui, garde son repli : `DATA_CONFIG.KVK.TITLE` est piloté par instance
+// via VITE_KVK_TITLE, il ne fuit pas.
 
 /**
  * Normalise une date Firestore en 'YYYY-MM-DD' (l'affichage timeline attend une
@@ -31,26 +41,27 @@ export const toDateString = (v) => {
 
 /**
  * Lit `kvk_config/current` et renvoie l'identité de la campagne en cours.
- * Ne rejette jamais : en cas d'échec de lecture, on retombe sur les constantes.
+ * Ne rejette jamais : lecture refusée ou doc absent ⇒ titre de repli, AUCUNE date.
  * @returns {Promise<{title: string, startDate: string|null, endDate: string|null, revealGoalStatus: boolean}>}
  */
 export async function fetchCurrentCampaign() {
     const fallback = {
         title: DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE,
-        startDate: DATA_CONFIG.KVK.START_DATE || null,
-        endDate: DATA_CONFIG.KVK.END_DATE || null,
+        startDate: null, // jamais de date de build — voir l'en-tête
+        endDate: null,
         revealGoalStatus: false
     };
     try {
         const snap = await getDoc(doc(db, 'kvk_config', 'current'));
-        const cfg = snap.exists() ? snap.data() : {};
+        if (!snap.exists()) return fallback;
+        const cfg = snap.data();
         return {
             title: String(cfg.name || '').trim() || fallback.title,
-            startDate: toDateString(cfg.startDate) || fallback.startDate,
-            endDate: toDateString(cfg.endDate) || fallback.endDate,
+            startDate: toDateString(cfg.startDate),
+            endDate: toDateString(cfg.endDate),
             revealGoalStatus: cfg.revealGoalStatus === true // BR-019
         };
     } catch {
-        return fallback;
+        return fallback; // lecture refusée (invité) : on n'invente pas de dates
     }
 }

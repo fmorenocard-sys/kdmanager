@@ -61,8 +61,8 @@ const KvKPerformancePage = () => {
     // doc `kvk_config/current` — jamais des constantes de build (leak 2997).
     const [campaignMeta, setCampaignMeta] = useState(() => ({
         title: DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE,
-        startDate: DATA_CONFIG.KVK.START_DATE || null,
-        endDate: DATA_CONFIG.KVK.END_DATE || null,
+        startDate: null, // les dates viennent de kvk_config seul (cf. lib/currentCampaign)
+        endDate: null,
         revealGoalStatus: false
     }));
     const revealGoalStatus = campaignMeta.revealGoalStatus;
