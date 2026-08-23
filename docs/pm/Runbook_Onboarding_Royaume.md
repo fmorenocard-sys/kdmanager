@@ -437,6 +437,28 @@ ad hoc (motif observé : `scratch/verify-pilot-players.mjs` sur le pilote — no
 généralisé, voir Suites) ; puis vérifier l'hydratation UI (Leaderboard,
 totaux du Dashboard).
 
+**Identité de la campagne en cours** (ajout 2026-08-23, REX 2293 §4bis.10).
+Le nom et les dates affichés sur la carte de campagne (hub KvK, onglet
+Progressions) viennent de **`kvk_config/current`** (`name`, `startDate`,
+`endDate`) — doc saisi par le Roi dans `/admin`. Les constantes
+`DATA_CONFIG.KVK` de `src/config/data-mapping.js` ne sont qu'un **repli**, et
+elles portent les valeurs du 2997 : si le doc n'est pas rempli, l'instance
+cliente affiche la fenêtre de campagne du 2997. Le même doc préremplit le
+formulaire d'archivage — donc une campagne clôturée sans lui entre dans
+`kvk_history` avec un titre et des dates faux, définitivement (archive
+create-only). **À vérifier avant la Phase 8.**
+
+**Timeline du royaume — vide par construction sur une instance neuve.**
+`kvk_history` est à 0 doc : l'onglet Progressions n'affiche que la campagne en
+cours. C'est normal, mais ça donne une page qui a l'air cassée en démo. Deux
+options à trancher **avec le Roi client** : assumer (l'historique se
+construira à la première clôture) ou **backfiller ses saisons passées** — un
+seul export de fin de saison suffit par campagne (`maxkill_points − minkill_points`,
+`maxdead − mindead` ; précédent : `scripts/import-kvk-history.js` pour les 3
+saisons de 2997). `goalPercent` reste `null` faute des objectifs de l'époque
+(affiché « — », jamais `0`). **Ne jamais fabriquer de saisons fictives sur une
+instance cliente.**
+
 ---
 
 ### Phase 6 — Pipeline Race
@@ -487,6 +509,30 @@ fois l'app en ligne — pas de script dédié) : nom de campagne, camps, et
 > 3341) — à vérifier explicitement avant le premier scan déposé, l'erreur ne
 > se révèle que visuellement (le royaume du client n'apparaît pas dans « son »
 > camp sur le dashboard).
+
+> **⚠️ PIÈGE — libellés de camps ↔ numéros de camps (2293, 2026-08-23).** Le
+> Roi nomme les camps dans l'ordre où il les voit sur la carte du fournisseur ;
+> l'export les numérote autrement. Sur Arcelia, Fire (1) et Earth (2) tombaient
+> juste mais **Wind et Water étaient intervertis** → `our_camp` posé sur un camp
+> quasi vide et duel héros inexploitable. **La seule vérification qui tranche :
+> quel `campid` contient le royaume épinglé ?** (compter les gouverneurs par
+> `campid` dans le scan et comparer aux royaumes de la carte). À faire **avant**
+> d'annoncer la démo — le libellé saisi ne prouve rien.
+
+> **⚠️ PIÈGE — changer le duel ne suffit pas.** `hero_duel` est appliqué **au
+> moment de la digestion** : le duel et l'écart sont figés dans
+> `kvk_race/{cid}/scans/*` et `latestDuel`. Après correction de la config, il
+> faut **rejouer les scans** (`recomputeRaceCampaign` si les Functions sont
+> déployées, sinon rejeu local depuis les `derived/` du bucket).
+
+> **⚠️ PIÈGE — le seed local est un cul-de-sac s'il saute le bucket.** Seeder
+> `kvk_race/{cid}` directement (moteur `buildAll` en local, utile pour une démo
+> sans Functions) n'écrit **aucun** fichier `derived/` : tout recompute ultérieur
+> ne trouve rien à rejouer, et l'upload in-app reste impossible. Seeder **sous
+> l'id de campagne définitif du client** (pas un id de démo) et déposer les
+> `kvk_race/{cid}/derived/gov_values_NNN.json` dans le bucket. Sinon : migration
+> des agrégats + suppression de la campagne fantôme par script Admin SDK
+> (`allow delete: if false` côté règles — aucun geste possible depuis l'UI).
 
 > **⚠️ PIÈGE — un scan mono-royaume ne peuple pas la course.** La Race a
 > besoin d'un scan **multi-camps** (toute la carte KvK, 32+ royaumes). Le scan
@@ -572,6 +618,18 @@ Checklist avant d'annoncer l'instance au royaume client :
       `--kvk-base`), le panneau Objectifs affiche des cibles cohérentes.
 - [ ] **Course** (si activée) : 4 camps visibles, `our_camp` correct, duel
       affiché.
+- [ ] **Course — une seule campagne** dans `kvk_race`, et c'est celle du
+      client (pas la campagne de seed/démo) ; ses `derived/` sont dans le
+      bucket (sinon aucun recompute possible).
+- [ ] **Course — camp vérifié contre le scan**, pas contre le libellé saisi :
+      le `campid` qui contient le royaume épinglé est bien celui marqué
+      « nous », et `hero_duel` commence par ce camp (sinon l'écart s'affiche
+      à l'envers).
+- [ ] **Identité de campagne** : le nom et les dates affichés sont ceux de
+      `kvk_config/current`, pas la fenêtre du 2997 (11/06 → 07/07 = signal de
+      repli non renseigné).
+- [ ] **Timeline** : `kvk_history` backfillé, ou vide **assumé et annoncé** au
+      Roi client.
 - [ ] **SSO** : connexion Discord (ou Google en fallback) fonctionnelle, rôle
       correctement affecté.
 - [ ] **`firebase functions:list --project <alias>` ne contient PAS
@@ -751,6 +809,20 @@ ne fait que réduire un temps déjà secondaire face à la latence externe.
 - Le follow-up sécurité « clé SA 2997 bundlée dans les Functions du pilote »
   (Annexe A) n'a pas de propriétaire ni d'échéance — à faire trancher par le
   Roi avant un troisième onboarding.
+- **Outillage course ad hoc, non versionné** (2026-08-23, démo 2293) : la
+  migration d'une campagne de course vers un autre `campaignId`, le rejeu
+  local des scans depuis les `derived/` du bucket (équivalent hors-ligne de
+  `recomputeRace`, indispensable tant que les Functions ne sont pas déployées)
+  et l'inventaire des campagnes d'une instance ont été écrits dans `scratch/`
+  pendant la démo. Même statut que les scripts de nettoyage cross-tenant
+  ci-dessus : à reconstruire de zéro à la prochaine occurrence s'ils ne sont
+  pas formalisés dans `scripts/`.
+- **Pas de contrôle automatisé « config course vs scan »** : la cohérence
+  entre le camp marqué « nous » et le `campid` qui contient réellement le
+  royaume épinglé repose entièrement sur une vérification manuelle (Phase 6).
+  C'est exactement la classe d'erreur qui s'est produite deux fois sur deux
+  onboardings (pilote 3341 puis Arcelia 2293) — candidat produit **US-050**
+  plutôt que discipline d'opérateur.
 
 ---
 

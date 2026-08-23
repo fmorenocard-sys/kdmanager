@@ -2,6 +2,29 @@
 
 Ce fichier logue les évolutions majeures et décisions stratégiques modifiant le cap du produit.
 
+## 2026-08-23 — Démo Arcelia 2293 : la friction d'onboarding s'est déplacée de l'infra vers la donnée
+* **Constat** : le REX d'onboarding du 2293 documentait neuf frictions, toutes d'**infra** (release
+  de règles sur base neuve, secrets dummy, Eventarc, signBlob, cache). En exploitant réellement la
+  démo, cinq frictions supplémentaires sont apparues — toutes de **couche données/config**, donc
+  **reproductibles à chaque prospect** puisqu'elles tiennent au produit et non au projet Firebase.
+  Addendum `REX_Onboarding_Arcelia_2293.md` §4bis, reporté en Runbook (Phases 5, 6, 8) et backlog.
+* **Le leak de marque blanche n'était pas refermé** (BUG-009, corrigé) : le correctif `VITE_KVK_TITLE`
+  du 2026-08-22 n'avait traité que le titre ; les **dates** de campagne restaient codées sur le 2997 et
+  auraient été gravées dans l'`kvk_history` du client à sa première clôture (archive create-only).
+  **Règle retenue** : toute constante de `data-mapping.js` rendue à l'écran est un leak en puissance —
+  la source de vérité par instance est Firestore (`kvk_config/current`), jamais le build.
+* **Deux erreurs de config course sur deux onboardings** (pilote 3341 puis Arcelia) : le camp du
+  royaume mal désigné, parce que la numérotation `campid` de l'export ne suit pas l'ordre de la carte
+  du fournisseur (A-058). Requalifié **défaut produit**, pas inattention d'opérateur → **US-050**
+  (contrôle config vs scan) plutôt qu'une ligne de plus dans une checklist manuelle.
+* **Le seed de démo est un cul-de-sac s'il saute le bucket** : campagne fantôme + aucun `derived/`
+  → recompute impossible, migration et suppression par script Admin SDK. Le principe « seed pour la
+  démo, pipeline pour le client » (REX §6) tient toujours, mais le seed doit écrire **sous l'id de
+  campagne définitif** et déposer ses dérivés.
+* **La timeline vide est un angle mort commercial** : sur une instance neuve, l'onglet qui porte la
+  promesse « mémoire du royaume » (E-004) est le plus pauvre de la démo. Backfill possible sans rien
+  inventer (**US-052**), avec un garde-fou explicite : aucune saison fictive sur une instance cliente.
+
 ## 2026-08-13 (suite 2) — Arbitrage go-to-market : partenariat ProKingdoms écarté (pas maintenant)
 * **Question du Roi** : proposer un partenariat au fondateur de ProKingdoms (audience/distribution
   établie de l'écosystème RoK) plutôt que continuer en solo à chercher des royaumes intéressés ?
