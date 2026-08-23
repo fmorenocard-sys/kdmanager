@@ -570,7 +570,6 @@
     "status_hidden_notice": "ستظهر تسميات الحالة (Deadweight، Excellent…) بعد انتهاء المعارك، عندما يكشفها الملك.",
     "sort_by": "ترتيب حسب",
     "sort_direction": "اتجاه الترتيب",
-    "formula_title": "حساب الأهداف",
     "formula_cta": "عرض الحساب",
     "formula_at_your_power": "لقوّتك البالغة {{power}} مليون:",
     "formula_at_sample_power": "مثال لقوّة {{power}} مليون:",
@@ -578,7 +577,9 @@
     "formula_variable_note": "P = القوة الابتدائية بالملايين. نتائج KP بالملايين.",
     "formula_thresholds_title": "عتبات الحالة",
     "formula_thresholds_note": "الحالة = KP المكتسبة ÷ هدف KP.",
-    "formula_validated_note": "تم التحقق من المقياس على جدول SoC 4 لقوى من {{min}} إلى {{max}} مليون؛ خارج هذا النطاق تكون الأرقام تقديرية، وتحت {{floor}} مليون يُثبّت الحساب."
+    "formula_validated_note": "تم التحقق من المقياس على جدول SoC 4 لقوى من {{min}} إلى {{max}} مليون؛ خارج هذا النطاق تكون الأرقام تقديرية، وتحت {{floor}} مليون يُثبّت الحساب.",
+    "formula_intro": "كل شيء ينطلق من القوة الابتدائية: كلما ارتفعت ارتفع الهدف.",
+    "formula_math_toggle": "الصيغة الدقيقة"
   },
   "calendar": {
     "campaign_progress": "تقدّم الـ KvK",

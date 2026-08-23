@@ -1,24 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     GOAL_CURVES, DOMAIN_MIN_MPOWER, VALIDATED_RANGE_MPOWER, DEAD_POINTS_PER_T5,
     computeKvkGoals
 } from '../../lib/kvkGoals';
 import { RATE_THRESHOLDS } from '../../lib/kvkScoring';
-import { MathOperations } from '../ui/icons';
+import { Info, ChevronDown, ChevronUp } from '../ui/icons';
 
 /**
- * F-038 / US-048 (Lot A) — affichage de la formule d'objectifs KvK réellement
- * appliquée (`Spec_Parametrage_Objectifs_KvK.md` §6).
+ * F-038 / US-048 (Lot A) — d'où sort l'objectif KvK affiché
+ * (`Spec_Parametrage_Objectifs_KvK.md` §6).
  *
  * Lecture seule : tout vient des constantes exportées par `kvkGoals.js` /
  * `kvkScoring.js`, jamais d'une copie de la formule écrite ici — une formule
  * affichée qui divergerait du calcul serait pire que pas de formule.
  *
+ * **Révision 2026-08-23 (retour du Roi sur la V1)** : la V1 posait les trois
+ * polynômes en tête de `/pilotage`, dépliés — « ça prend de la place et on
+ * comprend rien ». Deux principes en réponse :
+ *   1. coût zéro quand on ne demande rien : tout est replié derrière un lien ;
+ *   2. les CHIFFRES d'abord, la phrase en français ensuite, les polynômes en
+ *      dernier — derrière un second niveau, pour qui veut vérifier le calcul.
+ *
  * Deux audiences, un seul composant :
- *  - joueur (`/me`, `powerM` fourni) : le calcul de SON compte, chiffres d'abord ;
- *  - leadership (`/pilotage`, pas de `powerM`) : la formule + un exemple à une
- *    puissance ronde (`SAMPLE_MPOWER`).
+ *  - joueur (`/me`, `powerM` fourni) : le calcul de SON compte ;
+ *  - leadership (`/pilotage`, sans `powerM`) : un exemple à `SAMPLE_MPOWER`.
  *
  * Domaine interne (BR-010) : ne jamais présenter ces chiffres à côté du DKP de
  * course — d'où le rappel `goals.footnote` conservé chez les appelants.
@@ -37,9 +43,13 @@ const polynomial = (lang, { a, b, c }) => {
     return `${nf(lang, a, 7)} P² ${term(b, ' P')} ${term(c, '')}`;
 };
 
-const GoalFormulaDetails = ({ powerM = null, className = '' }) => {
+// `defaultOpen`/`defaultShowMath` : uniquement pour rendre les deux niveaux
+// dépliés dans le smoke test de rendu (ces écrans sont derrière l'auth, BUG-008).
+const GoalFormulaDetails = ({ powerM = null, className = '', defaultOpen = false, defaultShowMath = false }) => {
     const { t, i18n } = useTranslation();
     const lang = i18n.language;
+    const [open, setOpen] = useState(defaultOpen);
+    const [showMath, setShowMath] = useState(defaultShowMath);
 
     const isPlayer = Number.isFinite(powerM) && powerM > 0;
     const shownPowerM = isPlayer ? powerM : SAMPLE_MPOWER;
@@ -50,80 +60,110 @@ const GoalFormulaDetails = ({ powerM = null, className = '' }) => {
     const appliedDiffers = Math.abs(goals.appliedPowerM - shownPowerM) > 0.001;
 
     const rows = [
-        { key: 'min_kp', label: t('goals.min_kp'), formula: polynomial(lang, GOAL_CURVES.minKp), value: `${nf(lang, goals.minKp, 1)} M` },
-        { key: 'goal_kp', label: t('goals.goal_kp'), formula: polynomial(lang, GOAL_CURVES.goalKp), value: `${nf(lang, goals.goalKp, 1)} M` },
+        { key: 'min_kp', label: t('goals.min_kp'), formula: polynomial(lang, GOAL_CURVES.minKp), value: nf(lang, goals.minKp, 1), unit: 'M' },
+        { key: 'goal_kp', label: t('goals.goal_kp'), formula: polynomial(lang, GOAL_CURVES.goalKp), value: nf(lang, goals.goalKp, 1), unit: 'M' },
         {
             key: 'min_dead',
             label: t('goals.min_dead'),
             formula: `${nf(lang, GOAL_CURVES.minDead.outerMult, 3)} × (${polynomial(lang, GOAL_CURVES.minDead)})`,
-            value: `${nf(lang, goals.minDead, 1)} ${t('goals.dead_points_unit')}`
+            value: nf(lang, goals.minDead, 1),
+            unit: t('goals.dead_points_unit')
         }
     ];
 
-    const thresholds = [
-        { rate: 'rate_need_improvement', from: RATE_THRESHOLDS.needImprovement, to: RATE_THRESHOLDS.good },
-        { rate: 'rate_good', from: RATE_THRESHOLDS.good, to: RATE_THRESHOLDS.excellent },
-        { rate: 'rate_excellent', from: RATE_THRESHOLDS.excellent, to: null }
-    ];
     const pct = (v) => `${nf(lang, v * 100, 0)} %`;
+    const bands = [
+        { rate: 'rate_dead_weight', label: `< ${pct(RATE_THRESHOLDS.needImprovement)}` },
+        { rate: 'rate_need_improvement', label: `${pct(RATE_THRESHOLDS.needImprovement)} – ${pct(RATE_THRESHOLDS.good)}` },
+        { rate: 'rate_good', label: `${pct(RATE_THRESHOLDS.good)} – ${pct(RATE_THRESHOLDS.excellent)}` },
+        { rate: 'rate_excellent', label: `${pct(RATE_THRESHOLDS.excellent)} +` }
+    ];
 
     return (
-        <div className={`rounded-xl border border-white/10 bg-white/[0.03] p-3 lg:p-4 space-y-3 ${className}`}>
-            <div className="flex items-center gap-2">
-                <MathOperations size={14} className="text-[var(--text-secondary)] shrink-0" aria-hidden="true" />
-                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    {t('goals.formula_title')}
-                </span>
-            </div>
+        <div className={className}>
+            <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                className="inline-flex items-center gap-1.5 min-h-[44px] text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60"
+            >
+                <Info size={13} aria-hidden="true" />
+                {t('goals.formula_cta')}
+                {open ? <ChevronUp size={12} aria-hidden="true" /> : <ChevronDown size={12} aria-hidden="true" />}
+            </button>
 
-            <p className="text-[11px] text-[var(--text-secondary)]">
-                {isPlayer
-                    ? t('goals.formula_at_your_power', { power: nf(lang, shownPowerM, 1) })
-                    : t('goals.formula_at_sample_power', { power: nf(lang, shownPowerM, 0) })}
-                {appliedDiffers && ` ${t('goals.formula_applied_power', { power: nf(lang, goals.appliedPowerM, 2) })}`}
-            </p>
+            {open && (
+                <div className="mt-1 rounded-xl border border-white/10 bg-white/[0.03] p-3 lg:p-4 space-y-3">
+                    <p className="text-xs text-[var(--text-secondary)]">
+                        {t('goals.formula_intro')}
+                    </p>
 
-            {/* Une ligne par courbe : résultat chiffré d'abord, formule littérale ensuite. */}
-            <ul className="space-y-2">
-                {rows.map((r) => (
-                    <li key={r.key} className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                        <span className="text-xs text-[var(--text-secondary)]">{r.label}</span>
-                        <span className="font-mono text-sm font-bold text-[var(--text-primary)]">{r.value}</span>
-                        <span className="w-full font-mono text-[10px] text-[var(--text-secondary)] break-words">{r.formula}</span>
-                    </li>
-                ))}
-            </ul>
+                    {/* Les chiffres d'abord : c'est ce que le lecteur cherche. */}
+                    <div>
+                        <p className="text-[11px] text-[var(--text-secondary)] mb-1.5">
+                            {isPlayer
+                                ? t('goals.formula_at_your_power', { power: nf(lang, shownPowerM, 1) })
+                                : t('goals.formula_at_sample_power', { power: nf(lang, shownPowerM, 0) })}
+                            {appliedDiffers && ` ${t('goals.formula_applied_power', { power: nf(lang, goals.appliedPowerM, 2) })}`}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            {rows.map((r) => (
+                                <div key={r.key} className="bg-white/5 rounded-lg px-2.5 py-2">
+                                    <div className="text-[11px] text-[var(--text-secondary)] truncate">{r.label}</div>
+                                    <div className="font-mono text-[15px] text-[var(--text-primary)]">
+                                        <span className="font-bold">{r.value}</span> {r.unit}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
-            <p className="text-[10px] text-[var(--text-secondary)]">{t('goals.formula_variable_note')}</p>
+                    {/* Seuils : une bande de puces, pas un paragraphe. */}
+                    <div className="space-y-1.5">
+                        <p className="text-[11px] text-[var(--text-secondary)]">{t('goals.formula_thresholds_note')}</p>
+                        <ul className="flex flex-wrap gap-1.5">
+                            {bands.map((b) => (
+                                <li key={b.rate} className="rounded-full border border-white/10 px-2 py-0.5 text-[11px] text-[var(--text-secondary)]">
+                                    {t(`goals.${b.rate}`)} <span className="font-mono">{b.label}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
 
-            <div className="pt-2 border-t border-white/10 space-y-1.5">
-                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    {t('goals.formula_thresholds_title')}
-                </span>
-                <ul className="flex flex-wrap gap-x-4 gap-y-1">
-                    <li className="font-mono text-[11px] text-[var(--text-secondary)]">
-                        {t('goals.rate_dead_weight')} : &lt; {pct(RATE_THRESHOLDS.needImprovement)}
-                    </li>
-                    {thresholds.map((th) => (
-                        <li key={th.rate} className="font-mono text-[11px] text-[var(--text-secondary)]">
-                            {t(`goals.${th.rate}`)} : {pct(th.from)}{th.to == null ? ' +' : ` – ${pct(th.to)}`}
-                        </li>
-                    ))}
-                </ul>
-                <p className="text-[10px] text-[var(--text-secondary)]">
-                    {t('goals.formula_thresholds_note')}
-                </p>
-            </div>
-
-            <p className="text-[10px] text-[var(--text-secondary)]">
-                {t('goals.formula_validated_note', {
-                    min: nf(lang, VALIDATED_RANGE_MPOWER.min, 1),
-                    max: nf(lang, VALIDATED_RANGE_MPOWER.max, 1),
-                    floor: nf(lang, DOMAIN_MIN_MPOWER, 2)
-                })}
-                {' '}
-                {t('goals.dead_points_note', { points: DEAD_POINTS_PER_T5 })}
-            </p>
+                    {/* Second niveau : les polynômes, pour qui veut refaire le calcul. */}
+                    <div className="pt-1">
+                        <button
+                            type="button"
+                            onClick={() => setShowMath((v) => !v)}
+                            aria-expanded={showMath}
+                            className="inline-flex items-center gap-1.5 min-h-[44px] text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60"
+                        >
+                            {t('goals.formula_math_toggle')}
+                            {showMath ? <ChevronUp size={12} aria-hidden="true" /> : <ChevronDown size={12} aria-hidden="true" />}
+                        </button>
+                        {showMath && (
+                            <div className="mt-1.5 space-y-2 border-t border-white/10 pt-2">
+                                <ul className="space-y-1">
+                                    {rows.map((r) => (
+                                        <li key={r.key} className="font-mono text-[10px] text-[var(--text-secondary)] break-words">
+                                            <span className="text-[var(--text-primary)]">{r.label}</span> = {r.formula}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <p className="text-[10px] text-[var(--text-secondary)]">
+                                    {t('goals.formula_variable_note')}{' '}
+                                    {t('goals.formula_validated_note', {
+                                        min: nf(lang, VALIDATED_RANGE_MPOWER.min, 1),
+                                        max: nf(lang, VALIDATED_RANGE_MPOWER.max, 1),
+                                        floor: nf(lang, DOMAIN_MIN_MPOWER, 2)
+                                    })}{' '}
+                                    {t('goals.dead_points_note', { points: DEAD_POINTS_PER_T5 })}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -27,7 +27,7 @@ globalThis.navigator = { userAgent: 'node' };
   };
   try {
     renderToStaticMarkup(wrap(React.createElement(KvKConfigForm)));
-    const formula = renderToStaticMarkup(wrap(React.createElement(GoalFormulaDetails, { powerM: 74.3 })));
+    const formula = renderToStaticMarkup(wrap(React.createElement(GoalFormulaDetails, { powerM: 74.3, defaultOpen: true, defaultShowMath: true })));
     renderToStaticMarkup(wrap(React.createElement(MyGoalCard, { rows: [row], primaryId: '123', revealed: true })));
     // Dump lisible : sert à vérifier de visu les formules et les chiffres affichés.
     const text = formula.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();

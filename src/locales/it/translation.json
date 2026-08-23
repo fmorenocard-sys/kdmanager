@@ -570,7 +570,6 @@
     "status_hidden_notice": "Le etichette di stato (Deadweight, Excellent…) appariranno al termine delle battaglie, quando il Re le rivelerà.",
     "sort_by": "Ordina per",
     "sort_direction": "Direzione ordinamento",
-    "formula_title": "Calcolo degli obiettivi",
     "formula_cta": "Vedi il calcolo",
     "formula_at_your_power": "Per la tua potenza di {{power}} M:",
     "formula_at_sample_power": "Esempio per una potenza di {{power}} M:",
@@ -578,7 +577,9 @@
     "formula_variable_note": "P = potenza iniziale, in milioni. Risultati KP in milioni.",
     "formula_thresholds_title": "Soglie di stato",
     "formula_thresholds_note": "Stato = KP guadagnati ÷ obiettivo KP.",
-    "formula_validated_note": "Scala validata sul foglio SoC 4 per potenze da {{min}} a {{max}} M; fuori da questo intervallo i valori sono estrapolati e sotto {{floor}} M il calcolo viene congelato."
+    "formula_validated_note": "Scala validata sul foglio SoC 4 per potenze da {{min}} a {{max}} M; fuori da questo intervallo i valori sono estrapolati e sotto {{floor}} M il calcolo viene congelato.",
+    "formula_intro": "Tutto parte dalla potenza iniziale: più è alta, più alto è l'obiettivo.",
+    "formula_math_toggle": "Formula esatta"
   },
   "calendar": {
     "campaign_progress": "Avanzamento KvK",

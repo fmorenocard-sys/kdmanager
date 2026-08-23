@@ -570,7 +570,6 @@
     "status_hidden_notice": "Les statuts (Deadweight, Excellent…) s'afficheront une fois les combats terminés, quand le Roi les révélera.",
     "sort_by": "Trier par",
     "sort_direction": "Sens du tri",
-    "formula_title": "Calcul des objectifs",
     "formula_cta": "Voir le calcul",
     "formula_at_your_power": "Pour ta puissance de {{power}} M :",
     "formula_at_sample_power": "Exemple pour une puissance de {{power}} M :",
@@ -578,7 +577,9 @@
     "formula_variable_note": "P = puissance initiale, en millions. Résultats KP en millions.",
     "formula_thresholds_title": "Seuils de statut",
     "formula_thresholds_note": "Statut = KP gagnés ÷ objectif KP.",
-    "formula_validated_note": "Barème validé sur le classeur SoC 4 pour des puissances de {{min}} à {{max}} M ; hors de cette plage les chiffres sont extrapolés, et sous {{floor}} M le calcul est gelé."
+    "formula_validated_note": "Barème validé sur le classeur SoC 4 pour des puissances de {{min}} à {{max}} M ; hors de cette plage les chiffres sont extrapolés, et sous {{floor}} M le calcul est gelé.",
+    "formula_intro": "Tout part de la puissance de départ : plus elle est haute, plus l'objectif l'est.",
+    "formula_math_toggle": "Formule exacte"
   },
   "calendar": {
     "campaign_progress": "Progression du KvK",
