@@ -2,8 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../context/DataContext';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
 import { BRANDING } from '../config/branding';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/ui/Avatar';
@@ -18,6 +16,7 @@ import StatCard from '../components/ui/StatCard';
 import StatusFilter from '../components/ui/StatusFilter';
 import { DATA_CONFIG } from '../config/data-mapping';
 import PageHeader from '../components/ui/PageHeader';
+import { fetchCurrentCampaign } from '../lib/currentCampaign';
 import { useRole, ROLES } from '../context/RoleContext';
 import KingdomProgression from '../components/kvk/KingdomProgression';
 import RaceView from '../components/kvk/RaceView';
@@ -56,14 +55,20 @@ const KvKPerformancePage = () => {
     const [progView, setProgView] = useState('player'); // player | kingdom
     const [selectedCampaignId, setSelectedCampaignId] = useState('current');
     const [selectedPlayerId, setSelectedPlayerId] = useState(null);
-    // BR-019 : le Roi révèle les LABELS de rating (kvk_config/current.revealGoalStatus).
-    // Tant que non révélé sur la campagne courante, le label est masqué (les % restent).
-    const [revealGoalStatus, setRevealGoalStatus] = useState(false);
+    // Identité de la campagne en cours (nom + dates) et BR-019 : le Roi révèle les
+    // LABELS de rating (kvk_config/current.revealGoalStatus). Tant que non révélé sur
+    // la campagne courante, le label est masqué (les % restent). Tout vient du même
+    // doc `kvk_config/current` — jamais des constantes de build (leak 2997).
+    const [campaignMeta, setCampaignMeta] = useState(() => ({
+        title: DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE,
+        startDate: DATA_CONFIG.KVK.START_DATE || null,
+        endDate: DATA_CONFIG.KVK.END_DATE || null,
+        revealGoalStatus: false
+    }));
+    const revealGoalStatus = campaignMeta.revealGoalStatus;
     React.useEffect(() => {
         let alive = true;
-        getDoc(doc(db, 'kvk_config', 'current'))
-            .then((s) => { if (alive) setRevealGoalStatus(s.exists() && s.data().revealGoalStatus === true); })
-            .catch(() => { });
+        fetchCurrentCampaign().then((m) => { if (alive) setCampaignMeta(m); });
         return () => { alive = false; };
     }, []);
 
@@ -95,14 +100,14 @@ const KvKPerformancePage = () => {
     // F-015: the live campaign plus archived ones from kvk_history
     const currentCampaign = useMemo(() => ({
         docId: 'current',
-        title: DATA_CONFIG.KVK.TITLE || DATA_CONFIG.KVK.FILE,
-        startDate: DATA_CONFIG.KVK.START_DATE || null,
-        endDate: DATA_CONFIG.KVK.END_DATE || null,
+        title: campaignMeta.title,
+        startDate: campaignMeta.startDate,
+        endDate: campaignMeta.endDate,
         order: Number.MAX_SAFE_INTEGER,
         isCurrent: true,
         list: Array.isArray(kvkStats) ? kvkStats : [],
         fillerList: Array.isArray(kvkFillerStats) ? kvkFillerStats : []
-    }), [kvkStats, kvkFillerStats]);
+    }), [kvkStats, kvkFillerStats, campaignMeta]);
 
     // BR-013 : si la campagne « courante » a déjà été archivée, l'archive fait foi
     const currentIsArchived = useMemo(

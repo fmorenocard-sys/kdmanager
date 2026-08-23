@@ -7,10 +7,10 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
 import { Archive, AlertTriangle, CheckCircle2 } from '../ui/icons';
-import { DATA_CONFIG } from '../../config/data-mapping';
 import { invalidateKvkHistoryCache } from '../../hooks/useKvkHistory';
 import { useRaceData } from '../../hooks/useRaceData';
 import { buildRaceSummary } from '../../lib/raceSummary';
+import { fetchCurrentCampaign } from '../../lib/currentCampaign';
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 
@@ -22,10 +22,10 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|
 const CampaignArchiveControl = () => {
     const { t } = useTranslation();
     const { isAuthorized } = useRole();
-    const [title, setTitle] = useState(DATA_CONFIG.KVK.TITLE || '');
+    const [title, setTitle] = useState(''); // prérempli depuis kvk_config/current (effet ci-dessous)
     const [order, setOrder] = useState('');
-    const [startDate, setStartDate] = useState(DATA_CONFIG.KVK.START_DATE || '');
-    const [endDate, setEndDate] = useState(DATA_CONFIG.KVK.END_DATE || '');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [confirming, setConfirming] = useState(false);
     const [busy, setBusy] = useState(false);
     const [message, setMessage] = useState(null); // { type: 'ok'|'err', text }
@@ -45,6 +45,21 @@ const CampaignArchiveControl = () => {
             const maxOrder = snap.docs.reduce((m, d) => Math.max(m, d.data().order || 0), 0);
             setOrder(String(maxOrder + 1));
         }).catch(() => setOrder(''));
+    }, [authorized]);
+
+    // Préremplissage depuis kvk_config/current (source de vérité par instance) :
+    // sans ça le formulaire proposait le titre et les dates du 2997 codés en dur,
+    // qui partaient tels quels dans l'archive de l'instance cliente.
+    useEffect(() => {
+        if (!authorized) return;
+        let alive = true;
+        fetchCurrentCampaign().then((m) => {
+            if (!alive) return;
+            setTitle((v) => v || m.title || '');
+            setStartDate((v) => v || m.startDate || '');
+            setEndDate((v) => v || m.endDate || '');
+        });
+        return () => { alive = false; };
     }, [authorized]);
 
     if (!authorized) return null;

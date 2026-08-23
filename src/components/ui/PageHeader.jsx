@@ -14,7 +14,11 @@ const PageHeader = ({ icon: Icon, title, subtitle, children }) => (
         </h1>
         {(subtitle || children) && (
             <div className="text-sm text-[var(--text-secondary)] mt-1 flex flex-wrap items-center gap-2">
-                {subtitle}
+                {/* Le <span> est nécessaire : sous-titre et children sont deux nœuds de
+                    TEXTE contigus, donc fusionnés en un seul élément flex anonyme —
+                    le gap-2 ne s'appliquait pas et le nom de campagne se collait au
+                    sous-titre (« …coalition raceKvK en cours »). */}
+                {subtitle && <span>{subtitle}</span>}
                 {children}
             </div>
         )}
