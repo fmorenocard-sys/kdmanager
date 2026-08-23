@@ -569,7 +569,16 @@
     "achieved": "Đã đạt",
     "status_hidden_notice": "Nhãn trạng thái (Deadweight, Excellent…) sẽ hiển thị khi các trận chiến kết thúc, khi Vua tiết lộ chúng.",
     "sort_by": "Sắp xếp theo",
-    "sort_direction": "Hướng sắp xếp"
+    "sort_direction": "Hướng sắp xếp",
+    "formula_title": "Cách tính mục tiêu",
+    "formula_cta": "Xem cách tính",
+    "formula_at_your_power": "Với sức mạnh {{power}} M của bạn:",
+    "formula_at_sample_power": "Ví dụ với sức mạnh {{power}} M:",
+    "formula_applied_power": "(phép tính bị giữ ở {{power}} M)",
+    "formula_variable_note": "P = sức mạnh ban đầu, tính bằng triệu. Kết quả KP tính bằng triệu.",
+    "formula_thresholds_title": "Ngưỡng trạng thái",
+    "formula_thresholds_note": "Trạng thái = KP đạt được ÷ mục tiêu KP.",
+    "formula_validated_note": "Thang điểm được kiểm chứng theo bảng SoC 4 cho sức mạnh từ {{min}} đến {{max}} M; ngoài khoảng này các con số là ngoại suy, và dưới {{floor}} M phép tính bị giữ nguyên."
   },
   "calendar": {
     "campaign_progress": "Tiến trình KvK",

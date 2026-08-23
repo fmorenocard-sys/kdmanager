@@ -569,7 +569,16 @@
     "achieved": "Osiągnięto",
     "status_hidden_notice": "Etykiety statusu (Deadweight, Excellent…) pojawią się po zakończeniu bitew, gdy Król je odsłoni.",
     "sort_by": "Sortuj według",
-    "sort_direction": "Kierunek sortowania"
+    "sort_direction": "Kierunek sortowania",
+    "formula_title": "Obliczanie celów",
+    "formula_cta": "Pokaż obliczenia",
+    "formula_at_your_power": "Dla twojej mocy {{power}} mln:",
+    "formula_at_sample_power": "Przykład dla mocy {{power}} mln:",
+    "formula_applied_power": "(obliczenia zamrożone na {{power}} mln)",
+    "formula_variable_note": "P = moc początkowa, w milionach. Wyniki KP w milionach.",
+    "formula_thresholds_title": "Progi statusu",
+    "formula_thresholds_note": "Status = zdobyte KP ÷ cel KP.",
+    "formula_validated_note": "Skalę zweryfikowano na arkuszu SoC 4 dla mocy od {{min}} do {{max}} mln; poza tym zakresem wartości są ekstrapolowane, a poniżej {{floor}} mln obliczenia są zamrożone."
   },
   "calendar": {
     "campaign_progress": "Postęp KvK",

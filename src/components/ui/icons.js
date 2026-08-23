@@ -74,4 +74,6 @@ export {
     TargetIcon as Target,
     FlagIcon as Flag,
     UsersThreeIcon as UsersThree,
+    InfoIcon as Info,
+    MathOperationsIcon as MathOperations,
 } from '@phosphor-icons/react';

@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import SortHead from '../ui/SortHead';
 import Card from '../ui/Card';
 import CampaignTimelineBanner from './CampaignTimelineBanner';
+import GoalFormulaDetails from '../kvk/GoalFormulaDetails';
 import { Search, AlertTriangle, Target } from '../ui/icons';
 
 // F-014 / US-009 — objectifs de campagne des joueurs qui ont déclaré.
@@ -350,6 +351,11 @@ const KvkGoalsPanel = () => {
             {/* F-031 : bandeau de progression de campagne — contexte temporel des objectifs.
                 S'affiche seulement si un calendrier est saisi dans kvk_config (sinon rien). */}
             <CampaignTimelineBanner timeline={timelineEvents} campaignName={config?.name} />
+
+            {/* F-038 / US-048 (Lot A) — barème réellement appliqué, une seule fois en tête
+                de page : la table est déjà dense, pas de rappel par ligne. Sans puissance
+                de joueur → exemple à une puissance ronde (spec §6). */}
+            <GoalFormulaDetails />
 
             {/* Sélecteur de campagne + recherche */}
             <div className="flex flex-wrap items-center gap-2">

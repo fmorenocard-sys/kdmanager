@@ -15,9 +15,20 @@ export const DOMAIN_MIN_MPOWER = 16.44;
 export const VALIDATED_RANGE_MPOWER = {min: 36.7, max: 119.9};
 export const DEAD_POINTS_PER_T5 = 200;
 
-const rawMinKp = (P) => 0.0556843 * P * P - 1.83037 * P + 38.477;
-const rawMinDead = (P) => 0.5 * (0.0216159 * P * P + 3.06256 * P - 123.036);
-const rawGoalKp = (P) => 0.0642424 * P * P - 0.198182 * P - 10.6061;
+// Coefficients nommés — miroir de `src/lib/kvkGoals.js` (F-038 Lot A). Valeurs
+// inchangées : seule leur forme d'écriture bouge, pour rester ligne pour ligne
+// comparable au front qui les affiche.
+export const GOAL_CURVES = {
+    minKp: {a: 0.0556843, b: -1.83037, c: 38.477},
+    goalKp: {a: 0.0642424, b: -0.198182, c: -10.6061},
+    minDead: {outerMult: 0.5, a: 0.0216159, b: 3.06256, c: -123.036},
+};
+
+const quad = ({a, b, c}, P) => a * P * P + b * P + c;
+
+const rawMinKp = (P) => quad(GOAL_CURVES.minKp, P);
+const rawMinDead = (P) => GOAL_CURVES.minDead.outerMult * quad(GOAL_CURVES.minDead, P);
+const rawGoalKp = (P) => quad(GOAL_CURVES.goalKp, P);
 const atLeastZero = (n) => (Number.isFinite(n) && n > 0 ? n : 0);
 
 export const toMillions = (power) => (Number(power) || 0) / 1e6;

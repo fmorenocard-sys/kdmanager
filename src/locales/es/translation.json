@@ -569,7 +569,16 @@
     "achieved": "Logrado",
     "status_hidden_notice": "Las etiquetas de estado (Deadweight, Excellent…) aparecerán cuando terminen las batallas, cuando el Rey las revele.",
     "sort_by": "Ordenar por",
-    "sort_direction": "Dirección de orden"
+    "sort_direction": "Dirección de orden",
+    "formula_title": "Cálculo de objetivos",
+    "formula_cta": "Ver el cálculo",
+    "formula_at_your_power": "Para tu poder de {{power}} M:",
+    "formula_at_sample_power": "Ejemplo para un poder de {{power}} M:",
+    "formula_applied_power": "(cálculo congelado en {{power}} M)",
+    "formula_variable_note": "P = poder inicial, en millones. Resultados de KP en millones.",
+    "formula_thresholds_title": "Umbrales de estado",
+    "formula_thresholds_note": "Estado = KP ganados ÷ objetivo de KP.",
+    "formula_validated_note": "Escala validada con la hoja de SoC 4 para poderes de {{min}} a {{max}} M; fuera de ese rango las cifras son extrapoladas, y por debajo de {{floor}} M el cálculo se congela."
   },
   "calendar": {
     "campaign_progress": "Progreso del KvK",

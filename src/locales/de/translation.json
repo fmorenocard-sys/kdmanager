@@ -569,7 +569,16 @@
     "achieved": "Erreicht",
     "status_hidden_notice": "Status-Labels (Deadweight, Excellent…) erscheinen, sobald die Kämpfe vorbei sind und der König sie freigibt.",
     "sort_by": "Sortieren nach",
-    "sort_direction": "Sortierrichtung"
+    "sort_direction": "Sortierrichtung",
+    "formula_title": "Zielberechnung",
+    "formula_cta": "Berechnung anzeigen",
+    "formula_at_your_power": "Für deine Macht von {{power}} Mio.:",
+    "formula_at_sample_power": "Beispiel für eine Macht von {{power}} Mio.:",
+    "formula_applied_power": "(Berechnung bei {{power}} Mio. eingefroren)",
+    "formula_variable_note": "P = Anfangsmacht, in Millionen. KP-Ergebnisse in Millionen.",
+    "formula_thresholds_title": "Statusschwellen",
+    "formula_thresholds_note": "Status = erzielte KP ÷ KP-Ziel.",
+    "formula_validated_note": "Skala anhand der SoC-4-Tabelle für Machtwerte von {{min}} bis {{max}} Mio. validiert; außerhalb dieses Bereichs sind die Werte extrapoliert, unter {{floor}} Mio. wird die Berechnung eingefroren."
   },
   "calendar": {
     "campaign_progress": "KvK-Fortschritt",

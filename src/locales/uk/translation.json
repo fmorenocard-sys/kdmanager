@@ -569,7 +569,16 @@
     "achieved": "Досягнуто",
     "status_hidden_notice": "Мітки статусу (Deadweight, Excellent…) з'являться після завершення битв, коли Король їх відкриє.",
     "sort_by": "Сортувати за",
-    "sort_direction": "Напрямок сортування"
+    "sort_direction": "Напрямок сортування",
+    "formula_title": "Розрахунок цілей",
+    "formula_cta": "Показати розрахунок",
+    "formula_at_your_power": "Для твоєї сили {{power}} млн:",
+    "formula_at_sample_power": "Приклад для сили {{power}} млн:",
+    "formula_applied_power": "(розрахунок зафіксовано на {{power}} млн)",
+    "formula_variable_note": "P = початкова сила, у мільйонах. Результати KP — у мільйонах.",
+    "formula_thresholds_title": "Пороги статусу",
+    "formula_thresholds_note": "Статус = отримані KP ÷ ціль KP.",
+    "formula_validated_note": "Шкалу перевірено за таблицею SoC 4 для сили від {{min}} до {{max}} млн; поза цим діапазоном значення екстрапольовані, а нижче {{floor}} млн розрахунок зафіксовано."
   },
   "calendar": {
     "campaign_progress": "Прогрес KvK",

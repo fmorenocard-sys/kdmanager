@@ -1,5 +1,7 @@
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Target } from '../ui/icons';
+import { Target, Info } from '../ui/icons';
+import GoalFormulaDetails from '../kvk/GoalFormulaDetails';
 
 /**
  * F-032 / Lot 2 — carte condensée « Mon objectif KvK » de l'espace perso
@@ -25,6 +27,8 @@ const rateKey = (rate) => `goals.rate_${rate.toLowerCase().replace(/\s+/g, '_')}
 
 const MyGoalCard = ({ rows, primaryId, revealed, campaignName, selectedId = null, onSelect }) => {
     const { t, i18n } = useTranslation();
+    // F-038 Lot A : détail du calcul, replié par défaut (le chiffre reste la vedette).
+    const [showFormula, setShowFormula] = useState(false);
     const nf = (n, d = 1) => (n == null || !Number.isFinite(n))
         ? '—'
         : new Intl.NumberFormat(i18n.language, { maximumFractionDigits: d }).format(n);
@@ -145,6 +149,23 @@ const MyGoalCard = ({ rows, primaryId, revealed, campaignName, selectedId = null
                 <span className="text-[11px] text-[var(--text-secondary)]">{revealed ? '' : t('me.goal.reveal_note')}</span>
                 {statusBadge}
             </div>
+
+            {/* F-038 / US-048 — d'où sort le chiffre. Réservé aux comptes de guerre :
+                un filler suit le barème T4/T5 (F-027/BR-018), pas ces courbes. */}
+            {row.type !== 'filler' && (
+                <div className="space-y-2">
+                    <button
+                        type="button"
+                        onClick={() => setShowFormula((v) => !v)}
+                        aria-expanded={showFormula}
+                        className="inline-flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 rounded"
+                    >
+                        <Info size={13} aria-hidden="true" />
+                        {t('goals.formula_cta')}
+                    </button>
+                    {showFormula && <GoalFormulaDetails powerM={row.powerM} />}
+                </div>
+            )}
         </div>
     );
 };

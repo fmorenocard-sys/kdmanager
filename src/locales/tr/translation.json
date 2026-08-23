@@ -569,7 +569,16 @@
     "achieved": "Gerçekleşen",
     "status_hidden_notice": "Durum etiketleri (Deadweight, Excellent…) savaşlar bittiğinde, Kral onları gösterdiğinde görünür.",
     "sort_by": "Sırala",
-    "sort_direction": "Sıralama yönü"
+    "sort_direction": "Sıralama yönü",
+    "formula_title": "Hedef hesabı",
+    "formula_cta": "Hesabı göster",
+    "formula_at_your_power": "{{power}} M gücün için:",
+    "formula_at_sample_power": "{{power}} M güç için örnek:",
+    "formula_applied_power": "(hesap {{power}} M değerinde donduruldu)",
+    "formula_variable_note": "P = başlangıç gücü, milyon cinsinden. KP sonuçları milyon cinsindendir.",
+    "formula_thresholds_title": "Durum eşikleri",
+    "formula_thresholds_note": "Durum = kazanılan KP ÷ KP hedefi.",
+    "formula_validated_note": "Ölçek, {{min}}–{{max}} M güç aralığı için SoC 4 çalışma kitabına göre doğrulandı; bu aralığın dışında değerler tahminidir ve {{floor}} M altında hesap dondurulur."
   },
   "calendar": {
     "campaign_progress": "KvK ilerlemesi",

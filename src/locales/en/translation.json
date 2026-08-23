@@ -569,7 +569,16 @@
     "achieved": "Achieved",
     "status_hidden_notice": "Status labels (Deadweight, Excellent…) will appear once the battles are over, when the King reveals them.",
     "sort_by": "Sort by",
-    "sort_direction": "Sort direction"
+    "sort_direction": "Sort direction",
+    "formula_title": "Goal calculation",
+    "formula_cta": "Show the calculation",
+    "formula_at_your_power": "For your power of {{power}} M:",
+    "formula_at_sample_power": "Example for a power of {{power}} M:",
+    "formula_applied_power": "(calculation frozen at {{power}} M)",
+    "formula_variable_note": "P = initial power, in millions. KP results in millions.",
+    "formula_thresholds_title": "Status thresholds",
+    "formula_thresholds_note": "Status = KP gained ÷ KP goal.",
+    "formula_validated_note": "Scale validated against the SoC 4 workbook for powers from {{min}} to {{max}} M; outside that range the figures are extrapolated, and below {{floor}} M the calculation is frozen."
   },
   "calendar": {
     "campaign_progress": "KvK progress",
