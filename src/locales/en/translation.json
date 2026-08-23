@@ -97,7 +97,8 @@
     "pass4_dead": "Pass 4 Dead",
     "pass7_dead": "Pass 7 Dead",
     "kl_dead": "KL Dead",
-    "search_placeholder": "Search Governor ID or Name..."
+    "search_placeholder": "Search Governor ID or Name...",
+    "kp_cumulative": "Cumulative KP"
   },
   "statuses": {
     "excellent": "Excellent",
@@ -491,7 +492,8 @@
     "no_current_data": "No current KvK data to archive.",
     "race_summary_label": "Attach race summary",
     "race_summary_none": "None — archive without the race",
-    "race_summary_hint": "Freezes the final duel, camp standings, our rank and the top kingdoms into the archive. DKP weights are stored alongside: without them the figures become unreadable if the scale changes next season."
+    "race_summary_hint": "Freezes the final duel, camp standings, our rank and the top kingdoms into the archive. DKP weights are stored alongside: without them the figures become unreadable if the scale changes next season.",
+    "kp_legend": "KP column: “+” = kill points gained during the campaign (main accounts); no sign = the account's cumulative kill points, the only figure available for filler accounts. The two values are not comparable."
   },
   "ratings": {
     "excellent": "Excellent",

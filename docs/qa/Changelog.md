@@ -1,5 +1,12 @@
 # QA Changelog
 
+## v2.41 - 2026-08-23 — Progressions joueur : campagne en double et colonne KP illisible (BUG-011)
+
+### Fixed
+- **Hub KvK > Progressions > Joueur — une campagne semblait affichée deux fois.** Un même gouverneur peut figurer à la fois dans les comptes principaux et dans les comptes secondaires d'une même campagne (les onglets des sources se recouvrent : SoC 1 « Our DKP » / « Filler_Alt »). Les deux lignes sont légitimes, mais seule celle des fillers portait un badge : la campagne paraissait dupliquée. Désormais, quand un recouvrement existe, **les deux lignes portent leur badge de périmètre** (Comptes Principaux / Comptes Secondaires) ; hors recouvrement, l'affichage ne change pas. Au passage, la progression dédoublonne par (campagne, périmètre, ID) comme le fait déjà le tableau Performance — un doublon strict dans un scan ne crée plus de ligne fantôme.
+- **Colonne KP : deux mesures non comparables sous un même en-tête.** Les comptes principaux y portaient un **gain de campagne** (`totalKpGained`, préfixé « + »), les comptes secondaires un **cumul de Kill Points** (`kp`, la seule donnée disponible pour eux) — les deux en vert, à un signe près : on lisait « 37 M » et « 354 M » comme la même grandeur. Le gain reste vert avec son « + » ; le cumul passe en neutre, libellé « KP cumulés » sur les cartes mobiles et en `title` sur la table desktop, avec une légende sous le tableau **affichée seulement quand une ligne cumulée est présente**. 2 clés i18n × 10 langues (`performance.kp_cumulative`, `kvk_history.kp_legend`).
+- Vérifié sur l'émulateur Firebase (harnais BUG-008) : fixture reproduisant le recouvrement mains/fillers et un doublon strict, contrôle des libellés et des couleurs en thèmes sombre **et** clair (cumul à 9,0:1 en clair), et `scrollWidth` = 375 à 375 px (aucun débordement horizontal).
+
 ## v2.40 - 2026-08-07 — War Tracker : sous-onglets persistants (Déclaration / Objectifs / Dashboard)
 
 ### Changed

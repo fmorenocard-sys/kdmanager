@@ -126,8 +126,15 @@ const KvKPerformancePage = () => {
         const map = new Map();
         const asc = [...allCampaigns].sort((a, b) => (a.order || 0) - (b.order || 0));
         for (const c of asc) {
+            // Même garde que `activeData` côté Performance : une source peut lister deux
+            // fois le même gouverneur dans le même périmètre — ce doublon-là ne doit pas
+            // produire deux lignes de campagne identiques dans la progression.
+            const seen = new Set();
             const add = (p, isFiller) => {
                 if (!p.id) return;
+                const key = `${isFiller ? 'f' : 'm'}:${p.id}`;
+                if (seen.has(key)) return;
+                seen.add(key);
                 const e = map.get(p.id) || { id: p.id, name: p.name, entries: [] };
                 e.name = p.name || e.name;
                 e.entries.push({ ...p, isFiller, campaignTitle: c.title, campaignId: c.docId, isCurrent: !!c.isCurrent });
@@ -135,6 +142,15 @@ const KvKPerformancePage = () => {
             };
             (c.list || []).forEach(p => add(p, false));
             (c.fillerList || []).forEach(p => add(p, true));
+        }
+        // Un même gouverneur PEUT légitimement figurer dans les mains ET dans les fillers
+        // d'une même campagne (les onglets sources se recouvrent : cf. SoC 1 « Our DKP » /
+        // « Filler_Alt »). Ce ne sont pas des doublons — mais sans marqueur sur les deux
+        // lignes, la campagne semble affichée deux fois. On signale le recouvrement.
+        for (const e of map.values()) {
+            const perCampaign = new Map();
+            e.entries.forEach(x => perCampaign.set(x.campaignId, (perCampaign.get(x.campaignId) || 0) + 1));
+            e.entries.forEach(x => { x.perimeterClash = (perCampaign.get(x.campaignId) || 0) > 1; });
         }
         return map;
     }, [allCampaigns]);
@@ -257,6 +273,21 @@ const KvKPerformancePage = () => {
     };
 
     const formatNumber = (num) => num?.toLocaleString() || '0';
+
+    // Le « KP » d'une ligne de progression ne recouvre pas la même mesure selon le
+    // périmètre : un compte principal porte un GAIN de campagne (`totalKpGained`, ou
+    // `finalKp - initialKp`), un compte secondaire n'a qu'un CUMUL de Kill Points
+    // (`kp` — la seule colonne des onglets « Filler » des sources, cf. import-kvk-history).
+    // Les deux étaient rendus dans la même colonne, même couleur, le signe « + » pour
+    // seule différence : illisible et surtout non comparable (37 M gagnés vs 354 M cumulés).
+    const kpCell = (e) => {
+        const gained = e.totalKpGained != null
+            ? e.totalKpGained
+            : (e.finalKp != null && e.initialKp != null ? e.finalKp - e.initialKp : null);
+        if (gained != null) return { value: `+${formatNumber(gained)}`, label: t('performance.kp_gained'), cls: 'text-emerald-400', cumulative: false };
+        if (e.kp != null) return { value: formatNumber(e.kp), label: t('performance.kp_cumulative'), cls: 'text-slate-300', cumulative: true };
+        return { value: '—', label: t('performance.kp'), cls: 'text-slate-600', cumulative: false };
+    };
 
     if (loading) return <div className="p-8 text-center text-muted">{t('common.loading')}</div>;
     if (error) return <div className="p-8 text-center text-red-400">{error}</div>;
@@ -662,19 +693,23 @@ const KvKPerformancePage = () => {
 
                                 {/* Mobile cards */}
                                 <div className="md:hidden flex flex-col gap-3 p-3">
-                                    {selectedPlayer.entries.map((e, i) => (
-                                        <div key={`${e.campaignId}-${i}`} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-2">
+                                    {selectedPlayer.entries.map((e, i) => {
+                                        const kp = kpCell(e);
+                                        return (
+                                        <div key={`${e.campaignId}-${e.isFiller ? 'f' : 'm'}-${i}`} className="bg-[var(--surface-solid)] p-3 rounded-xl border border-[var(--border-flat)] flex flex-col gap-2">
                                             <div className="flex justify-between items-center gap-2 border-b border-[var(--border-flat)] pb-2">
                                                 <span className="font-bold text-white text-sm truncate">{e.campaignTitle}</span>
                                                 <span className="flex gap-1 shrink-0">
-                                                    {e.isFiller && <span className="px-2 py-0.5 rounded-full text-[10px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
+                                                    {e.isFiller
+                                                        ? <span className="px-2 py-0.5 rounded-full text-[10px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>
+                                                        : e.perimeterClash && <span className="px-2 py-0.5 rounded-full text-[10px] border text-indigo-300 bg-indigo-500/10 border-indigo-500/30">{t('performance.main_accounts')}</span>}
                                                     {e.rate && <span className={getRateClass(e.rate)}>{rateLabel(e.rate)}</span>}
                                                 </span>
                                             </div>
                                             <div className="grid grid-cols-2 gap-2 text-xs">
                                                 <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.init_power')}</span><span className="font-mono text-white">{formatNumber(e.initialPower)}</span></div>
                                                 <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.final_power')}</span><span className="font-mono text-white">{formatNumber(e.finalPower)}</span></div>
-                                                <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.kp')}</span><span className="font-mono text-emerald-400">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</span></div>
+                                                <div className="flex justify-between gap-1 bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500 min-w-0 truncate">{kp.label}</span><span className={`font-mono shrink-0 ${kp.cls}`}>{kp.value}</span></div>
                                                 <div className="flex justify-between bg-[var(--border-flat)] p-1.5 rounded"><span className="text-slate-500">{t('performance.total_dead')}</span><span className="font-mono text-red-400">{formatNumber(e.totalDead)}</span></div>
                                             </div>
                                             {typeof e.goalPercent === 'number' && (
@@ -689,7 +724,8 @@ const KvKPerformancePage = () => {
                                                 </div>
                                             )}
                                         </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
 
                                 {/* Desktop table */}
@@ -707,16 +743,20 @@ const KvKPerformancePage = () => {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {selectedPlayer.entries.map((e, i) => (
-                                                <TableRow key={`${e.campaignId}-${i}`} className="hover:bg-white/5 border-b border-white/5">
+                                            {selectedPlayer.entries.map((e, i) => {
+                                                const kp = kpCell(e);
+                                                return (
+                                                <TableRow key={`${e.campaignId}-${e.isFiller ? 'f' : 'm'}-${i}`} className="hover:bg-white/5 border-b border-white/5">
                                                     <TableCell className="text-xs py-2 px-2 text-white font-medium whitespace-nowrap">
                                                         {e.campaignTitle}
-                                                        {e.isFiller && <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>}
-                                                        {e.isCurrent && <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] text-white border border-transparent" style={{ background: 'var(--grad-accent)' }}>{t('kvk_history.current_badge')}</span>}
+                                                        {e.isFiller
+                                                            ? <span className="ms-2 px-1.5 py-0.5 rounded-full text-[9px] border text-sky-400 bg-sky-500/10 border-sky-500/20">{t('performance.filler_accounts')}</span>
+                                                            : e.perimeterClash && <span className="ms-2 px-1.5 py-0.5 rounded-full text-[9px] border text-indigo-300 bg-indigo-500/10 border-indigo-500/30">{t('performance.main_accounts')}</span>}
+                                                        {e.isCurrent && <span className="ms-2 px-1.5 py-0.5 rounded-full text-[9px] text-white border border-transparent" style={{ background: 'var(--grad-accent)' }}>{t('kvk_history.current_badge')}</span>}
                                                     </TableCell>
                                                     <TableCell className="text-xs py-2 px-2 tabular-nums text-gray-300">{formatNumber(e.initialPower)}</TableCell>
                                                     <TableCell className="text-xs py-2 px-2 tabular-nums text-gray-300">{formatNumber(e.finalPower)}</TableCell>
-                                                    <TableCell className="text-xs py-2 px-2 tabular-nums text-emerald-400 font-bold">{e.totalKpGained != null ? `+${formatNumber(e.totalKpGained)}` : formatNumber(e.kp)}</TableCell>
+                                                    <TableCell className={`text-xs py-2 px-2 tabular-nums font-bold ${kp.cls}`} title={kp.label}>{kp.value}</TableCell>
                                                     <TableCell className="text-xs py-2 px-2 tabular-nums text-red-400 font-bold">{formatNumber(e.totalDead)}</TableCell>
                                                     <TableCell className="text-xs py-2 px-2 min-w-[140px]">
                                                         {typeof e.goalPercent === 'number' ? (
@@ -737,10 +777,19 @@ const KvKPerformancePage = () => {
                                                         ) : <span className="text-slate-600">—</span>}
                                                     </TableCell>
                                                 </TableRow>
-                                            ))}
+                                                );
+                                            })}
                                         </TableBody>
                                     </Table>
                                 </div>
+
+                                {/* La colonne KP mélange deux mesures (gain de campagne / cumul du
+                                    compte) : on ne l'explique que quand le cas se présente. */}
+                                {selectedPlayer.entries.some(e => kpCell(e).cumulative) && (
+                                    <p className="px-4 pb-4 pt-1 text-xs leading-relaxed text-slate-500">
+                                        {t('kvk_history.kp_legend')}
+                                    </p>
+                                )}
                             </Card>
                         )}
 

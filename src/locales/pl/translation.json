@@ -97,7 +97,8 @@
     "pass4_dead": "Pass 4 Zabici",
     "pass7_dead": "Pass 7 Zabici",
     "kl_dead": "KL Zabici",
-    "search_placeholder": "Szukaj ID lub nazwy gubernatora..."
+    "search_placeholder": "Szukaj ID lub nazwy gubernatora...",
+    "kp_cumulative": "Skumulowane KP"
   },
   "statuses": {
     "excellent": "Doskonały",
@@ -491,7 +492,8 @@
     "no_current_data": "Brak bieżących danych KvK do archiwizacji.",
     "race_summary_label": "Dołącz podsumowanie wyścigu",
     "race_summary_none": "Brak — archiwizuj bez wyścigu",
-    "race_summary_hint": "Utrwala finałowy pojedynek, klasyfikację obozów, nasze miejsce i czołowe królestwa w archiwum. Wagi DKP są zapisywane razem: bez nich liczby stają się nieczytelne po zmianie skali."
+    "race_summary_hint": "Utrwala finałowy pojedynek, klasyfikację obozów, nasze miejsce i czołowe królestwa w archiwum. Wagi DKP są zapisywane razem: bez nich liczby stają się nieczytelne po zmianie skali.",
+    "kp_legend": "Kolumna KP: „+” = punkty zabójstw zdobyte w trakcie kampanii (konta główne); bez znaku = skumulowane punkty zabójstw konta, jedyna dostępna wartość dla kont pomocniczych. Tych dwóch wartości nie można porównywać."
   },
   "ratings": {
     "excellent": "Znakomity",

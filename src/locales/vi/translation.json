@@ -97,7 +97,8 @@
     "pass4_dead": "Pass 4 Tử trận",
     "pass7_dead": "Pass 7 Tử trận",
     "kl_dead": "KL Tử trận",
-    "search_placeholder": "Tìm ID hoặc tên Thống đốc..."
+    "search_placeholder": "Tìm ID hoặc tên Thống đốc...",
+    "kp_cumulative": "KP tích lũy"
   },
   "statuses": {
     "excellent": "Xuất sắc",
@@ -491,7 +492,8 @@
     "no_current_data": "Không có dữ liệu KvK hiện tại để lưu trữ.",
     "race_summary_label": "Đính kèm tóm tắt cuộc đua",
     "race_summary_none": "Không — lưu trữ không kèm cuộc đua",
-    "race_summary_hint": "Cố định trận đấu cuối, bảng xếp hạng phe, thứ hạng của ta và các vương quốc dẫn đầu vào kho lưu trữ. Trọng số DKP được lưu kèm: thiếu chúng, các con số sẽ vô nghĩa nếu thang điểm thay đổi."
+    "race_summary_hint": "Cố định trận đấu cuối, bảng xếp hạng phe, thứ hạng của ta và các vương quốc dẫn đầu vào kho lưu trữ. Trọng số DKP được lưu kèm: thiếu chúng, các con số sẽ vô nghĩa nếu thang điểm thay đổi.",
+    "kp_legend": "Cột KP: “+” = điểm tiêu diệt đạt được trong chiến dịch (tài khoản chính); không dấu = tổng điểm tiêu diệt tích lũy của tài khoản, dữ liệu duy nhất có cho tài khoản phụ. Hai giá trị này không so sánh được."
   },
   "ratings": {
     "excellent": "Xuất sắc",

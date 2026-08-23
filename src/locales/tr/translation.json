@@ -97,7 +97,8 @@
     "pass4_dead": "Pass 4 Ölü",
     "pass7_dead": "Pass 7 Ölü",
     "kl_dead": "KL Ölü",
-    "search_placeholder": "Vali ID veya isim ara..."
+    "search_placeholder": "Vali ID veya isim ara...",
+    "kp_cumulative": "Toplam KP"
   },
   "statuses": {
     "excellent": "Mükemmel",
@@ -491,7 +492,8 @@
     "no_current_data": "Arşivlenecek güncel KvK verisi yok.",
     "race_summary_label": "Yarış özetini ekle",
     "race_summary_none": "Yok — yarış olmadan arşivle",
-    "race_summary_hint": "Final düellosunu, kamp sıralamasını, sıramızı ve en iyi krallıkları arşivde dondurur. DKP ağırlıkları da saklanır: onlarsız ölçek değişirse rakamlar okunamaz hale gelir."
+    "race_summary_hint": "Final düellosunu, kamp sıralamasını, sıramızı ve en iyi krallıkları arşivde dondurur. DKP ağırlıkları da saklanır: onlarsız ölçek değişirse rakamlar okunamaz hale gelir.",
+    "kp_legend": "KP sütunu: “+” = kampanya sırasında kazanılan kill point (ana hesaplar); işaretsiz = hesabın toplam kill point'i, dolgu hesapları için mevcut tek veri. İki değer karşılaştırılamaz."
   },
   "ratings": {
     "excellent": "Mükemmel",

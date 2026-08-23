@@ -97,7 +97,8 @@
     "pass4_dead": "Pass 4 Tote",
     "pass7_dead": "Pass 7 Tote",
     "kl_dead": "KL Tote",
-    "search_placeholder": "Gouverneurs-ID oder Name suchen..."
+    "search_placeholder": "Gouverneurs-ID oder Name suchen...",
+    "kp_cumulative": "Kumulierte KP"
   },
   "statuses": {
     "excellent": "Ausgezeichnet",
@@ -491,7 +492,8 @@
     "no_current_data": "Keine aktuellen KvK-Daten zum Archivieren.",
     "race_summary_label": "Rennzusammenfassung anhängen",
     "race_summary_none": "Keine — ohne Rennen archivieren",
-    "race_summary_hint": "Friert das finale Duell, die Lagerwertung, unseren Rang und die besten Königreiche im Archiv ein. Die DKP-Gewichte werden mitgespeichert: ohne sie sind die Zahlen unlesbar, wenn sich die Skala ändert."
+    "race_summary_hint": "Friert das finale Duell, die Lagerwertung, unseren Rang und die besten Königreiche im Archiv ein. Die DKP-Gewichte werden mitgespeichert: ohne sie sind die Zahlen unlesbar, wenn sich die Skala ändert.",
+    "kp_legend": "Spalte KP: „+“ = während der Kampagne erzielte Kill Points (Hauptaccounts); ohne Vorzeichen = kumulierte Kill Points des Accounts, der einzige verfügbare Wert für Filler-Accounts. Die beiden Werte sind nicht vergleichbar."
   },
   "ratings": {
     "excellent": "Exzellent",

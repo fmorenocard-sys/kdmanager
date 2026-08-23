@@ -97,7 +97,8 @@
     "pass4_dead": "Bajas Pass 4",
     "pass7_dead": "Bajas Pass 7",
     "kl_dead": "Bajas KL",
-    "search_placeholder": "Buscar ID o nombre del gobernador..."
+    "search_placeholder": "Buscar ID o nombre del gobernador...",
+    "kp_cumulative": "KP acumulados"
   },
   "statuses": {
     "excellent": "Excelente",
@@ -491,7 +492,8 @@
     "no_current_data": "No hay datos KvK actuales para archivar.",
     "race_summary_label": "Adjuntar resumen de la carrera",
     "race_summary_none": "Ninguno — archivar sin la carrera",
-    "race_summary_hint": "Congela el duelo final, la clasificación de los bandos, nuestro puesto y los mejores reinos en el archivo. Los pesos DKP se guardan con ellos: sin ellos las cifras se vuelven ilegibles si cambia el baremo."
+    "race_summary_hint": "Congela el duelo final, la clasificación de los bandos, nuestro puesto y los mejores reinos en el archivo. Los pesos DKP se guardan con ellos: sin ellos las cifras se vuelven ilegibles si cambia el baremo.",
+    "kp_legend": "Columna KP: «+» = puntos de muerte ganados durante la campaña (cuentas principales); sin signo = puntos de muerte acumulados de la cuenta, el único dato disponible para las cuentas secundarias. Ambos valores no son comparables."
   },
   "ratings": {
     "excellent": "Excelente",

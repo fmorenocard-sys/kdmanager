@@ -97,7 +97,8 @@
     "pass4_dead": "Morts Pass 4",
     "pass7_dead": "Morts Pass 7",
     "kl_dead": "Morts KL",
-    "search_placeholder": "Rechercher ID ou Nom..."
+    "search_placeholder": "Rechercher ID ou Nom...",
+    "kp_cumulative": "KP cumulés"
   },
   "statuses": {
     "excellent": "Excellent",
@@ -491,7 +492,8 @@
     "no_current_data": "Aucune donnée KvK courante à archiver.",
     "race_summary_label": "Joindre le résumé de course",
     "race_summary_none": "Aucun — archiver sans la course",
-    "race_summary_hint": "Fige le duel final, le classement des camps, notre rang et le haut du tableau des royaumes dans l'archive. Les poids DKP sont conservés avec : sans eux, les chiffres deviennent illisibles si le barème change la saison suivante."
+    "race_summary_hint": "Fige le duel final, le classement des camps, notre rang et le haut du tableau des royaumes dans l'archive. Les poids DKP sont conservés avec : sans eux, les chiffres deviennent illisibles si le barème change la saison suivante.",
+    "kp_legend": "Colonne KP : « + » = points de kill gagnés pendant la campagne (comptes principaux) ; sans signe = Kill Points cumulés du compte, seule donnée disponible pour les comptes secondaires. Les deux valeurs ne se comparent pas."
   },
   "ratings": {
     "excellent": "Excellent",

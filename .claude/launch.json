@@ -20,6 +20,15 @@
       "port": 4173
     },
     {
+      "name": "kdmanager-test",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "test:serve"
+      ],
+      "port": 5174
+    },
+    {
       "name": "kdmanager-pilot",
       "runtimeExecutable": "npm",
       "runtimeArgs": [

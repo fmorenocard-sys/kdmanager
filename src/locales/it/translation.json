@@ -97,7 +97,8 @@
     "pass4_dead": "Perdite Pass 4",
     "pass7_dead": "Perdite Pass 7",
     "kl_dead": "Perdite KL",
-    "search_placeholder": "Cerca ID o nome del governatore..."
+    "search_placeholder": "Cerca ID o nome del governatore...",
+    "kp_cumulative": "KP cumulativi"
   },
   "statuses": {
     "excellent": "Eccellente",
@@ -491,7 +492,8 @@
     "no_current_data": "Nessun dato KvK attuale da archiviare.",
     "race_summary_label": "Allega riepilogo della corsa",
     "race_summary_none": "Nessuno — archivia senza la corsa",
-    "race_summary_hint": "Congela il duello finale, le classifiche dei campi, la nostra posizione e i migliori regni nell'archivio. I pesi DKP sono memorizzati insieme: senza di essi le cifre diventano illeggibili se la scala cambia la prossima stagione."
+    "race_summary_hint": "Congela il duello finale, le classifiche dei campi, la nostra posizione e i migliori regni nell'archivio. I pesi DKP sono memorizzati insieme: senza di essi le cifre diventano illeggibili se la scala cambia la prossima stagione.",
+    "kp_legend": "Colonna KP: «+» = punti uccisione guadagnati durante la campagna (account principali); senza segno = punti uccisione cumulativi dell'account, l'unico dato disponibile per gli account secondari. I due valori non sono confrontabili."
   },
   "ratings": {
     "excellent": "Eccellente",
