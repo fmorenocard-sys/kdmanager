@@ -1,5 +1,12 @@
 # QA Changelog
 
+## v2.44 - 2026-08-28 — SEC-004 : une 5ᵉ cible servait les données de 2997, hors Firebase
+
+### Security
+- **Un site GitHub Pages abandonné servait publiquement le bank ledger et le deadweight nominatif de 2997.** `https://fmorenocard-sys.github.io/kdmanager/` (« Kingdom 2997 Dashboard »), déployé le **2026-02-17** et jamais repris, exposait `KD 97 Bank Ledger.xlsx` (679 781 o), `KD 97 Deadweight.xlsx` (138 114 o) et `Top 300` (945 601 o). **Cinquième cible, hors Firebase** — donc hors de portée des correctifs SEC-001 appliqués aux 4 instances. Trouvé en cherchant si le dépôt GitHub était public, pas par le plan de correction initial : **la portée d'une fuite ne se déduit pas de la liste des déploiements qu'on croit connaître.** Branche `gh-pages` supprimée du remote (copie locale gardée en `gh-pages-local-backup`), site vérifié en 404.
+- **Le dépôt est PUBLIC** (`private: false`, 0 fork). Les classeurs restent donc téléchargeables **depuis l'historique** (`raw.githubusercontent.com` à `e313469` renvoie 679 781 o en anonyme) et depuis `feat/refonte-navigation` : les retirer de `HEAD` ne purge pas le passé. Décision : **passage du dépôt en privé** (geste manuel dans Settings, non scriptable sans jeton).
+- **Vérifié au passage — `backup/pre-secret-scrub-20260711` n'a jamais été poussée.** Le remote ne porte que `main` et `feat/refonte-navigation` : le scrub du 2026-07-11 a tenu, aucun identifiant n'est exposé publiquement.
+
 ## v2.43 - 2026-08-28 — Mode d'authentification par instance : plus de Discord affiché là où il ne marche pas
 
 ### Added
