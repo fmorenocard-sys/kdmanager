@@ -78,3 +78,9 @@ tests/.testlogin.json
 # du code app. Les VRAIES références de design (images/captures) restent versionnées.
 design_references/*.dc.html
 design_references/support.js
+
+# Classeurs bruts de 2997 (bank ledger, deadweight nominatif, scans SoC) : ils
+# etaient servis PUBLIQUEMENT par le Hosting de toutes les instances (SEC-001).
+# Sortis du depot le 2026-08-28 ; conserves en local dans scratch/legacy-public-data/.
+# Rien ne les lit au runtime. Ne pas les reintroduire ici.
+public/data/

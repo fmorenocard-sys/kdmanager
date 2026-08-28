@@ -109,8 +109,32 @@ Rien ne les lit au runtime : les trois imports `data/` du code pointent
 > (`curl -w "%{content_type} %{size_download}"`), pas `%{http_code}`. J'ai
 > conclu à tort à une non-régression sur ce seul critère avant de corriger.
 
-**NON fait** : les trois autres instances. Correctif = même motif + redéploiement
-de leur Hosting.
+**Fait le 2026-08-28 sur les quatre instances** (voir SEC-001 dans
+`Issue_Backlog.md`).
+
+> **⚠️ RÉGRESSION INTRODUITE PAR CE CORRECTIF, puis corrigée — la leçon la plus
+> chère de la journée.** `public/data/` n'était pas *entièrement* du poids mort :
+> ses **120 avatars JPG** sont le 3ᵉ échelon de la cascade d'`Avatar.jsx`
+> (prop `src` → URL fraîche de `static_data/avatars` → **JPG legacy** → logo).
+> Le premier audit avait conclu « rien ne lit `public/data` au runtime » à partir
+> d'un `grep` sur les imports du code — or ces JPG ne sont pas importés, ils sont
+> référencés par **URL** dans `src/data/player-avatars.json`. Exclure
+> `**/data/**` du Hosting a donc cassé les avatars des 4 instances.
+>
+> Impact mesuré sur 2997 : `static_data/avatars` n'a que **2 entrées**, dont
+> **aucune** ne recouvre les 120 du mapping legacy → **les 120 joueurs ont perdu
+> leur avatar** au profit du logo du royaume. Dégradation propre (la cascade fait
+> son travail), mais bien réelle et visible.
+>
+> **Correctif** : les avatars sont des assets applicatifs légitimes, ils n'ont
+> rien à faire dans un dossier de dumps. Déplacés en `public/avatars/` (suivis
+> par git), chemins de `src/data/player-avatars.json` réécrits `/data/avatars/`
+> → `/avatars/`. Seuls les 8 classeurs/dumps quittent le dépôt.
+>
+> **Leçon générale** : chercher les consommateurs d'un dossier `public/` par
+> `grep` sur les **imports** ne suffit pas — un asset servi est référencé par
+> **chaîne d'URL**, souvent construite dynamiquement. Chercher aussi le nom du
+> dossier dans les fichiers de données (`src/data/*.json`) et les templates.
 
 ### 3.4 Le mapping camp ↔ campid était FAUX — la vérification du REX 2293 §12 a payé
 
