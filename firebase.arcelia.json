@@ -4,7 +4,8 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "**/data/**"
     ],
     "rewrites": [
       {
@@ -39,7 +40,12 @@
         "node_modules",
         ".git",
         "firebase-debug.log",
-        "firebase-debug.*.log"
+        "firebase-debug.*.log",
+        "serviceAccountKey.json",
+        "service-account.json",
+        "kd-*-manager.json",
+        "all_users*.json",
+        "output.json"
       ],
       "predeploy": [
         "cd functions && npm run lint"
