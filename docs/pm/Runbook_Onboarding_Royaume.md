@@ -250,9 +250,33 @@ npm run dev:pilot        # vite --mode pilot --port 5175
 > scan de course déposé, l'onglet reste visible et affiche un état vide,
 > jamais masqué (décision Roi, `Etude_Activation_Modules.md`).
 
+> **⚠️ PIÈGE — `public/data/` publie les classeurs de 2997 sur le site du
+> client** (découvert à l'onboarding 1362, REX §3.3). `public/data/` contient
+> les données brutes de 2997 : `KD 97 Bank Ledger.xlsx`, `KD 97 Deadweight.xlsx`
+> (joueurs nommés), les scans SoC, `Top 300`, plus 120 avatars — 128 fichiers.
+> Vite copie `public/` tel quel dans `dist/`, donc le déploiement Hosting les
+> rend **téléchargeables publiquement, sans authentification**, sur le domaine
+> de l'instance. Mesuré le 2026-08-28 sur `kd-97-manager.web.app`,
+> `kd-41-manager.web.app` et `kd-2293-manager.web.app` : les trois servaient
+> le Bank Ledger et le Deadweight de 2997.
+>
+> Rien ne les lit au runtime (les imports `data/` du code pointent `src/data/`,
+> bundlé ; `DataContext.jsx:39` documente la suppression du repli
+> `public/data`). **Correctif : `"**/data/**"` dans le `hosting.ignore` du
+> `firebase.<royaume>.json`.**
+>
+> Deux précisions qui ont coûté du temps :
+> - la forme **`"data/**"` ne matche pas** — il faut `"**/data/**"` ;
+> - **un code HTTP ne prouve rien** : la réécriture SPA `**` renvoie
+>   `index.html` en **200** pour n'importe quel chemin. Vérifier le **type MIME
+>   et la taille** :
+>   `curl -s -o /dev/null -w "%{content_type} %{size_download}" <url>`.
+>   1 566 o en `text/html` = repli SPA (bon) ; un type xlsx = fuite.
+
 **Vérification.** En local (`dev:pilot`), titre d'onglet, logo, favicon et
 toutes les pages affichent le nouveau royaume — aucune trace de « 2997 » ou
-« Unitas ».
+« Unitas ». Plus : `/data/<un fichier de public/data>` doit renvoyer le repli
+SPA, pas un classeur.
 
 ---
 
@@ -271,11 +295,24 @@ npm run deploy-rules:pilot
 ```
 
 Ce que fait le script (`scripts/deploy-rules.cjs`) : il lit `firestore.rules`,
-crée un `ruleset` via l'API REST `firebaserules.googleapis.com`, puis tente de
-pousser ce ruleset sur **les deux** releases `(default)` et
-`.../kdmanagerdb`. Un `404` sur `(default)` est attendu et ignoré pour une
-instance qui n'a que `kdmanagerdb` (cas de toute instance client) — la sortie
-du script le confirme explicitement (`ℹ️ (default) absent sur ce projet — ignoré`).
+crée un `ruleset` via l'API REST `firebaserules.googleapis.com`, **liste les
+bases Firestore réellement présentes** sur le projet, puis pousse ce ruleset sur
+chacune. Une base absente est ignorée explicitement
+(`ℹ️ (default) absent sur ce projet — ignoré`, cas de toute instance client).
+
+> **INSTANCE NEUVE — le script CRÉE désormais la release manquante.** Sur un
+> projet fraîchement créé, la release `cloud.firestore/kdmanagerdb` n'existe pas
+> encore et un simple PATCH échoue en 404 : le script s'arrêtait alors sur
+> `❌ Aucune base mise à jour`, en laissant la base sur les **règles fermées par
+> défaut** — l'invité prend `permission-denied` et l'observatoire est muet.
+> Piège identifié sur Arcelia 2293 (REX §4.1), reproduit à l'identique sur
+> Mimoso 1362, **corrigé le 2026-08-28** : quand la base existe mais que la
+> release manque, elle est créée (`✅ kdmanagerdb — release CRÉÉE (instance
+> neuve)`). La création n'est jamais tentée sur une base absente, donc pas de
+> release `(default)` fantôme sur un projet client.
+
+Alias reconnus par le script : `prod|default|97|2997`, `pilot|41|3341`,
+`arcelia|2293`, `mimoso|1362`, ou un id `kd-...` brut.
 
 > **⚠️ PIÈGE CRITIQUE (vécu, a cassé F-025 en prod pilote, 2026-07-28) —
 > `firebase deploy --only firestore:rules` ne suffit PAS.** Cette commande
@@ -323,6 +360,32 @@ instance client — jamais la synchro 2997.
 - `syncData` (même pipeline, déclenché en HTTP) ;
 - toute clé `functions/service-account.json` **de 2997** embarquée dans le
   bundle déployé (voir Phase 1, étape 5 et Annexe A).
+
+> **⚠️ PIÈGE — le bundle Functions emporte TOUT `functions/`, y compris les clés
+> des AUTRES clients et des PII.** Le point ci-dessus ne visait que 2997 ; le
+> dossier contient en réalité aussi `functions/serviceAccountKey.json`,
+> `functions/kd-41-manager.json`, `functions/kd-2293-manager.json` (clés admin
+> des autres instances) et `functions/all_users.json` (**PII réelles**). Tout
+> part dans le bundle de l'instance déployée. Constaté sur l'onboarding 1362
+> (REX §3.2).
+>
+> Rien de tout cela n'est nécessaire à une instance cliente — vérifié dans le
+> code : `serviceAccountKey.json` n'est lu que sous `FUNCTIONS_EMULATOR`
+> (`functions/index.js:12`), et `service-account.json` uniquement dans
+> `runFullSync`, **après** le garde-fou anti-2997 (`:496` s'exécute avant
+> `:505`). Les exclure d'un déploiement client est donc sans effet fonctionnel.
+>
+> **Bloc à mettre dans le `functions.ignore` de tout `firebase.<royaume>.json`
+> client** (fait sur `firebase.mimoso.json` ; **pas encore** sur
+> `firebase.pilot.json` ni `firebase.arcelia.json` — exposition vivante) :
+>
+> ```json
+> "ignore": [
+>   "node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log",
+>   "serviceAccountKey.json", "service-account.json",
+>   "kd-*-manager.json", "all_users*.json", "output.json"
+> ]
+> ```
 
 **Commande** :
 
@@ -524,6 +587,22 @@ fois l'app en ligne — pas de script dédié) : nom de campagne, camps, et
 > `kvk_race/{cid}/scans/*` et `latestDuel`. Après correction de la config, il
 > faut **rejouer les scans** (`recomputeRaceCampaign` si les Functions sont
 > déployées, sinon rejeu local depuis les `derived/` du bucket).
+>
+> *Nuance vérifiée sur 1362 (2026-08-28)* : ceci vaut pour `hero_duel` et
+> `our_camp`, **pas pour les libellés**. Les données dérivées stockent le
+> **numéro** de camp (`camp: 4`), pas son nom — les `labels` sont appliqués à
+> l'affichage. **Renommer un camp après coup n'impose donc aucun rejeu.**
+
+> **⚠️ Le piège Wind/Water n'est pas un accident isolé — c'est la règle.** Sur
+> Arcelia (2293) comme sur Mimoso (1362), le Roi a énuméré ses camps dans
+> l'ordre de la carte et **Wind et Water se sont retrouvés intervertis** par
+> rapport à la numérotation de l'export. Deux onboardings sur deux.
+> **Ne jamais dériver le mapping de l'ordre d'énumération.** La méthode qui
+> tranche, appliquée sur 1362 : demander au Roi **un royaume témoin par camp
+> nommé**, puis chercher son `campid` dans le scan. Sur 1362 cela a donné
+> 1=Fire (témoin 3157), 2=Earth (1707), 3=Wind (1043), 4=Water (1362, « nous »)
+> — alors que l'ordre annoncé « Fire, Earth, Water, Wind » aurait étiqueté
+> Mimoso « Wind ».
 
 > **⚠️ PIÈGE — le seed local est un cul-de-sac s'il saute le bucket.** Seeder
 > `kvk_race/{cid}` directement (moteur `buildAll` en local, utile pour une démo
@@ -725,6 +804,22 @@ d'env comme `ROLE_ADMIN_USER_IDS`) :
 ```bash
 firebase functions:delete scheduledSync --project <alias> --region us-central1 --force
 ```
+
+> **⚠️ La suppression échoue souvent juste après le déploiement — mettre le job
+> en PAUSE d'abord.** Sur 1362 (2026-08-28), la commande a échoué quatre fois de
+> suite en `409 sync mutate calls cannot be queued` : le job Cloud Scheduler
+> venait d'être créé et portait une opération en vol. **Le geste qui protège
+> n'est pas la suppression, c'est la pause** — un job en pause ne se déclenche
+> plus, quel que soit le temps que met la suppression à passer :
+>
+> ```
+> POST https://cloudscheduler.googleapis.com/v1/projects/<projet>/locations/us-central1/
+>      jobs/firebase-schedule-scheduledSync-us-central1:pause
+> ```
+>
+> Puis relancer `functions:delete` en boucle (passé à la 4ᵉ tentative, ~2 min).
+> Vérifier l'état réel du job avant de conclure : `state: ENABLED` = danger,
+> `PAUSED` = neutralisé, absent = supprimé.
 
 Le cron est **le seul vecteur qui tourne sans action humaine** — un `syncData`
 recréé mais jamais appelé manuellement ne fait aucun dégât par lui-même (le

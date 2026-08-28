@@ -19,7 +19,10 @@
     "test:e2e": "firebase emulators:exec \"playwright test\"",
     "test:e2e-ui": "firebase emulators:exec \"playwright test --ui\"",
     "build:pilot": "vite build --mode pilot",
-    "dev:pilot": "vite --mode pilot --port 5175"
+    "dev:pilot": "vite --mode pilot --port 5175",
+    "build:mimoso": "vite build --mode mimoso",
+    "dev:mimoso": "vite --mode mimoso --port 5176",
+    "deploy-rules:mimoso": "node scripts/deploy-rules.cjs mimoso"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

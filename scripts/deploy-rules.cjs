@@ -2,13 +2,24 @@
  * deploy-rules.cjs
  * Déploie firestore.rules sur les bases Firestore d'un PROJET donné, via l'API REST
  * Rules (ADC locales). Couvre les 2 bases `(default)` et `kdmanagerdb` — chaque
- * release est tentée, un 404 (base inexistante sur ce projet) est ignoré (le pilote
- * n'a que `kdmanagerdb`, 2997 a les deux).
+ * base RÉELLEMENT PRÉSENTE sur le projet reçoit le ruleset (le pilote n'a que
+ * `kdmanagerdb`, 2997 a les deux ; une base absente est ignorée).
+ *
+ * INSTANCE NEUVE : sur un projet fraîchement créé, la release n'existe pas encore
+ * et un simple PATCH échoue en 404 — c'est le piège vécu à l'onboarding d'Arcelia
+ * 2293 (REX §4.1 : « Deploy complete » côté CLI, mais l'invité prend
+ * `permission-denied` car la base reste sur les règles fermées par défaut). Le
+ * script CRÉE donc la release quand elle manque, et se contente de la mettre à
+ * jour sinon. Garde-fou : la création n'est tentée que si la base existe vraiment
+ * (liste via l'API Firestore Admin) — jamais une release `(default)` sur un projet
+ * client qui n'a que la base nommée.
  *
  * ⚠️ Le PROJET est OBLIGATOIRE (pas de défaut) — pour ne jamais déployer par accident
  * sur la prod. Alias acceptés (calqués sur .firebaserc) :
  *   prod | default | 97 | 2997   -> kd-97-manager
  *   pilot | 41 | 3341            -> kd-41-manager
+ *   arcelia | 2293               -> kd-2293-manager
+ *   mimoso | 1362                -> kd-1362-manager
  * Ou un id de projet brut `kd-...`.
  *
  * Usage :
@@ -24,12 +35,15 @@ const https = require('https');
 const ALIASES = {
   prod: 'kd-97-manager', default: 'kd-97-manager', '97': 'kd-97-manager', '2997': 'kd-97-manager',
   pilot: 'kd-41-manager', '41': 'kd-41-manager', '3341': 'kd-41-manager',
+  arcelia: 'kd-2293-manager', '2293': 'kd-2293-manager',
+  mimoso: 'kd-1362-manager', '1362': 'kd-1362-manager',
 };
 
 const arg = (process.argv[2] || '').trim();
 if (!arg) {
   console.error('❌ Projet requis. Usage : node scripts/deploy-rules.cjs <prod|pilot|kd-xxx>');
-  console.error('   Alias : prod|default|97|2997 -> kd-97-manager ; pilot|41|3341 -> kd-41-manager');
+  console.error('   Alias : prod|default|97|2997 -> kd-97-manager ; pilot|41|3341 -> kd-41-manager ;');
+  console.error('           arcelia|2293 -> kd-2293-manager ; mimoso|1362 -> kd-1362-manager');
   process.exit(1);
 }
 const PROJECT_ID = ALIASES[arg.toLowerCase()] || (/^kd-[\w-]+$/.test(arg) ? arg : null);
@@ -94,6 +108,28 @@ async function updateRelease(token, releaseName, rulesetName) {
   return true;
 }
 
+// Crée la release (instance neuve : rien à mettre à jour). N'est appelée que si la
+// base correspondante existe réellement — cf. en-tête, piège REX Arcelia §4.1.
+async function createRelease(token, releaseName, rulesetName) {
+  const payload = JSON.stringify({ name: releaseName, rulesetName });
+  const result = await httpRequest({
+    hostname: 'firebaserules.googleapis.com', path: `/v1/projects/${PROJECT_ID}/releases`, method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
+  }, payload);
+  if (result.status !== 200) throw new Error(`Create release error ${result.status}: ${JSON.stringify(result.body)}`);
+  return true;
+}
+
+// Bases Firestore réellement présentes sur le projet, en ids courts : ['(default)', 'kdmanagerdb'].
+async function listDatabases(token) {
+  const result = await httpRequest({
+    hostname: 'firestore.googleapis.com', path: `/v1/projects/${PROJECT_ID}/databases`, method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (result.status !== 200) throw new Error(`List databases error ${result.status}: ${JSON.stringify(result.body)}`);
+  return (result.body.databases || []).map((d) => d.name.split('/').pop());
+}
+
 async function main() {
   console.log(`🎯 Cible : ${PROJECT_ID}${PROJECT_ID === 'kd-97-manager' ? '  (⚠️ PROD 2997)' : '  (pilote)'}`);
   const creds = JSON.parse(fs.readFileSync(credsPath, 'utf-8'));
@@ -109,18 +145,25 @@ async function main() {
   const rulesetName = await createRuleset(token, rulesContent);
   console.log(`✅ ruleset créé : ${rulesetName.split('/').pop()}`);
 
+  const present = await listDatabases(token);
+  console.log(`ℹ️ bases Firestore sur ce projet : ${present.join(', ') || '(aucune)'}`);
+
   const targets = [
     ['(default)', `projects/${PROJECT_ID}/releases/cloud.firestore`],
     ['kdmanagerdb', `projects/${PROJECT_ID}/releases/cloud.firestore/kdmanagerdb`],
   ];
-  let updated = 0;
+  let applied = 0;
   for (const [label, releaseName] of targets) {
-    const ok = await updateRelease(token, releaseName, rulesetName);
-    if (ok) { updated++; console.log(`✅ ${label} mis à jour`); }
-    else { console.log(`ℹ️ ${label} absent sur ce projet — ignoré`); }
+    if (!present.includes(label)) { console.log(`ℹ️ ${label} absent sur ce projet — ignoré`); continue; }
+    const updatedOk = await updateRelease(token, releaseName, rulesetName);
+    if (updatedOk) { applied++; console.log(`✅ ${label} mis à jour`); continue; }
+    // Base présente mais pas de release : instance neuve — on la crée.
+    await createRelease(token, releaseName, rulesetName);
+    applied++;
+    console.log(`✅ ${label} — release CRÉÉE (instance neuve)`);
   }
-  if (updated === 0) throw new Error('❌ Aucune base mise à jour (aucune release trouvée) — vérifier le projet.');
-  console.log(`\n🎉 OK — ${updated} base(s) mise(s) à jour sur ${PROJECT_ID}.`);
+  if (applied === 0) throw new Error('❌ Aucune base traitée — vérifier le projet.');
+  console.log(`\n🎉 OK — ${applied} base(s) à jour sur ${PROJECT_ID}.`);
 }
 
 main().catch((err) => { console.error(err.message || err); process.exit(1); });

@@ -1,5 +1,17 @@
 # QA Changelog
 
+## v2.42 - 2026-08-28 — Onboarding KD 1362 (Mimoso) : règles sur instance neuve + étanchéité des déploiements clients
+
+### Fixed
+- **`scripts/deploy-rules.cjs` — les règles n'atteignaient jamais une instance neuve.** Le script ne faisait qu'un PATCH des releases existantes : sur un projet fraîchement créé, la release `cloud.firestore/kdmanagerdb` n'existe pas encore, le PATCH renvoyait 404 et le script s'arrêtait sur `❌ Aucune base mise à jour` — laissant la base sur les **règles fermées par défaut** (invité en `permission-denied`, observatoire muet). Piège identifié sur Arcelia 2293 (REX §4.1) et resté ouvert ; reproduit à l'identique sur 1362. Le script **liste désormais les bases réellement présentes** (API Firestore Admin) et **crée** la release quand elle manque. Garde-fou : jamais de création sur une base absente, donc pas de release `(default)` fantôme sur un projet client. Alias `arcelia|2293` et `mimoso|1362` ajoutés. Non-régression vérifiée en lecture seule sur 97 / 41 / 2293 : leurs releases existent, le chemin UPDATE est inchangé.
+
+### Security
+- **SEC-001 / SEC-002 ouverts** (voir `Issue_Backlog.md`) — deux fuites constatées pendant l'onboarding, **corrigées sur 1362 seulement**, encore vivantes sur les autres instances : les classeurs bruts de 2997 (bank ledger, deadweight nominatif) servis publiquement par le Hosting de 2997 / 3341 / Arcelia, et les clés admin des autres projets + `all_users.json` (PII) embarquées dans le bundle Cloud Functions des instances clientes.
+
+### Docs
+- `REX_Onboarding_Mimoso_1362.md` — retour d'expérience du 3ᵉ onboarding (1er client complet en Google-only).
+- `Runbook_Onboarding_Royaume.md` — Phase 2 (fuite `public/data/`), Phase 3 (création de release), Phase 4 (bloc `ignore` des secrets), Phase 6 (libellés de camps : aucun rejeu nécessaire ; méthode du royaume témoin), Annexe A (pause du job Cloud Scheduler avant suppression).
+
 ## v2.41 - 2026-08-23 — Progressions joueur : campagne en double et colonne KP illisible (BUG-011)
 
 ### Fixed
