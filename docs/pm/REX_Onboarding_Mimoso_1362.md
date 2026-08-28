@@ -199,7 +199,7 @@ console incompressibles, avec le Blaze.
 
 | Sujet | État |
 |---|---|
-| Épinglage du rôle Admin (`roles/{uid}`) | En attente du premier login Google de l'opérateur |
+| Épinglage du rôle Admin (`roles/{uid}`) | **Fait le 2026-08-28.** Après le premier login Google de l'opérateur, `roles/{uid}` posé à `role: 'Admin'` par Admin SDK (`source: onboarding-1362-google-only`). Aucun Discord impliqué — le chemin du REX 2293 §5 fonctionne tel quel, il n'y a rien à construire. `RoleContext` écoute en `onSnapshot`, la bascule est immédiate sans rechargement |
 | Fuite de secrets Functions sur 3341 et Arcelia (§3.2) | **Ouvert — exposition vivante** |
 | Classeurs 2997 publics sur 2997, 3341, Arcelia (§3.3) | **Ouvert — exposition vivante** |
 | Bouton Discord mort sur une instance Google-only | Ouvert — `App.jsx:148` affiche le bouton sans condition ; il mène à `/api/discordLogin`. Le « flag auth mode par instance » recommandé par le REX 2293 §6 n'existe toujours pas |
