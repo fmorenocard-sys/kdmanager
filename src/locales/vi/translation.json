@@ -50,7 +50,8 @@
     "light": "Sáng",
     "dark": "Tối",
     "module_disabled": "Mô-đun chưa được bật",
-    "module_disabled_hint": "Mô-đun này chưa được bật cho vương quốc này."
+    "module_disabled_hint": "Mô-đun này chưa được bật cho vương quốc này.",
+    "restricted_desc_no_discord": "Mục này chỉ dành cho ban lãnh đạo vương quốc (Vua và Sĩ quan). Hãy đăng nhập và đề nghị một Sĩ quan cấp vai trò cho bạn."
   },
   "dashboard": {
     "title": "Bảng điều khiển",
@@ -180,7 +181,8 @@
     "filler_declared_power": "Sức mạnh khai báo",
     "leadership_only_title": "Khu vực chỉ huy",
     "leadership_only_desc": "War Dashboard và mục tiêu chiến dịch chỉ dành cho Vua và Sĩ quan.",
-    "leadership_only_hint": "Đăng ký và mục tiêu cá nhân của bạn ở mục \"Tôi\"."
+    "leadership_only_hint": "Đăng ký và mục tiêu cá nhân của bạn ở mục \"Tôi\".",
+    "auth_required_desc_no_discord": "Để duy trì tính toàn vẹn của dữ liệu và ngăn chặn các khai báo giả mạo, bạn phải đăng nhập để khai báo tình trạng sẵn sàng cho KvK."
   },
   "trophies": {
     "title": "Cúp vương quốc",
@@ -210,7 +212,8 @@
     "reason": "Lý do",
     "search_placeholder": "Tìm người chơi...",
     "total": "Tổng thành viên ì",
-    "restricted_hint": "Danh sách gánh nặng chỉ dành cho lãnh đạo vương quốc (Vua và Sĩ quan). Đăng nhập bằng Discord để đồng bộ vai trò."
+    "restricted_hint": "Danh sách gánh nặng chỉ dành cho lãnh đạo vương quốc (Vua và Sĩ quan). Đăng nhập bằng Discord để đồng bộ vai trò.",
+    "restricted_hint_no_discord": "Danh sách theo dõi gánh nặng chỉ dành cho ban lãnh đạo vương quốc (Vua và Sĩ quan). Hãy đăng nhập và đề nghị một Sĩ quan cấp vai trò cho bạn."
   },
   "bank": {
     "title": "Kho bạc vương quốc",

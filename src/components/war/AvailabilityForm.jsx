@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../../config/firebase';
+import { authCopyKey } from '../../config/auth';
 import { doc, getDoc, setDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
@@ -313,7 +314,7 @@ const AvailabilityForm = () => {
             <AccessGate
                 icon={User}
                 title={t('war.auth_required_title')}
-                description={t('war.auth_required_desc')}
+                description={t(authCopyKey('war.auth_required_desc'))}
                 hint={t('war.auth_required_hint')}
             />
         );

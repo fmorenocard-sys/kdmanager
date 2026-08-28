@@ -50,7 +50,8 @@
     "light": "Claro",
     "dark": "Oscuro",
     "module_disabled": "Módulo no activado",
-    "module_disabled_hint": "Este módulo no está activado para este reino."
+    "module_disabled_hint": "Este módulo no está activado para este reino.",
+    "restricted_desc_no_discord": "Esta sección está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión y pide a un oficial que te asigne el rol."
   },
   "dashboard": {
     "title": "Panel",
@@ -180,7 +181,8 @@
     "filler_declared_power": "Poder declarado",
     "leadership_only_title": "Área de liderazgo",
     "leadership_only_desc": "El War Dashboard y los objetivos de campaña están reservados al Rey y los Oficiales.",
-    "leadership_only_hint": "Tu declaración y tu objetivo personal están en «Yo»."
+    "leadership_only_hint": "Tu declaración y tu objetivo personal están en «Yo».",
+    "auth_required_desc_no_discord": "Para mantener la integridad de los datos y evitar declaraciones falsas, debes haber iniciado sesión para declarar tu disponibilidad de KvK."
   },
   "trophies": {
     "title": "Trofeos del Reino",
@@ -210,7 +212,8 @@
     "reason": "Motivo",
     "search_placeholder": "Buscar jugador...",
     "total": "Total lastre",
-    "restricted_hint": "La lista de peso muerto está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión con Discord para sincronizar tu rol."
+    "restricted_hint": "La lista de peso muerto está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión con Discord para sincronizar tu rol.",
+    "restricted_hint_no_discord": "La lista de vigilancia de peso muerto está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión y pide a un oficial que te asigne el rol."
   },
   "bank": {
     "title": "Tesoro del Reino",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../../config/firebase';
+import { authCopyKey } from '../../config/auth';
 import { collection, getDocs, doc, getDoc, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import { resolveCampaignName } from '../../lib/campaignLabel';
 import { useRole, ROLES } from '../../context/RoleContext';
@@ -202,7 +203,7 @@ const WarDashboard = () => {
         <AccessGate
             icon={ShieldAlert}
             title={t('common.restricted')}
-            description={t('common.restricted_desc')}
+            description={t(authCopyKey('common.restricted_desc'))}
         />
     );
     if (loading) return <div className="p-8 text-center text-slate-400">{t('common.loading')}</div>;

@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { RoleProvider, useRole, ROLES } from './context/RoleContext';
 import { BRANDING } from './config/branding';
 import { isModuleEnabled } from './config/modules';
+import { AUTH } from './config/auth';
 import ModuleDisabled from './components/ui/ModuleDisabled';
 import { LangProvider } from './context/LangContext';
 import { CastleTurret, TrendingUp, Trophy, Bank, Menu, LogIn, LogOut, User, LayoutDashboard, Hammer, House } from './components/ui/icons';
@@ -144,6 +145,10 @@ const UserProfile = () => {
   if (!currentUser) {
     return (
       <div className="flex gap-2 animate-in fade-in zoom-in duration-300">
+        {/* Instance sans SSO Discord (VITE_AUTH_DISCORD=false) : le bouton menait
+            dans le vide — pas de réécriture Hosting, ou des secrets placeholders
+            renvoyant une URL OAuth sans client_id. Voir src/config/auth.js. */}
+        {AUTH.discordEnabled && (
         <button
           onClick={loginWithDiscord}
           className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-white bg-[#5865F2] hover:bg-[#4752C4] rounded-lg transition-colors shadow-lg shadow-[#5865F2]/20"
@@ -154,6 +159,7 @@ const UserProfile = () => {
           </svg>
           <span className="hidden sm:inline">Discord</span>
         </button>
+        )}
         <button
           onClick={loginWithGoogle}
           className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white border border-slate-700 rounded-lg transition-colors group"

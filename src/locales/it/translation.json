@@ -50,7 +50,8 @@
     "light": "Chiaro",
     "dark": "Scuro",
     "module_disabled": "Modulo non attivo",
-    "module_disabled_hint": "Questo modulo non è attivo per questo regno."
+    "module_disabled_hint": "Questo modulo non è attivo per questo regno.",
+    "restricted_desc_no_discord": "Questa sezione è riservata alla leadership del regno (Re e Ufficiali). Accedi e chiedi a un ufficiale di assegnarti il ruolo."
   },
   "dashboard": {
     "title": "Pannello",
@@ -180,7 +181,8 @@
     "filler_declared_power": "Potenza dichiarata",
     "leadership_only_title": "Area leadership",
     "leadership_only_desc": "La War Dashboard e gli obiettivi di campagna sono riservati al Re e agli Ufficiali.",
-    "leadership_only_hint": "La tua dichiarazione e il tuo obiettivo personale sono in «Io»."
+    "leadership_only_hint": "La tua dichiarazione e il tuo obiettivo personale sono in «Io».",
+    "auth_required_desc_no_discord": "Per mantenere l'integrità dei dati ed evitare dichiarazioni false, devi aver effettuato l'accesso per dichiarare la tua disponibilità KvK."
   },
   "trophies": {
     "title": "Trofei del Regno",
@@ -210,7 +212,8 @@
     "reason": "Motivo",
     "search_placeholder": "Cerca giocatore...",
     "total": "Peso morto totale",
-    "restricted_hint": "La lista di monitoraggio del peso morto è riservata alla leadership del regno (Re e Ufficiali). Accedi con Discord per sincronizzare il tuo ruolo."
+    "restricted_hint": "La lista di monitoraggio del peso morto è riservata alla leadership del regno (Re e Ufficiali). Accedi con Discord per sincronizzare il tuo ruolo.",
+    "restricted_hint_no_discord": "La watchlist dei peso morto è riservata alla leadership del regno (Re e Ufficiali). Accedi e chiedi a un ufficiale di assegnarti il ruolo."
   },
   "bank": {
     "title": "Tesoreria del Regno",

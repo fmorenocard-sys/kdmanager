@@ -12,6 +12,7 @@ import StatusFilter from '../components/ui/StatusFilter';
 import Avatar from '../components/ui/Avatar';
 
 import PageHeader from '../components/ui/PageHeader';
+import { authCopyKey } from '../config/auth';
 import AccessGate from '../components/ui/AccessGate';
 
 // `embedded` : monté comme onglet du hub Pilotage (F-032 Lot 6) — on masque alors
@@ -114,7 +115,7 @@ const DeadweightPage = ({ embedded = false }) => {
             <AccessGate
                 icon={ShieldAlert}
                 title={t('common.restricted')}
-                description={t('deadweight.restricted_hint')}
+                description={t(authCopyKey('deadweight.restricted_hint'))}
             />
         );
     }

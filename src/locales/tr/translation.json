@@ -50,7 +50,8 @@
     "light": "Açık",
     "dark": "Koyu",
     "module_disabled": "Modül etkin değil",
-    "module_disabled_hint": "Bu modül bu krallık için etkin değil."
+    "module_disabled_hint": "Bu modül bu krallık için etkin değil.",
+    "restricted_desc_no_discord": "Bu bölüm krallık liderliğine ayrılmıştır (Kral ve Subaylar). Giriş yapın ve bir subaydan rolü atamasını isteyin."
   },
   "dashboard": {
     "title": "Panel",
@@ -180,7 +181,8 @@
     "filler_declared_power": "Bildirilen güç",
     "leadership_only_title": "Liderlik alanı",
     "leadership_only_desc": "War Dashboard ve kampanya hedefleri Kral ve Subaylara özeldir.",
-    "leadership_only_hint": "Bildirimin ve kişisel hedefin \"Ben\" bölümünde."
+    "leadership_only_hint": "Bildirimin ve kişisel hedefin \"Ben\" bölümünde.",
+    "auth_required_desc_no_discord": "Veri bütünlüğünü korumak ve sahte bildirimleri önlemek için KvK uygunluğunuzu bildirmek üzere giriş yapmış olmanız gerekir."
   },
   "trophies": {
     "title": "Krallık Kupaları",
@@ -210,7 +212,8 @@
     "reason": "Sebep",
     "search_placeholder": "Oyuncu ara...",
     "total": "Toplam Yük",
-    "restricted_hint": "Ölü ağırlık listesi krallık yönetimine ayrılmıştır (Kral ve Subaylar). Rolünüzü eşitlemek için Discord ile giriş yapın."
+    "restricted_hint": "Ölü ağırlık listesi krallık yönetimine ayrılmıştır (Kral ve Subaylar). Rolünüzü eşitlemek için Discord ile giriş yapın.",
+    "restricted_hint_no_discord": "Ölü ağırlık izleme listesi krallık liderliğine ayrılmıştır (Kral ve Subaylar). Giriş yapın ve bir subaydan rolü atamasını isteyin."
   },
   "bank": {
     "title": "Krallık Hazinesi",

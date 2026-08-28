@@ -73,10 +73,13 @@ cliente : `serviceAccountKey.json` n'est lu que sous `FUNCTIONS_EMULATOR`
 `serviceAccountKey.json`, `service-account.json`, `kd-*-manager.json`,
 `all_users*.json`, `output.json`.
 
-**NON fait, exposition vivante** : `firebase.pilot.json` et
-`firebase.arcelia.json` n'ont pas ce bloc → les clés au repos sont toujours sur
-les instances de 3341 et d'Arcelia. Correctif = même bloc + redéploiement de
-leurs Functions.
+**Étendu aux quatre instances le 2026-08-28** (SEC-002 dans `Issue_Backlog.md`).
+Sur 2997 le bloc omet volontairement `service-account.json`, dont `runFullSync` a
+besoin. Vérifié sur les **archives réellement déployées**
+(`gcf-v2-sources-<numéro>-us-central1`), pas sur la config. Deux effets de bord
+subis : le redéploiement a **recréé `scheduledSync` sur 3341 et Arcelia**
+(Annexe A confirmée par les faits — pause puis suppression), et Arcelia a gagné
+cinq fonctions Discord inertes, le déploiement d'une codebase étant tout-ou-rien.
 
 ### 3.3 ⚠️ Les classeurs de 2997 sont servis publiquement par TOUTES les instances
 
@@ -226,5 +229,46 @@ console incompressibles, avec le Blaze.
 | Épinglage du rôle Admin (`roles/{uid}`) | **Fait le 2026-08-28.** Après le premier login Google de l'opérateur, `roles/{uid}` posé à `role: 'Admin'` par Admin SDK (`source: onboarding-1362-google-only`). Aucun Discord impliqué — le chemin du REX 2293 §5 fonctionne tel quel, il n'y a rien à construire. `RoleContext` écoute en `onSnapshot`, la bascule est immédiate sans rechargement |
 | Fuite de secrets Functions sur 3341 et Arcelia (§3.2) | **Ouvert — exposition vivante** |
 | Classeurs 2997 publics sur 2997, 3341, Arcelia (§3.3) | **Ouvert — exposition vivante** |
-| Bouton Discord mort sur une instance Google-only | Ouvert — `App.jsx:148` affiche le bouton sans condition ; il mène à `/api/discordLogin`. Le « flag auth mode par instance » recommandé par le REX 2293 §6 n'existe toujours pas |
+| Points d'entrée Discord morts sur une instance Google-only | **FAIT le 2026-08-28** — voir §7 |
 | Backfill `kvk_history` de Mimoso | À trancher avec le Roi |
+
+## 7. Suite — le « flag auth mode par instance » (livré le 2026-08-28)
+
+Le REX 2293 §6 le recommandait sans le faire ; l'onboarding de Mimoso l'a rendu
+nécessaire. Mesure du problème **avant** correctif, par sonde de
+`/api/discordLogin` sur les quatre instances :
+
+| Instance | Réponse | Ce que vivait l'utilisateur |
+|---|---|---|
+| 2997 | 302 → Discord, `client_id=1475892267…` | ✅ fonctionnel |
+| 3341 | 302 → Discord, `client_id=1531298126…` | ✅ fonctionnel |
+| Arcelia 2293 | 302 → Discord **sans `client_id`** | ❌ quittait le site pour une page d'erreur Discord |
+| Mimoso 1362 | 200, repli SPA | ❌ bouton mort, la page se rechargeait |
+
+Arcelia était donc **pire** que Mimoso : l'échec sortait l'utilisateur du produit.
+
+**Livré** : `src/config/auth.js` — `AUTH.discordEnabled`, piloté par
+`VITE_AUTH_DISCORD`, **activé par défaut** (même convention que `modules.js` :
+2997 et 3341 n'ont rien à changer, vérifié en comparant les bundles). Trois
+surfaces gâtées :
+
+1. le bouton de connexion Discord (`App.jsx`) ;
+2. le bloc « Lier mon compte Discord » de `/profile` — il visait
+   `/api/discordLogin?action=link`, le même endpoint mort ;
+3. **les copies**, souvent oubliées : `common.restricted_desc`,
+   `war.auth_required_desc` et `deadweight.restricted_hint` disaient toutes
+   « Connectez-vous via Discord pour synchroniser votre rôle » — une consigne
+   **impossible à suivre** sur une instance Google-only. Chacune a désormais un
+   jumeau `_no_discord` au phrasé neutre (« Connectez-vous, puis demandez à un
+   officier de vous attribuer le rôle »), traduit dans les **10 locales**, choisi
+   par le helper `authCopyKey()`.
+
+**Effet de bord heureux** : `VITE_AUTH_DISCORD` étant inliné au build, Rollup
+**élimine la branche morte** — « Login with Discord » n'apparaît pas du tout dans
+les bundles de 1362 et 2293 (vérifié par `grep` sur le bundle), et reste présent
+dans celui du pilote. Ce n'est pas un simple masquage CSS.
+
+**Non traité** : les champs « snapshot Discord » de la config de Course
+(`RaceConfigForm`, King-only) restent visibles sur une instance sans Discord. Ils
+ne mènent nulle part de dangereux — ils enregistrent une config inerte — mais
+mériteraient le même traitement.

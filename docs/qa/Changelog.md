@@ -1,5 +1,18 @@
 # QA Changelog
 
+## v2.43 - 2026-08-28 — Mode d'authentification par instance : plus de Discord affiché là où il ne marche pas
+
+### Added
+- **`src/config/auth.js` — `VITE_AUTH_DISCORD`, drapeau d'auth par instance** (recommandation du REX Arcelia §6, restée ouverte depuis le 23/08). **Défaut = Discord activé** : 2997 et le pilote 3341 sont inchangés, vérifié en comparant les bundles produits. Posé à `false` sur les deux instances Google-only (Mimoso 1362, Arcelia 2293).
+
+### Fixed
+- **Les points d'entrée Discord menaient dans le vide sur les instances sans application Discord dédiée.** Mesuré par sonde de `/api/discordLogin` : **1362** renvoyait 200 + repli SPA (bouton mort, la page se rechargeait) ; **Arcelia** redirigeait vers Discord **sans `client_id`** — l'utilisateur quittait le produit pour une page d'erreur Discord, donc pire encore. Trois surfaces gâtées par `AUTH.discordEnabled` : le bouton de connexion (`App.jsx`), le bloc « Lier mon compte Discord » de `/profile` (il visait `/api/discordLogin?action=link`, le même endpoint mort), et **les copies** des pages restreintes.
+- **Les copies disaient une consigne impossible à suivre.** `common.restricted_desc`, `war.auth_required_desc` et `deadweight.restricted_hint` affichaient toutes « Connectez-vous via Discord pour synchroniser votre rôle » — faux sur une instance où les rôles sont épinglés à la main. Chacune a un jumeau `_no_discord` au phrasé neutre (« Connectez-vous, puis demandez à un officier de vous attribuer le rôle »), **traduit dans les 10 locales**, sélectionné par le helper `authCopyKey()`. 5 points d'appel branchés (`WarDashboard`, `AdminPage`, `KvKRacePage`, `AvailabilityForm`, `DeadweightPage`).
+- Vérifié en ligne sur les deux instances après déploiement : le bandeau ne présente plus que le bouton Google, et `/admin` en invité affiche bien la copie neutre. Le drapeau étant inliné au build, **Rollup élimine la branche morte** — « Login with Discord » est absent des bundles de 1362 et 2293, et toujours présent dans celui du pilote (ce n'est donc pas un masquage CSS).
+
+### Known gaps
+- Les champs « snapshot Discord » de la config de Course (`RaceConfigForm`, King-only) restent visibles sur une instance sans Discord. Config inerte, pas un chemin cassé — même traitement à envisager.
+
 ## v2.42 - 2026-08-28 — Onboarding KD 1362 (Mimoso) : règles sur instance neuve + étanchéité des déploiements clients
 
 ### Fixed

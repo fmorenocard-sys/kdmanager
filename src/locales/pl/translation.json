@@ -50,7 +50,8 @@
     "light": "Jasny",
     "dark": "Ciemny",
     "module_disabled": "Moduł nieaktywny",
-    "module_disabled_hint": "Ten moduł nie jest aktywny dla tego królestwa."
+    "module_disabled_hint": "Ten moduł nie jest aktywny dla tego królestwa.",
+    "restricted_desc_no_discord": "Ta sekcja jest zarezerwowana dla przywództwa królestwa (Król i Oficerowie). Zaloguj się i poproś oficera o przypisanie roli."
   },
   "dashboard": {
     "title": "Panel",
@@ -180,7 +181,8 @@
     "filler_declared_power": "Zadeklarowana moc",
     "leadership_only_title": "Strefa dowództwa",
     "leadership_only_desc": "War Dashboard i cele kampanii są zarezerwowane dla Króla i Oficerów.",
-    "leadership_only_hint": "Twoje zgłoszenie i cel osobisty są w „Ja\"."
+    "leadership_only_hint": "Twoje zgłoszenie i cel osobisty są w „Ja\".",
+    "auth_required_desc_no_discord": "Aby zachować integralność danych i zapobiec fałszywym deklaracjom, musisz być zalogowany, aby zadeklarować swoją dostępność w KvK."
   },
   "trophies": {
     "title": "Trofea Królestwa",
@@ -210,7 +212,8 @@
     "reason": "Powód",
     "search_placeholder": "Szukaj gracza...",
     "total": "Łączny ciężar",
-    "restricted_hint": "Lista balastu jest zarezerwowana dla władz królestwa (Król i Oficerowie). Zaloguj się przez Discord, aby zsynchronizować swoją rolę."
+    "restricted_hint": "Lista balastu jest zarezerwowana dla władz królestwa (Król i Oficerowie). Zaloguj się przez Discord, aby zsynchronizować swoją rolę.",
+    "restricted_hint_no_discord": "Lista obserwacyjna martwego balastu jest zarezerwowana dla przywództwa królestwa (Król i Oficerowie). Zaloguj się i poproś oficera o przypisanie roli."
   },
   "bank": {
     "title": "Skarbiec Królestwa",

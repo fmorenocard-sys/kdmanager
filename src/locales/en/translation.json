@@ -50,7 +50,8 @@
     "light": "Light",
     "dark": "Dark",
     "module_disabled": "Module not enabled",
-    "module_disabled_hint": "This module is not enabled for this kingdom."
+    "module_disabled_hint": "This module is not enabled for this kingdom.",
+    "restricted_desc_no_discord": "This section is reserved for kingdom leadership (King and Officers). Log in, then ask an officer to grant you the role."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -180,7 +181,8 @@
     "filler_declared_power": "Declared power",
     "leadership_only_title": "Leadership area",
     "leadership_only_desc": "The War Dashboard and campaign goals are reserved for the King and Officers.",
-    "leadership_only_hint": "Your declaration and personal goal are in \"Me\"."
+    "leadership_only_hint": "Your declaration and personal goal are in \"Me\".",
+    "auth_required_desc_no_discord": "To maintain data integrity and prevent fake declarations, you must be logged in to declare your KvK availability."
   },
   "trophies": {
     "title": "Kingdom Trophies",
@@ -210,7 +212,8 @@
     "reason": "Reason",
     "search_placeholder": "Search player...",
     "total": "Total Deadweight",
-    "restricted_hint": "The deadweight watchlist is reserved for kingdom leadership (King and Officers). Log in with Discord to sync your role."
+    "restricted_hint": "The deadweight watchlist is reserved for kingdom leadership (King and Officers). Log in with Discord to sync your role.",
+    "restricted_hint_no_discord": "The deadweight watchlist is reserved for kingdom leadership (King and Officers). Log in, then ask an officer to grant you the role."
   },
   "bank": {
     "title": "Kingdom Treasury",

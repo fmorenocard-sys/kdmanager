@@ -10,6 +10,7 @@ import { httpsCallable } from 'firebase/functions';
 import { RefreshCw , User } from '../components/ui/icons';
 
 import PageHeader from '../components/ui/PageHeader';
+import { AUTH } from '../config/auth';
 
 const ProfilePage = () => {
     const { currentUser, governorId, accounts, claimAccount, unclaimAccount, setAccountType, setPrimaryAccount, linkWithDiscord } = useAuth();
@@ -269,6 +270,11 @@ const ProfilePage = () => {
                                 </button>
                             </div>
                         </div>
+                    ) : !AUTH.discordEnabled ? (
+                        // Instance sans SSO Discord : `linkWithDiscord` viserait
+                        // /api/discordLogin?action=link, qui ne répond pas ici.
+                        // Les rôles y sont épinglés à la main dans roles/{uid}.
+                        null
                     ) : (
                         <div className="v2-glass p-6 text-center">
                             <p className="text-slate-300 mb-4">{t('profile.link_discord_desc', 'Liez votre compte Discord pour synchroniser vos rôles in-app.')}</p>

@@ -50,7 +50,8 @@
     "light": "Hell",
     "dark": "Dunkel",
     "module_disabled": "Modul nicht aktiviert",
-    "module_disabled_hint": "Dieses Modul ist für dieses Königreich nicht aktiviert."
+    "module_disabled_hint": "Dieses Modul ist für dieses Königreich nicht aktiviert.",
+    "restricted_desc_no_discord": "Dieser Bereich ist der Führung des Königreichs vorbehalten (König und Offiziere). Melde dich an und bitte einen Offizier, dir die Rolle zuzuweisen."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -180,7 +181,8 @@
     "filler_declared_power": "Deklarierte Macht",
     "leadership_only_title": "Führungsbereich",
     "leadership_only_desc": "Das War Dashboard und die Kampagnenziele sind dem König und den Offizieren vorbehalten.",
-    "leadership_only_hint": "Deine Meldung und dein persönliches Ziel sind unter „Ich\"."
+    "leadership_only_hint": "Deine Meldung und dein persönliches Ziel sind unter „Ich\".",
+    "auth_required_desc_no_discord": "Um die Datenintegrität zu wahren und gefälschte Erklärungen zu vermeiden, musst du angemeldet sein, um deine KvK-Verfügbarkeit zu erklären."
   },
   "trophies": {
     "title": "Königreich-Trophäen",
@@ -210,7 +212,8 @@
     "reason": "Grund",
     "search_placeholder": "Spieler suchen...",
     "total": "Ballast gesamt",
-    "restricted_hint": "Die Ballast-Beobachtungsliste ist der Königreichsführung vorbehalten (König und Offiziere). Melde dich mit Discord an, um deine Rolle zu synchronisieren."
+    "restricted_hint": "Die Ballast-Beobachtungsliste ist der Königreichsführung vorbehalten (König und Offiziere). Melde dich mit Discord an, um deine Rolle zu synchronisieren.",
+    "restricted_hint_no_discord": "Die Ballast-Beobachtungsliste ist der Königreichsführung vorbehalten (König und Offiziere). Melde dich an und bitte einen Offizier, dir die Rolle zuzuweisen."
   },
   "bank": {
     "title": "Königreichs-Schatzkammer",

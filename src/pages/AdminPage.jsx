@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useRole, ROLES } from '../context/RoleContext';
 import AccessGate from '../components/ui/AccessGate';
 import PageHeader from '../components/ui/PageHeader';
+import { authCopyKey } from '../config/auth';
 import DataRefreshControl from '../components/DataRefreshControl';
 import KvKConfigForm from '../components/war/KvKConfigForm';
 import CampaignArchiveControl from '../components/war/CampaignArchiveControl';
@@ -25,7 +26,7 @@ const AdminPage = () => {
             <AccessGate
                 icon={ShieldAlert}
                 title={t('common.restricted')}
-                description={t('common.restricted_desc')}
+                description={t(authCopyKey('common.restricted_desc'))}
             />
         );
     }

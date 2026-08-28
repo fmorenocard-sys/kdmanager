@@ -4,6 +4,7 @@ import { useRole, ROLES } from '../context/RoleContext';
 import { BRANDING } from '../config/branding';
 import AccessGate from '../components/ui/AccessGate';
 import PageHeader from '../components/ui/PageHeader';
+import { authCopyKey } from '../config/auth';
 import RaceView from '../components/kvk/RaceView';
 import { Flag, ShieldAlert } from '../components/ui/icons';
 
@@ -19,7 +20,7 @@ const KvKRacePage = () => {
             <AccessGate
                 icon={ShieldAlert}
                 title={t('common.restricted')}
-                description={t('common.restricted_desc')}
+                description={t(authCopyKey('common.restricted_desc'))}
             />
         );
     }
