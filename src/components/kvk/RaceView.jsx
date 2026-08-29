@@ -235,7 +235,9 @@ const RaceView = () => {
             )}
 
             {/* Camps + panneau de dépôt (US-015, maquette M1) */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 items-stretch">
+            {/* Au-delà de 4 camps (Storm of Stratagems en compte 6), une grille de 4
+                laisserait une seconde rangée bancale — 3 colonnes tombent juste. */}
+            <div className={`grid grid-cols-1 gap-3 items-stretch ${camps.length > 4 ? 'md:grid-cols-2 lg:grid-cols-3' : 'lg:grid-cols-4'}`}>
                 {camps.map((c, i) => (
                     <section key={c.camp ?? i} className="v2-glass p-3 md:p-4 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">

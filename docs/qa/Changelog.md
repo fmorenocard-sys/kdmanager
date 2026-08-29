@@ -1,5 +1,19 @@
 # QA Changelog
 
+## v2.46 - 2026-08-29 — Course : nombre de camps configurable (2997 en compte 6)
+
+### Fixed
+- **La config de Course était figée sur 4 camps.** `RaceConfigForm` portait `const CAMP_IDS = ['1','2','3','4']` en dur : sur un KvK à 6 camps (Storm of Stratagems, 2997, août 2026) les camps 5 et 6 étaient **impossibles à nommer** et **absents des listes du duel**. Le moteur (`functions/kvkRace`, `aggregateBy(..., ['scan_seq','camp'])`) et `RaceView` (`camps.map`) étaient déjà agnostiques — seul le formulaire bloquait. Ajout d'un sélecteur **« Nombre de camps » (2 à 12)**, déduit automatiquement d'une campagne existante (`campCountOf` = plus grand id présent dans `labels`/`roles`, plancher 4) : `soc4_race_2026` rouvre bien sur 4 lignes, sans régression. La sauvegarde borne `labels`/`roles` au nombre déclaré, donc réduire le compte nettoie les entrées orphelines. Clé i18n `kvk_race.camp_count_label` × 10 locales.
+- **Grille des camps adaptative.** `RaceView` affichait `lg:grid-cols-4` : 6 camps tombaient en 4+2. Au-delà de 4 camps, la grille passe en 3 colonnes (3+3) ; à 4 camps ou moins, rien ne change.
+
+### Added
+- **Campagne `sos_race_2026` créée sur 2997** — « Storm of Stratagems — Course (2026) », **6 camps** : 1=Fire, 2=Earth, 3=Wind, 4=Water, 5=Greenwood, 6=Daybreak. Course à **trois camps alliés** : Daybreak (`nous`) contre Earth et Water (`allie_concurrent_etoile`) ; Fire, Wind et Greenwood en `adversaire`. `soc4_race_2026` (saison précédente, 6 scans) laissée intacte ; l'exclusion anti-triche qu'elle portait n'a pas été reportée, elle était propre à cette saison.
+- **Mapping ancré, pas déduit.** Après les inversions Wind/Water d'Arcelia **et** de Mimoso, l'ordre annoncé n'est plus une preuve. Ancrage sur le seul fait vérifiable : 2997 est dans le `campid` 6, que le Roi identifie comme **Daybreak** — ce qui confirme du même coup l'ordre canonique ProKingdoms (Fire, Earth, Wind, Water, …), déjà relevé sur Mimoso pour les camps 1 à 4.
+
+### Known gaps
+- **`hero_duel` reste une paire** : le moteur calcule `camp_a`, `camp_b` et l'écart `A − B`, et la vue en tire un graphe à deux séries. Une course à trois alliés n'y entre pas. Posé sur **Daybreak vs Water**, Water étant le concurrent allié le plus proche (35,2 Md contre 34,0 pour Daybreak au scan de base, et devant), Earth étant loin derrière à 29,5 Md. Le classement des 6 camps, lui, montre bien les trois alliés. Changer le duel plus tard impose un `recomputeRaceCampaign` (peu coûteux : un seul scan).
+- Le formulaire à N camps **n'est pas encore visible sur 2997** : sa prod est sur `fc81c0a`. Vérifié qu'une config à 6 camps survit intacte à l'ancien formulaire (les entrées 5-6 sont préservées en lecture comme en écriture, et `our_camp`/`hero_duel` aussi) — mais le Roi ne pourra pas éditer les camps 5 et 6 avant un déploiement. La **vue**, elle, affiche déjà les 6 camps (grille 4+2 tant que la grille adaptative n'est pas déployée).
+
 ## v2.45 - 2026-08-29 — KD 1362 : le scan de base était tronqué, données reprises
 
 ### Fixed

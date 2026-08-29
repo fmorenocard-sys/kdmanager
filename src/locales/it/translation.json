@@ -461,7 +461,8 @@
     "efficiency_hint": "Sopra la diagonale: rendono più di quanto la loro potenza suggerisse.",
     "efficiency_over": "Sopra le aspettative",
     "efficiency_under": "Sotto le aspettative",
-    "efficiency_empty": "Dati di potenza insufficienti per questo scan."
+    "efficiency_empty": "Dati di potenza insufficienti per questo scan.",
+    "camp_count_label": "Numero di campi"
   },
   "kvk_history": {
     "kingdom_tab": "Progressione del regno",

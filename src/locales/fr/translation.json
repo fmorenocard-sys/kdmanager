@@ -461,7 +461,8 @@
     "efficiency_hint": "Au-dessus de la diagonale : rend plus que sa puissance ne le laissait attendre.",
     "efficiency_over": "Surperformance",
     "efficiency_under": "Sous-performance",
-    "efficiency_empty": "Pas assez de données de puissance pour ce scan."
+    "efficiency_empty": "Pas assez de données de puissance pour ce scan.",
+    "camp_count_label": "Nombre de camps"
   },
   "kvk_history": {
     "kingdom_tab": "Progression du Royaume",

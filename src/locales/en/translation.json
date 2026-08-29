@@ -461,7 +461,8 @@
     "efficiency_hint": "Above the diagonal: delivering more than their power suggested.",
     "efficiency_over": "Overperforming",
     "efficiency_under": "Underperforming",
-    "efficiency_empty": "Not enough power data for this scan."
+    "efficiency_empty": "Not enough power data for this scan.",
+    "camp_count_label": "Number of camps"
   },
   "kvk_history": {
     "kingdom_tab": "Kingdom Progression",

@@ -461,7 +461,8 @@
     "efficiency_hint": "Trên đường chéo: đóng góp nhiều hơn mức sức mạnh gợi ý.",
     "efficiency_over": "Vượt kỳ vọng",
     "efficiency_under": "Dưới kỳ vọng",
-    "efficiency_empty": "Không đủ dữ liệu sức mạnh cho lần quét này."
+    "efficiency_empty": "Không đủ dữ liệu sức mạnh cho lần quét này.",
+    "camp_count_label": "Số phe"
   },
   "kvk_history": {
     "kingdom_tab": "Tiến trình Vương quốc",

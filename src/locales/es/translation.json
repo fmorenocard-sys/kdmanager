@@ -461,7 +461,8 @@
     "efficiency_hint": "Por encima de la diagonal: rinde más de lo que su poder sugería.",
     "efficiency_over": "Sobrerrendimiento",
     "efficiency_under": "Bajo rendimiento",
-    "efficiency_empty": "No hay suficientes datos de poder para este escaneo."
+    "efficiency_empty": "No hay suficientes datos de poder para este escaneo.",
+    "camp_count_label": "Número de campos"
   },
   "kvk_history": {
     "kingdom_tab": "Progresión del Reino",

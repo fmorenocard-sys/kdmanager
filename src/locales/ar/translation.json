@@ -461,7 +461,8 @@
     "efficiency_hint": "فوق القطر: يقدّم أكثر ممّا توحي به قوّته.",
     "efficiency_over": "أداء فوق المتوقع",
     "efficiency_under": "أداء دون المتوقع",
-    "efficiency_empty": "لا توجد بيانات قوة كافية لهذا المسح."
+    "efficiency_empty": "لا توجد بيانات قوة كافية لهذا المسح.",
+    "camp_count_label": "عدد المعسكرات"
   },
   "kvk_history": {
     "kingdom_tab": "تقدّم المملكة",

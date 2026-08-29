@@ -461,7 +461,8 @@
     "efficiency_hint": "Powyżej przekątnej: daje więcej, niż sugerowała moc.",
     "efficiency_over": "Ponad normę",
     "efficiency_under": "Poniżej normy",
-    "efficiency_empty": "Za mało danych o mocy dla tego skanu."
+    "efficiency_empty": "Za mało danych o mocy dla tego skanu.",
+    "camp_count_label": "Liczba obozów"
   },
   "kvk_history": {
     "kingdom_tab": "Postęp Królestwa",

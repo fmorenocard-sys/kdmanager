@@ -14,11 +14,26 @@ import { Flag, Save, RefreshCw, AlertTriangle, CheckCircle2, X } from '../ui/ico
 // Équivalent in-app du config/camp_labels.json du moteur Python : camps, duel,
 // poids DKP de course (BR-010), exclusions anti-triche, base scan. La sauvegarde
 // merge sur kvk_race/{id} (les champs de digestion restent aux Functions).
-const CAMP_IDS = ['1', '2', '3', '4'];
+// Le nombre de camps varie d'un KvK à l'autre : 4 sur SoC 4 (2997) et sur les
+// KvK de 3341/1362, mais 6 sur Storm of Stratagems (2997, août 2026). Le moteur
+// (functions/kvkRace) et la vue sont déjà agnostiques — ils agrègent sur les
+// `campid` réellement présents dans le scan. Seul ce formulaire était figé sur 4,
+// ce qui rendait les camps au-delà impossibles à nommer et absents des listes de
+// duel. Bornes larges mais finies pour éviter une saisie absurde.
+const CAMP_COUNT_MIN = 2;
+const CAMP_COUNT_MAX = 12;
+const campIdsFor = (n) => Array.from({ length: n }, (_, i) => String(i + 1));
+/** Déduit le nombre de camps d'une campagne existante (max id présent dans labels/roles). */
+const campCountOf = (c) => {
+    const ids = [...Object.keys(c?.labels || {}), ...Object.keys(c?.roles || {})]
+        .map(Number).filter((n) => Number.isInteger(n) && n >= 1 && n <= CAMP_COUNT_MAX);
+    return ids.length ? Math.max(4, ...ids) : 4;
+};
 
 const DEFAULT_FORM = {
     id: '',
     name: '',
+    campCount: 4,
     labels: { 1: '', 2: '', 3: '', 4: '' },
     roles: { 1: 'adversaire', 2: 'nous', 3: 'allie_concurrent_etoile', 4: 'adversaire' },
     hero_duel: [2, 3],
@@ -59,6 +74,7 @@ const RaceConfigForm = () => {
     // « Notre camp » et le duel sont DÉDUITS des rôles pour éviter la double saisie :
     // notre camp = celui dont le rôle est « nous » ; le duel par défaut = « nous » vs
     // l'allié rival étoile. Le duel reste surchargeable (setDuelTouched au 1er changement).
+    const CAMP_IDS = useMemo(() => campIdsFor(form.campCount || 4), [form.campCount]);
     const nousCamp = CAMP_IDS.find((c) => form.roles[c] === 'nous') || null;
     const starRivalCamp = CAMP_IDS.find((c) => form.roles[c] === 'allie_concurrent_etoile') || null;
     useEffect(() => {
@@ -81,6 +97,8 @@ const RaceConfigForm = () => {
         setForm({
             id: c.id,
             name: c.name || '',
+            // Déduit du doc : une campagne à 6 camps rouvre bien avec ses 6 lignes.
+            campCount: campCountOf(c),
             labels: { ...DEFAULT_FORM.labels, ...(c.labels || {}) },
             roles: { ...DEFAULT_FORM.roles, ...(c.roles || {}) },
             hero_duel: Array.isArray(c.hero_duel) && c.hero_duel.length === 2 ? c.hero_duel.map(Number) : [2, 3],
@@ -131,8 +149,10 @@ const RaceConfigForm = () => {
             const pinned = form.pinnedText.split(',').map((s) => Number(s.trim())).filter(Number.isFinite);
             const payload = {
                 name: form.name.trim(),
-                labels: form.labels,
-                roles: form.roles,
+                // Bornés au nombre de camps déclaré : réduire le compte nettoie
+                // les entrées devenues orphelines plutôt que de les laisser traîner.
+                labels: Object.fromEntries(CAMP_IDS.map((c) => [c, form.labels[c] || ''])),
+                roles: Object.fromEntries(CAMP_IDS.map((c) => [c, form.roles[c] || 'adversaire'])),
                 hero_duel: form.hero_duel.map(Number),
                 our_camp: String(nousCamp || form.our_camp || '2'), // déduit du rôle « nous »
                 pinned_kingdoms: pinned,
@@ -229,7 +249,20 @@ const RaceConfigForm = () => {
             </div>
 
             {/* Camps */}
-            <p className="text-sm font-semibold text-slate-300 mb-2">{t('kvk_race.camps_title')}</p>
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <p className="text-sm font-semibold text-slate-300">{t('kvk_race.camps_title')}</p>
+                <label className="flex items-center gap-2 text-xs text-slate-400">
+                    {t('kvk_race.camp_count_label', 'Nombre de camps')}
+                    <select
+                        className={inputCls}
+                        value={form.campCount || 4}
+                        onChange={(e) => setForm((f) => ({ ...f, campCount: Number(e.target.value) }))}
+                    >
+                        {Array.from({ length: CAMP_COUNT_MAX - CAMP_COUNT_MIN + 1 }, (_, i) => CAMP_COUNT_MIN + i)
+                            .map((n) => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                </label>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                 {CAMP_IDS.map((cid) => (
                     <div key={cid} className="flex items-center gap-2 bg-[var(--border-flat)] rounded-lg p-2">
