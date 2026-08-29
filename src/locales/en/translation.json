@@ -462,7 +462,8 @@
     "efficiency_over": "Overperforming",
     "efficiency_under": "Underperforming",
     "efficiency_empty": "Not enough power data for this scan.",
-    "camp_count_label": "Number of camps"
+    "camp_count_label": "Number of camps",
+    "evolution_race_title": "Race evolution"
   },
   "kvk_history": {
     "kingdom_tab": "Kingdom Progression",

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../../config/firebase';
@@ -25,6 +25,9 @@ const fmtCompact = (num) => {
 // Même convention de nommage que le pipeline (parse.js côté functions)
 const SCAN_NAME_RE = /^\d+_(BASE_)?(?:SCAN_)?\d+_\d{2}_\d{2}_\d{4}\D+\d{2}_\d{2}_\d{2}_(AM|PM)/i;
 
+// Palette des courbes de la course — « nous » prend la premiere (bleu), comme avant.
+const RACE_COLORS = ['#60a5fa', '#f87171', '#34d399', '#a78bfa', '#fb923c', '#22d3ee'];
+
 const roleClass = (role) => role === 'nous'
     ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
     : role === 'allie_concurrent_etoile'
@@ -49,7 +52,7 @@ const RaceView = () => {
         [campaigns, campaignId]
     );
     const labels = useMemo(() => campaign?.labels || {}, [campaign]);
-    const roles = campaign?.roles || {};
+    const roles = useMemo(() => campaign?.roles || {}, [campaign]);
     const pinned = useMemo(() => (campaign?.pinned_kingdoms || []).map(Number), [campaign]);
     const [duelA, duelB] = (campaign?.hero_duel || [2, 3]).map(Number);
 
@@ -83,12 +86,34 @@ const RaceView = () => {
         [campaign, scan]
     );
 
-    const evolution = useMemo(() => scans.map((s) => ({
-        seq: s.seq,
-        [labels[duelA] || `Camp ${duelA}`]: s.duel?.camp_a ?? null,
-        [labels[duelB] || `Camp ${duelB}`]: s.duel?.camp_b ?? null,
-        ecart: s.duel?.ecart ?? null
-    })), [scans, labels, duelA, duelB]);
+    // Camps qui COURENT : « nous » + les concurrents alliés. `hero_duel` reste une
+    // paire (le moteur n'en calcule qu'une), mais une saison peut opposer plus de
+    // deux alliés — Storm of Stratagems 2026 en aligne trois (Daybreak, Earth,
+    // Water). On trace donc une courbe par concurrent plutôt que les seuls deux
+    // camps du duel. « Nous » d'abord, puis par id, pour une couleur stable.
+    // Repli sur la paire du duel si les rôles ne sont pas renseignés.
+    const raceCamps = useMemo(() => {
+        // Union des camps du DUEL et des concurrents déclarés : le duel reste tracé
+        // même si son adversaire n'est pas marqué « allié » (cas de Mimoso, où le
+        // camp d'en face est un adversaire), et les alliés supplémentaires d'une
+        // course à trois s'ajoutent.
+        const ids = new Set([String(duelA), String(duelB)].filter((c) => c && c !== 'undefined'));
+        for (const c of Object.keys(roles)) {
+            if (roles[c] === 'nous' || roles[c] === 'allie_concurrent_etoile') ids.add(c);
+        }
+        return [...ids].sort((a, b) => (roles[a] === 'nous' ? -1 : roles[b] === 'nous' ? 1 : Number(a) - Number(b)));
+    }, [roles, duelA, duelB]);
+
+    const campKey = useCallback((c) => labels[c] || `Camp ${c}`, [labels]);
+
+    // Même métrique que le duel : `campDuel()` agrège sur `dkp_net`, et c'est ce
+    // que porte chaque entrée de `scan.camps` — les courbes restent comparables.
+    const evolution = useMemo(() => scans.map((s) => {
+        const byCamp = new Map((s.camps || []).map((c) => [String(c.camp), c]));
+        const row = { seq: s.seq, ecart: s.duel?.ecart ?? null };
+        for (const c of raceCamps) row[campKey(c)] = byCamp.get(c)?.dkp_net ?? null;
+        return row;
+    }), [scans, raceCamps, campKey]);
 
     const uploadScan = async (file) => {
         if (!file) return;
@@ -261,7 +286,7 @@ const RaceView = () => {
             <section className="v2-glass v2-indigo p-4 md:p-5 min-w-0 overflow-hidden">
                 <h3 className="flex items-center gap-2.5 text-[15px] font-semibold text-white mb-3">
                     <TrendingUp size={19} weight="duotone" className="text-[var(--indigo)]" />
-                    {t('kvk_race.evolution_title')}
+                    {raceCamps.length > 2 ? t('kvk_race.evolution_race_title') : t('kvk_race.evolution_title')}
                 </h3>
                 <div className="h-[260px]">
                     <ResponsiveContainer width="100%" height="100%">
@@ -274,8 +299,10 @@ const RaceView = () => {
                                 contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
                                 labelFormatter={(v) => `${t('kvk_race.scan_label')} #${v}`}
                             />
-                            <Line type="monotone" dataKey={labels[duelA] || `Camp ${duelA}`} stroke="#60a5fa" strokeWidth={2.5} dot={{ r: 3 }} />
-                            <Line type="monotone" dataKey={labels[duelB] || `Camp ${duelB}`} stroke="#f87171" strokeWidth={2.5} dot={{ r: 3 }} />
+                            {raceCamps.map((c, i) => (
+                                <Line key={c} type="monotone" dataKey={campKey(c)}
+                                    stroke={RACE_COLORS[i % RACE_COLORS.length]} strokeWidth={2.5} dot={{ r: 3 }} />
+                            ))}
                             <Line type="monotone" dataKey="ecart" name={t('kvk_race.gap')} stroke="#fbbf24" strokeWidth={1.5} strokeDasharray="5 3" dot={false} />
                         </LineChart>
                     </ResponsiveContainer>

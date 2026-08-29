@@ -462,7 +462,8 @@
     "efficiency_over": "Sopra le aspettative",
     "efficiency_under": "Sotto le aspettative",
     "efficiency_empty": "Dati di potenza insufficienti per questo scan.",
-    "camp_count_label": "Numero di campi"
+    "camp_count_label": "Numero di campi",
+    "evolution_race_title": "Andamento della corsa"
   },
   "kvk_history": {
     "kingdom_tab": "Progressione del regno",

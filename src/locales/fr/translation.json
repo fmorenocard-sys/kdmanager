@@ -462,7 +462,8 @@
     "efficiency_over": "Surperformance",
     "efficiency_under": "Sous-performance",
     "efficiency_empty": "Pas assez de données de puissance pour ce scan.",
-    "camp_count_label": "Nombre de camps"
+    "camp_count_label": "Nombre de camps",
+    "evolution_race_title": "Évolution de la course"
   },
   "kvk_history": {
     "kingdom_tab": "Progression du Royaume",

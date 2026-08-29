@@ -462,7 +462,8 @@
     "efficiency_over": "Vượt kỳ vọng",
     "efficiency_under": "Dưới kỳ vọng",
     "efficiency_empty": "Không đủ dữ liệu sức mạnh cho lần quét này.",
-    "camp_count_label": "Số phe"
+    "camp_count_label": "Số phe",
+    "evolution_race_title": "Diễn biến cuộc đua"
   },
   "kvk_history": {
     "kingdom_tab": "Tiến trình Vương quốc",

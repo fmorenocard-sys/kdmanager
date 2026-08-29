@@ -462,7 +462,8 @@
     "efficiency_over": "Beklentinin üstünde",
     "efficiency_under": "Beklentinin altında",
     "efficiency_empty": "Bu tarama için yeterli güç verisi yok.",
-    "camp_count_label": "Kamp sayısı"
+    "camp_count_label": "Kamp sayısı",
+    "evolution_race_title": "Yarışın seyri"
   },
   "kvk_history": {
     "kingdom_tab": "Krallık Gelişimi",

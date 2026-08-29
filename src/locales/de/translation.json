@@ -462,7 +462,8 @@
     "efficiency_over": "Überdurchschnittlich",
     "efficiency_under": "Unterdurchschnittlich",
     "efficiency_empty": "Nicht genug Machtdaten für diesen Scan.",
-    "camp_count_label": "Anzahl der Lager"
+    "camp_count_label": "Anzahl der Lager",
+    "evolution_race_title": "Verlauf des Rennens"
   },
   "kvk_history": {
     "kingdom_tab": "Fortschritt des Königreichs",
