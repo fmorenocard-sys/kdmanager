@@ -1,6 +1,9 @@
 # REX — Onboarding client KD 1362 (Mimoso)
 
-> Date : 2026-08-28 · Auteur : exécution ops (Claude Code) · Statut : **retour d'expérience**
+> Date : 2026-08-28/29 · Auteur : exécution ops (Claude Code) · Statut : **retour d'expérience**
+> Addendum 2026-08-29 : §8 — le scan de base était tronqué (plafond d'export à 5 000 lignes) ;
+> re-ingestion en `--roster all`, historique et Course repris. Les §1 et §2 décrivent
+> l'onboarding du 28/08 tel qu'il s'est déroulé ; les chiffres définitifs sont au §8.
 > Projet Firebase `kd-1362-manager`, URL `https://kd-1362-manager.web.app`.
 > **3ᵉ onboarding réel** après le pilote 3341 (2026-07/08) et la démo Arcelia 2293 (2026-08-22/23).
 > Complète `Runbook_Onboarding_Royaume.md` et `REX_Onboarding_Arcelia_2293.md`.
@@ -31,7 +34,8 @@ identité « KD 1362 — Mimoso » ; logo générique conservé.
    donnait comme un geste console, elle ne l'est pas.
 6. Règles déployées (release **créée**, voir §3.1).
 7. Ingestion `--kvk-base --history` : 156 gouverneurs, `initialPower` figé
-   (vérifié 156/156 contre le scan), 1 point d'historique.
+   (vérifié 156/156 contre le scan), 1 point d'historique. **Refait le 29/08 en
+   `--roster all` → 207 gouverneurs**, le scan de base étant tronqué (§8).
 8. Pipeline Race complet : bucket + CORS + 8 secrets placeholder + Functions +
    `signBlob` ; scan déposé dans le bucket, digéré par `digestRaceScan`.
 9. `kvk_config/current` = « Heroic Anthem », 28/08 → 17/10/2026.
@@ -272,3 +276,84 @@ dans celui du pilote. Ce n'est pas un simple masquage CSS.
 (`RaceConfigForm`, King-only) restent visibles sur une instance sans Discord. Ils
 ne mènent nulle part de dangereux — ils enregistrent une config inerte — mais
 mériteraient le même traitement.
+
+## 8. Le scan de base était TRONQUÉ — et le second n'était pas meilleur partout
+
+Signalé par le Roi le 2026-08-29 : le premier scan était incomplet. Diagnostic et
+correction le jour même.
+
+### 8.1 La cause : un plafond d'export à 5 000 lignes
+
+`Full Data` du scan `00_1739957_08_28…` faisait **exactement 5 000 lignes**
+(rangs 1→5000) pour 6 219 en `Basic Data`. Un compte aussi rond est la signature
+d'un plafond d'export, pas d'un hasard.
+
+Conséquence sur Mimoso : **40 de ses 196 gouverneurs** tombaient au-delà de la
+coupe, dont un compte à **128,1 M** — soit le n°2 du royaume. `1,49 Md` de
+puissance manquaient. Le rang de l'export n'étant pas basé sur la puissance, de
+gros comptes peu actifs se faisaient couper.
+
+> **À vérifier systématiquement à la réception d'un scan** : `Full Data` fait-il
+> un compte rond (5 000, 10 000) ? Comparer `Basic Data` et `Full Data`, et
+> surtout **compter les gouverneurs du royaume cible présents dans chacun**.
+
+### 8.2 Le second scan corrigeait le plafond mais dégradait la couverture
+
+`00_739957_08_29…` : plafond levé (`Full Data` = 7 679, `Basic` = 11 663). Mais
+pour 1362 :
+
+| | Scan tronqué (28/08) | Scan corrigé (29/08) |
+|---|---|---|
+| Gouverneurs connus (`Basic`) | 196 | **207** |
+| Avec stats de combat (`Full`) | **156** | 150 |
+| Puissance du royaume couverte | **79,1 %** | 67,8 % |
+
+**36 joueurs du roster disparaissaient du nouveau `Full Data`, dont Ӽelix, le n°1
+du royaume** (154,8 M). Les deux scans avaient des trous **complémentaires** :
+`mystic rider` (128,4 M, 12,2 Md de KP), absent du premier, était présent dans le
+second.
+
+> **Leçon** : un scan « corrigé » n'est pas monotone. `Full Data` est un
+> sous-ensemble dont la composition varie d'un export à l'autre — il faut
+> **comparer les deux captures**, pas supposer que la plus récente domine.
+
+### 8.3 Arbitrage : `--roster all` plutôt que `detailed`
+
+Décision du Roi. `--roster detailed`, l'option du pilote et du premier
+onboarding, aurait produit un roster de 145 joueurs **sans le n°1 ni le n°10** du
+royaume. Inacceptable pour un tableau de bord de royaume.
+
+`--roster all` retenu : **207 gouverneurs**, dont 145 avec morts/kills et **62
+sans** (champ absent, pas zéro — Firestore ignore `undefined`). Ces 62 pèsent
+**2,31 Md, soit 32 % de la puissance du royaume**.
+
+**Conséquences assumées, à connaître :**
+- l'UI affiche « 0 » pour un champ absent → 62 joueurs paraissent n'avoir aucune
+  mort, dont le n°1 ;
+- le total des morts du royaume est **sous-estimé** (1,0 Md affiché ; les 57 M de
+  Ӽelix n'y sont pas) ;
+- **aucun faux signalement en Deadweight** : `static_data/deadweight` n'existe pas
+  sur cette instance, la page n'a pas de source ;
+- `revealGoalStatus: false` masque toujours les notes de performance.
+
+Un futur scan à meilleure couverture `Full Data` corrigera le tout par simple
+ré-ingestion.
+
+### 8.4 Ce qu'il a fallu refaire, et un piège d'historique
+
+1. `static_data/players` + `static_data/kvk` réécrits (`--roster all --kvk-base`).
+   **Re-figer l'ancre était légitime ici** — le runbook l'interdit quand des
+   objectifs ont déjà été communiqués ; aucun joueur ne s'était connecté
+   (`roles` ne contenait que le compte Admin de l'opérateur).
+2. **`static_data/history` : le piège.** L'ingestion ajoute un point daté du jour.
+   On se retrouvait donc avec le point faux du 28/08 (5,64 Md) **et** le bon du
+   29/08 (7,18 Md) — la courbe du Dashboard aurait affiché **+1,5 Md de croissance
+   en une nuit**, pur artefact de la troncature. Le point du 28/08 a été supprimé :
+   une instance neuve doit avoir **un seul** point, celui de sa base.
+3. **Course** : ancien fichier supprimé du bucket, nouveau déposé sous le **même
+   `seq 000`** pour écraser `derived/gov_values_000.json` (1,76 Mo → 2,73 Mo).
+   Un `01_` aurait créé un second scan en laissant la base tronquée en place.
+4. La Course reste à **zéro** : le moteur mesure des écarts *nets par rapport au
+   scan de base*, et il n'y a qu'un scan, qui est la base. Les diffs non nuls du
+   `Summary` sont internes au scan (min/max depuis le début du KvK) — ce n'est
+   pas ce que la Course calcule. Normal, pas une panne.

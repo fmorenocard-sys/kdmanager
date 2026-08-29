@@ -1,5 +1,14 @@
 # QA Changelog
 
+## v2.45 - 2026-08-29 — KD 1362 : le scan de base était tronqué, données reprises
+
+### Fixed
+- **Le scan de base de Mimoso était amputé par un plafond d'export à 5 000 lignes.** `Full Data` faisait **exactement** 5 000 lignes (rangs 1→5000) contre 6 219 en `Basic Data` — signature d'un plafond, pas d'un hasard. 40 des 196 gouverneurs de 1362 tombaient au-delà de la coupe, dont le n°2 du royaume (128,1 M) ; 1,49 Md de puissance manquaient. **Contrôle à ajouter à la réception de tout scan** : `Full Data` fait-il un compte rond, et combien de gouverneurs du royaume cible figurent dans chaque onglet ?
+- **Le scan de remplacement n'était pas meilleur partout.** Plafond levé (7 679 lignes), mais pour 1362 la couverture `Full Data` **baissait** : 150 joueurs au lieu de 156, 67,8 % de la puissance au lieu de 79,1 %, et **Ӽelix, le n°1 du royaume, en disparaissait**. Les deux captures avaient des trous complémentaires. Arbitrage du Roi : **`--roster all`** (207 gouverneurs, aucun omis) plutôt que `--roster detailed` (145, sans le n°1). Conséquence assumée : 62 joueurs (2,31 Md, 32 % de la puissance) n'ont pas de stats de combat et s'affichent à « 0 » mort ; le total des morts du royaume est sous-estimé. Aucun faux signalement Deadweight en revanche — `static_data/deadweight` n'existe pas sur cette instance.
+- **Piège d'historique évité de justesse.** La ré-ingestion ajoute un point daté du jour : on se retrouvait avec le point faux du 28/08 (5,64 Md) **et** le bon du 29/08 (7,18 Md), soit une croissance affichée de **+1,5 Md en une nuit** qui n'a jamais eu lieu. Le point du 28/08 a été supprimé — une instance neuve n'a qu'un point, celui de sa base.
+- **Course reprise sous le même `seq 000`** : ancien fichier retiré du bucket, nouveau déposé, `derived/gov_values_000.json` réécrit (1,76 → 2,73 Mo). Un préfixe `01_` aurait créé un second scan en laissant la base tronquée en place. La Course reste à zéro — le moteur mesure des écarts *nets par rapport à la base*, et il n'y a qu'un scan, qui est la base.
+- Re-figer l'ancre des objectifs (`--kvk-base`) était légitime ici malgré l'interdiction du runbook : elle vise le cas où des objectifs ont été communiqués aux joueurs, or aucun joueur ne s'était connecté.
+
 ## v2.44 - 2026-08-28 — SEC-004 : une 5ᵉ cible servait les données de 2997, hors Firebase
 
 ### Security
