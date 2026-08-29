@@ -1,5 +1,20 @@
 # QA Changelog
 
+## v2.47 - 2026-08-29 — Mise en production de 2997 : 22 commits livrés d'un coup
+
+### Deployed
+- **2997 passe de `fc81c0a` (19/08) à `04173fe`** — Hosting **et** Functions. 22 commits, 31 fichiers front (894 insertions), 2 fichiers Functions. Livre en production F-038 Lot A (formule d'objectifs affichée), BUG-009 (dates de campagne lues depuis `kvk_config`), BUG-011 (progressions joueur), le drapeau `VITE_AUTH_DISCORD`, la sortie de `public/data` du dépôt, le support N camps et le graphe de course.
+- **Aucun déploiement de règles** : `firestore.rules` est inchangé depuis `fc81c0a` (vérifié par `git diff`).
+- **Risque Functions évalué avant livraison, pas après** : `kvkGoals.js` est un pur refactor (coefficients extraits en constantes nommées, valeurs strictement identiques — relu ligne à ligne dans le diff) ; `digest.js` élargit `requireLeadership` au rôle Admin, un élargissement jamais une restriction. `scheduledSync` **mis à jour et conservé** — sur 2997 le cron est légitime, contrairement aux instances clientes (vérifié `ENABLED` après coup).
+- **Pré-requis BUG-009 vérifié avant de livrer** : la suppression du repli des dates issues du build n'était sans danger que si `kvk_config/current` était renseigné sur 2997 — il l'était (« SoC 5 - Storm of Stratagems », 28/08 → 17/10).
+
+### Fixed
+- **Les visiteurs non connectés de 2997 voyaient une campagne périmée.** `kvk_config` est en `allow read: if isAuthenticated()` : un invité ne peut pas le lire et retombait sur `DATA_CONFIG.KVK.TITLE`, codé au build sur « SoC 4: King of All Britain (2026) » alors que le royaume est passé en SoC 5. **`VITE_KVK_TITLE=SoC 5 - Storm of Stratagems` posé dans le `.env` de prod** (fichier gitignoré — **à reporter à chaque changement de saison**, c'est le mécanisme prévu par b52dc91). Vérifié dans le bundle servi.
+
+### Known gaps
+- **SEC-003 réapparaît sur 2997.** Le bundle Functions de prod réembarque `.env.kd-1362-manager`, `.env.kd-2293-manager` et `.env.kd-41-manager`. Prod en était indemne depuis ce matin, mais **par accident** : le worktree utilisé pour le correctif SEC-001/002 ne contenait pas ces fichiers non versionnés. Sévérité inchangée (non-secrets par conception), mais le constat corrige une impression fausse notée en v2.44.
+- **Le footer de version ment quand on déploie depuis un arbre modifié.** `vite.config.js` résout le SHA par `git rev-parse` au build : une instance construite avant le commit affiche le commit *précédent*. C'est le cas de 3341 (`b1c29c6` affiché alors qu'il porte le correctif des avatars de `fc2509f`), d'Arcelia et de Mimoso (`fc2509f` affichés alors qu'ils portent le drapeau Discord de `9212ad0`). 2997 est juste, ayant été déployé après commit. **Déployer depuis un arbre propre** pour que l'outil de version dise vrai.
+
 ## v2.46 - 2026-08-29 — Course : nombre de camps configurable (2997 en compte 6)
 
 ### Fixed
