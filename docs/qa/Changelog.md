@@ -1,5 +1,16 @@
 # QA Changelog
 
+## v2.48 - 2026-09-03 — KD 1362 : le scan de montage n'était pas le scan de base du KvK
+
+### Fixed
+- **La Course de Mimoso mesurait sa progression depuis un scan sans signification de jeu.** Le scan `00` du 29/08 avait servi à **monter l'instance** (peupler l'app, valider le pipeline, faire la démo) ; le vrai départ du KvK est le scan `01` du 03/09, pris en fin de pré-KvK. Traiter l'échafaudage comme base faussait tout le classement. **Symptôme** : Fire 3,01 Md, Water 2,23 Md… et **Mimoso 32ᵉ sur 32 avec un DKP net de 0**. Corrigé via `base_scan_override = 1` (le champ existe pour ça — `resolveBaseSeq()` lui donne la priorité sur le marqueur `BASE_` et sur la plus petite séquence), scan `00` retiré du bucket (`.xlsx` **et** `derived/`), sous-documents orphelins purgés (`scans/000`, `kingdoms/000`, `players_top/000` — le recompute réagrège mais ne supprime pas), puis redigestion. Tous les `dkp_net` reviennent à 0 : la base est la base.
+- **Ancre des objectifs reposée sur le même scan** — 208 gouverneurs, `initialPower` figé à 7,248 Md. Vérifié qu'il n'y a **aucun conflit** entre les deux ancrages : `perfExport.js` PRÉSERVE explicitement `initialPower`/`initialKp` (A-005, « jamais recalculée ») et ne rafraîchit que la progression. Poser l'ancre par `--kvk-base` puis digérer le même scan dans la Course est donc sûr.
+- **Point d'historique du scan de montage retiré** : les +67 M de puissance entre le 29/08 et le 03/09 n'étaient pas de la croissance mais un effet de composition (roster 207 → 208, couverture `Full Data` différente). Une instance neuve n'a qu'un point, celui de sa base.
+
+### Known gaps
+- **Résidu de pré-KvK, inévitable et négligeable.** `perfExport.js` pose `totalKpGained = kill_points_diff`, le diff **interne au scan** (depuis son `first_update`, ici le 28/08), pas le net contre la base : un peu d'activité de pré-KvK reste comptée. Mesuré sur Mimoso — 12 joueurs sur 208, objectif le plus avancé à **1,08 %**, moyenne **0,02 %**. Invisible en pratique.
+- **Lire un `dkp_net` à 0 demande de distinguer trois causes** (documenté au REX §9) : le scan *est* la base ; le royaume n'a pas combattu (vérifier `dead_diff` et `kills_*_diff` entre deux scans — sur Mimoso, 0 mort dans les deux et `kills_iv_diff` strictement identique) ; ou des gouverneurs ont **migré** — le moteur ne compte la progression que pour ceux présents dans les deux scans, donc un joueur qui arrive avec son historique ne gonfle pas son nouveau royaume. Constaté : les 398 629 kills T4 du royaume 2088 réapparaissaient à l'identique comme « gain » de 1690, correctement ignorés.
+
 ## v2.47 - 2026-08-29 — Mise en production de 2997 : 22 commits livrés d'un coup
 
 ### Deployed

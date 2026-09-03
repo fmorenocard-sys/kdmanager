@@ -1,9 +1,12 @@
 # REX — Onboarding client KD 1362 (Mimoso)
 
-> Date : 2026-08-28/29 · Auteur : exécution ops (Claude Code) · Statut : **retour d'expérience**
+> Date : 2026-08-28 → 09-03 · Auteur : exécution ops (Claude Code) · Statut : **retour d'expérience**
 > Addendum 2026-08-29 : §8 — le scan de base était tronqué (plafond d'export à 5 000 lignes) ;
-> re-ingestion en `--roster all`, historique et Course repris. Les §1 et §2 décrivent
-> l'onboarding du 28/08 tel qu'il s'est déroulé ; les chiffres définitifs sont au §8.
+> re-ingestion en `--roster all`, historique et Course repris.
+> Addendum 2026-09-03 : §9 — le scan de montage n'est pas le scan de base du KvK ;
+> Course rebasée sur `01` (`base_scan_override`), échafaudage retiré.
+> Les §1 et §2 décrivent l'onboarding du 28/08 tel qu'il s'est déroulé ; **les
+> chiffres définitifs sont au §9** (208 gouverneurs, base au 03/09).
 > Projet Firebase `kd-1362-manager`, URL `https://kd-1362-manager.web.app`.
 > **3ᵉ onboarding réel** après le pilote 3341 (2026-07/08) et la démo Arcelia 2293 (2026-08-22/23).
 > Complète `Runbook_Onboarding_Royaume.md` et `REX_Onboarding_Arcelia_2293.md`.
@@ -357,3 +360,74 @@ ré-ingestion.
    scan de base*, et il n'y a qu'un scan, qui est la base. Les diffs non nuls du
    `Summary` sont internes au scan (min/max depuis le début du KvK) — ce n'est
    pas ce que la Course calcule. Normal, pas une panne.
+
+## 9. Le scan qui sert à MONTER l'instance n'est pas le scan de BASE du KvK
+
+Distinction apparue le 2026-09-03 sur Mimoso, absente du runbook et pourtant
+structurante — elle se reposera à chaque onboarding.
+
+Un onboarding a besoin d'un scan **tout de suite**, pour peupler l'instance et la
+montrer au Roi. Mais le KvK, lui, commence quand il commence. Sur Mimoso, deux
+scans ont donc coexisté avec des rôles différents :
+
+| Scan | Rôle réel |
+|---|---|
+| `00_…08_29` | **Échafaudage** : peupler l'app, valider le pipeline, faire la démo |
+| `01_…09_03` | **Vraie base** : fin de pré-KvK, ancre des objectifs ET de la Course |
+
+Traiter l'échafaudage comme une base fausse tout : les compteurs de course
+mesurent une progression depuis un instant qui n'a aucun sens de jeu, et le
+classement affiche des écarts nés de la phase de farm.
+
+**Symptôme observé** avant correction : la Course donnait Fire 3,01 Md, Water
+2,23 Md… et **Mimoso 32ᵉ sur 32 avec un DKP net de 0**. Diagnostic : entre les
+deux scans, `dead_diff` de 1362 valait **0 dans les deux** et `kills_iv_diff`
+était **strictement identique** (1 039 621) — le royaume n'avait pas combattu, et
+le peu d'activité qu'il avait était déjà absorbé dans la base.
+
+### Ce qu'il faut faire
+
+Le champ existe et est prévu pour ça — `resolveBaseSeq()` donne la priorité à
+l'**override de config** sur le marqueur `BASE_` du nom de fichier, puis sur la
+plus petite séquence :
+
+1. `base_scan_override` = la séquence du vrai scan de base (ici `1`) — éditable
+   par le Roi dans `/admin`, champ « base scan » ;
+2. **retirer l'échafaudage du bucket** (le `.xlsx` *et* son `derived/`), sinon la
+   timeline de la course démarre sur un scan sans signification ;
+3. **purger les sous-documents devenus orphelins** — `scans/000`,
+   `kingdoms/000`, `players_top/000` : le recompute réagrège, il ne supprime pas ;
+4. redéposer le scan de base pour déclencher une digestion propre.
+
+Résultat attendu : tous les `dkp_net` à **0**. C'est le signe que la base est
+bien la base — il n'y a rien à comparer tant qu'un second scan n'est pas déposé.
+
+### Deux nuances mesurées
+
+- **Le résidu de pré-KvK est inévitable mais négligeable.** `perfExport.js` pose
+  `totalKpGained = kill_points_diff`, le diff **interne au scan** (depuis son
+  `first_update`, ici le 28/08), pas le net contre la base. Un peu d'activité de
+  pré-KvK reste donc comptée : sur Mimoso, 12 joueurs sur 208, objectif le plus
+  avancé à **1,08 %**, moyenne à 0,02 %. Invisible en pratique.
+- **L'ancre des objectifs, elle, ne bouge pas.** `perfExport.js` PRÉSERVE
+  explicitement `initialPower`/`initialKp` (A-005 : « jamais recalculée ») et ne
+  rafraîchit que la progression. Poser l'ancre par `ingest-soc-scan --kvk-base`
+  puis digérer le même scan dans la Course ne crée aucun conflit — vérifié.
+- **L'historique PxKP doit suivre.** Le point issu de l'échafaudage a été retiré :
+  les +67 M de puissance entre les deux scans n'étaient pas de la croissance mais
+  un effet de composition (roster 207 → 208, couverture `Full Data` différente).
+  Une instance neuve n'a qu'un point : celui de sa base.
+
+### Lire un `dkp_net` à 0 sans se tromper
+
+Trois causes, à distinguer avant d'alerter un Roi :
+
+1. **le scan EST la base** — normal, rien à comparer ;
+2. **le royaume n'a pas combattu** — c'est une information de jeu, pas une panne
+   (vérifier `dead_diff` et `kills_*_diff` entre les deux scans) ;
+3. **des gouverneurs ont migré** — le moteur ne compte la progression que pour
+   les gouverneurs **présents dans les deux scans**, donc un joueur qui arrive
+   avec son historique ne gonfle pas son nouveau royaume. Constaté sur Mimoso :
+   les 398 629 kills T4 du royaume 2088 réapparaissaient à l'identique comme
+   « gain » de 1690, et le moteur les a correctement ignorés. Garde-fou voulu,
+   mais il explique des `0` surprenants sur des royaumes pourtant actifs.
