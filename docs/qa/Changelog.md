@@ -18,9 +18,13 @@
 - `static_data/kvk` diffère maintenant de l'archive SoC 4 sur les 38 lignes rafraîchies → `statsCurrent` repasse à vrai et `/me` affiche. Lint vert, **30 tests passent** (`perfExport` 4/4, `kvkGoals` 26/26).
 - Déploiement **ciblé** (`digestRaceScan`, `recomputeRaceCampaign`, `syncData`, `scheduledSync`) pour ne pas toucher aux fonctions Discord. Vérifié au préalable que `git log 04173fe..HEAD -- functions/` était **vide** : le redéploiement ne livrait aucun autre changement.
 
+- **Le garde-fou vérifié EN PRODUCTION, pas seulement en test.** `syncData` déclenché manuellement dans la foulée renvoie `"kvk":{"status":"skipped","reason":"PERFORMANCE_SOURCE=scan …"}` — et `static_data/kvk` garde son `updatedAt` de l'écriture F-036 (15:37:40), preuve que la feuille n'a rien réécrit. `kvkFiller` est passé de 23 lignes SoC 4 à **27 lignes SoC 5**. Résultat mesuré ensuite : **0 ligne** encore identique à l'archive SoC 4, contre 23 avant — plus aucun joueur, compte de guerre ou filler, ne peut voir « objectif pas encore publié » par staleness.
+- **`KVK_MAP_ID` validé par le même appel** : `avatars` renvoie `fresh: 49, updated: 23` — l'ancien id de carte (SoC 4) n'aurait rien ramené.
+
 ### Known gaps
-- **Les 23 fillers portent encore les chiffres de SoC 4** jusqu'au prochain `syncKvkFiller` (cron 05:00), qui les remplacera par les 27 de l'onglet SoC 5. Un joueur dont le compte PRINCIPAL est un filler continuera donc de voir « objectif pas encore publié » d'ici là.
-- **Les colonnes de résultats du classeur SoC 5 sont vides** (`Performance Analysis` : 0 ligne ; `Filler Accounts` : colonnes M→Q vides). Sans effet sur les comptes de guerre, désormais alimentés par le scan ; bloquant pour les objectifs filler tant que le Roi ne les remplit pas.
+- **Les colonnes de résultats du classeur SoC 5 sont vides** (`Performance Analysis` : 0 ligne ; `Filler Accounts` : colonnes M→Q vides). Sans effet sur les comptes de guerre, désormais alimentés par le scan ; les objectifs filler resteront à zéro tant que le Roi ne remplit pas M→Q.
+- **3 joueurs de `BS_Report` sont absents du scan 01** (Ngacai, MoNsTa, CABJLorena) : ligne conservée sans progression. À trancher — départ de 2997, ou absence de la feuille « Full Data » du scan.
+- **Le flag vit dans un fichier gitignoré.** `PERFORMANCE_SOURCE=scan` est dans `functions/.env.kd-97-manager`, couvert par `.gitignore:30` (`functions/.env*`) : il n'existe que sur la machine du Roi. Un déploiement Functions de 2997 depuis un autre poste repartirait sur le défaut `sheet`, et le cron de 05:00 réécraserait `static_data/kvk` — **échec silencieux, rien dans les logs**. À vérifier avant tout futur déploiement de 2997.
 - `totalKills` et `totalAcclaim` ne sont pas alimentés par le scan (`refreshPerformanceList` ne les pose pas) — limitation préexistante, partagée avec les 3 instances clientes.
 
 ## v2.48 - 2026-09-03 — KD 1362 : le scan de montage n'était pas le scan de base du KvK
