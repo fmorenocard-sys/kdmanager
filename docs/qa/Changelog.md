@@ -18,8 +18,10 @@
 ### Deployed
 - **Front de 2997 déployé** (2 fichiers sur 283). **Vérifié sur le bundle EN LIGNE, pas sur la config** : `lastDigestAt` n'existait dans aucun fichier de `src/` avant ce correctif (0 occurrence au commit `93a7827`) et le bundle servi par `kd-97-manager.web.app` le contient — marqueur non ambigu, immunisé à la minification puisque c'est un nom de propriété. Même méthode que SEC-001 : contrôler l'artefact réellement servi, jamais la configuration.
 
+- **Les 3 instances clientes avaient bien le même défaut — corrigé le 2026-09-06.** L'hypothèse est confirmée : `soc1_race_2026` (41), `soc_tow_01_2026` (2293) et `heroic_anthem_2026` (1362) n'avaient **aucun** `createdAt`, chacune ayant été créée depuis l'UI d'admin. Invisible jusqu'ici parce qu'elles n'ont qu'une campagne. `createdAt` posé sur chacune (date de dépôt de leur 1ᵉʳ scan). Contrôle final en lecture seule sur les 4 instances : **5 campagnes sur 5 horodatées**. Pour 1362, l'ancrage retenu est le 2026-09-03 — cohérent avec le retrait du scan de montage `00` du bucket (cf. v2.48), c'est bien le scan de base du KvK.
+
 ### Known gaps
-- **41 / 2293 / 1362 ont probablement le même `createdAt` manquant.** Invisible tant qu'elles n'ont qu'une campagne ; à passer avec `node scratch/fix-race-createdat.mjs` (paramétré par instance) **avant** leur 2ᵉ saison.
+- **Le correctif de CODE n'est déployé que sur 2997.** Les 3 fronts clients tournent encore l'ancien `RaceConfigForm` : il ne trie toujours pas ses campagnes et **n'écrira toujours pas `createdAt` à la création**. Sans effet aujourd'hui (une campagne chacune, toutes horodatées par le script), mais **le défaut réapparaîtra à leur 2ᵉ saison** si leur front n'est pas redéployé d'ici là. Le correctif de données achète du temps, il ne referme pas la cause racine sur ces trois instances.
 
 ## v2.49 - 2026-09-06 — 2997 : dépôt de scan débloqué, et Performance basculée sur le scan
 
