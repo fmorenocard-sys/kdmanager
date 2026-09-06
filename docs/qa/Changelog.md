@@ -13,7 +13,10 @@
 ### Verified
 - `createdAt = 2026-08-29T15:44:54.763Z` posé sur `sos_race_2026` (dépôt de son 1ᵉʳ scan — la date de création du document n'est pas conservée, c'est le seul ancrage factuel). Ordre vérifié après coup : SoC 5 passe en tête. **Effet immédiat sur l'onglet Course sans redéploiement** — l'admin, lui, attend le déploiement front.
 - Build vert. Lint **inchangé** : 665 problèmes avec ET sans le correctif (`dist/` et `vite.config.js` sont linté) ; les deux fichiers touchés ne produisent aucune remontée.
-- Vérifié avant tout déploiement front que `git log 04173fe..HEAD -- src/` est **vide** : le déploiement n'embarquera que ce correctif, aucun autre changement latent.
+- Vérifié avant déploiement front que `git log 04173fe..HEAD -- src/` était **vide** : le déploiement n'embarquait que ce correctif, aucun changement latent — contrairement au piège rencontré le 2026-08-28 (cf. SEC-001, où redéployer depuis `HEAD` aurait livré F-038, BUG-009 et BUG-011). `dist/` contrôlé exempt de classeur avant publication (garde-fou SEC-001).
+
+### Deployed
+- **Front de 2997 déployé** (2 fichiers sur 283). **Vérifié sur le bundle EN LIGNE, pas sur la config** : `lastDigestAt` n'existait dans aucun fichier de `src/` avant ce correctif (0 occurrence au commit `93a7827`) et le bundle servi par `kd-97-manager.web.app` le contient — marqueur non ambigu, immunisé à la minification puisque c'est un nom de propriété. Même méthode que SEC-001 : contrôler l'artefact réellement servi, jamais la configuration.
 
 ### Known gaps
 - **41 / 2293 / 1362 ont probablement le même `createdAt` manquant.** Invisible tant qu'elles n'ont qu'une campagne ; à passer avec `node scratch/fix-race-createdat.mjs` (paramétré par instance) **avant** leur 2ᵉ saison.
