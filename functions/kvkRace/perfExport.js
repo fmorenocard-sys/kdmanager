@@ -21,16 +21,24 @@
 import {computeKvkGoals, rateFromGoalPct} from "../kvkGoals.js";
 
 /* global process */
-const PROJECT_ID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || "kd-97-manager";
 
 /**
- * Cette instance dérive-t-elle la Performance du scan ? Flag par instance `PERFORMANCE_SOURCE`
- * (`sheet` par défaut). GARDE-FOU DUR : 2997 reste TOUJOURS sur la feuille (`syncKvk`), le scan
- * ne doit jamais y écrire `static_data/kvk` (BR-010, §3.3 — bascule 2997 = chantier séparé).
+ * Cette instance dérive-t-elle la Performance du scan ? Flag par instance
+ * `PERFORMANCE_SOURCE` (`sheet` par défaut : sans opt-in explicite, rien ne change).
+ *
+ * Il y avait ici un garde-fou EN DUR excluant 2997 (« bascule 2997 = chantier
+ * séparé », §3.3). Ce chantier a été fait le 2026-09-06, sur décision du Roi :
+ * 2997 dérive désormais sa Performance du scan comme les instances clientes, et
+ * `syncKvk` (feuille) est neutralisé par le même flag pour ne pas réécrire par-dessus
+ * au cron de 05:00. Motif mesuré ce jour-là sur SoC 5 : le scan ProKingdoms porte une
+ * base UNIFORME pour tout le monde (`first_update`, ici 2026-08-28, égal au `startDate`
+ * de la campagne) là où la colonne « KP » du classeur avait dérivé de 21 M de KP sur
+ * un joueur. Voir BUG-013.
+ *
+ * Le flag reste le seul commutateur : plus aucun projet n'est traité en dur.
  * @return {boolean}
  */
 export function performanceFromScanEnabled() {
-    if (PROJECT_ID === "kd-97-manager") return false;
     return String(process.env.PERFORMANCE_SOURCE || "sheet").toLowerCase() === "scan";
 }
 

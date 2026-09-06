@@ -5,6 +5,9 @@ import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import fs from "fs";
 import { DATA_CONFIG } from "./data-mapping.js";
+// Même commutateur que le pipeline de course : la Performance vient de la feuille
+// OU du scan, jamais des deux (BUG-013).
+import { performanceFromScanEnabled } from "./kvkRace/perfExport.js";
 
 // eslint-disable-next-line no-undef
 if (process.env.FUNCTIONS_EMULATOR) {
@@ -361,6 +364,14 @@ async function syncTrophies(sheets) {
 }
 
 async function syncKvk(sheets) {
+    // Une instance qui dérive sa Performance du SCAN ne doit pas se faire réécrire
+    // `static_data/kvk` par la feuille au cron de 05:00 : la référence figée
+    // (initialPower/initialKp) et les gains calculés par F-036 seraient perdus chaque
+    // matin. Le flag est le même des deux côtés (`performanceFromScanEnabled`), donc
+    // les deux sources ne peuvent jamais être actives en même temps. Voir BUG-013.
+    if (performanceFromScanEnabled()) {
+        return { status: "skipped", reason: "PERFORMANCE_SOURCE=scan (static_data/kvk est alimenté par le scan, F-036)" };
+    }
     const SPREADSHEET_ID = DATA_CONFIG.GOOGLE_SHEETS.KVK.SPREADSHEET_ID;
     if (!SPREADSHEET_ID || SPREADSHEET_ID.includes("YOUR_")) return { status: "skipped", reason: "No ID" };
 

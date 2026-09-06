@@ -556,6 +556,21 @@ gcloud storage buckets update gs://kd-41-manager-kvk-race --cors-file=cors.json
 [{"origin": ["https://kd-41-manager.web.app"], "method": ["PUT"], "responseHeader": ["Content-Type"], "maxAgeSeconds": 3600}]
 ```
 
+> **⚠️ PIÈGE — sans CORS, l'échec est SILENCIEUX côté serveur (2997, 2026-09-06).**
+> La callable `getRaceScanUploadUrl` réussit et **loggue « Upload URL émise »** :
+> c'est le navigateur, ensuite, qui bloque le `PUT` en préflight. L'UI n'affiche
+> qu'un « Upload failed » générique (`kvk_hub.upload_err`) et les logs Functions
+> paraissent parfaitement sains. **Ne pas conclure d'un log vert que le dépôt a
+> abouti** — vérifier la présence de l'objet dans `gs://<projet>-kvk-race/kvk_race/{cid}/scans/`.
+>
+> **2997 elle-même n'avait pas de CORS** jusqu'au 2026-09-06 : son bucket
+> précède le dépôt in-app (le scan `00` de Storm of Stratagems y avait été
+> poussé **côté serveur**, chemin qui ignore CORS), et les 3 instances clientes
+> l'ont eu par ce runbook alors que l'instance d'origine ne l'a jamais reçu.
+> **Leçon générale : l'instance mère n'hérite pas des correctifs du runbook** —
+> après toute étape d'infra ajoutée ici, la repasser explicitement sur 2997.
+> Audit des 4 buckets : `node scratch/set-race-bucket-cors.mjs`.
+
 **Service agents Eventarc/GCS.** Le trigger Storage de `digestRaceScan`
 (`onObjectFinalized`) requiert que les service agents GCS/Eventarc du projet
 aient le rôle `pubsub.publisher` — normalement posé automatiquement au premier

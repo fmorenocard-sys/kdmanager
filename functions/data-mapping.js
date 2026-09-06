@@ -101,8 +101,10 @@ export const DATA_CONFIG = {
     },
 
     KVK: {
-        FILE: 'SoC_4_KingOfAllBritain_2026.xlsx',
-        TITLE: 'SoC 4: King of All Britain (2026)',
+        // FILE/TITLE sont documentaires (inutilisés au runtime) — seuls SHEET_NAME
+        // et COLUMNS pilotent syncKvk. Tenus à jour pour ne pas induire en erreur.
+        FILE: 'SoC_5_StormOfStratagems_2026.xlsx',
+        TITLE: 'SoC 5: Storm of Stratagems (2026)',
         SHEET_NAME: 'Performance Analysis',
         JSON_OUTPUT: 'kvk_stats.json',
         COLUMNS: {
@@ -156,14 +158,22 @@ export const DATA_CONFIG = {
             SPREADSHEET_ID: "1Cj_2fwkhwGD9az6Ir3Y3dI-EgQvPbr84wPAES4S9nuo" // KD 2997 DW List 13/07/2026
         },
         KVK: {
-            SPREADSHEET_ID: "1qX6b4Z6w70x5gbk63aACVLU3QSNMHDWFo0QO1a7hy3A"
+            // Un classeur PAR SAISON — à repointer à chaque nouveau KvK, sinon
+            // `syncKvk` continue de réécrire chaque matin les chiffres de la
+            // saison précédente dans `static_data/kvk` (constaté le 2026-09-06 :
+            // 70/70 lignes identiques à l'archive SoC 4, cf. BUG-013).
+            // SoC 5 « Storm of Stratagems » (2026) :
+            SPREADSHEET_ID: "1jG30pk2qGQxTsQMvXsbQ-K5N41ivXHu5SM7_OavX6-E"
+            // SoC 4 « King of All Britain » : 1qX6b4Z6w70x5gbk63aACVLU3QSNMHDWFo0QO1a7hy3A
         }
     },
 
     // Fresh in-game avatar URLs (Lilith CDN) relayed by ProKingdoms' public
     // KvK endpoint — see docs/pm/Etude_Avatars_Joueurs.md.
     PROKINGDOMS: {
-        KVK_MAP_ID: "1249539", // current KvK map — update each season (null disables the pass)
+        // SoC 5 (2026) — id de carte lu sur le nom des scans de la saison
+        // (`01_1739974_09_06_2026…`). SoC 4 était 1249539. Ne sert QU'aux avatars.
+        KVK_MAP_ID: "1739974", // current KvK map — update each season (null disables the pass)
         KINGDOM_ID: 2997,
         MAX_PAGES: 8,          // ~429 rate limit beyond this in one burst
         PAGE_DELAY_MS: 2500

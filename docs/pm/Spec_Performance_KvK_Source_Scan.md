@@ -131,6 +131,30 @@ qui ne bloque plus une bascule 2997 sur ce plan technique précis ; le risque r�
 la retient est différent (§3.5 — la référence `max_power` du Sheet n'est pas vérifiée
 comme équivalente à celle du scan), pas une raison d'engager cette migration ici.
 
+> **➤ CHANTIER FAIT — 2997 est passée en `scan` le 2026-09-06** (décision du Roi,
+> BUG-013). Ce §3.3 décrit donc l'état **jusqu'au 2026-09-05** ; il est conservé pour
+> la traçabilité de la décision d'origine. Ce qui a changé :
+>
+> - Le garde-fou en dur `if (PROJECT_ID === "kd-97-manager") return false;` est **retiré**
+>   de `perfExport.js` : `PERFORMANCE_SOURCE` (défaut `sheet`) est désormais le seul
+>   commutateur, aucun projet n'est traité en dur. 2997 porte `PERFORMANCE_SOURCE=scan`.
+> - **`syncKvk` est neutralisé par le MÊME flag** (`functions/index.js`). C'était le point
+>   dur non anticipé ici : sans cela, le cron de 05:00 réécrasait chaque matin
+>   `static_data/kvk` depuis la feuille, détruisant la référence figée et les gains. Les
+>   deux sources sont maintenant **mutuellement exclusives par construction**.
+> - **`syncKvkFiller` n'est PAS neutralisé** : les fillers restent alimentés par l'onglet
+>   « Filler Accounts ». Raison mesurée — le scan ProKingdoms ne porte que `dead_diff`
+>   (morts totales), **jamais le split T4/T5 des morts** qu'exige `computeFillerGoal`.
+>   La réponse au §3.4 est donc **non** pour les fillers, pour une raison de données.
+> - **Le risque résiduel du §3.5 est levé, par la mesure.** La référence de base du scan
+>   (`min_points`, ancrée sur `first_update`) a été comparée au classeur du Roi sur trois
+>   témoins : identique au KP près sur deux, et **c'est le CLASSEUR qui dérivait** de
+>   21,2 M de KP sur le troisième. Le scan a une base uniforme pour tout le monde, égale
+>   au `startDate` de la campagne. Le scan est donc la source la plus sûre, pas l'inverse.
+> - La référence figée SoC 5 a été semée **manuellement** depuis la liste de suivi du Roi
+>   (onglet `BS_Report`, 41 joueurs) : F-036 rafraîchit une référence, il n'en crée jamais.
+>   Semer la référence fait donc partie de l'**ouverture d'un KvK**, comme `kvk_config`.
+
 ### 3.4 Fillers — même unification ?
 
 **Hors périmètre pour cette itération.** Le scan ne fournit pas le split T4/T5 des morts

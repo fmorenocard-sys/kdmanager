@@ -1,5 +1,28 @@
 # QA Changelog
 
+## v2.49 - 2026-09-06 — 2997 : dépôt de scan débloqué, et Performance basculée sur le scan
+
+### Fixed
+- **BUG-012 — le dépôt de scan de course était impossible sur 2997 : le bucket n'avait aucun CORS.** Signalé par le Roi (« Upload failed ») en déposant le 1ᵉʳ scan post-zone 5. **Le piège du diagnostic** : la callable `getRaceScanUploadUrl` RÉUSSIT et loggue « Upload URL émise » — c'est le navigateur qui bloque ensuite le `PUT` en préflight, et l'UI n'affiche qu'une erreur générique. Les logs Functions paraissent parfaitement sains. Audit des 4 buckets : 41, 2293 et 1362 avaient bien leur CORS (posé par le runbook d'onboarding), **2997 était la seule sans** — son bucket précède le dépôt in-app et son scan `00` y avait été poussé côté serveur, chemin qui ignore CORS. **Leçon générale, portée au runbook : l'instance mère n'hérite pas des étapes d'infra ajoutées pour les clients.** CORS posé, dépôt refait et vérifié dans le bucket (`scans/01_…xlsx` 14 473 862 o + `derived/gov_values_001.json`). Aucun code touché. Script d'audit/application : `scratch/set-race-bucket-cors.mjs`.
+- **BUG-013 — la Performance perso de SoC 5 ne s'affichait pas : `static_data/kvk` contenait encore SoC 4.** Deux causes empilées. (1) `DATA_CONFIG.GOOGLE_SHEETS.KVK.SPREADSHEET_ID` pointait toujours le classeur SoC 4 — le cron de 05:00 réécrivait donc chaque matin les chiffres de la saison précédente (mesuré : **70/70 lignes identiques** à l'archive `soc_4_king_of_all_britain_2026`). (2) Le dépôt d'un scan de course n'y changeait rien : un garde-fou en dur excluait 2997 de F-036. **`/me` avait raison de ne rien afficher** — l'heuristique `scanIsArchived` (UXA11Y-010) détecte que le scan live est l'archivé et refuse d'étiqueter SoC 4 en SoC 5.
+
+### Changed
+- **2997 dérive désormais sa Performance KvK du scan ProKingdoms, plus de la feuille Google** (décision du Roi). Le garde-fou en dur de `perfExport.js` est retiré : `PERFORMANCE_SOURCE` (défaut `sheet`) devient le seul commutateur, plus aucun projet n'est traité en dur. **Point dur non anticipé par la spec** : `syncKvk` devait être neutralisé par le MÊME flag, sinon le cron de 05:00 écrasait chaque matin la référence figée et les gains calculés — les deux sources sont maintenant mutuellement exclusives par construction. **L'ordre d'exécution comptait** : déployer AVANT de semer, sinon la fenêtre jusqu'au cron suivant détruisait le semis.
+- **Le risque résiduel §3.5 de la spec est levé par la mesure, et dans le sens inverse de celui redouté.** On craignait que la base du scan diverge du classeur ; comparaison de `min_points` (ancré sur `first_update`) à la colonne « KP » du classeur sur trois témoins : **identique au KP près sur deux, et c'est le CLASSEUR qui dérivait de 21,2 M sur le troisième**. Le scan a une base uniforme pour tous, égale au `startDate` de la campagne (28/08). Le scan est la source la plus sûre.
+- **Les fillers restent sur la feuille** (`syncKvkFiller` intact). Raison de données, pas de préférence : le scan ne porte que `dead_diff` (morts totales) et **jamais le split T4/T5** qu'exige `computeFillerGoal`. Seul l'onglet « Filler Accounts » l'a.
+- `KVK_MAP_ID` passé de `1249539` (SoC 4) à **`1739974`**, lu sur le nom des scans de la saison — il était périmé depuis le changement de KvK et ne sert qu'au rafraîchissement des avatars.
+
+### Verified
+- Référence figée SoC 5 semée depuis **`BS_Report`** (liste de suivi du Roi, 41 joueurs) : `id`, `name`, `initialPower`, `initialKp` seulement — **aucune colonne de résultat du classeur n'est recopiée**, elles valent toutes « TBA ». F-036 a ensuite rafraîchi **38/41** lignes depuis le scan 01 ; les 3 restantes (Ngacai, MoNsTa, CABJLorena) sont absentes du scan et gardent leur ligne inchangée (dégradation propre, jamais un 0 trompeur).
+- Cohérence bout en bout recoupée : `finalKp` calculé (14 947 252 249 pour Lord Guineapig) **égale exactement** le `max_points` lu dans le classeur brut du scan. `BS_Report` (41) et `Filler Accounts` (27) sont **disjoints** — aucun joueur compté deux fois.
+- `static_data/kvk` diffère maintenant de l'archive SoC 4 sur les 38 lignes rafraîchies → `statsCurrent` repasse à vrai et `/me` affiche. Lint vert, **30 tests passent** (`perfExport` 4/4, `kvkGoals` 26/26).
+- Déploiement **ciblé** (`digestRaceScan`, `recomputeRaceCampaign`, `syncData`, `scheduledSync`) pour ne pas toucher aux fonctions Discord. Vérifié au préalable que `git log 04173fe..HEAD -- functions/` était **vide** : le redéploiement ne livrait aucun autre changement.
+
+### Known gaps
+- **Les 23 fillers portent encore les chiffres de SoC 4** jusqu'au prochain `syncKvkFiller` (cron 05:00), qui les remplacera par les 27 de l'onglet SoC 5. Un joueur dont le compte PRINCIPAL est un filler continuera donc de voir « objectif pas encore publié » d'ici là.
+- **Les colonnes de résultats du classeur SoC 5 sont vides** (`Performance Analysis` : 0 ligne ; `Filler Accounts` : colonnes M→Q vides). Sans effet sur les comptes de guerre, désormais alimentés par le scan ; bloquant pour les objectifs filler tant que le Roi ne les remplit pas.
+- `totalKills` et `totalAcclaim` ne sont pas alimentés par le scan (`refreshPerformanceList` ne les pose pas) — limitation préexistante, partagée avec les 3 instances clientes.
+
 ## v2.48 - 2026-09-03 — KD 1362 : le scan de montage n'était pas le scan de base du KvK
 
 ### Fixed
