@@ -1,5 +1,23 @@
 # QA Changelog
 
+## v2.50 - 2026-09-06 — La Course s'ouvrait sur la saison précédente (BUG-014)
+
+### Fixed
+- **L'onglet Course et l'admin sélectionnaient SoC 4 par défaut, en plein SoC 5.** Deux mécanismes **différents**, une seule cause racine. `useRaceData` trie par `createdAt` décroissant et `sos_race_2026` **n'en avait pas** → repli sur `''`, battu par le `2026-07-21` de `soc4_race_2026`. `RaceConfigForm`, lui, ne triait **pas du tout** : `list[0]` d'un `getDocs` brut, que Firestore rend **par ID** — et `soc4_…` précède `sos_…` alphabétiquement. Les deux vues pouvaient donc pointer des campagnes différentes.
+- **Cause racine : `RaceConfigForm` n'écrivait jamais `createdAt`** — son payload ne posait que `updatedAt`/`updatedBy`. SoC 4 n'en a un que parce qu'il vient d'un script de seed. **Toute campagne créée depuis l'UI est concernée, sur les 4 instances** ; le symptôme n'apparaît qu'à la 2ᵉ campagne d'une instance, ce qui explique qu'il ait échappé au pilote et aux clients.
+
+### Changed
+- Comparateur `byRecentCampaign` extrait et **partagé** entre `useRaceData` et `RaceConfigForm` : les deux vues ne peuvent plus diverger. Repli `createdAt || lastDigestAt || updatedAt` pour qu'une campagne héritée non ré-horodatée ne reprenne pas la tête.
+- `RaceConfigForm` pose `createdAt` **à la création uniquement** (`isNew`). Jamais sur une campagne existante : ce serait falsifier son âge et, pire, remettre l'ancienne saison en tête à chaque enregistrement.
+
+### Verified
+- `createdAt = 2026-08-29T15:44:54.763Z` posé sur `sos_race_2026` (dépôt de son 1ᵉʳ scan — la date de création du document n'est pas conservée, c'est le seul ancrage factuel). Ordre vérifié après coup : SoC 5 passe en tête. **Effet immédiat sur l'onglet Course sans redéploiement** — l'admin, lui, attend le déploiement front.
+- Build vert. Lint **inchangé** : 665 problèmes avec ET sans le correctif (`dist/` et `vite.config.js` sont linté) ; les deux fichiers touchés ne produisent aucune remontée.
+- Vérifié avant tout déploiement front que `git log 04173fe..HEAD -- src/` est **vide** : le déploiement n'embarquera que ce correctif, aucun autre changement latent.
+
+### Known gaps
+- **41 / 2293 / 1362 ont probablement le même `createdAt` manquant.** Invisible tant qu'elles n'ont qu'une campagne ; à passer avec `node scratch/fix-race-createdat.mjs` (paramétré par instance) **avant** leur 2ᵉ saison.
+
 ## v2.49 - 2026-09-06 — 2997 : dépôt de scan débloqué, et Performance basculée sur le scan
 
 ### Fixed

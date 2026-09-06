@@ -3,6 +3,17 @@ import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 /**
+ * Ordre des campagnes de course : la plus RÉCENTE d'abord — c'est elle que les vues
+ * prennent par défaut (`campaigns[0]`). `createdAt` est la clé de vérité, mais les
+ * campagnes créées depuis l'admin ne l'avaient pas avant BUG-014 : sans repli, une
+ * saison TERMINÉE (semée par script, donc horodatée) l'emportait sur la saison EN
+ * COURS, et l'onglet Course s'ouvrait sur l'ancien KvK. Le repli garde l'ordre juste
+ * même sur une campagne héritée qu'on n'aurait pas ré-horodatée.
+ */
+export const campaignOrderKey = (c) => c.createdAt || c.lastDigestAt || c.updatedAt || '';
+export const byRecentCampaign = (a, b) => campaignOrderKey(b).localeCompare(campaignOrderKey(a));
+
+/**
  * useRaceData — charge les campagnes KvK Race et leurs agrégats (F-019).
  * Lecture réservée King/Officer (rules §9.4) : toute erreur de permission est
  * absorbée (le gate UI empêche normalement d'arriver ici sans rôle).
@@ -38,7 +49,7 @@ export function useRaceData() {
                     );
                     return { id: d.id, ...d.data(), scans, kingdomsBySeq, playersBySeq };
                 }));
-                if (!cancelled) setCampaigns(list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')));
+                if (!cancelled) setCampaigns(list.sort(byRecentCampaign));
             } catch (err) {
                 console.error('useRaceData hydrate error:', err);
                 if (!cancelled) setError(err);

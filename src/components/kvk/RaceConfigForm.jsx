@@ -5,6 +5,9 @@ import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 import { db, functions } from '../../config/firebase';
 import { BRANDING } from '../../config/branding';
 import { useRole, ROLES } from '../../context/RoleContext';
+// Même ordre que l'onglet Course : les deux vues doivent s'ouvrir sur LA MÊME
+// campagne, sinon l'admin configure une saison pendant qu'on en regarde une autre.
+import { byRecentCampaign } from '../../hooks/useRaceData';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -64,7 +67,10 @@ const RaceConfigForm = () => {
     useEffect(() => {
         if (!authorized) return;
         getDocs(collection(db, 'kvk_race')).then((snap) => {
-            const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            // `getDocs` rend les documents par ID, pas par date : sans tri explicite,
+            // l'admin s'ouvrait sur `soc4_race_2026` (antérieur alphabétiquement à
+            // `sos_race_2026`) alors que la saison en cours était la seconde — BUG-014.
+            const list = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort(byRecentCampaign);
             setCampaigns(list);
             if (list.length) selectCampaign(list[0].id, list);
         }).catch((err) => console.error('kvk_race list error:', err));
@@ -147,7 +153,14 @@ const RaceConfigForm = () => {
         setBusy(true);
         try {
             const pinned = form.pinnedText.split(',').map((s) => Number(s.trim())).filter(Number.isFinite);
+            // BUG-014 — horodater la CRÉATION, une seule fois. C'est `createdAt` qui
+            // classe les campagnes et détermine celle ouverte par défaut ; sans lui, une
+            // campagne créée ici perdait contre une saison passée semée par script.
+            // Jamais réécrit sur une campagne existante : ce serait falsifier son âge et
+            // remettre l'ancienne saison en tête à chaque enregistrement.
+            const isNew = !campaigns.some((c) => c.id === form.id);
             const payload = {
+                ...(isNew ? { createdAt: new Date().toISOString() } : {}),
                 name: form.name.trim(),
                 // Bornés au nombre de camps déclaré : réduire le compte nettoie
                 // les entrées devenues orphelines plutôt que de les laisser traîner.
