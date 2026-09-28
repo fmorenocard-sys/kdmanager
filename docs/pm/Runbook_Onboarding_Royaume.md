@@ -120,6 +120,37 @@ pour ce qui est automatisable) :
 
 3. Hosting → activer (aucune configuration supplémentaire à ce stade, le
    contenu vient au déploiement, Phase 2).
+
+   > **⚠️ À PARTIR DU 2026-10-15 — le site Hosting par défaut n'est plus créé
+   > avec le projet.** Firebase passe les NOUVEAUX projets en provisionnement
+   > « à la demande » : le site par défaut n'apparaît qu'au premier déploiement
+   > ou à la création d'une Web App. Les 4 instances existantes ne sont pas
+   > concernées (leurs sites existent déjà), et ce runbook passe par la console,
+   > cas explicitement dispensé par Firebase. **Mais** aucun `firebase*.json` du
+   > repo ne déclare de champ `"site"` : tous visent le site *par défaut*. Si
+   > cette étape console est sautée, l'échec ne se révèle qu'en Phase 2, au
+   > `firebase deploy`, par un `404 Site Not Found` qui ne dit pas quoi faire —
+   > en plein onboarding, devant le client.
+   >
+   > **Vérifier en une commande, avant de quitter la Phase 1** :
+   >
+   > ```bash
+   > firebase hosting:sites:list --project <projet>
+   > ```
+   >
+   > Si le site `<projet>` n'y figure pas, le créer explicitement (idempotent —
+   > refuse proprement si le site existe déjà) :
+   >
+   > ```bash
+   > firebase hosting:sites:create <projet> --project <projet>
+   > ```
+   >
+   > L'id de site doit valoir le `<projet>` pour que l'URL reste
+   > `https://<projet>.web.app`, que `.env` (`VITE_PUBLIC_URL`) et les domaines
+   > autorisés de Firebase Auth tiennent pour acquise. Si ce sous-domaine est
+   > déjà réservé ailleurs, choisir un autre id **et** répercuter l'URL dans
+   > `.env`, les redirections Discord et les origines CORS du bucket de course
+   > (Phase 6) — trois endroits, aucun ne le devine.
 4. **Ne pas activer Firebase Storage.**
 
    > **⚠️ PIÈGE — Storage n'existe pas dans ce produit.** Le fichier
