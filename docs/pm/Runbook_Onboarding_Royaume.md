@@ -1,10 +1,19 @@
-# Runbook — Onboarding d'un nouveau royaume (marque blanche)
+# Runbook — Onboarding d'un royaume, et ouverture d'un KvK (marque blanche)
 
-> Date : 2026-08-18 · Auteur : PM · Statut : **runbook opérationnel, tel que vécu**
-> Source unique de vérité : le pilote **KD 3341** (projet Firebase `kd-41-manager`,
-> alias `.firebaserc` `pilot`), du 2026-07-27 (première infra) au 2026-08-18
-> (dernière rechute cross-tenant corrigée). C'est le **seul** onboarding réel
-> effectué à ce jour — tout ce qui suit vient de son historique, pas d'un idéal.
+> Date : 2026-08-18, **révisé le 2026-10-14** · Auteur : PM · Statut : **runbook
+> opérationnel, tel que vécu**
+>
+> **Deux opérations de nature différente** vivent ici : l'**onboarding** (§2),
+> une fois par royaume, et l'**ouverture d'un KvK** (§3), à chaque saison et sur
+> chaque instance. La seconde a été écrite le 2026-10-14, après que trois de ses
+> gestes eurent été redécouverts sur le terrain au prix d'un bug chacun
+> (BUG-013, BUG-014, repli `VITE_KVK_TITLE`).
+>
+> Origine de l'onboarding : le pilote **KD 3341** (projet `kd-41-manager`, alias
+> `.firebaserc` `pilot`), du 2026-07-27 au 2026-08-18. Trois onboardings ont
+> suivi — **2293 « Arcelia »** et **1362 « Mimoso »** (août 2026) — et ont
+> enrichi les pièges ci-dessous : tout ce qui suit vient de leur historique
+> réel, pas d'un idéal.
 
 > **Ce document est descriptif, pas prescriptif.** Il documente le processus tel
 > qu'il est aujourd'hui : très majoritairement manuel, avec ses pièges connus.
@@ -763,6 +772,153 @@ Checklist avant d'annoncer l'instance au royaume client :
       a pu le recréer entre-temps.
 - [ ] **Règles Firestore vérifiées sur `kdmanagerdb` spécifiquement** (pas
       seulement « deploy complete » — voir vérification Phase 3).
+
+---
+
+## 3. Ouvrir un nouveau KvK — check-list récurrente
+
+**Pourquoi une section à part.** L'onboarding se fait **une fois par royaume** ;
+ouvrir un KvK se refait **à chaque saison, sur chaque instance**. Trois de ses
+gestes ont été redécouverts sur le terrain entre septembre et octobre 2026, au
+prix d'un bug visible à chaque fois : le classeur de saison non repointé
+(BUG-013), la campagne de course sans `createdAt` (BUG-014), le repli
+`VITE_KVK_TITLE` resté sur la saison précédente. Aucun n'était difficile — ils
+n'étaient simplement écrits nulle part.
+
+> **⚠️ L'ORDRE N'EST PAS INDIFFÉRENT.** Le semis de la nouvelle référence
+> (§3.3) **écrase `static_data/kvk`**. Archiver après, c'est perdre la saison
+> précédente. L'archivage passe donc toujours en premier.
+
+### 3.1 Clôturer la saison précédente — AVANT tout le reste
+
+- [ ] **Archiver la campagne** dans `kvk_history` (UI Administration,
+      `CampaignArchiveControl`). C'est une collection *create-only* : l'archive
+      fige une copie de `static_data/kvk` + `kvk_filler`.
+- [ ] **Renseigner le résultat** (`outcome`) de la campagne archivée — éditable
+      par le Roi seul (BR-012), il alimente la frise du royaume.
+
+> **⚠️ PIÈGE — l'archivage ne se fait pas tout seul, et son absence est muette.**
+> Relevé le 2026-09-28 : 3341 **et** 2293 avaient clos leur KvK le 19/09 avec
+> `kvk_history` **vide**. Rien dans l'UI ne réclame l'archivage ; la saison se
+> termine, les chiffres restent « live », et personne ne voit le problème tant
+> que la suivante n'est pas ouverte.
+
+### 3.2 Identité de la nouvelle campagne
+
+- [ ] **`kvk_config/current`** (UI Administration) : `name`, `startDate`,
+      `endDate`, `fillerDeathRatio`, `revealGoalStatus` (à `false` au départ,
+      BR-019 — on révèle les labels de notation plus tard, délibérément).
+- [ ] **`VITE_KVK_TITLE`** dans le `.env*` de l'instance, **puis rebuild et
+      redéploiement du front** (`npm run build:<instance>`).
+
+> **⚠️ Les dates ne viennent QUE de `kvk_config`** — jamais des constantes de
+> build (BUG-009). `VITE_KVK_TITLE` n'est qu'un **repli** si la lecture du doc
+> échoue ; il doit néanmoins nommer la saison **en cours**. Laisser le nom de la
+> saison passée, c'est préparer un mensonge pour le jour où la lecture échoue
+> (constaté sur le pilote le 2026-10-14 : `001_Troy` alors que la campagne était
+> `002_MightyAssembly`).
+>
+> **⚠️ Les `.env*` sont GITIGNORÉS** (`.gitignore:30`). Cette correction ne vit
+> que sur le poste qui l'a faite : une build depuis un autre poste réaffiche
+> l'ancien titre, sans que rien ne le signale. Même angle mort que
+> `PERFORMANCE_SOURCE=scan` sur 2997.
+
+### 3.3 Semer la référence figée des objectifs
+
+Sans elle, **rien ne s'affiche** : F-036 (`writeKvkPerformanceFromScan`)
+**rafraîchit** une référence, il n'en **crée jamais** — il s'arrête net sur
+« pas de référence figée static_data/kvk ».
+
+- [ ] **Instances clientes** (source scan) :
+      `node scripts/ingest-soc-scan.mjs --file "<scan de base>" --kingdom <n> --project <projet> --kvk-base --write`
+- [ ] **2997** : semis depuis l'onglet **`BS_Report`** du classeur de saison —
+      la liste de suivi du Roi, qui fait foi (`id`, `name`, `initialPower`,
+      `initialKp` **seulement** ; aucune colonne de résultat, elles valent
+      « TBA » en début de saison).
+
+> **⚠️ Depuis BUG-015, l'oubli du semis est VISIBLE — et c'est voulu.** Tant que
+> la référence n'est pas posée, la frise du royaume et l'onglet Performance
+> affichent « en attente du premier scan » au lieu des chiffres de la saison
+> précédente. Ne pas lire ce message comme une panne : c'est le garde-fou qui
+> fait son travail, et il se taira dès le semis + premier scan.
+
+### 3.4 Classeur de saison — ce qui reste sur la feuille Google
+
+Depuis le 2026-09-06, **les 4 instances dérivent la Performance du scan**
+(`PERFORMANCE_SOURCE=scan`) : le classeur n'alimente plus que **les fillers**,
+seule source du split T4/T5 des morts, que le scan ne porte pas.
+
+- [ ] **`DATA_CONFIG.GOOGLE_SHEETS.KVK.SPREADSHEET_ID`** → classeur de la
+      **nouvelle** saison (`functions/data-mapping.js`), **puis déploiement
+      Functions** (l'id est figé dans le bundle). **Un classeur par saison.**
+- [ ] Vérifier que **`sheets-sync-bot@<projet>`** lit le nouveau classeur
+      (partage explicite en Lecteur ; ne pas s'appuyer sur un lien public).
+- [ ] **`PROKINGDOMS.KVK_MAP_ID`** → id de carte de la saison, lu sur le nom des
+      scans (`01_<mapId>_…xlsx`). Ne sert qu'au rafraîchissement des avatars,
+      mais périme en silence à chaque KvK.
+
+> **⚠️ PIÈGE — un `SPREADSHEET_ID` non repointé ne provoque AUCUNE erreur.** Le
+> cron de 05:00 réécrit simplement, chaque matin, les chiffres de la saison
+> précédente (BUG-013 : 70/70 lignes identiques à l'archive, pendant 9 jours).
+
+### 3.5 Campagne de course
+
+- [ ] **Créer `kvk_race/{id}`** via l'admin (`RaceConfigForm`) : `labels`,
+      `roles`, `our_camp`, `hero_duel`, `pinned_kingdoms`, poids `dkp`,
+      `discord_channel_id`.
+- [ ] **Déposer le scan de base** depuis l'onglet Course.
+- [ ] Vérifier le **CORS du bucket** sur une instance neuve
+      (`${PROJECT_ID}-kvk-race`, cf. Phase 6) — sans lui le dépôt échoue avec un
+      « Upload failed » générique alors que les logs Functions paraissent sains
+      (BUG-012).
+
+> **⚠️ PIÈGE — libellés ↔ numéros de camps : ne JAMAIS dériver de l'ordre
+> d'énumération.** Wind et Water se sont retrouvés intervertis sur 2293 **et**
+> sur 1362 — deux onboardings sur deux. La seule méthode qui tranche : demander
+> **un royaume témoin par camp nommé**, puis chercher son `campid` dans le scan.
+>
+> **⚠️ PIÈGE — le scan de montage n'est pas le scan de base du KvK.** Le scan
+> qui sert à peupler l'instance et valider le pipeline n'a aucune signification
+> de jeu ; le vrai départ est le premier scan de fin de pré-KvK. Corriger par
+> `base_scan_override`, pas en bricolant les séquences (cf. Changelog v2.48).
+>
+> **⚠️ `createdAt`** est posé automatiquement depuis BUG-014 — mais **seulement
+> par un front qui porte le correctif**. Sur une instance au front plus ancien,
+> la campagne naît sans date et la Course rouvre sur la saison précédente.
+> Contrôle : voir la note §3.7 sur les scripts.
+
+### 3.6 Discord
+
+- [ ] **Salon de snapshot** : le bot doit avoir **Voir le salon**, **Envoyer des
+      messages** et **Intégrer des liens** (le snapshot est un embed).
+
+> **⚠️ PIÈGE — l'échec Discord est SILENCIEUX côté UI.** Sur 2997, les snapshots
+> des scans 1 à 4 ont été perdus : Discord répondait
+> `403 Missing Access (code 50001)` — le bot ne **voyait** pas le salon. L'admin
+> affichait pourtant le salon comme configuré. Seul le log de `digestRaceScan`
+> le disait. Distinguer : `404 Unknown Channel` = id faux ; `50013 Missing
+> Permissions` = voit mais ne peut pas écrire ; `50001` = ne voit pas.
+> Les scans manqués ne sont **pas** rattrapés (le recompute ne publie jamais,
+> par conception) — redéposer le dernier scan pour forcer une publication.
+
+### 3.7 Vérifications de sortie
+
+- [ ] L'onglet **Course** s'ouvre sur la **nouvelle** campagne (BUG-014).
+- [ ] La **frise du royaume** ne dit plus « en attente du premier scan »
+      (BUG-015) — donc la référence est semée et le premier scan digéré.
+- [ ] **`/me`** affiche les objectifs, pas « objectif pas encore publié ».
+- [ ] Le **snapshot Discord** du premier scan est publié (`lastSnapshotSeq`
+      renseigné sur le document de campagne).
+- [ ] Décider **quand** révéler les labels de notation (`revealGoalStatus`,
+      BR-019) — c'est un choix, pas un oubli.
+
+> **⚠️ LACUNE PROCESS ASSUMÉE — les scripts de diagnostic vivent dans
+> `scratch/`, qui est GITIGNORÉ.** Les outils qui ont servi à diagnostiquer
+> BUG-012 à BUG-015 (audit CORS des buckets, pose de `createdAt`, semis de
+> référence, vérification de fraîcheur des stats, état des lieux par instance)
+> n'existent que sur le poste qui les a écrits. Cette check-list les mentionne
+> pour mémoire, mais **ne pas compter dessus depuis un autre poste** : les
+> promouvoir dans `scripts/` est un chantier à part entière, non fait.
 
 ---
 
