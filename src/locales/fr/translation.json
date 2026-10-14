@@ -495,6 +495,7 @@
     "archived_success": "« {{title}} » a été archivée.",
     "title_required": "Le titre de la campagne est requis.",
     "no_current_data": "Aucune donnée KvK courante à archiver.",
+    "awaiting_first_scan": "Campagne ouverte, mais aucun scan n'a encore été déposé : les chiffres apparaîtront au premier scan. Les données de la campagne précédente restent consultables en la sélectionnant.",
     "race_summary_label": "Joindre le résumé de course",
     "race_summary_none": "Aucun — archiver sans la course",
     "race_summary_hint": "Fige le duel final, le classement des camps, notre rang et le haut du tableau des royaumes dans l'archive. Les poids DKP sont conservés avec : sans eux, les chiffres deviennent illisibles si le barème change la saison suivante.",

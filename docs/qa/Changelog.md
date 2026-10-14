@@ -1,5 +1,28 @@
 # QA Changelog
 
+## v2.51 - 2026-10-14 — La frise du royaume affichait la saison précédente (BUG-015)
+
+### Fixed
+- **Sur le pilote 3341, « 002_MightyAssembly » et « 001_Troy » portaient exactement les mêmes chiffres** (+15.2B KP, 40.2M morts, 421 comptes, 13.9 %). Pas une corruption : `KvKPerformancePage` construisait la campagne courante avec `list: kvkStats`, les stats **live** — or `static_data/kvk` est un singleton « dernier scan » **sans id de campagne** (dette A-041) qui contenait encore Troy (maj 2026-09-05, scan 8). L'archive en étant une copie figée, les deux cartes affichaient la même donnée. La nouvelle campagne démarre le **2026-10-23**, dans le futur : aucun scan ne pouvait exister.
+- **La détection existait déjà, mais n'était pas partagée.** `/me` gérait ce cas depuis UXA11Y-010 (`statsCurrent`), en logique **inline** dans `useMyKvkGoals` — ni la frise du royaume ni l'onglet Performance n'en bénéficiaient. C'est le point (c) resté ouvert d'UXA11Y-010.
+
+### Changed
+- Règle extraite dans **`src/lib/campaignFreshness.js`**, module **pur** (aucun import Firebase → testable sans émulateur, même parti pris que `kvkGoals.js`). Deux signaux : campagne non commencée, et stats live identiques au chiffre près à la dernière archive. `useMyKvkGoals` le consomme — **comportement de `/me` strictement inchangé**, verrouillé par un test de parité.
+- Appliqué à `currentCampaign` plutôt qu'à une vue : corrige **Progressions ET Performance d'un seul geste**, à la bonne altitude. `KingdomProgression` affiche un message explicite au lieu de tirets muets — clé `kvk_history.awaiting_first_scan` dans les 10 locales.
+- **Sens de prudence délibéré** : au premier écart réel entre live et archive, on considère les données courantes. Masquer des chiffres valides est plus grave que d'en laisser passer d'obsolètes une saison où personne n'a bougé d'un point.
+- `npm run test:unit` ajouté : les tests purs (`kvkGoals`, `perfExport`, `campaignFreshness`) n'avaient aucun lanceur agrégé.
+
+### Verified
+- 14 tests neufs, dont un rejouant **le cas exact du pilote** et un de **parité `/me`** ; 44 tests verts au total. Build vert. Lint **inchangé** (665 problèmes préexistants avec ET sans le correctif).
+- **Validé sur données réelles, pas seulement sur fixtures** : la vraie implémentation exécutée contre les 4 instances renvoie `false` sur le pilote (les deux signaux s'allument) et `true` sur 2997, 2293 et 1362 — **aucune instance ne perd de chiffres valides**. Script : `scratch/verif-freshness-41.mjs`.
+
+### Known gaps
+- **Non déployé.** Le front du pilote porte le build du 28/08 : son déploiement embarquera aussi le correctif BUG-014.
+- **Étape opérationnelle distincte** : à l'ouverture réelle du KvK le 23/10, le pilote aura besoin d'une nouvelle référence figée (`ingest-soc-scan.mjs --kvk-base`) et d'une campagne de course. Même check-list d'ouverture de KvK que celle identifiée sur 2997 — elle mérite d'être écrite dans le runbook plutôt que redécouverte à chaque saison.
+
+### Docs
+- **`FeatureInventory.md` F-036 corrigée** : la fiche affirmait encore « 2997 reste `sheet` (inchangé) », faux depuis le 2026-09-06. Elle a menti 5 semaines faute d'avoir été mise à jour dans le même commit que le code — exactement le risque visé par la règle de symbiose n°1.
+
 ## v2.50 - 2026-09-06 — La Course s'ouvrait sur la saison précédente (BUG-014)
 
 ### Fixed

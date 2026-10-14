@@ -495,6 +495,7 @@
     "archived_success": "„{{title}}“ wurde archiviert.",
     "title_required": "Kampagnentitel ist erforderlich.",
     "no_current_data": "Keine aktuellen KvK-Daten zum Archivieren.",
+    "awaiting_first_scan": "Kampagne eröffnet, aber noch kein Scan hochgeladen – die Zahlen erscheinen mit dem ersten Scan. Die Daten der vorherigen Kampagne bleiben über die Auswahl verfügbar.",
     "race_summary_label": "Rennzusammenfassung anhängen",
     "race_summary_none": "Keine — ohne Rennen archivieren",
     "race_summary_hint": "Friert das finale Duell, die Lagerwertung, unseren Rang und die besten Königreiche im Archiv ein. Die DKP-Gewichte werden mitgespeichert: ohne sie sind die Zahlen unlesbar, wenn sich die Skala ändert.",

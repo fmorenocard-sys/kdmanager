@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { invalidateKvkHistoryCache } from '../../hooks/useKvkHistory';
-import { Trophy, Activity, Skull, Users, Flag, Archive } from '../ui/icons';
+import { Trophy, Activity, Skull, Users, Flag, Archive, Clock } from '../ui/icons';
 
 // F-022 / US-023 — Timeline du Royaume (onglet « Progression du Royaume »,
 // réservé King/Officer — BR-011). Le résultat officiel (outcome) est éditable
@@ -109,6 +109,16 @@ const KingdomProgression = ({ campaigns, isKing }) => {
                                 </div>
                                 {(c.startDate || c.endDate) && (
                                     <p className="text-xs text-slate-500 mb-4">{c.startDate || '…'} → {c.endDate || '…'}</p>
+                                )}
+
+                                {/* Campagne ouverte mais pas encore scannée : les tuiles seraient
+                                    toutes à « — ». Le dire explicitement évite de laisser croire
+                                    à un bug d'affichage ou à un royaume inactif. */}
+                                {c.awaitingFirstScan && (
+                                    <p className="flex items-start gap-2 text-xs text-slate-400 mb-4 px-3 py-2 rounded-[10px] bg-[var(--border-flat)]">
+                                        <Clock size={14} weight="duotone" className="text-amber-400 flex-none mt-px" />
+                                        <span>{t('kvk_history.awaiting_first_scan')}</span>
+                                    </p>
                                 )}
 
                                 {/* Agrégats royaume */}

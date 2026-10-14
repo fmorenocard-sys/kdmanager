@@ -495,6 +495,7 @@
     "archived_success": "„{{title}}” została zarchiwizowana.",
     "title_required": "Tytuł kampanii jest wymagany.",
     "no_current_data": "Brak bieżących danych KvK do archiwizacji.",
+    "awaiting_first_scan": "Kampania otwarta, ale nie przesłano jeszcze żadnego skanu — liczby pojawią się po pierwszym skanie. Dane poprzedniej kampanii pozostają dostępne po jej wybraniu.",
     "race_summary_label": "Dołącz podsumowanie wyścigu",
     "race_summary_none": "Brak — archiwizuj bez wyścigu",
     "race_summary_hint": "Utrwala finałowy pojedynek, klasyfikację obozów, nasze miejsce i czołowe królestwa w archiwum. Wagi DKP są zapisywane razem: bez nich liczby stają się nieczytelne po zmianie skali.",

@@ -495,6 +495,7 @@
     "archived_success": "\"{{title}}\" has been archived.",
     "title_required": "Campaign title is required.",
     "no_current_data": "No current KvK data to archive.",
+    "awaiting_first_scan": "Campaign open, but no scan has been uploaded yet — figures will appear with the first scan. The previous campaign's data stays available by selecting it.",
     "race_summary_label": "Attach race summary",
     "race_summary_none": "None — archive without the race",
     "race_summary_hint": "Freezes the final duel, camp standings, our rank and the top kingdoms into the archive. DKP weights are stored alongside: without them the figures become unreadable if the scale changes next season.",

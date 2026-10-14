@@ -495,6 +495,7 @@
     "archived_success": "\"{{title}}\" arşivlendi.",
     "title_required": "Kampanya başlığı gereklidir.",
     "no_current_data": "Arşivlenecek güncel KvK verisi yok.",
+    "awaiting_first_scan": "Kampanya açık, ancak henüz tarama yüklenmedi — rakamlar ilk taramayla görünecek. Önceki kampanyanın verileri seçilerek görüntülenebilir.",
     "race_summary_label": "Yarış özetini ekle",
     "race_summary_none": "Yok — yarış olmadan arşivle",
     "race_summary_hint": "Final düellosunu, kamp sıralamasını, sıramızı ve en iyi krallıkları arşivde dondurur. DKP ağırlıkları da saklanır: onlarsız ölçek değişirse rakamlar okunamaz hale gelir.",

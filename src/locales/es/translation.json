@@ -495,6 +495,7 @@
     "archived_success": "«{{title}}» ha sido archivada.",
     "title_required": "El título de la campaña es obligatorio.",
     "no_current_data": "No hay datos KvK actuales para archivar.",
+    "awaiting_first_scan": "Campaña abierta, pero aún no se ha subido ningún escaneo: las cifras aparecerán con el primer escaneo. Los datos de la campaña anterior siguen disponibles al seleccionarla.",
     "race_summary_label": "Adjuntar resumen de la carrera",
     "race_summary_none": "Ninguno — archivar sin la carrera",
     "race_summary_hint": "Congela el duelo final, la clasificación de los bandos, nuestro puesto y los mejores reinos en el archivo. Los pesos DKP se guardan con ellos: sin ellos las cifras se vuelven ilegibles si cambia el baremo.",

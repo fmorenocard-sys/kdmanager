@@ -4,6 +4,7 @@ import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
 import { computeKvkGoals, computeFillerGoal } from '../lib/kvkGoals';
+import { liveStatsAreCurrent } from '../lib/campaignFreshness';
 import { rateFromGoalPct } from '../lib/kvkScoring';
 
 /**
@@ -87,16 +88,19 @@ export function useMyKvkGoals({ config = null, fillerDecls = {} } = {}) {
     const primaryGid = String(governorId || '');
 
     // ── Cohérence de la campagne COURANTE (cf. en-tête) ────────────────────────
+    // La règle vit dans `lib/campaignFreshness` depuis le 2026-10-14 : elle était
+    // née ici (UXA11Y-010) mais ne protégeait que `/me`, alors que la frise du
+    // royaume affichait la saison précédente sous le nom de la nouvelle (pilote
+    // 3341). Comportement inchangé pour `/me` : on lui passe la seule ligne du
+    // compte principal, donc le verdict est le même qu'avant.
     const latestArchive = archives[0] || null;
     const startDate = config?.startDate?.toDate ? config.startDate.toDate() : null;
-    const campaignNotStarted = !!(startDate && startDate.getTime() > new Date().getTime());
     const livePrimary = statsById.get(primaryGid) || null;
-    const archPrimary = latestArchive?.byId?.get(primaryGid) || null;
-    const scanIsArchived = !!(livePrimary && archPrimary
-        && Number(livePrimary.initialPower || 0) > 0
-        && Number(livePrimary.initialPower || 0) === Number(archPrimary.initialPower || 0)
-        && Number(livePrimary.totalDead || 0) === Number(archPrimary.totalDead || 0));
-    const statsCurrent = !(scanIsArchived || campaignNotStarted);
+    const statsCurrent = liveStatsAreCurrent({
+        startDate,
+        liveRows: livePrimary ? [livePrimary] : [],
+        archiveById: latestArchive?.byId || null,
+    });
 
     // ── Sélecteur de campagne ──────────────────────────────────────────────────
     const campaigns = useMemo(() => {

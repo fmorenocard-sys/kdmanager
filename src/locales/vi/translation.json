@@ -495,6 +495,7 @@
     "archived_success": "\"{{title}}\" đã được lưu trữ.",
     "title_required": "Cần nhập tên chiến dịch.",
     "no_current_data": "Không có dữ liệu KvK hiện tại để lưu trữ.",
+    "awaiting_first_scan": "Chiến dịch đã mở nhưng chưa có bản quét nào được tải lên — số liệu sẽ xuất hiện sau bản quét đầu tiên. Dữ liệu chiến dịch trước vẫn xem được khi chọn nó.",
     "race_summary_label": "Đính kèm tóm tắt cuộc đua",
     "race_summary_none": "Không — lưu trữ không kèm cuộc đua",
     "race_summary_hint": "Cố định trận đấu cuối, bảng xếp hạng phe, thứ hạng của ta và các vương quốc dẫn đầu vào kho lưu trữ. Trọng số DKP được lưu kèm: thiếu chúng, các con số sẽ vô nghĩa nếu thang điểm thay đổi.",

@@ -17,6 +17,7 @@ import StatusFilter from '../components/ui/StatusFilter';
 import { DATA_CONFIG } from '../config/data-mapping';
 import PageHeader from '../components/ui/PageHeader';
 import { fetchCurrentCampaign } from '../lib/currentCampaign';
+import { liveStatsAreCurrent, indexArchive } from '../lib/campaignFreshness';
 import { useRole, ROLES } from '../context/RoleContext';
 import KingdomProgression from '../components/kvk/KingdomProgression';
 import RaceView from '../components/kvk/RaceView';
@@ -97,6 +98,21 @@ const KvKPerformancePage = () => {
             : { key: 'finalPower', direction: 'desc' });
     }, [perfView]);
 
+    // `static_data/kvk` ne porte aucun id de campagne : entre la clôture d'un KvK
+    // et le premier scan du suivant, il contient encore la saison PRÉCÉDENTE. Sans
+    // ce garde-fou, la frise affichait ces chiffres sous le nom de la nouvelle
+    // campagne — à l'unité près ceux de l'archive juste en dessous (pilote 3341,
+    // 2026-10-14). Même règle que `/me`, désormais partagée.
+    const latestArchiveById = useMemo(
+        () => indexArchive(historyCampaigns[0] || null),
+        [historyCampaigns]
+    );
+    const liveStatsCurrent = useMemo(() => liveStatsAreCurrent({
+        startDate: campaignMeta.startDate,
+        liveRows: [...(Array.isArray(kvkStats) ? kvkStats : []), ...(Array.isArray(kvkFillerStats) ? kvkFillerStats : [])],
+        archiveById: latestArchiveById,
+    }), [campaignMeta.startDate, kvkStats, kvkFillerStats, latestArchiveById]);
+
     // F-015: the live campaign plus archived ones from kvk_history
     const currentCampaign = useMemo(() => ({
         docId: 'current',
@@ -105,9 +121,12 @@ const KvKPerformancePage = () => {
         endDate: campaignMeta.endDate,
         order: Number.MAX_SAFE_INTEGER,
         isCurrent: true,
-        list: Array.isArray(kvkStats) ? kvkStats : [],
-        fillerList: Array.isArray(kvkFillerStats) ? kvkFillerStats : []
-    }), [kvkStats, kvkFillerStats, campaignMeta]);
+        // Mieux vaut un « — » explicite que le chiffre d'une autre saison : les
+        // données de la campagne passée restent consultables en la sélectionnant.
+        awaitingFirstScan: !liveStatsCurrent,
+        list: liveStatsCurrent && Array.isArray(kvkStats) ? kvkStats : [],
+        fillerList: liveStatsCurrent && Array.isArray(kvkFillerStats) ? kvkFillerStats : []
+    }), [kvkStats, kvkFillerStats, campaignMeta, liveStatsCurrent]);
 
     // BR-013 : si la campagne « courante » a déjà été archivée, l'archive fait foi
     const currentIsArchived = useMemo(
