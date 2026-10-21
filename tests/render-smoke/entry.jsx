@@ -8,6 +8,8 @@ import i18n from 'i18next';
 import KvKConfigForm from '../../src/components/war/KvKConfigForm.jsx';
 import GoalFormulaDetails from '../../src/components/kvk/GoalFormulaDetails.jsx';
 import MyGoalCard from '../../src/components/me/MyGoalCard.jsx';
+import SheetForm from '../../src/components/mentoring/SheetForm.jsx';
+import { emptySheet, completeness } from '../../src/lib/mentoringSchema.js';
 import fr from '../../src/locales/fr/translation.json' with { type: 'json' };
 
 globalThis.window = globalThis;
@@ -29,10 +31,28 @@ globalThis.navigator = { userAgent: 'node' };
     renderToStaticMarkup(wrap(React.createElement(KvKConfigForm)));
     const formula = renderToStaticMarkup(wrap(React.createElement(GoalFormulaDetails, { powerM: 74.3, defaultOpen: true, defaultShowMath: true })));
     renderToStaticMarkup(wrap(React.createElement(MyGoalCard, { rows: [row], primaryId: '123', revealed: true })));
+
+    // E-010 : la fiche de mentorat est derrière l'auth ET derrière un compte
+    // principal réclamé — impossible à atteindre en préproduction sans jeu de
+    // données. Son rendu est donc vérifié ici, avec les 27 champs du schéma.
+    const blocks = emptySheet();
+    const sheet = renderToStaticMarkup(wrap(React.createElement(SheetForm, {
+      blocks, setField: () => {}, progress: completeness(blocks),
+      saving: false, error: null, meta: { enteredBy: 'u1', enteredByRole: 'Officer' }, onDone: () => {}
+    })));
+
     // Dump lisible : sert à vérifier de visu les formules et les chiffres affichés.
     const text = formula.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     console.log('FORMULA_TEXT:', text);
     if (/goals\.[a-z_]+/.test(text)) { console.log('RESULT: MISSING_I18N_KEY'); process.exit(3); }
+
+    // ⚠️ Ne PAS vérifier ici les clés i18n du formulaire : il ne rend que l'étape
+    // courante, donc les libellés des trois autres étapes n'apparaissent jamais
+    // dans ce markup. Un contrôle par rendu donnerait un faux vert (constaté en
+    // retirant volontairement `mentoring.blocks.economy` : le test restait vert).
+    // La couverture exacte, sur les 10 locales, est dans
+    // `tests/mentoringSchema.test.mjs`. Ici on ne garde que la ReferenceError.
+    void sheet;
     console.log('RESULT: RENDER_OK');
   } catch (e) {
     if (e instanceof ReferenceError) { console.log('RESULT: REFERENCE_ERROR:', e.message); process.exit(2); }

@@ -51,7 +51,11 @@
     "dark": "Sombre",
     "module_disabled": "Module non activé",
     "module_disabled_hint": "Ce module n'est pas activé pour ce royaume.",
-    "restricted_desc_no_discord": "Cette section est réservée au leadership du royaume (Roi et Officiers). Connectez-vous, puis demandez à un officier de vous attribuer le rôle."
+    "restricted_desc_no_discord": "Cette section est réservée au leadership du royaume (Roi et Officiers). Connectez-vous, puis demandez à un officier de vous attribuer le rôle.",
+    "yes": "Oui",
+    "no": "Non",
+    "previous": "Précédent",
+    "next": "Suivant"
   },
   "dashboard": {
     "title": "Tableau de Bord",
@@ -682,5 +686,90 @@
     "role_officer": "Officier",
     "role_warrior": "Guerrier",
     "role_guest": "Invité"
+  },
+  "mentoring": {
+    "title": "Ma fiche de compte",
+    "subtitle": "Ce que possède le compte — sert à fixer tes objectifs de mentorat",
+    "card_title": "Ma fiche de compte",
+    "card_todo": "Pas encore commencée.",
+    "card_in_progress": "En cours — {{percent}} % rempli.",
+    "card_complete": "Complète. Merci !",
+    "card_done_hint": "Ton mentor peut la consulter.",
+    "card_by_other": "Remplie par ton mentor — tu peux la corriger.",
+    "card_start": "Remplir",
+    "card_continue": "Continuer",
+    "progress_title": "Progression",
+    "steps_label": "Étapes de la fiche",
+    "missing_title": "Il manque {{count}} information(s)",
+    "finish": "Terminer",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré",
+    "save_error": "Enregistrement impossible",
+    "not_set": "Non renseigné",
+    "hours_from": "de",
+    "hours_to": "à",
+    "unit_millions": "en millions",
+    "pairs_empty": "Aucune paire déclarée — elles viennent de ta déclaration de guerre.",
+    "entered_by": "Fiche saisie par un {{role}}.",
+    "fill_for": "Remplir la fiche de",
+    "which_account": "Quel compte ?",
+    "my_accounts": "Mes comptes",
+    "program_scope": "Comptes du programme",
+    "on_behalf_notice": "Tu remplis la fiche de {{name}}, pas la tienne.",
+    "login_required": "Connecte-toi pour accéder à ta fiche.",
+    "no_account_claimed": "Réclame d’abord ton compte principal pour remplir ta fiche.",
+    "blocks": {
+      "identity": "Identité",
+      "economy": "Stocks et économie",
+      "military": "Armée",
+      "commanders": "Commandants et équipement",
+      "goal": "Mon objectif"
+    },
+    "steps": {
+      "identity": "Identité",
+      "economy": "Stocks",
+      "military": "Armée",
+      "commanders": "Commandants"
+    },
+    "fields": {
+      "identity": {
+        "governorId": "Governor ID",
+        "name": "Nom en jeu",
+        "power": "Puissance",
+        "vipLevel": "Niveau VIP",
+        "mainTroopType": "Type de troupe principal",
+        "activeHoursUTC": "Heures actives (UTC)",
+        "languages": "Langues parlées"
+      },
+      "economy": {
+        "food": "Nourriture",
+        "wood": "Bois",
+        "stone": "Pierre",
+        "gold": "Or",
+        "speedupUniversal": "Accélérateurs universels",
+        "speedupConstruction": "Accélérateurs de construction",
+        "speedupResearch": "Accélérateurs de recherche",
+        "speedupTraining": "Accélérateurs d’entraînement",
+        "speedupHealing": "Accélérateurs de soin",
+        "legendaryMaterials": "Matériaux légendaires",
+        "goldenHeads": "Têtes d’or"
+      },
+      "military": {
+        "t5Unlocked": "T5 débloqué",
+        "t4Total": "Troupes T4",
+        "t5Total": "Troupes T5",
+        "hospitalCapacity": "Capacité de l’hôpital"
+      },
+      "commanders": {
+        "pairs": "Paires de commandants",
+        "equipmentLegendary": "Pièces légendaires",
+        "equipmentFullSets": "Sets complets",
+        "equipmentInProgress": "Pièces en cours",
+        "missing": "Ce qu’il me manque"
+      },
+      "goal": {
+        "playerGoal": "Ce que je veux améliorer"
+      }
+    }
   }
 }

@@ -20,6 +20,7 @@ import DeadweightPage from './pages/DeadweightPage';
 import BankPage from './pages/BankPage';
 import ProfilePage from './pages/ProfilePage';
 import KvKRacePage from './pages/KvKRacePage';
+import MentoringSheetPage from './pages/MentoringSheetPage';
 import AdminPage from './pages/AdminPage';
 import BottomNav from './components/BottomNav';
 import ImpersonationBanner from './components/admin/ImpersonationBanner';
@@ -306,6 +307,9 @@ const MainContent = () => {
               {/* Aiguillage auth-dépendant (décision 4) : connecté → /me, visiteur → /royaume */}
               <Route path="/" element={<RootRedirect />} />
               <Route path="/me" element={<MeLandingPage />} />
+              {/* E-010 : fiche d'état de compte. `?gov=` porte le compte édité —
+                  un mentor peut garder un onglet par mentoré. */}
+              <Route path="/fiche" element={<MentoringSheetPage />} />
               {/* /royaume = Dashboard renommé d'intention, contenu inchangé (spec §3) */}
               <Route path="/royaume" element={<DashboardPage />} />
               <Route path="/kvk" element={<KvKPerformancePage />} />

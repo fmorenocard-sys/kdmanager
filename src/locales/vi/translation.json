@@ -51,7 +51,11 @@
     "dark": "Tối",
     "module_disabled": "Mô-đun chưa được bật",
     "module_disabled_hint": "Mô-đun này chưa được bật cho vương quốc này.",
-    "restricted_desc_no_discord": "Mục này chỉ dành cho ban lãnh đạo vương quốc (Vua và Sĩ quan). Hãy đăng nhập và đề nghị một Sĩ quan cấp vai trò cho bạn."
+    "restricted_desc_no_discord": "Mục này chỉ dành cho ban lãnh đạo vương quốc (Vua và Sĩ quan). Hãy đăng nhập và đề nghị một Sĩ quan cấp vai trò cho bạn.",
+    "yes": "Có",
+    "no": "Không",
+    "previous": "Trước",
+    "next": "Tiếp"
   },
   "dashboard": {
     "title": "Bảng điều khiển",
@@ -682,5 +686,90 @@
     "role_officer": "Sĩ quan",
     "role_warrior": "Chiến binh",
     "role_guest": "Khách"
+  },
+  "mentoring": {
+    "title": "My account sheet",
+    "subtitle": "What the account owns — used to set your mentoring goals",
+    "card_title": "My account sheet",
+    "card_todo": "Not started yet.",
+    "card_in_progress": "In progress — {{percent}}% filled.",
+    "card_complete": "Complete. Thank you!",
+    "card_done_hint": "Your mentor can view it.",
+    "card_by_other": "Filled in by your mentor — you can correct it.",
+    "card_start": "Fill in",
+    "card_continue": "Continue",
+    "progress_title": "Progress",
+    "steps_label": "Sheet steps",
+    "missing_title": "{{count}} item(s) still missing",
+    "finish": "Finish",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "save_error": "Could not save",
+    "not_set": "Not set",
+    "hours_from": "from",
+    "hours_to": "to",
+    "unit_millions": "in millions",
+    "pairs_empty": "No pair declared — they come from your war declaration.",
+    "entered_by": "Sheet filled in by a {{role}}.",
+    "fill_for": "Fill in the sheet for",
+    "which_account": "Which account?",
+    "my_accounts": "My accounts",
+    "program_scope": "Program accounts",
+    "on_behalf_notice": "You are filling in {{name}}’s sheet, not your own.",
+    "login_required": "Sign in to access your sheet.",
+    "no_account_claimed": "Claim your main account first to fill in your sheet.",
+    "blocks": {
+      "identity": "Identity",
+      "economy": "Stocks and economy",
+      "military": "Army",
+      "commanders": "Commanders and equipment",
+      "goal": "My goal"
+    },
+    "steps": {
+      "identity": "Identity",
+      "economy": "Stocks",
+      "military": "Army",
+      "commanders": "Commanders"
+    },
+    "fields": {
+      "identity": {
+        "governorId": "Governor ID",
+        "name": "In-game name",
+        "power": "Power",
+        "vipLevel": "VIP level",
+        "mainTroopType": "Main troop type",
+        "activeHoursUTC": "Active hours (UTC)",
+        "languages": "Languages spoken"
+      },
+      "economy": {
+        "food": "Food",
+        "wood": "Wood",
+        "stone": "Stone",
+        "gold": "Gold",
+        "speedupUniversal": "Universal speedups",
+        "speedupConstruction": "Construction speedups",
+        "speedupResearch": "Research speedups",
+        "speedupTraining": "Training speedups",
+        "speedupHealing": "Healing speedups",
+        "legendaryMaterials": "Legendary materials",
+        "goldenHeads": "Golden heads"
+      },
+      "military": {
+        "t5Unlocked": "T5 unlocked",
+        "t4Total": "T4 troops",
+        "t5Total": "T5 troops",
+        "hospitalCapacity": "Hospital capacity"
+      },
+      "commanders": {
+        "pairs": "Commander pairs",
+        "equipmentLegendary": "Legendary pieces",
+        "equipmentFullSets": "Complete sets",
+        "equipmentInProgress": "Pieces in progress",
+        "missing": "What I am missing"
+      },
+      "goal": {
+        "playerGoal": "What I want to improve"
+      }
+    }
   }
 }

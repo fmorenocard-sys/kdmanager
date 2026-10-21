@@ -16,6 +16,7 @@ import LoadingSkeleton from '../components/me/LoadingSkeleton';
 import ErrorCard from '../components/me/ErrorCard';
 import OffCampaignCard from '../components/me/OffCampaignCard';
 import MyGoalCard from '../components/me/MyGoalCard';
+import MySheetCard from '../components/me/MySheetCard';
 import NoGoalPublishedCard from '../components/me/NoGoalPublishedCard';
 import MyStatsCard from '../components/me/MyStatsCard';
 import MyAccountsSummary from '../components/me/MyAccountsSummary';
@@ -237,6 +238,11 @@ const MeLandingPage = () => {
                 {dataError && (
                     <ErrorCard lastScan={lastUpdated || null} onRetry={() => window.location.reload()} />
                 )}
+
+                {/* E-010 : état de la fiche de compte. Placée haut et hors du bloc de
+                    campagne — elle se remplit entre deux KvK, pas pendant. Invisible
+                    pour qui n'a pas réclamé de compte principal. */}
+                <MySheetCard />
 
                 {configLoading ? (
                     <LoadingSkeleton />

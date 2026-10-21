@@ -105,3 +105,45 @@ test('le pré-remplissage ne s\'appuie que sur des sources réellement disponibl
     const sources = new Set(ALL_FIELDS.map((f) => f.prefill).filter(Boolean));
     assert.deepEqual([...sources].sort(), ['account', 'declaration', 'players']);
 });
+
+// ── Couverture i18n ───────────────────────────────────────────────────────────
+// Le smoke test de rendu ne peut PAS couvrir ça : le formulaire ne rend que
+// l'étape courante, donc les libellés des autres étapes n'apparaissent jamais
+// dans son markup (vérifié en retirant `mentoring.blocks.economy` — il restait
+// vert). Le contrôle doit donc se faire sur le schéma, pas sur le rendu.
+import { readFileSync } from 'node:fs';
+
+const LOCALES = ['fr', 'en', 'es', 'de', 'it', 'pl', 'tr', 'uk', 'vi', 'ar'];
+const load = (l) => JSON.parse(readFileSync(new URL(`../src/locales/${l}/translation.json`, import.meta.url), 'utf8'));
+
+test('chaque champ du schéma a un libellé dans LES 10 locales', () => {
+    const manquantes = [];
+    for (const loc of LOCALES) {
+        const m = load(loc).mentoring;
+        if (!m) { manquantes.push(`${loc}: bloc mentoring absent`); continue; }
+        for (const block of SHEET_SCHEMA) {
+            if (!m.blocks?.[block.id]) manquantes.push(`${loc}: mentoring.blocks.${block.id}`);
+            for (const f of block.fields) {
+                if (!m.fields?.[block.id]?.[f.id]) manquantes.push(`${loc}: mentoring.fields.${block.id}.${f.id}`);
+            }
+        }
+    }
+    assert.deepEqual(manquantes, [], `clés i18n manquantes :\n${manquantes.join('\n')}`);
+});
+
+test('les libellés d\'étapes et les textes d\'interface existent partout', () => {
+    const requis = ['title', 'card_title', 'card_todo', 'card_start', 'progress_title', 'finish',
+        'saving', 'saved', 'save_error', 'not_set', 'on_behalf_notice', 'fill_for', 'entered_by'];
+    const manquantes = [];
+    for (const loc of LOCALES) {
+        const j = load(loc);
+        for (const k of requis) if (!j.mentoring?.[k]) manquantes.push(`${loc}: mentoring.${k}`);
+        for (const s of ['identity', 'economy', 'military', 'commanders']) {
+            if (!j.mentoring?.steps?.[s]) manquantes.push(`${loc}: mentoring.steps.${s}`);
+        }
+        for (const k of ['yes', 'no', 'previous', 'next']) {
+            if (!j.common?.[k]) manquantes.push(`${loc}: common.${k}`);
+        }
+    }
+    assert.deepEqual(manquantes, [], `clés i18n manquantes :\n${manquantes.join('\n')}`);
+});

@@ -51,7 +51,11 @@
     "dark": "Oscuro",
     "module_disabled": "Módulo no activado",
     "module_disabled_hint": "Este módulo no está activado para este reino.",
-    "restricted_desc_no_discord": "Esta sección está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión y pide a un oficial que te asigne el rol."
+    "restricted_desc_no_discord": "Esta sección está reservada al liderazgo del reino (Rey y Oficiales). Inicia sesión y pide a un oficial que te asigne el rol.",
+    "yes": "Sí",
+    "no": "No",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "dashboard": {
     "title": "Panel",
@@ -682,5 +686,90 @@
     "role_officer": "Oficial",
     "role_warrior": "Guerrero",
     "role_guest": "Invitado"
+  },
+  "mentoring": {
+    "title": "Mi ficha de cuenta",
+    "subtitle": "Lo que posee la cuenta — sirve para fijar tus objetivos de mentoría",
+    "card_title": "Mi ficha de cuenta",
+    "card_todo": "Aún no empezada.",
+    "card_in_progress": "En curso — {{percent}} % completada.",
+    "card_complete": "Completa. ¡Gracias!",
+    "card_done_hint": "Tu mentor puede consultarla.",
+    "card_by_other": "Rellenada por tu mentor — puedes corregirla.",
+    "card_start": "Rellenar",
+    "card_continue": "Continuar",
+    "progress_title": "Progreso",
+    "steps_label": "Pasos de la ficha",
+    "missing_title": "Faltan {{count}} dato(s)",
+    "finish": "Terminar",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "save_error": "No se pudo guardar",
+    "not_set": "Sin definir",
+    "hours_from": "de",
+    "hours_to": "a",
+    "unit_millions": "en millones",
+    "pairs_empty": "Ninguna pareja declarada — vienen de tu declaración de guerra.",
+    "entered_by": "Ficha rellenada por un {{role}}.",
+    "fill_for": "Rellenar la ficha de",
+    "which_account": "¿Qué cuenta?",
+    "my_accounts": "Mis cuentas",
+    "program_scope": "Cuentas del programa",
+    "on_behalf_notice": "Estás rellenando la ficha de {{name}}, no la tuya.",
+    "login_required": "Inicia sesión para acceder a tu ficha.",
+    "no_account_claimed": "Reclama primero tu cuenta principal para rellenar tu ficha.",
+    "blocks": {
+      "identity": "Identidad",
+      "economy": "Recursos y economía",
+      "military": "Ejército",
+      "commanders": "Comandantes y equipo",
+      "goal": "Mi objetivo"
+    },
+    "steps": {
+      "identity": "Identidad",
+      "economy": "Recursos",
+      "military": "Ejército",
+      "commanders": "Comandantes"
+    },
+    "fields": {
+      "identity": {
+        "governorId": "Governor ID",
+        "name": "Nombre en el juego",
+        "power": "Poder",
+        "vipLevel": "Nivel VIP",
+        "mainTroopType": "Tipo de tropa principal",
+        "activeHoursUTC": "Horas activas (UTC)",
+        "languages": "Idiomas"
+      },
+      "economy": {
+        "food": "Comida",
+        "wood": "Madera",
+        "stone": "Piedra",
+        "gold": "Oro",
+        "speedupUniversal": "Aceleradores universales",
+        "speedupConstruction": "Aceleradores de construcción",
+        "speedupResearch": "Aceleradores de investigación",
+        "speedupTraining": "Aceleradores de entrenamiento",
+        "speedupHealing": "Aceleradores de curación",
+        "legendaryMaterials": "Materiales legendarios",
+        "goldenHeads": "Cabezas doradas"
+      },
+      "military": {
+        "t5Unlocked": "T5 desbloqueado",
+        "t4Total": "Tropas T4",
+        "t5Total": "Tropas T5",
+        "hospitalCapacity": "Capacidad del hospital"
+      },
+      "commanders": {
+        "pairs": "Parejas de comandantes",
+        "equipmentLegendary": "Piezas legendarias",
+        "equipmentFullSets": "Sets completos",
+        "equipmentInProgress": "Piezas en curso",
+        "missing": "Lo que me falta"
+      },
+      "goal": {
+        "playerGoal": "Lo que quiero mejorar"
+      }
+    }
   }
 }
