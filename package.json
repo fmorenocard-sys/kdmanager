@@ -15,7 +15,7 @@
     "deploy-rules:pilot": "node scripts/deploy-rules.cjs pilot",
     "test:render": "node tests/render-smoke/run.mjs",
     "test:goals": "node --test tests/kvkGoals.test.mjs tests/kvkGoals.parity.test.mjs",
-    "test:unit": "node --test tests/kvkGoals.test.mjs tests/kvkGoals.parity.test.mjs tests/perfExport.test.mjs tests/campaignFreshness.test.mjs",
+    "test:unit": "node --test tests/kvkGoals.test.mjs tests/kvkGoals.parity.test.mjs tests/perfExport.test.mjs tests/campaignFreshness.test.mjs tests/mentoringSchema.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-rules.test.mjs\"",
     "test:e2e": "firebase emulators:exec \"playwright test\"",
     "test:e2e-ui": "firebase emulators:exec \"playwright test --ui\"",

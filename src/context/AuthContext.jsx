@@ -66,10 +66,16 @@ export const AuthProvider = ({ children }) => {
         setAccounts(list);
         if (gov) localStorage.setItem(`gov_link_${currentUser.uid}`, gov);
         else localStorage.removeItem(`gov_link_${currentUser.uid}`);
+        // E-010/BR-027 : miroir PLAT des comptes principaux, lu par les règles du
+        // mentorat. Les règles Firestore ne savent comparer que des maps entières,
+        // donc itérer `accounts[]` pour y chercher un governorId est impossible —
+        // un `name` en plus ferait échouer la comparaison en silence. Ce champ
+        // n'accorde aucun droit nouveau : il rend seulement la réclamation lisible.
+        const warGovernorIds = list.filter((a) => a.type === "war").map((a) => a.governorId);
         try {
             await setDoc(
                 doc(db, "user_profiles", currentUser.uid),
-                { governorId: gov, accounts: list, updatedAt: new Date().toISOString() },
+                { governorId: gov, accounts: list, warGovernorIds, updatedAt: new Date().toISOString() },
                 { merge: true }
             );
         } catch (err) {

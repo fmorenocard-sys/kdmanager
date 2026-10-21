@@ -1,5 +1,25 @@
 # QA Changelog
 
+## v2.52 - 2026-10-21 — Programme de mentorat : socle d'accès et schéma (E-010, non livré)
+
+### Added
+- **Règles d'accès de la fiche de mentorat (BR-027/028/031)** dans `firestore.rules`, avec **18 cas de test neufs en émulateur — 57 tests verts**. La matrice est prouvée, pas supposée : un joueur ne lit pas la fiche d'un autre (critère n°4 du brief), une version ne peut être ni antidatée ni modifiée (critère n°5), et **un mentor peut remplir la fiche d'un compte orphelin** — le levier du MVP.
+- **`src/lib/mentoringSchema.js`** : les 27 champs décrits **une fois**, pilotant rendu, complétude (B4), comparaison de versions (B8), export (B14) et clés i18n. Module **pur** (aucun import React ni Firebase), 11 tests. `npm run test:unit` l'intègre.
+- **`warGovernorIds`** : miroir plat des comptes principaux dans `user_profiles`, maintenu par `AuthContext`. **Les règles Firestore ne savent comparer que des maps entières** — itérer `accounts[]` pour y chercher un governorId échouerait en silence dès qu'un compte porte un `name`. Backfill des **20 profils** concernés sur 2997.
+- `docs/pm/Spec_Programme_Mentorat_MVP.md`.
+
+### Changed
+- **La fiche est clée par `governorId`, pas par `uid`** (BR-027). Mesuré le 2026-10-21 : **23 des 41 comptes principaux n'ont aucun utilisateur**, et 28 détenteurs de rôle n'ont jamais réclamé leur gouverneur. Une clé par uid rendrait le critère « 100 % des comptes » mathématiquement inatteignable.
+- **Pas de scoping par mentor** : les 9 mentors *sont* membres du Conseil, qui lit toutes les fiches (B11) — un test relationnel ne protégerait rien. Mesuré : 14 lecteurs (13 Officiers + 1 Roi), donc le gate `rôle ≥ Officer` suffit. ~2 j-ing économisés.
+- **~80 points de données → 27** (arbitrage du Roi) : matériaux « par rareté » → `legendaryMaterials`, têtes → `goldenHeads`, un nombre chacun. Captures d'écran retirées.
+- **Lot 1 = front + règles, zéro Cloud Function** : plus de bucket, plus de CORS, plus de déploiement Functions sur 2997 — donc plus aucun risque lié au flag `PERFORMANCE_SOURCE` d'un `.env` gitignoré.
+
+### Known gaps
+- **Non livré** : formulaire, carte `/me`, écran de suivi et i18n restent à faire (~4-6 j-ing).
+- **Correctif bloquant avant l'annonce** : `war_availabilities` est lisible par tout compte connecté (`allow read: if isAuthenticated()`) et porte déjà `resources`, `speedups.total` et les commandants de **123 joueurs** — exactement ce que le brief veut protéger. Livrer une fiche confidentielle à côté serait du théâtre.
+- **Lot 0 absent du brief** : sans campagne de réclamation de compte, « 100 % » reste hors d'atteinte.
+- La réclamation n'est pas vérifiée (A-023) : durcissement `claimVerified` prévu en 1b.
+
 ## v2.51 - 2026-10-14 — La frise du royaume affichait la saison précédente (BUG-015)
 
 ### Fixed

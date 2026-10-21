@@ -19,7 +19,7 @@ import {
     assertSucceeds,
     initializeTestEnvironment
 } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 const RULES_FILE = process.env.RULES_FILE || 'firestore.rules';
 
@@ -59,10 +59,28 @@ before(async () => {
         await setDoc(doc(db, 'kvk_history', 'soc3'), { title: 'SoC 3', outcome: null });
         await setDoc(doc(db, 'kvk_race', 'soc4'), { campaignName: 'SoC 4' });
         await setDoc(doc(db, 'kvk_race', 'soc4', 'scans', '6'), { seq: 6 });
-        await setDoc(doc(db, 'user_profiles', WARRIOR), { governorId: '111' });
+        // E-010 : `warGovernorIds` est le miroir plat des comptes `war` lu par les
+        // règles du mentorat. WARRIOR a réclamé le gouverneur 111, pas le 999.
+        await setDoc(doc(db, 'user_profiles', WARRIOR), {
+            governorId: '111',
+            accounts: [{ governorId: '111', type: 'war', name: 'Helios' }],
+            warGovernorIds: ['111']
+        });
         await setDoc(doc(db, 'war_availabilities', 'soc4_' + WARRIOR), {
             userId: WARRIOR, kvkId: 'soc4', governorId: '111'
         });
+        // Fiche d'un compte principal ORPHELIN (aucun utilisateur ne l'a réclamé) :
+        // c'est le cas des 23 comptes de 2997 mesurés le 2026-10-21.
+        await setDoc(doc(db, 'mentoring_sheets', '999'), {
+            governorId: '999', name: 'Orphelin', blocks: {}, enteredBy: OFFICER
+        });
+        await setDoc(doc(db, 'mentoring_sheets', '111'), {
+            governorId: '111', name: 'Helios', blocks: {}, enteredBy: WARRIOR
+        });
+        await setDoc(doc(db, 'mentoring_sheets', '111', 'versions', 'soc4_post'), {
+            takenAt: new Date(), takenBy: WARRIOR, blocks: {}
+        });
+        await setDoc(doc(db, 'mentoring_program', 'main'), { scopeGovernorIds: ['111', '999'] });
     });
 });
 
@@ -324,6 +342,122 @@ describe(`Règles Firestore — ${RULES_FILE}`, () => {
         });
         it('USAGE — l\'Admin lit les agrégats de course (leadership)', async () => {
             await assertSucceeds(getDoc(doc(as(ADMIN), 'kvk_race', 'soc4', 'scans', '6')));
+        });
+    });
+
+    // E-010 / F-039 / BR-027 — programme de mentorat.
+    // La fiche est clée par `governorId` (pas par uid) pour qu'un mentor puisse
+    // remplir celle d'un compte sans utilisateur. Ces tests verrouillent les deux
+    // promesses du brief : « aucun joueur ne peut ouvrir la fiche d'un autre » et
+    // « l'ancienne version reste consultable ».
+    describe('E-010 · fiches de mentorat : accès', () => {
+        it('USAGE — le joueur lit la fiche du gouverneur qu\'il a réclamé', async () => {
+            await assertSucceeds(getDoc(doc(as(WARRIOR), 'mentoring_sheets', '111')));
+        });
+
+        it('ATTAQUE — un joueur NE lit PAS la fiche d\'un gouverneur qu\'il n\'a pas réclamé', async () => {
+            // Critère de réussite n°4 du brief.
+            await assertFails(getDoc(doc(as(WARRIOR), 'mentoring_sheets', '999')));
+        });
+
+        it('ATTAQUE — un connecté sans profil ne lit aucune fiche', async () => {
+            await assertFails(getDoc(doc(as(INTRUDER), 'mentoring_sheets', '111')));
+        });
+
+        it('ATTAQUE — un visiteur non connecté ne lit aucune fiche', async () => {
+            await assertFails(getDoc(doc(guest(), 'mentoring_sheets', '111')));
+        });
+
+        it('USAGE — l\'Officier (mentor / Conseil) lit toutes les fiches', async () => {
+            await assertSucceeds(getDoc(doc(as(OFFICER), 'mentoring_sheets', '999')));
+        });
+
+        it('USAGE — le mentor remplit la fiche d\'un compte ORPHELIN, en se traçant', async () => {
+            // C'est le levier du MVP : sans lui, 23 des 41 comptes n'ont pas de fiche.
+            await assertSucceeds(setDoc(doc(as(OFFICER), 'mentoring_sheets', '777'), {
+                governorId: '777', name: 'Sans compte', blocks: {}, blockMeta: {},
+                status: 'draft', enteredBy: OFFICER, enteredByRole: 'Officer',
+                createdAt: new Date(), updatedAt: new Date()
+            }));
+        });
+
+        it('ATTAQUE — on ne peut pas se faire passer pour un autre saisisseur', async () => {
+            await assertFails(setDoc(doc(as(OFFICER), 'mentoring_sheets', '778'), {
+                governorId: '778', name: 'X', blocks: {}, blockMeta: {},
+                status: 'draft', enteredBy: KING, enteredByRole: 'King',
+                createdAt: new Date(), updatedAt: new Date()
+            }));
+        });
+
+        it('ATTAQUE — la clé du document doit correspondre au governorId écrit', async () => {
+            await assertFails(setDoc(doc(as(OFFICER), 'mentoring_sheets', '779'), {
+                governorId: '000', name: 'X', blocks: {}, blockMeta: {},
+                status: 'draft', enteredBy: OFFICER, enteredByRole: 'Officer',
+                createdAt: new Date(), updatedAt: new Date()
+            }));
+        });
+
+        it('ATTAQUE — un champ hors forme est refusé (garde-fou M-3)', async () => {
+            await assertFails(setDoc(doc(as(OFFICER), 'mentoring_sheets', '780'), {
+                governorId: '780', blocks: {}, enteredBy: OFFICER,
+                createdAt: new Date(), updatedAt: new Date(),
+                role: 'King' // champ étranger
+            }));
+        });
+
+        it('ATTAQUE — un joueur ne modifie pas la fiche d\'un autre', async () => {
+            await assertFails(updateDoc(doc(as(WARRIOR), 'mentoring_sheets', '999'), {
+                status: 'complete', enteredBy: WARRIOR, updatedAt: new Date()
+            }));
+        });
+    });
+
+    describe('E-010 · fiches de mentorat : versions figées (BR-028)', () => {
+        it('USAGE — le joueur lit les versions de sa propre fiche', async () => {
+            await assertSucceeds(getDoc(doc(as(WARRIOR), 'mentoring_sheets', '111', 'versions', 'soc4_post')));
+        });
+
+        it('ATTAQUE — une version ne peut pas être ANTIDATÉE', async () => {
+            // `takenAt == request.time` : sans horodatage serveur, c'est refusé.
+            await assertFails(setDoc(doc(as(WARRIOR), 'mentoring_sheets', '111', 'versions', 'faux'), {
+                takenAt: new Date('2020-01-01'), takenBy: WARRIOR, blocks: {}
+            }));
+        });
+
+        it('USAGE — une version horodatée par le serveur est acceptée', async () => {
+            await assertSucceeds(setDoc(doc(as(WARRIOR), 'mentoring_sheets', '111', 'versions', 'soc5_pre'), {
+                takenAt: serverTimestamp(), takenBy: WARRIOR, blocks: {}
+            }));
+        });
+
+        it('ATTAQUE — une version déjà écrite est IMMUABLE (critère n°5)', async () => {
+            await assertFails(updateDoc(doc(as(OFFICER), 'mentoring_sheets', '111', 'versions', 'soc4_post'), {
+                blocks: { falsifie: true }
+            }));
+        });
+
+        it('ATTAQUE — un joueur ne lit pas les versions d\'un autre', async () => {
+            await assertFails(getDoc(doc(as(WARRIOR), 'mentoring_sheets', '999', 'versions', 'x')));
+        });
+    });
+
+    describe('E-010 · périmètre du programme', () => {
+        it('USAGE — le Conseil lit le périmètre', async () => {
+            await assertSucceeds(getDoc(doc(as(OFFICER), 'mentoring_program', 'main')));
+        });
+
+        it('ATTAQUE — un joueur ne lit pas le périmètre', async () => {
+            await assertFails(getDoc(doc(as(WARRIOR), 'mentoring_program', 'main')));
+        });
+
+        it('ATTAQUE — un Officier ne MODIFIE pas le périmètre (Roi seul)', async () => {
+            await assertFails(setDoc(doc(as(OFFICER), 'mentoring_program', 'main'),
+                { scopeGovernorIds: ['111'] }, { merge: true }));
+        });
+
+        it('USAGE — le Roi amorce le périmètre', async () => {
+            await assertSucceeds(setDoc(doc(as(KING), 'mentoring_program', 'main'),
+                { scopeGovernorIds: ['111', '999', '777'] }, { merge: true }));
         });
     });
 

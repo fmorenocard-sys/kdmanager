@@ -95,8 +95,13 @@ service cloud.firestore {
       allow read: if isOwner(userId) || isKingOrOfficer();
       // E-007/F-025 : multi-comptes — le propriétaire écrit governorId (miroir du
       // compte primaire) + accounts[] (liste de ses comptes typés war/filler).
-      allow create: if isOwner(userId) && writesOnly(['governorId', 'accounts', 'updatedAt']);
-      allow update: if isOwner(userId) && changesOnly(['governorId', 'accounts', 'updatedAt']);
+      // E-010/BR-027 : `warGovernorIds` est le MIROIR PLAT des comptes `war` de
+      // `accounts[]`, maintenu par AuthContext. Il n'ajoute aucun droit — il rend
+      // seulement la réclamation lisible par une règle, qui ne sait pas itérer une
+      // liste de maps. Écrit par le propriétaire comme le reste : un joueur qui le
+      // falsifierait ne gagnerait que ce que la réclamation libre lui donne déjà (A-023).
+      allow create: if isOwner(userId) && writesOnly(['governorId', 'accounts', 'warGovernorIds', 'updatedAt']);
+      allow update: if isOwner(userId) && changesOnly(['governorId', 'accounts', 'warGovernorIds', 'updatedAt']);
       allow delete: if false;
     }
 
@@ -149,6 +154,82 @@ service cloud.firestore {
         allow read: if isKingOrOfficer();
         allow write: if false;
       }
+    }
+
+    // ---------- Programme de mentorat (E-010 / F-039, BR-027) ----------
+    //
+    // La fiche est clée par `governorId`, PAS par uid. C'est la décision
+    // structurante du MVP : 23 des 41 comptes principaux de 2997 n'ont aucun
+    // utilisateur (mesuré le 2026-10-21), et un mentor doit pouvoir remplir leur
+    // fiche. Une clé par uid rendrait le critère « 100 % des comptes » inatteignable.
+    //
+    // Contrepartie assumée : la propriété côté joueur repose sur la réclamation de
+    // compte, qui n'est pas vérifiée (A-023). Le risque est réel mais marginal
+    // AUJOURD'HUI, `war_availabilities` exposant déjà ressources, accélérateurs et
+    // commandants de 123 joueurs à tout compte connecté. Durcissement prévu en 1b
+    // (`claimVerified` posé par le leadership), à traiter avec ce correctif-là.
+
+    // Le gouverneur fait-il partie des comptes PRINCIPAUX réclamés par l'appelant ?
+    //
+    // On lit `warGovernorIds`, une liste plate d'identifiants maintenue par
+    // AuthContext à côté de `accounts[]`. Itérer `accounts[]` n'est pas possible :
+    // les règles ne savent comparer que des maps ENTIÈRES, donc le moindre champ
+    // supplémentaire (`name`) ferait échouer la comparaison en silence.
+    // `exists()` avant `get()` : un profil absent ferait lever `.data` sur null.
+    function hasClaimed(governorId) {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/user_profiles/$(request.auth.uid))
+        && get(/databases/$(database)/documents/user_profiles/$(request.auth.uid))
+             .data.get('warGovernorIds', []).hasAny([governorId]);
+    }
+
+    // BR-027 : le leadership (Officer+) OU le joueur qui a réclamé ce gouverneur.
+    // Pas de scoping par mentor : les 9 mentors SONT membres du Conseil, qui lit
+    // toutes les fiches (B11) — un test relationnel ne protégerait rien.
+    function canAccessSheet(governorId) {
+      return isKingOrOfficer() || hasClaimed(governorId);
+    }
+
+    match /mentoring_sheets/{governorId} {
+      allow read: if canAccessSheet(governorId);
+
+      // `enteredBy` trace QUI a saisi — le joueur voit « remplie par ton mentor »,
+      // et le Conseil sait à quel mentor réclamer une fiche manquante (B10).
+      allow create: if canAccessSheet(governorId)
+        && request.resource.data.governorId == governorId
+        && request.resource.data.enteredBy == request.auth.uid
+        && writesOnly(['governorId', 'name', 'blocks', 'blockMeta', 'status',
+                       'enteredBy', 'enteredByRole', 'createdAt', 'updatedAt']);
+
+      allow update: if canAccessSheet(governorId)
+        && request.resource.data.enteredBy == request.auth.uid
+        && changesOnly(['name', 'blocks', 'blockMeta', 'status',
+                        'enteredBy', 'enteredByRole', 'updatedAt']);
+
+      // Droit à l'effacement : le propriétaire réclamant, ou le Roi.
+      allow delete: if isKing() || hasClaimed(governorId);
+
+      // Versions figées (BR-028) : create-only, jamais modifiables. C'est le
+      // critère de réussite n°5 — « l'ancienne version reste consultable ».
+      // `takenAt` est horodaté par le serveur : une version ne peut pas être
+      // antidatée. Même parti pris que kvk_history (BR-006).
+      match /versions/{versionId} {
+        allow read: if canAccessSheet(governorId);
+        allow create: if canAccessSheet(governorId)
+          && request.resource.data.takenAt == request.time
+          && request.resource.data.takenBy == request.auth.uid;
+        allow update: if false;
+        allow delete: if isKing() || hasClaimed(governorId);
+      }
+    }
+
+    // Périmètre et paramètres du programme. Le Roi l'amorce ; le Conseil le lit
+    // pour afficher le suivi. Le périmètre est une COPIE de la liste de suivi du
+    // Roi, jamais une lecture directe de static_data/kvk : celle-ci est réécrite
+    // à chaque ouverture de KvK et ferait bouger le dénominateur tout seul.
+    match /mentoring_program/{document} {
+      allow read: if isKingOrOfficer();
+      allow write: if isKing();
     }
 
     // Tout le reste — dont _discord_oauth_cache et _discord_link_tokens — reste
