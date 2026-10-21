@@ -770,6 +770,21 @@
       "goal": {
         "playerGoal": "Lo que quiero mejorar"
       }
-    }
+    },
+    "tab_label": "Mentoría",
+    "tracking_title": "Seguimiento de fichas",
+    "tracking_hint": "{{done}} ficha(s) completa(s) de {{total}} cuentas del ámbito.",
+    "tracking_empty": "Ninguna cuenta en el ámbito. El Rey debe definirlo primero.",
+    "tracking_error": "No se pudo leer el seguimiento — ¿permisos insuficientes?",
+    "state_todo": "Pendiente",
+    "state_doing": "En curso",
+    "state_done": "Completa",
+    "col_player": "Jugador",
+    "col_state": "Estado",
+    "col_progress": "Avance",
+    "col_entered_by": "Rellenada por",
+    "col_updated": "Actualizada",
+    "open_sheet": "Abrir",
+    "out_of_scope": "fuera de ámbito"
   }
 }

@@ -147,3 +147,15 @@ test('les libellés d\'étapes et les textes d\'interface existent partout', () 
     }
     assert.deepEqual(manquantes, [], `clés i18n manquantes :\n${manquantes.join('\n')}`);
 });
+
+test('les clés de l\'écran de suivi du Conseil existent partout (B10/B11)', () => {
+    const requis = ['tab_label', 'tracking_title', 'tracking_hint', 'tracking_empty', 'tracking_error',
+        'state_todo', 'state_doing', 'state_done', 'col_player', 'col_state', 'col_progress',
+        'col_entered_by', 'col_updated', 'open_sheet', 'out_of_scope'];
+    const manquantes = [];
+    for (const loc of LOCALES) {
+        const m = load(loc).mentoring || {};
+        for (const k of requis) if (!m[k]) manquantes.push(`${loc}: mentoring.${k}`);
+    }
+    assert.deepEqual(manquantes, [], `clés i18n manquantes :\n${manquantes.join('\n')}`);
+});

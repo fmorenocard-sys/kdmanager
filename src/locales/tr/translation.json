@@ -770,6 +770,21 @@
       "goal": {
         "playerGoal": "What I want to improve"
       }
-    }
+    },
+    "tab_label": "Mentoring",
+    "tracking_title": "Sheet tracking",
+    "tracking_hint": "{{done}} complete sheet(s) out of {{total}} accounts in scope.",
+    "tracking_empty": "No account in scope yet. The King must seed it first.",
+    "tracking_error": "Could not read tracking — insufficient rights?",
+    "state_todo": "To do",
+    "state_doing": "In progress",
+    "state_done": "Complete",
+    "col_player": "Player",
+    "col_state": "State",
+    "col_progress": "Progress",
+    "col_entered_by": "Filled in by",
+    "col_updated": "Updated",
+    "open_sheet": "Open",
+    "out_of_scope": "out of scope"
   }
 }

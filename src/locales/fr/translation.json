@@ -770,6 +770,21 @@
       "goal": {
         "playerGoal": "Ce que je veux améliorer"
       }
-    }
+    },
+    "tab_label": "Mentorat",
+    "tracking_title": "Suivi des fiches",
+    "tracking_hint": "{{done}} fiche(s) complète(s) sur {{total}} comptes du périmètre.",
+    "tracking_empty": "Aucun compte au périmètre. Le Roi doit d’abord l’amorcer.",
+    "tracking_error": "Lecture du suivi impossible — droits insuffisants ?",
+    "state_todo": "À faire",
+    "state_doing": "En cours",
+    "state_done": "Complète",
+    "col_player": "Joueur",
+    "col_state": "État",
+    "col_progress": "Avancement",
+    "col_entered_by": "Saisie par",
+    "col_updated": "Mise à jour",
+    "open_sheet": "Ouvrir",
+    "out_of_scope": "hors périmètre"
   }
 }

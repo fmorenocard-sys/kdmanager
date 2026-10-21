@@ -7,9 +7,10 @@ import { isModuleEnabled } from '../config/modules';
 import WarDashboard from '../components/war/WarDashboard';
 import KvkGoalsPanel from '../components/war/KvkGoalsPanel';
 import DeadweightPage from './DeadweightPage';
-import { LayoutDashboard, Target, Skull, ShieldAlert } from '../components/ui/icons';
+import { LayoutDashboard, Target, Skull, ShieldAlert, ScrollText } from '../components/ui/icons';
 import PageHeader from '../components/ui/PageHeader';
 import AccessGate from '../components/ui/AccessGate';
+import SheetTracking from '../components/mentoring/SheetTracking';
 
 // F-032 Lot 6 — hub « Pilotage » (spec Espace_Perso §7.2 / E-009 §3.1).
 // Regroupe sous UNE entrée de nav leadership les surfaces de pilotage du royaume :
@@ -24,7 +25,9 @@ const PilotagePage = () => {
     const showDeadweight = isModuleEnabled('deadweight');
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const validTabs = ['dashboard', 'goals', ...(showDeadweight ? ['deadweight'] : [])];
+    // E-010 : le suivi des fiches vit ici et pas dans /admin — /admin est King-only,
+    // or le Conseil (Officier) doit voir qui a rempli (B10/B11).
+    const validTabs = ['dashboard', 'goals', 'mentoring', ...(showDeadweight ? ['deadweight'] : [])];
     const [activeTab, setActiveTab] = useState(() => {
         const t0 = searchParams.get('tab');
         return validTabs.includes(t0) ? t0 : 'dashboard';
@@ -55,6 +58,7 @@ const PilotagePage = () => {
     const tabs = [
         { id: 'dashboard', label: t('pilotage.tab_dashboard'), icon: LayoutDashboard },
         { id: 'goals', label: t('goals.tab_label'), icon: Target },
+        { id: 'mentoring', label: t('mentoring.tab_label'), icon: ScrollText },
         ...(showDeadweight ? [{ id: 'deadweight', label: t('nav.deadweight'), icon: Skull }] : []),
     ];
 
@@ -92,6 +96,9 @@ const PilotagePage = () => {
                 )}
                 {activeTab === 'goals' && (
                     <div className="animate-in fade-in duration-300"><KvkGoalsPanel /></div>
+                )}
+                {activeTab === 'mentoring' && (
+                    <div className="animate-in fade-in duration-300"><SheetTracking /></div>
                 )}
                 {activeTab === 'deadweight' && showDeadweight && (
                     <div className="animate-in fade-in duration-300"><DeadweightPage embedded /></div>
