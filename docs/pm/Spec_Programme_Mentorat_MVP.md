@@ -182,13 +182,24 @@ résume à `node scripts/deploy-rules.cjs prod` et un front.
 | Schéma des 27 champs + complétude + diff | **Fait** — `src/lib/mentoringSchema.js` |
 | Tests du schéma | **Fait** — 11 cas, verts |
 | Miroir `warGovernorIds` (AuthContext) | **Fait**, + backfill des 20 profils concernés |
-| Formulaire 4 étapes + mode « au nom de » | À faire |
-| Carte « Ma fiche » sur `/me` | À faire |
-| Écran de suivi Conseil | À faire |
-| i18n (~60 clés × 10 locales) | À faire |
+| Formulaire 4 étapes + mode « au nom de » | **Fait** — `/fiche` |
+| Carte « Ma fiche » sur `/me` | **Fait** |
+| Écran de suivi Conseil (B10/B11) | **Fait** — onglet « Mentorat » dans `/pilotage` |
+| i18n × 10 locales | **Fait** — FR/EN/ES relus, 7 en repli EN |
+| Règles déployées sur les 2 bases de 2997 | **Fait** le 2026-10-21 |
+| Périmètre amorcé (41 comptes) | **Fait** — `mentoring_program/main` |
+| Preview staging | **Fait** — expire le 2026-11-20 |
 
-**Reste estimé : 4 à 6 j-ing.** Le socle le plus risqué (accès, immuabilité des
-versions) est posé et prouvé.
+**Le lot 1 est complet et déployable.** Il reste deux gestes HORS code avant
+d'annoncer le programme : le correctif `war_availabilities` (§2) et le lot 0
+(réclamation de compte, §7).
+
+### Ce que le périmètre dit du programme
+
+Sur les 41 comptes copiés : **18 peuvent remplir eux-mêmes**, **23 dépendent
+d'une saisie par leur mentor**. Autrement dit, plus de la moitié du programme
+repose sur le mode « au nom de » — ce n'était pas une commodité, c'était la
+condition de faisabilité.
 
 ---
 

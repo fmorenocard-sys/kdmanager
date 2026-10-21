@@ -1,5 +1,28 @@
 # QA Changelog
 
+## v2.53 - 2026-10-21 — Mentorat : lot 1 complet, règles en prod, preview staging
+
+### Added
+- **Formulaire de fiche (F-039)** : `/fiche`, 4 étapes, **entièrement piloté par `mentoringSchema`** — aucun champ écrit en dur. Deux entrées pour le même écran : le joueur, ou **un mentor « au nom de »** un mentoré. Trois filets contre la perte de saisie (autosave 1,5 s, miroir `localStorage` relu s'il est plus récent que le serveur, `null` jamais écrasé par `0`). Pré-remplissage depuis la dernière déclaration — mesuré, 123/143 portent `resources`, 110 les paires de commandants.
+- **Carte « Ma fiche » sur `/me`**, qui dit au joueur si son mentor a rempli pour lui.
+- **Écran de suivi du Conseil (B10/B11)**, onglet « Mentorat » dans `/pilotage` — pas dans `/admin`, King-only alors que le Conseil doit voir le suivi. **Une ligne par compte du PÉRIMÈTRE, pas par fiche existante** : un compte sans fiche apparaît en « à faire », c'est tout l'intérêt de l'écran.
+- i18n : bloc `mentoring` complet dans les 10 locales, FR/EN/ES relus, les 7 autres en repli EN assumé.
+
+### Deployed
+- **Règles déployées sur les DEUX bases de 2997** (`(default)` + `kdmanagerdb`) via `deploy-rules.cjs prod`. **Vérifié sur le ruleset réellement servi, pas sur le retour du script** : il est désormais **identique au fichier du dépôt**, celui-là même sur lequel les 57 tests de règles passent. Tout le durcissement antérieur (BUG-002) est intact.
+- Diff contrôlé **avant** déploiement : 28 lignes ajoutées, 2 remplacées (`warGovernorIds` sur `user_profiles`), **0 suppression**. ⚠️ Piège de lecture : l'API Rules renvoie un `createTime` de février qui est celui du **nom de la release**, pas du ruleset — le ruleset précédent datait du 19/08.
+- **Périmètre amorcé** : `mentoring_program/main`, 41 comptes copiés depuis `static_data/kvk` (BR-031 — copie, jamais lecture directe). Sur ces 41 : **18 peuvent remplir eux-mêmes, 23 dépendent d'une saisie par leur mentor**.
+- **Canal de preview `staging`** déployé, expire le 2026-11-20.
+
+### Verified
+- Une première tentative de contrôle i18n **par le rendu** donnait un faux vert : le formulaire ne rend que l'étape courante, donc les libellés des trois autres étapes n'apparaissent jamais dans son markup. Prouvé en retirant `mentoring.blocks.economy` — le smoke test restait vert. Remplacé par un contrôle exact **schéma × 10 locales**, lui-même vérifié négativement : il échoue en nommant la locale et la clé.
+- Build vert, lint **inchangé** (665 problèmes préexistants), **58 tests unitaires** et **57 tests de règles** verts.
+
+### Known gaps
+- **Correctif `war_availabilities` toujours à faire avant l'annonce** : lisible par tout compte connecté, et porte déjà ressources, accélérateurs et commandants de 123 joueurs.
+- **Lot 0 (réclamation de compte)** non fait : 23 des 41 comptes dépendent d'une saisie mentor, et 28 détenteurs de rôle n'ont jamais réclamé leur gouverneur.
+- Lots 2 (escouades, objectifs, comparaison de versions) et 3 (totaux, export) non entamés.
+
 ## v2.52 - 2026-10-21 — Programme de mentorat : socle d'accès et schéma (E-010, non livré)
 
 ### Added
