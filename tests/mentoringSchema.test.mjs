@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    SHEET_SCHEMA, ALL_FIELDS, isFilled, blockState, completeness, emptySheet, diffSheets,
+    SHEET_SCHEMA, ALL_FIELDS, isFilled, blockState, completeness, emptySheet, diffSheets, parseNumeric,
 } from '../src/lib/mentoringSchema.js';
 
 test('le schéma reste court — c\'est la promesse du MVP', () => {
@@ -54,6 +54,41 @@ test('chaque champ numérique a un exemple de saisie', () => {
         .filter((f) => (f.kind === 'number' || f.kind === 'days') && !f.readOnly && !f.example)
         .map((f) => `${f.block}.${f.id}`);
     assert.deepEqual(sansExemple, []);
+});
+
+test('parseNumeric — absorbe les séparateurs de milliers que le joueur tape', () => {
+    // Le placeholder montre « 800 000 » parce que le jeu l'affiche ainsi : le
+    // joueur tapera donc les espaces. Un Number() nu rendrait NaN et viderait le
+    // champ EN SILENCE — c'est le bug que ce parseur existe pour empêcher.
+    assert.equal(parseNumeric('800 000'), 800000);
+    assert.equal(parseNumeric('1 200 000'), 1200000);
+    assert.equal(parseNumeric('95 600 000'), 95600000, 'espace insécable');
+    assert.equal(parseNumeric('800 000'), 800000, 'espace fine insécable');
+    assert.equal(parseNumeric("1'200'000"), 1200000, 'apostrophe suisse');
+    // Décimales : la virgule est ce que tape un clavier francophone.
+    assert.equal(parseNumeric('5,2'), 5.2);
+    assert.equal(parseNumeric('5.2'), 5.2);
+    // Zéro reste zéro, et le vide reste null — jamais 0.
+    assert.equal(parseNumeric('0'), 0);
+    assert.equal(parseNumeric(''), null);
+    assert.equal(parseNumeric('   '), null);
+    assert.equal(parseNumeric(null), null);
+    assert.equal(parseNumeric('abc'), null);
+    assert.equal(parseNumeric(1234), 1234);
+});
+
+test('les effectifs se saisissent en ENTIERS, pas en abrégé', () => {
+    // « 800k » laissait croire qu'on attend une abréviation ; le jeu affiche
+    // « 800 000 » et c'est ce qui doit être saisi.
+    const ids = ['power', 't4Total', 't5Total'];
+    for (const id of ids) {
+        const f = ALL_FIELDS.find((x) => x.id === id);
+        assert.ok(f.example, `${id} doit avoir un exemple`);
+        assert.ok(!/[kKmM]$/.test(f.example), `${id} : exemple abrégé « ${f.example} »`);
+        // L'exemple doit lui-même passer le parseur — sinon on montre au joueur
+        // une saisie que le champ refuse.
+        assert.ok(Number.isFinite(parseNumeric(f.example)), `${id} : exemple illisible par parseNumeric`);
+    }
 });
 
 test('isFilled — 0 est une RÉPONSE, pas une absence de réponse', () => {

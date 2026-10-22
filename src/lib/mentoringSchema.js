@@ -55,7 +55,7 @@ export const SHEET_SCHEMA = [
         fields: [
             { id: 'governorId', kind: 'text', prefill: 'account', readOnly: true },
             { id: 'name', kind: 'text', prefill: 'account' },
-            { id: 'power', kind: 'number', example: '95.6M', prefill: 'players' },
+            { id: 'power', kind: 'number', example: '95 600 000', prefill: 'players' },
             { id: 'vipLevel', kind: 'number', example: '14' },
             { id: 'mainTroopType', kind: 'enum', options: TROOP_TYPES, prefill: 'declaration' },
             { id: 'activeHoursUTC', kind: 'hours', prefill: 'declaration' },
@@ -94,8 +94,8 @@ export const SHEET_SCHEMA = [
             // `t5Unlocked` et `hospitalCapacity` retirés le 2026-10-22 (décision du
             // Roi) : le premier se déduit de `t5Total > 0`, le second ne pilote
             // aucune décision de mentorat.
-            { id: 't4Total', kind: 'number', example: '1.2M' },
-            { id: 't5Total', kind: 'number', example: '800k' },
+            { id: 't4Total', kind: 'number', example: '1 200 000' },
+            { id: 't5Total', kind: 'number', example: '800 000' },
         ],
     },
     {
@@ -131,6 +131,32 @@ export const ALL_FIELDS = SHEET_SCHEMA.flatMap((b) => b.fields.map((f) => ({ ...
 
 /** Champs qui comptent pour la complétude (les `optional` n'y entrent pas). */
 const requiredFields = (block) => block.fields.filter((f) => !f.optional && !f.readOnly);
+
+/**
+ * Convertit une saisie en nombre, en tolérant ce que les joueurs tapent vraiment.
+ *
+ * Les effectifs de troupes se lisent « 800 000 » dans le jeu, et c'est ce que le
+ * placeholder montre — donc c'est ce qui sera tapé, espaces compris. `Number()`
+ * seul rend alors `NaN`, et le champ se viderait **en silence**. On absorbe donc
+ * les séparateurs de milliers (espace, espace insécable, espace fine insécable,
+ * apostrophe) et la virgule décimale.
+ *
+ * Retourne `null` — jamais `0` — pour une saisie vide ou inexploitable : « je
+ * n'ai pas répondu » doit rester distinct de « je n'ai rien ».
+ *
+ * @param {string|number|null} raw
+ * @returns {number|null}
+ */
+export function parseNumeric(raw) {
+    if (raw === null || raw === undefined) return null;
+    if (typeof raw === 'number') return Number.isFinite(raw) ? raw : null;
+    const cleaned = String(raw)
+        .replace(/[\s\u00a0\u202f\u2009']/g, '')
+        .replace(',', '.');
+    if (cleaned === '') return null;
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : null;
+}
 
 /**
  * Une valeur est-elle renseignée ? `null`/`undefined`/chaîne vide = non.

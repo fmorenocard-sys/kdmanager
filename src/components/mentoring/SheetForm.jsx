@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import { SHEET_SCHEMA, blockState } from '../../lib/mentoringSchema';
+import { SHEET_SCHEMA, blockState, parseNumeric } from '../../lib/mentoringSchema';
 import { CheckCircle2, Clock, AlertTriangle, Save, User, Database, Swords, Shield, Target } from '../ui/icons';
 
 /**
@@ -142,9 +142,10 @@ const Field = ({ block, field, value, onChange, t }) => {
             onChange={(e) => {
                 const raw = e.target.value;
                 if (!numeric) return onChange(block.id, field.id, raw || null);
-                if (raw === '') return onChange(block.id, field.id, null); // vide ≠ 0
-                const n = Number(raw.replace(',', '.'));
-                onChange(block.id, field.id, Number.isFinite(n) ? n : null);
+                // `parseNumeric` absorbe les séparateurs de milliers : le joueur lit
+                // « 800 000 » dans le jeu et dans le placeholder, il le tapera avec
+                // ses espaces. Un `Number()` nu rendrait NaN et viderait le champ.
+                onChange(block.id, field.id, parseNumeric(raw));
             }}
         />
     );
