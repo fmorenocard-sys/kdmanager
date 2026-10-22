@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { SHEET_SCHEMA, blockState } from '../../lib/mentoringSchema';
-import { CheckCircle2, Clock, AlertTriangle, Save } from '../ui/icons';
+import { CheckCircle2, Clock, AlertTriangle, Save, User, Database, Swords, Shield, Target } from '../ui/icons';
 
 /**
  * SheetForm — E-010 / F-039 : saisie de la fiche d'état de compte.
@@ -36,9 +36,14 @@ const stateIcon = (state) => (
             : <span className="w-3.5 h-3.5 rounded-full border border-[var(--border-flat)]" />
 );
 
+// Icônes des blocs, nommées dans le schéma (qui reste pur et sans import React).
+const BLOCK_ICONS = { User, Database, Swords, Shield, Target };
+
 /** Un champ, rendu selon son `kind`. Tout passe par `onChange(blockId, fieldId, v)`. */
 const Field = ({ block, field, value, onChange, t }) => {
-    const label = t(`mentoring.fields.${block.id}.${field.id}`);
+    // `labelKey` réutilise un libellé EXISTANT (ex. `war.food` = « Nourriture (B) »)
+    // plutôt que d'en créer un jumeau qui finirait par diverger.
+    const label = field.labelKey ? t(field.labelKey) : t(`mentoring.fields.${block.id}.${field.id}`);
     const common = { label, id: `${block.id}-${field.id}` };
 
     if (field.kind === 'bool') {
@@ -132,7 +137,8 @@ const Field = ({ block, field, value, onChange, t }) => {
             readOnly={field.readOnly}
             disabled={field.readOnly}
             value={value ?? ''}
-            placeholder={field.unit ? t(`mentoring.unit_${field.unit}`) : undefined}
+            // Même convention de placeholder que la déclaration : « ex. 5.2 ».
+            placeholder={field.example ? t('war.example', { v: field.example }) : undefined}
             onChange={(e) => {
                 const raw = e.target.value;
                 if (!numeric) return onChange(block.id, field.id, raw || null);
@@ -144,9 +150,11 @@ const Field = ({ block, field, value, onChange, t }) => {
     );
 };
 
-const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone }) => {
+const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone, initialStep = 0 }) => {
     const { t } = useTranslation();
-    const [step, setStep] = useState(0);
+    // `initialStep` permet d'ouvrir le formulaire sur une étape précise — utile
+    // pour un lien direct vers un bloc, et pour les aperçus statiques.
+    const [step, setStep] = useState(initialStep);
     const current = STEPS[step];
 
     const stepStates = useMemo(() => STEPS.map((s) => {
@@ -203,15 +211,27 @@ const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone }) 
             <section className="v2-glass p-4 md:p-5 space-y-4">
                 {current.blocks.map((bid) => {
                     const block = SHEET_SCHEMA.find((b) => b.id === bid);
+                    const Icon = BLOCK_ICONS[block.icon] || Target;
                     return (
-                        <div key={bid} className="space-y-4">
-                            <h3 className="text-[15px] font-semibold text-white">{t(`mentoring.blocks.${bid}`)}</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {block.fields.map((f) => (
-                                    <div key={f.id} className={f.id === 'missing' ? 'sm:col-span-2' : ''}>
-                                        <Field block={block} field={f} value={blocks[bid]?.[f.id]} onChange={setField} t={t} />
-                                    </div>
-                                ))}
+                        // Même encart que `AvailabilityForm` : fond `--border-flat`,
+                        // titre coloré précédé d'une icône. Les deux formulaires se
+                        // ressemblent parce que le joueur y fait le même geste.
+                        <div key={bid} className="bg-[var(--border-flat)] p-3 md:p-4 rounded-lg">
+                            <h3 className={`text-lg font-semibold mb-3 flex items-center gap-2 ${block.accent || 'text-white'}`}>
+                                <Icon size={18} /> {t(`mentoring.blocks.${bid}`)}
+                            </h3>
+                            {/* Grille de la déclaration : 2 colonnes dès le mobile pour
+                                les champs courts, 4 en desktop. Les champs longs
+                                (texte libre, heures) prennent toute la largeur. */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                                {block.fields.map((f) => {
+                                    const wide = f.id === 'missing' || f.kind === 'text' || f.kind === 'hours' || f.kind === 'enum';
+                                    return (
+                                        <div key={f.id} className={wide ? 'col-span-2' : ''}>
+                                            <Field block={block} field={f} value={blocks[bid]?.[f.id]} onChange={setField} t={t} />
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     );

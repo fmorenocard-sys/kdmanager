@@ -708,7 +708,6 @@
     "not_set": "Non renseigné",
     "hours_from": "de",
     "hours_to": "à",
-    "unit_millions": "en millions",
     "entered_by": "Fiche saisie par un {{role}}.",
     "fill_for": "Remplir la fiche de",
     "which_account": "Quel compte ?",
@@ -719,7 +718,7 @@
     "no_account_claimed": "Réclame d’abord ton compte principal pour remplir ta fiche.",
     "blocks": {
       "identity": "Identité",
-      "economy": "Stocks et économie",
+      "economy": "Stocks et accélérations",
       "military": "Armée",
       "commanders": "Commandants et équipement",
       "goal": "Mon objectif"
@@ -740,15 +739,11 @@
         "activeHoursUTC": "Heures actives (UTC)"
       },
       "economy": {
-        "food": "Nourriture",
-        "wood": "Bois",
-        "stone": "Pierre",
-        "gold": "Or",
-        "speedupUniversal": "Accélérateurs universels",
-        "speedupConstruction": "Accélérateurs de construction",
-        "speedupResearch": "Accélérateurs de recherche",
-        "speedupTraining": "Accélérateurs d’entraînement",
-        "speedupHealing": "Accélérateurs de soin",
+        "speedupUniversal": "Accélérations universelles (jours)",
+        "speedupConstruction": "Accélérations de construction (jours)",
+        "speedupResearch": "Accélérations de recherche (jours)",
+        "speedupTraining": "Accélérations d’entraînement (jours)",
+        "speedupHealing": "Accélérations de soin (jours)",
         "legendaryMaterials": "Matériaux légendaires",
         "goldenHeads": "Têtes d’or"
       },

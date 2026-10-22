@@ -55,53 +55,62 @@ export const SHEET_SCHEMA = [
         fields: [
             { id: 'governorId', kind: 'text', prefill: 'account', readOnly: true },
             { id: 'name', kind: 'text', prefill: 'account' },
-            { id: 'power', kind: 'number', prefill: 'players' },
-            { id: 'vipLevel', kind: 'number' },
+            { id: 'power', kind: 'number', example: '95.6M', prefill: 'players' },
+            { id: 'vipLevel', kind: 'number', example: '14' },
             { id: 'mainTroopType', kind: 'enum', options: TROOP_TYPES, prefill: 'declaration' },
             { id: 'activeHoursUTC', kind: 'hours', prefill: 'declaration' },
         ],
     },
     {
         id: 'economy',
+        icon: 'Database',
+        accent: 'text-amber-500',
         fields: [
-            { id: 'food', kind: 'number', unit: 'millions', prefill: 'declaration' },
-            { id: 'wood', kind: 'number', unit: 'millions', prefill: 'declaration' },
-            { id: 'stone', kind: 'number', unit: 'millions', prefill: 'declaration' },
-            { id: 'gold', kind: 'number', unit: 'millions', prefill: 'declaration' },
-            // Le brief ne justifie explicitement qu'UNE catégorie d'accélérateurs
+            // En MILLIARDS, et libellées par les mêmes clés que la déclaration —
+            // un joueur lit « Nourriture (B) » au même endroit des deux formulaires.
+            { id: 'food', kind: 'number', unit: 'billions', labelKey: 'war.food', example: '5.2', prefill: 'declaration' },
+            { id: 'wood', kind: 'number', unit: 'billions', labelKey: 'war.wood', example: '3.1', prefill: 'declaration' },
+            { id: 'stone', kind: 'number', unit: 'billions', labelKey: 'war.stone', example: '2.5', prefill: 'declaration' },
+            { id: 'gold', kind: 'number', unit: 'billions', labelKey: 'war.gold', example: '1.0', prefill: 'declaration' },
+            // Le brief ne justifie explicitement qu'UNE catégorie d'accélérations
             // (« les accélérateurs de soin disent combien de temps on tient ») —
-            // mais les cinq coûtent cinq champs, on les garde toutes.
-            { id: 'speedupUniversal', kind: 'days' },
-            { id: 'speedupConstruction', kind: 'days' },
-            { id: 'speedupResearch', kind: 'days' },
-            { id: 'speedupTraining', kind: 'days' },
-            { id: 'speedupHealing', kind: 'days' },
+            // mais les cinq coûtent cinq champs, on les garde toutes. La déclaration
+            // n'en stocke qu'un total : c'est elle qui est grossière, pas l'inverse.
+            { id: 'speedupUniversal', kind: 'days', example: '45' },
+            { id: 'speedupConstruction', kind: 'days', example: '30' },
+            { id: 'speedupResearch', kind: 'days', example: '30' },
+            { id: 'speedupTraining', kind: 'days', example: '20' },
+            { id: 'speedupHealing', kind: 'days', example: '60' },
             // Décision du Roi : un seul compteur au lieu de la matrice par rareté.
-            { id: 'legendaryMaterials', kind: 'number' },
-            { id: 'goldenHeads', kind: 'number' },
+            { id: 'legendaryMaterials', kind: 'number', example: '120' },
+            { id: 'goldenHeads', kind: 'number', example: '15' },
         ],
     },
     {
         id: 'military',
+        icon: 'Swords',
+        accent: 'text-red-400',
         fields: [
             // `t5Unlocked` et `hospitalCapacity` retirés le 2026-10-22 (décision du
             // Roi) : le premier se déduit de `t5Total > 0`, le second ne pilote
             // aucune décision de mentorat.
-            { id: 't4Total', kind: 'number' },
-            { id: 't5Total', kind: 'number' },
+            { id: 't4Total', kind: 'number', example: '1.2M' },
+            { id: 't5Total', kind: 'number', example: '800k' },
         ],
     },
     {
         id: 'commanders',
+        icon: 'Shield',
+        accent: 'text-purple-400',
         fields: [
             // Les paires de commandants sont retirées (2026-10-22) : elles vivent
             // déjà dans la déclaration de guerre, que le joueur tient à jour, et les
             // dupliquer ici créait deux sources de vérité pour la même donnée.
             // `mainTroopType` suffit à qualifier le compte.
-            { id: 'equipmentLegendary', kind: 'number' },
-            { id: 'equipmentFullSets', kind: 'number' },
-            { id: 'equipmentInProgress', kind: 'number' },
-            { id: 'equipmentSpecialTalents', kind: 'number' },
+            { id: 'equipmentLegendary', kind: 'number', example: '6' },
+            { id: 'equipmentFullSets', kind: 'number', example: '1' },
+            { id: 'equipmentInProgress', kind: 'number', example: '2' },
+            { id: 'equipmentSpecialTalents', kind: 'number', example: '3' },
             // Remplace les listes d'objets : aucun référentiel d'équipement n'existe
             // dans l'app, et il se périmerait à chaque mise à jour du jeu.
             { id: 'missing', kind: 'text', optional: true },
@@ -109,6 +118,8 @@ export const SHEET_SCHEMA = [
     },
     {
         id: 'goal',
+        icon: 'Target',
+        accent: 'text-emerald-400',
         fields: [
             { id: 'playerGoal', kind: 'text' },
         ],

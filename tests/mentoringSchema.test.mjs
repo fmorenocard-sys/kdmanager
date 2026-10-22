@@ -33,6 +33,29 @@ test('les champs retirés le 2026-10-22 ne reviennent pas par inadvertance', () 
     assert.ok(ids.includes('equipmentSpecialTalents'));
 });
 
+test('les ressources sont en MILLIARDS et réutilisent les libellés de la déclaration', () => {
+    // Un joueur remplit les deux formulaires : il doit y lire les mêmes mots et la
+    // même unité. Dupliquer le libellé garantirait qu'ils divergent un jour.
+    const eco = SHEET_SCHEMA.find((b) => b.id === 'economy');
+    for (const id of ['food', 'wood', 'stone', 'gold']) {
+        const f = eco.fields.find((x) => x.id === id);
+        assert.equal(f.unit, 'billions', `${id} doit être en milliards`);
+        assert.equal(f.labelKey, `war.${id}`, `${id} doit réutiliser le libellé de la déclaration`);
+    }
+    // Et le libellé réutilisé doit bien porter l'unité.
+    const fr = load('fr');
+    assert.match(fr.war.food, /\(B\)/, 'war.food doit indiquer les milliards');
+});
+
+test('chaque champ numérique a un exemple de saisie', () => {
+    // Même convention que la déclaration (`war.example` → « ex. 5.2 »). Un champ
+    // numérique sans repère de grandeur se remplit dans la mauvaise unité.
+    const sansExemple = ALL_FIELDS
+        .filter((f) => (f.kind === 'number' || f.kind === 'days') && !f.readOnly && !f.example)
+        .map((f) => `${f.block}.${f.id}`);
+    assert.deepEqual(sansExemple, []);
+});
+
 test('isFilled — 0 est une RÉPONSE, pas une absence de réponse', () => {
     // C'est le piège d'AvailabilityForm, dont les défauts à 0 rendent
     // « je n'ai rien » indiscernable de « je n'ai pas répondu ».
@@ -133,9 +156,17 @@ test('chaque champ du schéma a un libellé dans LES 10 locales', () => {
     for (const loc of LOCALES) {
         const m = load(loc).mentoring;
         if (!m) { manquantes.push(`${loc}: bloc mentoring absent`); continue; }
+        const j = load(loc);
         for (const block of SHEET_SCHEMA) {
             if (!m.blocks?.[block.id]) manquantes.push(`${loc}: mentoring.blocks.${block.id}`);
             for (const f of block.fields) {
+                if (f.labelKey) {
+                    // Libellé REUTILISE d'ailleurs (ex. `war.food`) : c'est cette
+                    // clé-là qui doit exister, pas un jumeau sous `mentoring.*`.
+                    const v = f.labelKey.split('.').reduce((a, k) => a && a[k], j);
+                    if (!v) manquantes.push(`${loc}: ${f.labelKey} (labelKey de ${block.id}.${f.id})`);
+                    continue;
+                }
                 if (!m.fields?.[block.id]?.[f.id]) manquantes.push(`${loc}: mentoring.fields.${block.id}.${f.id}`);
             }
         }

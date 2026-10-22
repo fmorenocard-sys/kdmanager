@@ -708,7 +708,6 @@
     "not_set": "Sin definir",
     "hours_from": "de",
     "hours_to": "a",
-    "unit_millions": "en millones",
     "entered_by": "Ficha rellenada por un {{role}}.",
     "fill_for": "Rellenar la ficha de",
     "which_account": "¿Qué cuenta?",
@@ -719,7 +718,7 @@
     "no_account_claimed": "Reclama primero tu cuenta principal para rellenar tu ficha.",
     "blocks": {
       "identity": "Identidad",
-      "economy": "Recursos y economía",
+      "economy": "Recursos y aceleradores",
       "military": "Ejército",
       "commanders": "Comandantes y equipo",
       "goal": "Mi objetivo"
@@ -740,15 +739,11 @@
         "activeHoursUTC": "Horas activas (UTC)"
       },
       "economy": {
-        "food": "Comida",
-        "wood": "Madera",
-        "stone": "Piedra",
-        "gold": "Oro",
-        "speedupUniversal": "Aceleradores universales",
-        "speedupConstruction": "Aceleradores de construcción",
-        "speedupResearch": "Aceleradores de investigación",
-        "speedupTraining": "Aceleradores de entrenamiento",
-        "speedupHealing": "Aceleradores de curación",
+        "speedupUniversal": "Aceleradores universales (días)",
+        "speedupConstruction": "Aceleradores de construcción (días)",
+        "speedupResearch": "Aceleradores de investigación (días)",
+        "speedupTraining": "Aceleradores de entrenamiento (días)",
+        "speedupHealing": "Aceleradores de curación (días)",
         "legendaryMaterials": "Materiales legendarios",
         "goldenHeads": "Cabezas doradas"
       },

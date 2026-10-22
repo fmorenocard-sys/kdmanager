@@ -708,7 +708,6 @@
     "not_set": "Not set",
     "hours_from": "from",
     "hours_to": "to",
-    "unit_millions": "in millions",
     "entered_by": "Sheet filled in by a {{role}}.",
     "fill_for": "Fill in the sheet for",
     "which_account": "Which account?",
@@ -719,7 +718,7 @@
     "no_account_claimed": "Claim your main account first to fill in your sheet.",
     "blocks": {
       "identity": "Identity",
-      "economy": "Stocks and economy",
+      "economy": "Stocks and speedups",
       "military": "Army",
       "commanders": "Commanders and equipment",
       "goal": "My goal"
@@ -740,15 +739,11 @@
         "activeHoursUTC": "Active hours (UTC)"
       },
       "economy": {
-        "food": "Food",
-        "wood": "Wood",
-        "stone": "Stone",
-        "gold": "Gold",
-        "speedupUniversal": "Universal speedups",
-        "speedupConstruction": "Construction speedups",
-        "speedupResearch": "Research speedups",
-        "speedupTraining": "Training speedups",
-        "speedupHealing": "Healing speedups",
+        "speedupUniversal": "Universal speedups (days)",
+        "speedupConstruction": "Construction speedups (days)",
+        "speedupResearch": "Research speedups (days)",
+        "speedupTraining": "Training speedups (days)",
+        "speedupHealing": "Healing speedups (days)",
         "legendaryMaterials": "Legendary materials",
         "goldenHeads": "Golden heads"
       },
