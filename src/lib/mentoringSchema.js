@@ -35,10 +35,23 @@ export const TROOP_TYPES = ['Infantry', 'Cavalry', 'Archer', 'Siege'];
  * `speedups.total` et les paires de commandants.
  *
  * `kind` : 'number' | 'days' | 'text' | 'bool' | 'enum' | 'hours'
+ *
+ * `labelKey` : clé i18n EXISTANTE à réutiliser au lieu de `mentoring.fields.*`.
+ * Les ressources et leur unité sont déjà libellées par le formulaire de
+ * déclaration (`war.food` = « Nourriture (B) ») : les redéclarer ici garantirait
+ * qu'elles divergent le jour où l'une des deux change. Une donnée, un libellé.
+ *
+ * `example` : valeur d'exemple du placeholder, même convention que la
+ * déclaration (`war.example` → « ex. 5.2 »).
+ *
+ * `icon` / `accent` : grammaire visuelle reprise de `AvailabilityForm` — un bloc
+ * = un encart `--border-flat`, un titre coloré précédé d'une icône.
  */
 export const SHEET_SCHEMA = [
     {
         id: 'identity',
+        icon: 'User',
+        accent: 'text-sky-400',
         fields: [
             { id: 'governorId', kind: 'text', prefill: 'account', readOnly: true },
             { id: 'name', kind: 'text', prefill: 'account' },

@@ -1,5 +1,20 @@
 # QA Changelog
 
+## v2.54 - 2026-10-22 — BUG-016 : la config KvK n'efface plus la clôture de saison
+
+### Fixed
+- **BUG-016 — enregistrer la configuration KvK rouvrait une saison clôturée.** `KvKConfigForm` écrivait `kvk_config/current` en `setDoc` **sans `merge`**, donc en remplacement intégral, alors que `CampaignArchiveControl` pose `status: 'closed'` + `closedAt` **en merge** sur ce même document au moment d'archiver (BR-013). Tout enregistrement après un archivage effaçait donc la clôture, sans signal : campagne de nouveau « active », `OffCampaignCard` disparue de `/me`, déclarations rouvertes. Le scénario de fin de KvK l'expose de plein fouet, puisque l'interrupteur de révélation des statuts (BR-019) est porté par ce même formulaire — le Roi vient y cocher une case et rouvre la saison.
+- Correctif : écriture en `merge`, et suppression explicite de `status`/`closedAt` (`deleteField()`) **uniquement** quand le Roi ouvre une nouvelle campagne (id généré différent de celui en base), seul chemin prévu pour repasser en saison active. Le bandeau d'état du formulaire conserve `status` après enregistrement au lieu de repasser au vert à tort.
+
+### Verified
+- `npm run test:render` vert ; `eslint` **vert sur le fichier touché** (le total projet reste à ses problèmes préexistants).
+- Non rejoué en bout-en-bout : le chemin « archiver puis enregistrer » demande l'émulateur avec un rôle Roi — la régression est couverte par lecture de code (merge + `deleteField` conditionnel), pas par un test automatisé.
+
+### Observed (prod 2997, fin de SoC 5 — aucun défaut)
+- `/me` et l'onglet Objectifs sont **conformes** : les pastilles de statut restent masquées parce que **BR-019 en fait un interrupteur manuel du Roi** (`kvk_config/current.revealGoalStatus`), délibérément **indépendant** de la fin des combats et de l'archivage. La barre « 13/13 milestones · KvK complete » vient de la frise de jalons (`kvk_config/timeline`, F-031) et ne pilote rien ; `endDate` est purement informative.
+- Ordre d'opérations de fin de KvK à retenir : **révéler les statuts d'abord, archiver ensuite.** L'archivage rend l'objectif de la campagne courante « non publié » sur `/me` (`liveStatsAreCurrent` voit le scan live identique à l'archive — BUG-015) et bascule la lecture sur l'archive, toujours révélée.
+
+
 ## v2.53 - 2026-10-21 — Mentorat : lot 1 complet, règles en prod, preview staging
 
 ### Added

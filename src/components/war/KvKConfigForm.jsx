@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { db } from '../../config/firebase';
-import { doc, getDoc, setDoc, Timestamp, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteField, Timestamp, collection, getDocs } from 'firebase/firestore';
 import { useRole, ROLES } from '../../context/RoleContext';
 import { resolveCampaignName } from '../../lib/campaignLabel';
 import Button from '../ui/Button';
@@ -109,6 +109,14 @@ const KvKConfigForm = () => {
         try {
             const docRef = doc(db, "kvk_config", "current");
             const generatedId = formData.id || `${formData.name}_${formData.startDate.replace(/-/g, '_')}`.toLowerCase().replace(/\s+/g, '_');
+            // BR-013 ↔ BR-019 : la clôture hors-saison (`status`/`closedAt`) vit sur CE
+            // document, posée en merge par CampaignArchiveControl. L'écriture pleine qui
+            // était faite ici l'effaçait silencieusement : archiver puis revenir cocher
+            // « révéler les statuts » rouvrait la saison. On écrit donc en merge, et on ne
+            // lève la clôture que là où c'est voulu — quand le Roi ouvre une NOUVELLE
+            // campagne (« Démarrer une nouvelle campagne » génère un id différent de celui
+            // en base), seul chemin prévu pour repasser en saison active.
+            const isNewCampaign = !!savedConfig?.id && savedConfig.id !== generatedId;
             await setDoc(docRef, {
                 id: generatedId,
                 name: formData.name,
@@ -117,15 +125,17 @@ const KvKConfigForm = () => {
                 fillerDeathRatio: Number(formData.fillerDeathRatio) || 0.5, // F-027
                 revealGoalStatus: !!formData.revealGoalStatus, // BR-019
                 updatedAt: Timestamp.now(),
-                updatedBy: role
-            });
+                updatedBy: role,
+                ...(isNewCampaign ? { status: deleteField(), closedAt: deleteField() } : {})
+            }, { merge: true });
             setFormData(prev => ({ ...prev, id: generatedId }));
-            setSavedConfig({
+            setSavedConfig(prev => ({
                 ...formData,
                 id: generatedId,
                 updatedAt: new Date().toLocaleString(),
-                updatedBy: role
-            });
+                updatedBy: role,
+                status: isNewCampaign ? null : (prev?.status || null)
+            }));
             setMessage(t('admin.cfg_saved'));
             setTimeout(() => setMessage(''), 3000);
         } catch (err) {
