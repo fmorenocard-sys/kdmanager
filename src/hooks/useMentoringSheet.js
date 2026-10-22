@@ -198,8 +198,10 @@ async function prefill(gid, players) {
             if (decl.activeHoursUTC?.from || decl.activeHoursUTC?.to) {
                 next.identity.activeHoursUTC = decl.activeHoursUTC;
             }
+            // Les paires elles-mêmes ne sont plus stockées dans la fiche
+            // (2026-10-22) — elles restent dans la déclaration de guerre, seule
+            // source de vérité. On n'en déduit que le type de troupe principal.
             if (Array.isArray(decl.marches) && decl.marches.length) {
-                next.commanders.pairs = decl.marches;
                 next.identity.mainTroopType = decl.marches[0]?.type ?? null;
             }
         }

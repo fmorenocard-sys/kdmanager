@@ -106,32 +106,6 @@ const Field = ({ block, field, value, onChange, t }) => {
         );
     }
 
-    if (field.kind === 'pairs') {
-        // Lecture seule : les paires viennent de la dernière déclaration de guerre.
-        // Les ressaisir ici dupliquerait une donnée que le joueur tient déjà à jour
-        // ailleurs — et le brief ne demande que de les CONNAÎTRE.
-        const pairs = Array.isArray(value) ? value : [];
-        return (
-            <div className="w-full">
-                <span className="block text-[13px] font-semibold text-[var(--text-secondary)] mb-1.5">{label}</span>
-                {pairs.length ? (
-                    <ul className="space-y-1.5">
-                        {pairs.map((p, i) => (
-                            <li key={`${p.type}-${i}`} className="flex flex-wrap items-center gap-2 text-sm px-3 py-2 rounded-[10px] bg-[var(--border-flat)]">
-                                <span className="font-semibold text-[var(--text-primary)]">{t(`war.troop_${String(p.type).toLowerCase()}`, p.type)}</span>
-                                <span className="text-[var(--text-meta)] truncate">{p.primary} · {p.secondary}</span>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-xs text-[var(--text-meta)] px-3 py-2 rounded-[10px] bg-[var(--border-flat)]">
-                        {t('mentoring.pairs_empty')}
-                    </p>
-                )}
-            </div>
-        );
-    }
-
     if (field.kind === 'text' && field.id === 'missing') {
         return (
             <div className="w-full">
@@ -234,7 +208,7 @@ const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone }) 
                             <h3 className="text-[15px] font-semibold text-white">{t(`mentoring.blocks.${bid}`)}</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {block.fields.map((f) => (
-                                    <div key={f.id} className={f.kind === 'pairs' || f.id === 'missing' ? 'sm:col-span-2' : ''}>
+                                    <div key={f.id} className={f.id === 'missing' ? 'sm:col-span-2' : ''}>
                                         <Field block={block} field={f} value={blocks[bid]?.[f.id]} onChange={setField} t={t} />
                                     </div>
                                 ))}

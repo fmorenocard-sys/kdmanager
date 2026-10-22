@@ -709,7 +709,6 @@
     "hours_from": "de",
     "hours_to": "a",
     "unit_millions": "en millones",
-    "pairs_empty": "Ninguna pareja declarada — vienen de tu declaración de guerra.",
     "entered_by": "Ficha rellenada por un {{role}}.",
     "fill_for": "Rellenar la ficha de",
     "which_account": "¿Qué cuenta?",
@@ -738,8 +737,7 @@
         "power": "Poder",
         "vipLevel": "Nivel VIP",
         "mainTroopType": "Tipo de tropa principal",
-        "activeHoursUTC": "Horas activas (UTC)",
-        "languages": "Idiomas"
+        "activeHoursUTC": "Horas activas (UTC)"
       },
       "economy": {
         "food": "Comida",
@@ -755,17 +753,15 @@
         "goldenHeads": "Cabezas doradas"
       },
       "military": {
-        "t5Unlocked": "T5 desbloqueado",
         "t4Total": "Tropas T4",
-        "t5Total": "Tropas T5",
-        "hospitalCapacity": "Capacidad del hospital"
+        "t5Total": "Tropas T5"
       },
       "commanders": {
-        "pairs": "Parejas de comandantes",
         "equipmentLegendary": "Piezas legendarias",
         "equipmentFullSets": "Sets completos",
         "equipmentInProgress": "Piezas en curso",
-        "missing": "Lo que me falta"
+        "missing": "Lo que me falta",
+        "equipmentSpecialTalents": "Piezas con talento especial"
       },
       "goal": {
         "playerGoal": "Lo que quiero mejorar"

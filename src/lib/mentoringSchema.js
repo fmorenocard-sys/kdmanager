@@ -34,7 +34,7 @@ export const TROOP_TYPES = ['Infantry', 'Cavalry', 'Archer', 'Siege'];
  * existe — mesuré sur 2997 : 123 des 143 déclarations portent déjà `resources`,
  * `speedups.total` et les paires de commandants.
  *
- * `kind` : 'number' | 'days' | 'text' | 'bool' | 'enum' | 'pairs' | 'hours'
+ * `kind` : 'number' | 'days' | 'text' | 'bool' | 'enum' | 'hours'
  */
 export const SHEET_SCHEMA = [
     {
@@ -46,7 +46,6 @@ export const SHEET_SCHEMA = [
             { id: 'vipLevel', kind: 'number' },
             { id: 'mainTroopType', kind: 'enum', options: TROOP_TYPES, prefill: 'declaration' },
             { id: 'activeHoursUTC', kind: 'hours', prefill: 'declaration' },
-            { id: 'languages', kind: 'text' },
         ],
     },
     {
@@ -72,20 +71,24 @@ export const SHEET_SCHEMA = [
     {
         id: 'military',
         fields: [
-            { id: 't5Unlocked', kind: 'bool' },
+            // `t5Unlocked` et `hospitalCapacity` retirés le 2026-10-22 (décision du
+            // Roi) : le premier se déduit de `t5Total > 0`, le second ne pilote
+            // aucune décision de mentorat.
             { id: 't4Total', kind: 'number' },
             { id: 't5Total', kind: 'number' },
-            { id: 'hospitalCapacity', kind: 'number' },
         ],
     },
     {
         id: 'commanders',
         fields: [
-            // Une paire par type de troupe, reprise de la dernière déclaration.
-            { id: 'pairs', kind: 'pairs', prefill: 'declaration' },
+            // Les paires de commandants sont retirées (2026-10-22) : elles vivent
+            // déjà dans la déclaration de guerre, que le joueur tient à jour, et les
+            // dupliquer ici créait deux sources de vérité pour la même donnée.
+            // `mainTroopType` suffit à qualifier le compte.
             { id: 'equipmentLegendary', kind: 'number' },
             { id: 'equipmentFullSets', kind: 'number' },
             { id: 'equipmentInProgress', kind: 'number' },
+            { id: 'equipmentSpecialTalents', kind: 'number' },
             // Remplace les listes d'objets : aucun référentiel d'équipement n'existe
             // dans l'app, et il se périmerait à chaque mise à jour du jeu.
             { id: 'missing', kind: 'text', optional: true },
@@ -156,7 +159,7 @@ export function emptySheet() {
     const blocks = {};
     for (const b of SHEET_SCHEMA) {
         blocks[b.id] = {};
-        for (const f of b.fields) blocks[b.id][f.id] = f.kind === 'pairs' ? [] : null;
+        for (const f of b.fields) blocks[b.id][f.id] = null;
     }
     return blocks;
 }

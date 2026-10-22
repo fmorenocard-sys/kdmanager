@@ -21,6 +21,18 @@ test('les deux blocs matriciels sont bien réduits à un compteur chacun', () =>
     assert.ok(!ids.some((i) => /rarity|epic|silver|sculpture/i.test(i)));
 });
 
+test('les champs retirés le 2026-10-22 ne reviennent pas par inadvertance', () => {
+    // Decision du Roi : langues parlees, capacite d'hopital, T5 debloque et paires
+    // de commandants sont hors fiche. Les deux premiers ne pilotent aucune decision
+    // de mentorat ; `t5Unlocked` se deduit de `t5Total > 0` ; les paires vivent deja
+    // dans la declaration de guerre, seule source de verite.
+    const ids = ALL_FIELDS.map((f) => f.id);
+    for (const retire of ['languages', 'hospitalCapacity', 't5Unlocked', 'pairs']) {
+        assert.ok(!ids.includes(retire), `champ retire reapparu : ${retire}`);
+    }
+    assert.ok(ids.includes('equipmentSpecialTalents'));
+});
+
 test('isFilled — 0 est une RÉPONSE, pas une absence de réponse', () => {
     // C'est le piège d'AvailabilityForm, dont les défauts à 0 rendent
     // « je n'ai rien » indiscernable de « je n'ai pas répondu ».
@@ -40,7 +52,7 @@ test('emptySheet — tout part à null, jamais à 0', () => {
     const blocks = emptySheet();
     assert.deepEqual(blocks.economy.goldenHeads, null);
     assert.deepEqual(blocks.military.t4Total, null);
-    assert.deepEqual(blocks.commanders.pairs, []);
+    assert.deepEqual(blocks.commanders.equipmentSpecialTalents, null);
     const { done, percent } = completeness(blocks);
     assert.equal(done, 0);
     assert.equal(percent, 0);
@@ -70,7 +82,7 @@ test('completeness — un champ optionnel ne bloque jamais la complétude', () =
     for (const b of SHEET_SCHEMA) {
         for (const f of b.fields) {
             if (f.optional || f.readOnly) continue;
-            blocks[b.id][f.id] = f.kind === 'pairs' ? [{ type: 'Infantry' }] : 1;
+            blocks[b.id][f.id] = 1;
         }
     }
     const { percent, missing } = completeness(blocks);
@@ -82,7 +94,7 @@ test('diffSheets — compare en profondeur sans connaître les champs (B8)', () 
     const b = emptySheet();
     a.economy.goldenHeads = 10;
     b.economy.goldenHeads = 25;
-    b.military.t5Unlocked = true;
+    b.commanders.equipmentSpecialTalents = 3;
     const d = diffSheets(a, b);
     assert.equal(d.length, 2);
     assert.deepEqual(d.find((x) => x.field === 'goldenHeads'), {

@@ -709,7 +709,6 @@
     "hours_from": "from",
     "hours_to": "to",
     "unit_millions": "in millions",
-    "pairs_empty": "No pair declared — they come from your war declaration.",
     "entered_by": "Sheet filled in by a {{role}}.",
     "fill_for": "Fill in the sheet for",
     "which_account": "Which account?",
@@ -738,8 +737,7 @@
         "power": "Power",
         "vipLevel": "VIP level",
         "mainTroopType": "Main troop type",
-        "activeHoursUTC": "Active hours (UTC)",
-        "languages": "Languages spoken"
+        "activeHoursUTC": "Active hours (UTC)"
       },
       "economy": {
         "food": "Food",
@@ -755,17 +753,15 @@
         "goldenHeads": "Golden heads"
       },
       "military": {
-        "t5Unlocked": "T5 unlocked",
         "t4Total": "T4 troops",
-        "t5Total": "T5 troops",
-        "hospitalCapacity": "Hospital capacity"
+        "t5Total": "T5 troops"
       },
       "commanders": {
-        "pairs": "Commander pairs",
         "equipmentLegendary": "Legendary pieces",
         "equipmentFullSets": "Complete sets",
         "equipmentInProgress": "Pieces in progress",
-        "missing": "What I am missing"
+        "missing": "What I am missing",
+        "equipmentSpecialTalents": "Special-talent pieces"
       },
       "goal": {
         "playerGoal": "What I want to improve"
