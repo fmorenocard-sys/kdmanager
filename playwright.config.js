@@ -14,6 +14,9 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  /* Sème l'émulateur (fixtures + jeton de connexion de test) avant toute spec :
+     sans ça les écrans CONNECTÉS ne sont pas testables. Cf. tests/global-setup.js. */
+  globalSetup: './tests/global-setup.js',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

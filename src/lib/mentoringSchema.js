@@ -220,6 +220,47 @@ export function completeness(blocks) {
     return { done, total, percent: total ? done / total : 0, missing };
 }
 
+/**
+ * Charge utile d'écriture d'une fiche — la MÊME des deux côtés du grillage : le
+ * client l'envoie, le test de règles l'écrit. Les deux ne peuvent donc plus
+ * diverger, et « ça passe les règles » cesse d'être une espérance.
+ *
+ * `createdAt` n'est posé QU'À LA CRÉATION. Les règles (BR-027) n'autorisent en
+ * mise à jour que `name` / `blocks` / `blockMeta` / `status` / `enteredBy` /
+ * `enteredByRole` / `updatedAt` ; le renvoyer à chaque sauvegarde le faisait
+ * entrer dans `affectedKeys` — sa valeur bougeait de quelques millisecondes —
+ * et TOUTE sauvegarde après la première était refusée (BUG-019, vu sur le canal
+ * staging le 2026-10-23). `governorId`, lui, est renvoyé mais ne change jamais :
+ * il reste donc hors de `affectedKeys`.
+ *
+ * @param {object} p
+ * @param {string} p.governorId compte édité, qui est aussi la clé du document
+ * @param {object} p.blocks valeurs de la fiche
+ * @param {string} p.uid auteur de la saisie (doit valoir `request.auth.uid`)
+ * @param {string} p.role rôle de l'auteur, pour « remplie par ton mentor »
+ * @param {boolean} p.isNew vrai si le document n'existe pas encore côté serveur
+ * @param {string} [p.at] horodatage ISO, injectable pour les tests
+ * @returns {object} document à écrire en `setDoc(..., { merge: true })`
+ */
+export function sheetWritePayload({ governorId, blocks, uid, role, isNew, at = new Date().toISOString() }) {
+    const blockMeta = {};
+    for (const b of SHEET_SCHEMA) blockMeta[b.id] = { updatedAt: at };
+    const payload = {
+        governorId: String(governorId),
+        name: blocks?.identity?.name || null,
+        blocks,
+        blockMeta,
+        status: completeness(blocks).percent === 1 ? 'complete' : 'draft',
+        // Trace QUI a saisi : le joueur voit « remplie par ton mentor », et le
+        // Conseil sait à quel mentor réclamer une fiche manquante (B10).
+        enteredBy: uid,
+        enteredByRole: role,
+        updatedAt: at,
+    };
+    if (isNew) payload.createdAt = at;
+    return payload;
+}
+
 /** Squelette vide — tout à `null`, jamais à 0 (cf. en-tête). */
 export function emptySheet() {
     const blocks = {};

@@ -1,5 +1,27 @@
 # QA Changelog
 
+## v2.58 - 2026-10-23 — BUG-019 : la fiche se sauvegarde plus d'une fois
+
+Deuxième retour de la validation sur staging : fiche remplie à 23/23, et « Could not save » sous les boutons.
+
+### Fixed
+- **BUG-019 — seule la première sauvegarde passait.** `persist()` renvoyait `createdAt` à **chaque** autosave. À la création, `writesOnly([...])` l'accepte — la fiche se créait donc sans problème. À la mise à jour, `changesOnly([...])` ne l'autorise pas, et sa valeur changeait de quelques millisecondes à chaque passage : elle entrait dans `affectedKeys()`, donc **toute** sauvegarde suivante était refusée.
+- **La règle avait raison, le client avait tort** : une date de création qui bouge n'en est pas une. Aucune règle n'a été modifiée, donc **aucun redéploiement de règles n'est nécessaire**.
+- Conséquence sur la donnée : seul le contenu du tout premier autosave (1,5 s après la première frappe) atteignait Firestore. Le reste de la saisie survivait uniquement dans le miroir `localStorage` — qui est relu au montage s'il est plus récent que le serveur, donc **une fiche saisie puis perdue se retrouve en rouvrant `/fiche` dans le même navigateur**, et se sauvegardera cette fois.
+- Correctif : la charge utile est extraite dans **`sheetWritePayload()`** (`src/lib/mentoringSchema.js`), qui ne pose `createdAt` qu'à la création ; `useMentoringSheet` suit l'existence du document par un `ref`.
+
+### Changed
+- **Le test de règles écrit désormais la charge utile réelle du client**, importée depuis `mentoringSchema` au lieu d'en recopier une approximation. Les deux côtés du grillage ne peuvent plus diverger — c'est exactement l'écart qui avait laissé passer ce bug.
+
+### Verified
+- **59 tests de règles verts** (+2) : la deuxième sauvegarde réussit ; renvoyer `createdAt` en mise à jour reste refusé. Le second cas fige la frontière pour que le correctif ne soit pas défait par mégarde.
+- **Dans le navigateur, sur l'émulateur** : deux saisies espacées de 9 s, « Enregistré » les deux fois. Relecture du document — `createdAt` figé à la création, `updatedAt` postérieur, seconde valeur bien persistée (`power = 91500000`).
+- 64 tests unitaires verts, `test:render` vert, `eslint` vert sur les 3 fichiers touchés. Build déployé sur le canal staging.
+
+### Ouvert
+- Le trou de couverture reste le même que v2.57 : **aucun parcours e2e authentifié**. Les tests de règles savent maintenant ce que le client envoie, mais personne ne vérifie automatiquement qu'un joueur peut remplir la fiche de bout en bout.
+
+
 ## v2.57 - 2026-10-23 — BUG-018 : les décimales redeviennent saisissables
 
 Premier retour de la validation sur staging : dans la fiche de compte, impossible de taper « 5,6 » ni « 5.6 » dans un champ de ressource.

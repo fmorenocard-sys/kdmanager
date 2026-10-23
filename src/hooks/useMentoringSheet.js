@@ -6,7 +6,7 @@ import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
 import { useRole } from '../context/RoleContext';
-import { SHEET_SCHEMA, completeness, emptySheet } from '../lib/mentoringSchema';
+import { completeness, emptySheet, sheetWritePayload } from '../lib/mentoringSchema';
 
 /**
  * useMentoringSheet — E-010 / F-039 : charge, pré-remplit et sauvegarde la fiche
@@ -41,6 +41,9 @@ export function useMentoringSheet(governorId) {
     const lsKey = gid ? `mentoring_draft_${gid}` : null;
     const timer = useRef(null);
     const dirty = useRef(false);
+    // Le document existe-t-il déjà côté serveur ? Les règles distinguent `create`
+    // (qui accepte `createdAt`) de `update` (qui le refuse) — cf. `sheetWritePayload`.
+    const isNew = useRef(true);
 
     // ── Chargement : fiche existante, sinon pré-remplissage ───────────────────
     useEffect(() => {
@@ -53,6 +56,7 @@ export function useMentoringSheet(governorId) {
                 const snap = await getDoc(doc(db, 'mentoring_sheets', gid));
                 let next = null;
                 const sources = [];
+                isNew.current = !snap.exists();
 
                 if (snap.exists()) {
                     const d = snap.data();
@@ -104,21 +108,23 @@ export function useMentoringSheet(governorId) {
         if (!gid || !currentUser) return;
         setSaving(true);
         try {
-            const blockMeta = {};
-            for (const b of SHEET_SCHEMA) blockMeta[b.id] = { updatedAt: new Date().toISOString() };
-            await setDoc(doc(db, 'mentoring_sheets', gid), {
-                governorId: gid,
-                name: nextBlocks?.identity?.name || null,
-                blocks: nextBlocks,
-                blockMeta,
-                status: completeness(nextBlocks).percent === 1 ? 'complete' : 'draft',
-                // Trace QUI a saisi : le joueur voit « remplie par ton mentor », et le
-                // Conseil sait à quel mentor réclamer une fiche manquante (B10).
-                enteredBy: currentUser.uid,
-                enteredByRole: role,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }, { merge: true });
+            // La forme du document vit dans `sheetWritePayload`, que le test de
+            // règles écrit mot pour mot : les deux côtés du grillage ne peuvent
+            // plus diverger (BUG-019).
+            await setDoc(
+                doc(db, 'mentoring_sheets', gid),
+                sheetWritePayload({
+                    governorId: gid,
+                    blocks: nextBlocks,
+                    uid: currentUser.uid,
+                    role,
+                    isNew: isNew.current,
+                }),
+                { merge: true },
+            );
+            // Les sauvegardes suivantes sont des MISES À JOUR : plus de `createdAt`,
+            // que les règles refusent hors création.
+            isNew.current = false;
             dirty.current = false;
             setError(null);
         } catch (err) {

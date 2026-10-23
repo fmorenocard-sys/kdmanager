@@ -20,6 +20,10 @@ import {
     initializeTestEnvironment
 } from '@firebase/rules-unit-testing';
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+// La charge utile réelle du client (E-010) : on l'écrit ici telle quelle plutôt
+// que d'en recopier une approximation, sinon le test valide une forme que
+// personne n'envoie — c'est précisément ce qui a laissé passer BUG-019.
+import { sheetWritePayload, emptySheet } from '../src/lib/mentoringSchema.js';
 
 const RULES_FILE = process.env.RULES_FILE || 'firestore.rules';
 
@@ -379,6 +383,35 @@ describe(`Règles Firestore — ${RULES_FILE}`, () => {
                 status: 'draft', enteredBy: OFFICER, enteredByRole: 'Officer',
                 createdAt: new Date(), updatedAt: new Date()
             }));
+        });
+
+        it('USAGE — la DEUXIÈME sauvegarde passe aussi (BUG-019)', async () => {
+            // Le formulaire autosauvegarde 1,5 s après la dernière frappe : la
+            // première écriture CRÉE, toutes les suivantes METTENT À JOUR. Seul
+            // le cas `create` était couvert, et c'est ce trou qui a laissé partir
+            // en production une fiche impossible à sauvegarder deux fois.
+            const ref = doc(as(OFFICER), 'mentoring_sheets', '781');
+            const base = { governorId: '781', blocks: emptySheet(), uid: OFFICER, role: 'Officer' };
+            await assertSucceeds(setDoc(ref,
+                sheetWritePayload({ ...base, isNew: true, at: '2026-10-23T10:00:00.000Z' }),
+                { merge: true }));
+            await assertSucceeds(setDoc(ref,
+                sheetWritePayload({ ...base, isNew: false, at: '2026-10-23T10:00:01.500Z' }),
+                { merge: true }));
+        });
+
+        it('RÉGRESSION — renvoyer createdAt en mise à jour reste refusé', async () => {
+            // La règle est juste : une date de création qui bouge n'en est pas une.
+            // C'est le client qui avait tort. Ce test fige la frontière, pour que
+            // le correctif ne soit pas défait par mégarde.
+            const ref = doc(as(OFFICER), 'mentoring_sheets', '782');
+            const base = { governorId: '782', blocks: emptySheet(), uid: OFFICER, role: 'Officer' };
+            await assertSucceeds(setDoc(ref,
+                sheetWritePayload({ ...base, isNew: true, at: '2026-10-23T10:00:00.000Z' }),
+                { merge: true }));
+            await assertFails(setDoc(ref,
+                sheetWritePayload({ ...base, isNew: true, at: '2026-10-23T10:00:01.500Z' }),
+                { merge: true }));
         });
 
         it('ATTAQUE — on ne peut pas se faire passer pour un autre saisisseur', async () => {
