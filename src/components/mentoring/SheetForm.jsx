@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { SHEET_SCHEMA, blockState, parseNumeric } from '../../lib/mentoringSchema';
-import { CheckCircle2, Clock, AlertTriangle, Save, User, Database, Swords, Shield, Target } from '../ui/icons';
+import { CheckCircle2, AlertTriangle, Save, User, Database, Swords, Shield, Target } from '../ui/icons';
 
 /**
  * SheetForm — E-010 / F-039 : saisie de la fiche d'état de compte.
@@ -29,12 +29,6 @@ const STEPS = [
     { id: 'military', blocks: ['military'] },
     { id: 'commanders', blocks: ['commanders', 'goal'] },
 ];
-
-const stateIcon = (state) => (
-    state === 'done' ? <CheckCircle2 size={14} className="text-emerald-400" />
-        : state === 'doing' ? <Clock size={14} className="text-amber-400" />
-            : <span className="w-3.5 h-3.5 rounded-full border border-[var(--border-flat)]" />
-);
 
 // Icônes des blocs, nommées dans le schéma (qui reste pur et sans import React).
 const BLOCK_ICONS = { User, Database, Swords, Shield, Target };
@@ -189,23 +183,37 @@ const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone, in
                 )}
             </section>
 
-            {/* Étapes */}
-            <nav className="flex flex-wrap gap-2" aria-label={t('mentoring.steps_label')}>
-                {STEPS.map((s, i) => (
-                    <button
-                        key={s.id}
-                        type="button"
-                        onClick={() => setStep(i)}
-                        aria-current={i === step ? 'step' : undefined}
-                        className={`flex items-center gap-2 min-h-[44px] px-4 rounded-xl text-[13px] font-semibold border transition-colors ${
-                            i === step ? 'v2-indigo text-white border-transparent'
-                                : 'border-[var(--border-flat)] text-[var(--text-secondary)] hover:bg-white/5'
-                        }`}
-                    >
-                        {stateIcon(stepStates[i])}
-                        {t(`mentoring.steps.${s.id}`)}
-                    </button>
-                ))}
+            {/* Étapes — stepper `.v2-step` (pastille numérotée + rail qui se colore
+                derrière soi). Une rangée de pilules disait « où je suis » ; sur un
+                parcours de 4 écrans il faut aussi « ce qui est fait et ce qu'il
+                reste », d'où la forme numérotée. L'étape courante portait
+                `v2-indigo` SANS `v2-glass` — or cette classe n'existe que comme
+                modificateur de la carte de verre : elle ne peignait rien, et le
+                bouton actif se retrouvait sans fond, moins visible que les autres. */}
+            <nav className="flex items-start" aria-label={t('mentoring.steps_label')}>
+                {STEPS.map((s, i) => {
+                    const done = stepStates[i] === 'done';
+                    // Les trois états du bloc survivent à la refonte : complet (coche
+                    // émeraude), commencé (numéro ambre), pas touché (anneau neutre).
+                    const state = done ? ' done' : stepStates[i] === 'doing' ? ' doing' : '';
+                    return (
+                        <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => setStep(i)}
+                            aria-current={i === step ? 'step' : undefined}
+                            className={`v2-step${i === step ? ' cur' : ''}${state}`}
+                        >
+                            {/* Le numéro (ou la coche) est décoratif : le libellé qui suit
+                                porte déjà le nom de l'étape, et `aria-current` dit laquelle
+                                est ouverte. Doubler l'un et l'autre bavarderait au lecteur. */}
+                            <span className="v2-step-dot" aria-hidden="true">
+                                {done ? <CheckCircle2 size={17} /> : i + 1}
+                            </span>
+                            <span className="v2-step-label">{t(`mentoring.steps.${s.id}`)}</span>
+                        </button>
+                    );
+                })}
             </nav>
 
             {/* Champs de l'étape */}

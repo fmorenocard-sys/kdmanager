@@ -1,5 +1,22 @@
 # QA Changelog
 
+## v2.55 - 2026-10-23 — Stepper de la fiche de compte (BUG-017)
+
+### Fixed
+- **BUG-017 — l'étape courante de `/fiche` était la seule sans cadre.** Le bouton actif portait `v2-indigo` **sans** `v2-glass` : cette classe n'existe qu'en modificateur de la carte de verre, donc elle ne peignait rien, pendant que les étapes inactives gardaient leur bordure. L'étape ouverte était la moins visible des quatre.
+
+### Changed
+- **Nouveau composant DS `.v2-step`** (`src/index.css`, à côté de `.v2-tab`) : stepper à pastilles numérotées reliées par un rail qui se colore derrière soi. Une rangée d'onglets dit « où je suis » ; sur un formulaire découpé en 4 écrans il faut aussi « ce qui est fait et combien il reste ».
+- Les **trois** états du bloc sont conservés — complète (coche émeraude), commencée (numéro ambre), à faire (anneau neutre) ; l'étape ouverte reste indigo (`--grad-accent`). `stateIcon()` et l'import `Clock` de `SheetForm` deviennent inutiles et sont retirés.
+- Accessibilité / responsive : `aria-current="step"` conservé, pastille `aria-hidden` (le libellé qui suit porte déjà le nom de l'étape), rail en `inset-inline` (miroir RTL), libellés resserrés sous 420 px — le plus long des 10 locales fait 11 caractères, aucun débordement horizontal.
+- Carte de design system « Navigation » régénérée avec une section Stepper (`design-system/generate.mjs`).
+
+### Verified
+- `npm run build` vert, les classes `.v2-step*` sont bien dans le CSS produit ; `npm run test:render` vert (`SheetForm` rendu avec les 27 champs du schéma) ; `eslint` vert sur les deux fichiers touchés.
+- **Non vu dans l'app qui tourne** : `/fiche` est derrière l'auth **et** derrière un compte principal réclamé. Le rendu a été contrôlé sur une maquette reprenant les classes livrées à l'identique (desktop + 360 px), pas sur la page réelle.
+- **Resync vers claude.ai/design non fait** : la carte régénérée attend un `/design-sync`, lancé par le Roi.
+
+
 ## v2.54 - 2026-10-22 — BUG-016 : la config KvK n'efface plus la clôture de saison
 
 ### Fixed
