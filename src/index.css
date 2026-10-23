@@ -277,9 +277,11 @@
      Pourquoi une jauge et pas une pastille d'etat : une pastille reclame une
      couleur par etat (fait / commence / a faire) — trois teintes de plus a
      l'ecran pour une seule information. Ici c'est la LONGUEUR qui la porte,
-     dans l'unique accent du theme (--grad-accent, famille « onglet actif ») ;
-     l'etape ouverte est simplement la plus lumineuse. Trois tons de texte
-     deja au catalogue, aucune forme nouvelle. */
+     dans l'unique accent du theme (--grad-accent, famille « onglet actif »).
+     L'etape ouverte, elle, vire franchement a l'indigo — piste teintee, jauge
+     a pleine opacite, numero et libelle colores — mais TOUJOURS dans cette
+     meme famille : de la couleur sur une seule etape, pas une teinte par etat.
+     Aucune forme nouvelle, et aucun decalage de gabarit entre les etapes. */
   .v2-step {
     flex: 1 1 0;
     min-width: 0;
@@ -304,6 +306,14 @@
     border-radius: 999px;
     background: var(--border-flat);
     overflow: hidden;
+    transition: background .18s;
+  }
+
+  /* La piste de l'etape ouverte est teintee : la couleur gagne la PARTIE VIDE
+     de la jauge, pas seulement la partie remplie. C'est ce qui la fait lire
+     comme « celle-ci » meme quand elle est a peine commencee. */
+  .v2-step.cur .v2-step-track {
+    background: color-mix(in srgb, var(--indigo) 22%, transparent);
   }
 
   /* Hauteur IDENTIQUE a toutes les etapes : epaissir celle de l'etape ouverte
@@ -347,7 +357,13 @@
   }
 
   .v2-step.done .v2-step-name { color: var(--text-secondary); }
-  .v2-step.cur .v2-step-name { color: var(--text-primary); font-weight: 700; }
+  /* Indigo clair plutot que blanc : la couleur distingue l'etape ouverte, et
+     `--focus-ring` eclairci reste au-dessus du contraste AA sur fond sombre
+     comme en theme clair (ou le token vire deja au fonce). */
+  .v2-step.cur .v2-step-name {
+    color: color-mix(in srgb, var(--focus-ring) 60%, var(--text-primary));
+    font-weight: 700;
+  }
   .v2-step.cur .v2-step-num { color: var(--focus-ring); opacity: 1; }
   .v2-step:hover .v2-step-name { color: var(--text-primary); }
 
