@@ -35,20 +35,60 @@ This document outlines the testing strategy for the KD Manager application. The 
 - Chrome DevTools (Console errors, Network)
 - React Testing Library (If Unit Tests implemented in the future)
 
-## 7. Known gap — fixtures & connected-screen coverage (BUG-008, tracked 2026-08-13)
+## 7. Connected-screen coverage (BUG-008) — opened 2026-08-13, **first authenticated path closed 2026-10-23**
 
-Authenticated screens (`/me`, `/pilotage`, published goals, multi-account state…)
-cannot be previewed or tested today without a real OAuth login (Discord/Google) —
-`tests/rbac.spec.js` only asserts the Guest state (`TC-011`/`TC-017` are still
-pending a King/Officer authenticated context per that spec's own inline note).
-`npm run test:serve` (emulator-backed dev server, port 5174) and `npm run test:e2e`
-(Playwright inside `firebase emulators:exec`) already exist, and
-`docs/qa/Playwright_Setup.md` documents an emulator seed/export mechanism
-(`firebase emulators:export ./emulators_data`) — but no `emulators_data/` fixture
-set is committed to the repo. Closing this gap requires (a) a versioned Firestore
-fixture set (`roles`, `war_availabilities`, `static_data/kvk` + `kvk_filler`,
-`kvk_config/current` + `kvk_config/timeline`, `kvk_history`, multi-account
-`user_profiles`) and (b) an auth bypass to sign in as a given role in the
-emulator without the real Discord OAuth flow (feasibility of representing
-BR-008's Discord-verified state this way is an open assumption — see
-`docs/pm/Assumptions_Log.md` A-042). See `docs/pm/ProductBacklog.md` BUG-008.
+### 7.1 What exists now
+
+The harness signs in **without the real OAuth flow**, emulator only:
+
+1. `npm run emu:seed` (`scripts/seed-emulator.mjs`) writes the fixture set
+   (`roles`, `user_profiles` with a two-account claim, `static_data/players`,
+   `kvk`, `kvk_filler`, `deadweight`, `trophies`, `kvk_config/current` +
+   `timeline`, `kvk_history`, `war_availabilities`), mints a **custom token** for
+   the fixture King `test-king-2997` and writes it to `tests/.testlogin.json`
+   (gitignored — **never committed**).
+2. `src/config/firebase.js` signs that token in when the URL carries
+   `?testToken=…`, **and only under `VITE_USE_FIREBASE_EMULATOR=true`** — i.e. only
+   in `npm run test:serve`. The bypass does not exist in a production build and
+   must stay that way.
+3. `playwright.config.js` runs `tests/global-setup.js`, which executes the seed
+   before any spec: `npm run test:e2e` is self-sufficient (it used to run
+   `emulators:exec "playwright test"` against an **empty** emulator, so every spec
+   necessarily ran as Guest).
+4. `tests/helpers/login.js` exposes `gotoAuthenticated(page, route, { ready })`.
+   Two traps it encapsulates: the `?testToken=` must stay **before** the `#`
+   (HashRouter), and sign-in is **asynchronous** — the first paint is the Guest
+   screen, so the helper waits for a selector only the connected screen renders.
+
+### 7.2 What is covered
+
+- `tests/fiche.spec.js` — **TC-023 / TC-024 / TC-025** on `/fiche`, which sits
+  behind authentication **and** behind a claimed main account. These lock the two
+  defects shipped on 22–23 October 2026 (BUG-018 decimal input, BUG-017 step
+  gauge). TC-023 was verified to **fail on the pre-fix code**; a regression test
+  that does not fall on the broken code protects nothing.
+- `tests/routing.spec.js` — the Deadweight/Pilotage path (TC-006) now runs signed
+  in. The hub is leadership-only (`leadership: true` in the nav), so that case had
+  been failing as Guest ever since the navigation rework, unnoticed because nobody
+  looked at the suite.
+
+### 7.3 What remains open
+
+- **WebKit is skipped on every connected spec.** In Playwright's WebKit build on
+  Windows the Firestore stream does not resume after sign-in: `[testLogin]
+  connecté` is logged, then `onSnapshot` stays silent and the page never leaves
+  "Loading Kingdom Data…" (roughly one run in three gets through). Guest screens
+  stay covered on all three engines. Worth checking on a real Safari before
+  concluding anything about end users: this is Playwright's build, not Safari.
+- **Other connected screens are still uncovered**: `/me`, `/pilotage` beyond the
+  Deadweight tab, published goals, the multi-account declaration state. TC-011 and
+  TC-017 (King/Officer assertions, per `tests/rbac.spec.js`'s own inline note) are
+  still pending — the harness no longer blocks them, only the specs are missing.
+- Representing BR-008's **Discord-verified** state this way remains an open
+  assumption — `docs/pm/Assumptions_Log.md` A-042. The fixture user is a Google
+  account, so Discord-gated behaviour is not exercised.
+- No `emulators_data/` export is committed: the fixtures are **code**
+  (`scripts/seed-emulator.mjs`), not a binary snapshot. Deliberate — a script
+  stays readable and reviewable in a diff.
+
+See `docs/pm/ProductBacklog.md` BUG-008 and `docs/qa/Playwright_Setup.md`.

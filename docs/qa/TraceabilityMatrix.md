@@ -17,6 +17,7 @@
 | **F-013** (KvK Configuration) | Feature | TC-011 |
 | **F-014** (Multi-Language i18n) | Feature | TC-016 |
 | **F-015** (KvK History) | Feature | TC-019, TC-020, TC-021, TC-022 |
+| **F-039** (Account Sheet / Mentoring) | Feature | TC-023, TC-024, TC-025 |
 | **BR-003** (Discord Role Priority) | Rule | TC-009 |
 | **BR-006** (KvK Archive Immutability) | Rule | TC-021, TC-022 |
 | **R-002** (Warrior) | Role | TC-012 |
@@ -25,3 +26,6 @@
 | **E-001** (Discord Missing Form Fallback) | Error | TC-008, TC-010 |
 | **E-002** (Form Missing Campaign) | Error | TC-017 |
 | **E-003** (Ingestion Size Limits) | Error | TC-018 |
+| **BUG-017** (Step gauge not drawn) | Regression | TC-024 |
+| **BUG-018** (Decimal input eaten) | Regression | TC-023 |
+| **Touch target ≥ 44px** (`.agent/rules/responsiveness.md`) | Rule | TC-025 |

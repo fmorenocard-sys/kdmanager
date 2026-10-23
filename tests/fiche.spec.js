@@ -50,6 +50,20 @@ async function openEconomyStep(page, testInfo) {
 }
 
 test.describe('Fiche de compte — /fiche (connecté)', () => {
+    // Un écran CONNECTÉ enchaîne plus d'étapes qu'un écran Invité : démarrage de
+    // l'app, `signInWithCustomToken`, chargement du roster, puis de la fiche.
+    test.describe.configure({ timeout: 60_000 });
+
+    // WebKit est écarté des écrans CONNECTÉS, pas par confort : dans la build
+    // WebKit de Playwright sous Windows, le flux Firestore ne repart pas après la
+    // connexion — `[testLogin] connecté` est bien journalisé, puis `onSnapshot`
+    // reste muet et la page ne quitte jamais « Loading Kingdom Data… ». Une fois
+    // sur trois environ il passe : un test instable est pire qu'un test absent,
+    // il apprend à ignorer le rouge. Les écrans Invités, eux, restent couverts
+    // sur les trois moteurs. À vérifier sur un vrai Safari
+    // avant d'en conclure quoi que ce soit — cf. docs/qa/Playwright_Setup.md.
+    test.skip(({ browserName }) => browserName === 'webkit',
+        'WebKit (build Playwright/Windows) : le flux Firestore ne reprend pas après la connexion');
 
     test('BUG-018 — un décimal reste saisissable frappe par frappe', async ({ page }, testInfo) => {
         await openEconomyStep(page, testInfo);

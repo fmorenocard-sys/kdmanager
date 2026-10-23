@@ -1,5 +1,31 @@
 # QA Changelog
 
+## v2.58 - 2026-10-23 — Harnais e2e **authentifié** : `/fiche` cesse d'être livré sans filet
+
+Troisième passage sur le même écran en deux jours, et le constat ouvert en v2.57 traité à la racine : les deux bugs du lot mentorat (BUG-017, BUG-018) vivaient derrière l'authentification, et **aucun des quatre filets existants ne regarde une page connectée**. `lint`, `build`, `test:unit` (64 tests) et `test:render` (rendu statique, qui ne vérifie que l'absence de `ReferenceError`) les ont tous laissés passer. Le harnais BUG-008 savait déjà minter un jeton — il n'était simplement jamais utilisé par les specs.
+
+### Added
+- **Le seed est câblé dans le flux e2e.** `npm run test:e2e` lançait `emulators:exec "playwright test"` contre un émulateur **vide** : toutes les specs tournaient donc en Invité par construction, `tests/rbac.spec.js` le disait lui-même en commentaire. Un `globalSetup` Playwright (`tests/global-setup.js`) exécute maintenant `scripts/seed-emulator.mjs` avant toute spec. Posé là plutôt que dans un `&&` de la commande d'`emulators:exec` : ce `&&` dépend du shell, et un échec de seed y passerait pour un échec de tests. Le seed tourne en processus séparé — il finit par `process.exit(0)`, qui tuerait Playwright en plein démarrage.
+- **`tests/helpers/login.js`** — `gotoAuthenticated(page, route, { ready })`, qui encapsule les deux pièges du chemin connecté : le `?testToken=` doit rester **avant** le `#` (HashRouter le mangerait, `window.location.search` resterait vide et la connexion ne partirait jamais), et la connexion est **asynchrone** — le premier rendu est l'écran Invité, donc `ready` est **obligatoire** et nomme un sélecteur que seul l'écran connecté rend. Le jeton est lu dans `tests/.testlogin.json` (gitignoré, jamais journalisé, jamais committé).
+- **`tests/fiche.spec.js`** — **TC-023 / TC-024 / TC-025**, premier parcours authentifié de la suite, sur l'écran le plus gardé de l'app (derrière l'auth **et** derrière un compte principal réclamé). Chaque cas édite `?gov=<id unique>` : la saisie étant autosauvegardée, deux cas partageant un compte se verraient l'un l'autre, et « l'étape Stocks part de 0/11 » cesserait d'être vrai.
+- **Fixtures de trophées** dans le seed (`static_data/trophies`, même forme que l'ingestion, typo « Legandary » de la source comprise) : sans elles `/trophies` reste en « No data available » et **TC-014 échouait**.
+
+### Fixed
+- **TC-006 (Deadweight via Pilotage) échouait depuis la refonte de navigation**, sur les trois moteurs, sans que personne ne le voie : le hub Pilotage est réservé au leadership (`leadership: true` dans la nav), et la spec y entrait en **Invité**, qui n'a tout simplement pas l'entrée. Elle s'y connecte maintenant. **La suite e2e était rouge avant ce lot** — 4 échecs sur 21, dont aucun n'avait été signalé : une suite qu'on ne regarde pas ne coûte rien à laisser rouge.
+
+### Verified
+- **TC-023 tombe pour de bon sur le code cassé.** Vérifié en retirant l'état `draft` de `Field` dans `SheetForm.jsx` : le champ affiche `"56"` là où le test attend `"5,6"`. Le correctif a été remis ensuite (fichier identique à `HEAD`). TC-024 et TC-025 restent verts sous ce même code cassé — la régression est bien isolée dans le cas qui la nomme. **Un test qui ne tombe pas sur le code cassé ne protège de rien** : c'est son seul critère de valeur.
+- La frappe se fait **caractère par caractère** (`page.keyboard.type`), jamais par `fill()`, qui pose la valeur en un seul événement et **passerait au vert sur le code cassé**. C'est écrit dans la spec, à côté de l'appel.
+- TC-024 **mesure le rendu** de `.v2-step-fill` (largeur et hauteur non nulles, largeur ≈ 2/11 de la piste), pas son style inline — lequel portait le bon pourcentage tout du long. C'est exactement la mesure qui avait révélé la jauge invisible sur le canal staging.
+- `npm run test:e2e` **vert depuis un émulateur propre** : 23 cas passés, 4 écartés (WebKit, cf. ci-dessous). `npm run lint` vert, `npm run test:unit` vert (64 tests).
+
+### Ouvert
+- **WebKit est écarté des specs connectées.** Dans la build WebKit de Playwright sous Windows, le flux Firestore ne repart pas après la connexion : `[testLogin] connecté` est bien journalisé, puis `onSnapshot` reste muet et la page ne quitte jamais « Loading Kingdom Data… » (environ un passage sur trois aboutit). Un test instable est **pire** qu'un test absent — il apprend à ignorer le rouge — donc `test.skip` explicite et commenté plutôt que des `retries`. Les écrans Invités restent couverts sur les trois moteurs. **À vérifier sur un vrai Safari** avant d'en conclure quoi que ce soit sur les utilisateurs : ce n'est pas Safari, c'est la build Playwright.
+- **Les autres écrans connectés restent à couvrir** : `/me`, `/pilotage` au-delà de l'onglet Deadweight, objectifs publiés, état multi-compte de la déclaration. TC-011 et TC-017 attendent toujours leurs assertions Roi/Officier — le harnais ne les bloque plus, seules les specs manquent.
+- Le contournement `?testToken=` reste **strictement gardé par `VITE_USE_FIREBASE_EMULATOR=true`** : inexistant dans un build de production. Ce lot ne l'a pas touché, et `firestore.rules` non plus.
+- L'état « vérifié Discord » (BR-008) n'est toujours pas exerçable : l'utilisateur de fixtures est un compte Google — hypothèse A-042 toujours ouverte.
+
+
 ## v2.58 - 2026-10-23 — BUG-019 : la fiche se sauvegarde plus d'une fois
 
 Deuxième retour de la validation sur staging : fiche remplie à 23/23, et « Could not save » sous les boutons.

@@ -72,6 +72,11 @@ async function seed() {
     batch.set(db.doc(`user_profiles/${UID}`), {
         governorId: WAR.gid,
         accounts: accountsList,
+        // E-010/BR-027 : miroir PLAT des comptes principaux, que `AuthContext`
+        // écrit et que les règles du mentorat lisent (`hasClaimed`). L'omettre ici
+        // donnait une fixture qui ne ressemble pas à ce que l'app produit : les
+        // règles voyaient un utilisateur n'ayant rien réclamé.
+        warGovernorIds: accountsList.filter((a) => a.type === 'war').map((a) => String(a.governorId)),
         updatedAt: new Date().toISOString(),
     });
     batch.set(db.doc('static_data/players'), { list: players, updatedAt: Timestamp.now() });
@@ -86,6 +91,20 @@ async function seed() {
             { id: '9004', name: 'GoneAway', power: 18_000_000, kp: 1_000_000, status: 'Migrated', accountAvailable: 'Disappeared', note: '-' },
         ],
         updatedAt: Timestamp.now(),
+    });
+    // Trophées (page publique `/trophies`). Même forme que l'ingestion
+    // (`functions/index.js`), typo de la source comprise : le parseur du jeu de
+    // données écrit bien « Legandary », et la page la rattrape par `findKey`.
+    // Sans ces fixtures la page reste en « No data available » et TC-014 échoue.
+    batch.set(db.doc('static_data/trophies'), {
+        weekList: [{
+            title: 'Week 42',
+            groups: {
+                Legandary: [{ id: null, name: WAR.name, score: '12' }],
+                Epic: [{ id: null, name: FIL.name, score: '7' }],
+            },
+        }],
+        updatedAt: new Date().toISOString(),
     });
     batch.set(db.doc('kvk_config/current'), {
         id: KVK_ID, name: 'SoC 5 - Storm of Stratagems',

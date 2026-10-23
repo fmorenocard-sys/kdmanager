@@ -216,3 +216,41 @@
   1. As King, attempt to close a campaign whose title matches an already archived one.
   2. Attempt an update/delete on an existing `kvk_history` document via the client SDK.
 - **Expected Result**: The UI blocks with "already archived" before any write; Firestore rules deny update/delete for every role including King.
+
+## Test Suite TS-012: Account Sheet — authenticated path (F-039)
+
+> **Harness**: these cases run **signed in**, through `tests/helpers/login.js`
+> (seed fixtures + `?testToken=` custom token, emulator only — see
+> `docs/qa/Playwright_Setup.md`). Automated in `tests/fiche.spec.js`.
+> Each case edits `/fiche?gov=<unique id>` so the autosaved sheet of one case
+> never leaks into another. **Skipped on WebKit** (see TestPlan §7).
+
+### TC-023: Decimal input survives keystroke-by-keystroke typing
+- **Requirements**: F-039, BUG-018
+- **Priority**: P0 (Regression)
+- **Preconditions**: Signed in with a claimed main account; sheet step "Stocks" open on a blank sheet.
+- **Steps**:
+  1. Focus `#economy-food` and type `5,6` **one character at a time** (never `fill()`, which posts the value in a single event and does **not** reproduce the defect).
+  2. Read the field value while still focused.
+  3. Blur the field and read it again.
+  4. Repeat with `3.1` in `#economy-wood`.
+- **Expected Result**: the field shows `5,6` during typing (the decimal separator is not eaten by the re-render of the parsed value), then `5.6` once blurred — the stored value is numeric and normalised. Same for `3.1`.
+- **Fails on the pre-fix code**: the field shows `56` (verified 2026-10-23 by removing the `draft` state from `Field`).
+
+### TC-024: Step gauge is actually drawn and tracks the ratio
+- **Requirements**: F-039, BUG-017
+- **Priority**: P1 (Regression)
+- **Steps**:
+  1. Open the sheet on step "Stocks" of a blank sheet (gauge at 0/11).
+  2. Fill two of the eleven required fields.
+  3. **Measure the rendered box** of `.v2-step-fill` and of its `.v2-step-track`.
+- **Expected Result**: the step's `aria-label` goes from `0 / 11` to `2 / 11`; the fill has a **non-zero width and height**, and its width is ~2/11 (18 %) of the track width.
+- **Why measured and not read from the DOM**: the inline style carried the right percentage all along — the fill is a `<span>`, so `display: inline` made it ignore `width`/`height` and the gauge never painted. Only measuring the render catches it.
+
+### TC-025: Step buttons keep the 44px touch target
+- **Requirements**: F-039, `.agent/rules/responsiveness.md`
+- **Priority**: P2
+- **Steps**:
+  1. Open the sheet.
+  2. Measure the height of the four `.v2-step` buttons.
+- **Expected Result**: each button is at least 44px high (its content is ~28px — the padding carries the rest, and nothing else reminds whoever reworks the stepper).

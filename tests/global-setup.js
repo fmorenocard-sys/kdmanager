@@ -15,6 +15,7 @@
  */
 import { spawnSync } from 'node:child_process';
 import { existsSync, rmSync } from 'node:fs';
+import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 const TOKEN_FILE = fileURLToPath(new URL('./.testlogin.json', import.meta.url));
