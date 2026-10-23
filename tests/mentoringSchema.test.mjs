@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    SHEET_SCHEMA, ALL_FIELDS, isFilled, blockState, completeness, emptySheet, diffSheets, parseNumeric,
+    SHEET_SCHEMA, ALL_FIELDS, isFilled, blockState, blockProgress, completeness, emptySheet, diffSheets, parseNumeric,
 } from '../src/lib/mentoringSchema.js';
 
 test('le schéma reste court — c\'est la promesse du MVP', () => {
@@ -123,6 +123,33 @@ test('blockState — todo / doing / done', () => {
     const complet = {};
     for (const f of economy.fields) complet[f.id] = 0;
     assert.equal(blockState(complet, economy), 'done', '0 partout = bloc rempli');
+});
+
+test('blockProgress — le chiffre dont blockState n\'est que le verdict', () => {
+    // La jauge du stepper (`.v2-step`) se remplit avec ce ratio : si les deux
+    // fonctions divergeaient, une étape pourrait être « done » avec une jauge
+    // incomplète. Elles doivent donc rester d'accord par construction.
+    const economy = SHEET_SCHEMA.find((b) => b.id === 'economy');
+    const vide = blockProgress({}, economy);
+    assert.equal(vide.filled, 0);
+    assert.ok(vide.total > 0, 'le bloc économie a des champs requis');
+    assert.equal(blockProgress({ food: 12 }, economy).filled, 1);
+
+    const complet = {};
+    for (const f of economy.fields) complet[f.id] = 0;
+    const plein = blockProgress(complet, economy);
+    assert.equal(plein.filled, plein.total, '0 partout = jauge pleine');
+
+    // Accord avec blockState sur les trois paliers, pour chaque bloc du schéma.
+    for (const block of SHEET_SCHEMA) {
+        const rempli = {};
+        for (const f of block.fields) rempli[f.id] = 1;
+        for (const valeurs of [{}, rempli]) {
+            const { filled, total } = blockProgress(valeurs, block);
+            const attendu = !total || filled === total ? 'done' : filled === 0 ? 'todo' : 'doing';
+            assert.equal(blockState(valeurs, block), attendu, `désaccord sur ${block.id}`);
+        }
+    }
 });
 
 test('completeness — liste ce qui manque, bloc par champ (B4)', () => {

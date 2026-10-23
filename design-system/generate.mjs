@@ -356,26 +356,21 @@ const FILES = {
       .bot { display:flex; justify-content:space-around; background:rgba(15,23,42,.95); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:8px; width:340px; }
       .bi { display:flex; flex-direction:column; align-items:center; gap:2px; font-size:10px; color:#64748b; min-width:44px; padding:4px; }
       .bi.act { color:#818cf8; }
-      /* Stepper — .v2-step (src/index.css). Un onglet dit « où je suis » ;
-         un stepper doit dire en plus « ce qui est fait et combien il reste ». */
-      .steps { display:flex; align-items:flex-start; max-width:430px; }
-      .stp { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:7px;
-        position:relative; padding:6px 2px 4px; border:0; border-radius:10px; background:none; font:inherit; cursor:pointer; }
-      .stp::before, .stp::after { content:""; position:absolute; top:24px; height:2px; width:50%;
-        inset-inline-start:0; background:rgba(255,255,255,.1); }
-      .stp::after { inset-inline-start:50%; }
-      .stp:first-child::before, .stp:last-child::after { display:none; }
-      .stp.done::before, .stp.done::after, .stp.cur::before { background:#34d399; }
-      .dot { position:relative; z-index:1; width:36px; height:36px; display:grid; place-items:center;
-        border-radius:999px; border:1.5px solid rgba(255,255,255,.1); background:#020617; color:#8494ab;
-        font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:700; }
-      .stp.done .dot { background:rgba(52,211,153,.14); border-color:rgba(52,211,153,.5); color:#34d399; }
-      .stp.doing .dot { border-color:rgba(251,146,60,.55); color:#fb923c; }
-      .stp.cur .dot { background:linear-gradient(135deg,#6366f1,#a855f7); border-color:transparent; color:#fff;
-        box-shadow:0 4px 16px rgba(139,92,246,.35); }
-      .slb { font-size:12.5px; font-weight:600; line-height:1.25; text-align:center; color:#8494ab; }
-      .stp.done .slb { color:#a8b6ca; }
-      .stp.cur .slb { color:#f8fafc; font-weight:700; }
+      /* Stepper — .v2-step (src/index.css). Une jauge par etape : c'est la
+         LONGUEUR qui dit l'avancement, pas une couleur par etat. Un seul accent. */
+      .gauge { display:flex; gap:8px; max-width:430px; }
+      .stp { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:stretch; gap:8px;
+        min-height:44px; padding:7px 0 5px; border:0; border-radius:10px; background:none; font:inherit;
+        text-align:start; cursor:pointer; }
+      .trk { height:4px; border-radius:999px; background:rgba(255,255,255,.1); overflow:hidden; }
+      .fil { height:100%; border-radius:999px; background:linear-gradient(135deg,#6366f1,#a855f7); opacity:.5; }
+      .stp.cur .fil { opacity:1; box-shadow:0 4px 16px rgba(139,92,246,.35); }
+      .lab { display:flex; align-items:baseline; gap:6px; min-width:0; }
+      .sn { font-family:"JetBrains Mono",monospace; font-size:10.5px; font-weight:700; color:#8494ab; opacity:.7; }
+      .stt { font-size:12.5px; font-weight:600; color:#8494ab; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .stp.done .stt { color:#a8b6ca; }
+      .stp.cur .stt { color:#f8fafc; font-weight:700; }
+      .stp.cur .sn { color:#a5b4fc; opacity:1; }
     </style>
     <h2>Onglets (pills)</h2>
     <div class="row">
@@ -398,13 +393,13 @@ const FILES = {
       <div class="bi">👤<span>Profil</span></div>
     </div>
     <h2>Stepper — parcours en étapes (<span class="mono">.v2-step</span>)</h2>
-    <div class="steps">
-      <button class="stp done"><span class="dot">✓</span><span class="slb">Identité</span></button>
-      <button class="stp cur doing"><span class="dot">2</span><span class="slb">Stocks</span></button>
-      <button class="stp doing"><span class="dot">3</span><span class="slb">Armée</span></button>
-      <button class="stp"><span class="dot">4</span><span class="slb">Commandants</span></button>
+    <div class="gauge">
+      <button class="stp done"><span class="trk"><span class="fil" style="width:100%"></span></span><span class="lab"><span class="sn">01</span><span class="stt">Identité</span></span></button>
+      <button class="stp cur"><span class="trk"><span class="fil" style="width:60%"></span></span><span class="lab"><span class="sn">02</span><span class="stt">Stocks</span></span></button>
+      <button class="stp"><span class="trk"><span class="fil" style="width:25%"></span></span><span class="lab"><span class="sn">03</span><span class="stt">Armée</span></span></button>
+      <button class="stp"><span class="trk"><span class="fil" style="width:0%"></span></span><span class="lab"><span class="sn">04</span><span class="stt">Commandants</span></span></button>
     </div>
-    <div class="note">Pour un formulaire long découpé en écrans (fiche de compte, F-039), là où une rangée d’onglets ne dirait pas qu’il y a un début et une fin. Trois états&nbsp;: <strong>complète</strong> (coche émeraude), <strong>commencée</strong> (numéro ambre), <strong>à faire</strong> (anneau neutre)&nbsp;; l’étape ouverte reste indigo, famille «&nbsp;onglet actif&nbsp;». Le rail utilise <span class="mono">inset-inline</span>, il se miroite en RTL.</div>`
+    <div class="note">Pour un formulaire long découpé en écrans (fiche de compte, F-039), là où une rangée d’onglets ne dirait pas qu’il y a un début et une fin. <strong>Une jauge par étape, remplie au prorata des champs attendus</strong>&nbsp;: c’est la longueur qui porte l’avancement, pas une couleur par état — un seul accent (<span class="mono">--grad-accent</span>), une seule forme, trois tons de texte déjà au catalogue. L’étape ouverte est simplement la plus lumineuse. Hauteur de jauge identique partout (l’épaissir décalerait son libellé)&nbsp;; cible tactile de 44&nbsp;px obtenue par rembourrage, sans cadre visible.</div>`
   ),
 };
 

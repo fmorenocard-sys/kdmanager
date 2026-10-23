@@ -2,8 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import { SHEET_SCHEMA, blockState, parseNumeric } from '../../lib/mentoringSchema';
-import { CheckCircle2, AlertTriangle, Save, User, Database, Swords, Shield, Target } from '../ui/icons';
+import { SHEET_SCHEMA, blockProgress, parseNumeric } from '../../lib/mentoringSchema';
+import { AlertTriangle, Save, User, Database, Swords, Shield, Target } from '../ui/icons';
 
 /**
  * SheetForm — E-010 / F-039 : saisie de la fiche d'état de compte.
@@ -152,10 +152,16 @@ const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone, in
     const [step, setStep] = useState(initialStep);
     const current = STEPS[step];
 
+    // Avancement CHIFFRÉ de chaque étape, pas son verdict en trois mots : le
+    // stepper le rend en longueur de jauge, ce qui lui évite d'inventer une
+    // couleur par état (cf. `.v2-step` dans index.css).
     const stepStates = useMemo(() => STEPS.map((s) => {
-        const states = s.blocks.map((bid) => blockState(blocks[bid], SHEET_SCHEMA.find((b) => b.id === bid)));
-        if (states.every((x) => x === 'done')) return 'done';
-        return states.some((x) => x !== 'todo') ? 'doing' : 'todo';
+        const parts = s.blocks.map((bid) => blockProgress(blocks[bid], SHEET_SCHEMA.find((b) => b.id === bid)));
+        const filled = parts.reduce((n, p) => n + p.filled, 0);
+        const total = parts.reduce((n, p) => n + p.total, 0);
+        // Une étape sans champ requis est acquise d'avance — même convention que
+        // `blockState`, sinon elle resterait éternellement à zéro.
+        return { filled, total, pct: total ? filled / total : 1, done: total ? filled === total : true };
     }), [blocks]);
 
     const isLast = step === STEPS.length - 1;
@@ -183,34 +189,40 @@ const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone, in
                 )}
             </section>
 
-            {/* Étapes — stepper `.v2-step` (pastille numérotée + rail qui se colore
-                derrière soi). Une rangée de pilules disait « où je suis » ; sur un
-                parcours de 4 écrans il faut aussi « ce qui est fait et ce qu'il
-                reste », d'où la forme numérotée. L'étape courante portait
-                `v2-indigo` SANS `v2-glass` — or cette classe n'existe que comme
-                modificateur de la carte de verre : elle ne peignait rien, et le
-                bouton actif se retrouvait sans fond, moins visible que les autres. */}
-            <nav className="flex items-start" aria-label={t('mentoring.steps_label')}>
+            {/* Étapes — stepper `.v2-step` : une jauge par étape, remplie au prorata
+                des champs attendus. Un seul accent (--grad-accent) et une seule
+                forme : c'est la LONGUEUR qui dit l'avancement, là où une pastille
+                par état réclamait une couleur par état (émeraude/ambre/gris) et
+                chargeait l'écran. L'étape ouverte est simplement la plus lumineuse.
+
+                Au passage, le bug d'origine : l'étape active portait `v2-indigo`
+                SANS `v2-glass` — or cette classe n'existe que comme modificateur de
+                la carte de verre, elle ne peignait rien, et le bouton actif était le
+                seul des quatre à n'avoir aucun fond. */}
+            <nav className="flex gap-2" aria-label={t('mentoring.steps_label')}>
                 {STEPS.map((s, i) => {
-                    const done = stepStates[i] === 'done';
-                    // Les trois états du bloc survivent à la refonte : complet (coche
-                    // émeraude), commencé (numéro ambre), pas touché (anneau neutre).
-                    const state = done ? ' done' : stepStates[i] === 'doing' ? ' doing' : '';
+                    const st = stepStates[i];
+                    const name = t(`mentoring.steps.${s.id}`);
                     return (
                         <button
                             key={s.id}
                             type="button"
                             onClick={() => setStep(i)}
                             aria-current={i === step ? 'step' : undefined}
-                            className={`v2-step${i === step ? ' cur' : ''}${state}`}
+                            // La jauge est muette pour un lecteur d'écran : on lui donne
+                            // le compte, dans la même forme nue que la carte de
+                            // progression au-dessus (« 12 / 27 »), donc sans chaîne
+                            // nouvelle à traduire dans les 10 locales.
+                            aria-label={`${name} — ${st.filled} / ${st.total}`}
+                            className={`v2-step${i === step ? ' cur' : ''}${st.done ? ' done' : ''}`}
                         >
-                            {/* Le numéro (ou la coche) est décoratif : le libellé qui suit
-                                porte déjà le nom de l'étape, et `aria-current` dit laquelle
-                                est ouverte. Doubler l'un et l'autre bavarderait au lecteur. */}
-                            <span className="v2-step-dot" aria-hidden="true">
-                                {done ? <CheckCircle2 size={17} /> : i + 1}
+                            <span className="v2-step-track" aria-hidden="true">
+                                <span className="v2-step-fill" style={{ width: `${Math.round(st.pct * 100)}%` }} />
                             </span>
-                            <span className="v2-step-label">{t(`mentoring.steps.${s.id}`)}</span>
+                            <span className="v2-step-label" aria-hidden="true">
+                                <span className="v2-step-num">{String(i + 1).padStart(2, '0')}</span>
+                                <span className="v2-step-name">{name}</span>
+                            </span>
                         </button>
                     );
                 })}

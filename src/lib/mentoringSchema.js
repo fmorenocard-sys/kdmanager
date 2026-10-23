@@ -173,17 +173,33 @@ export function isFilled(v) {
 }
 
 /**
+ * Avancement chiffré d'un bloc — la mesure dont `blockState` n'était que le
+ * verdict en trois mots. Le stepper de `SheetForm` l'affiche en longueur de
+ * jauge : « à moitié rempli » se montre, il n'a pas besoin d'une couleur à lui.
+ * Un bloc sans champ requis vaut 0/0, donc 100 % (cf. `blockState`).
+ * @param {object} blockValues valeurs du bloc
+ * @param {object} block définition du bloc
+ * @returns {{filled: number, total: number}}
+ */
+export function blockProgress(blockValues, block) {
+    const req = requiredFields(block);
+    return {
+        filled: req.filter((f) => isFilled((blockValues || {})[f.id])).length,
+        total: req.length,
+    };
+}
+
+/**
  * État d'un bloc : 'todo' | 'doing' | 'done'.
  * @param {object} blockValues valeurs du bloc
  * @param {object} block définition du bloc
  * @returns {string}
  */
 export function blockState(blockValues, block) {
-    const req = requiredFields(block);
-    if (!req.length) return 'done';
-    const filled = req.filter((f) => isFilled((blockValues || {})[f.id])).length;
+    const { filled, total } = blockProgress(blockValues, block);
+    if (!total) return 'done';
     if (filled === 0) return 'todo';
-    return filled === req.length ? 'done' : 'doing';
+    return filled === total ? 'done' : 'doing';
 }
 
 /**

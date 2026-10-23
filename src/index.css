@@ -272,105 +272,91 @@
   .v2-tab.off:hover { color: var(--text-primary); background: var(--border-flat); }
 
   /* v2 — stepper de parcours (fiche de compte, F-039).
-     Pourquoi pas des .v2-tab : un onglet dit « où je suis », un stepper doit dire
-     en plus « combien il reste et ce qui est fait ». D'où une forme propre —
-     pastilles numerotees reliees par un rail qui se colore derriere soi.
-     Les trois etats reprennent la semantique deja en place dans la fiche :
-     done = emeraude, courant = indigo (--grad-accent, famille « onglet actif »),
-     a faire = anneau neutre. Logique `inset-inline` : le rail se miroite en RTL. */
+     Pourquoi pas des .v2-tab : un onglet dit « ou je suis », un stepper doit
+     dire en plus « ce qui est fait et combien il reste ».
+     Pourquoi une jauge et pas une pastille d'etat : une pastille reclame une
+     couleur par etat (fait / commence / a faire) — trois teintes de plus a
+     l'ecran pour une seule information. Ici c'est la LONGUEUR qui la porte,
+     dans l'unique accent du theme (--grad-accent, famille « onglet actif ») ;
+     l'etape ouverte est simplement la plus lumineuse. Trois tons de texte
+     deja au catalogue, aucune forme nouvelle. */
   .v2-step {
     flex: 1 1 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 7px;
-    position: relative;
-    padding: 6px 2px 4px;
+    align-items: stretch;
+    gap: 8px;
+    /* 44 px de cible tactile (responsiveness.md) alors que le contenu n'en fait
+       qu'environ 28 : le rembourrage fait le reste, sans cadre visible. */
+    min-height: 44px;
+    padding: 7px 0 5px;
     border: 0;
     border-radius: 10px;
     background: none;
     font: inherit;
+    text-align: start;
     cursor: pointer;
   }
 
-  /* Rail : deux demi-segments par etape, pour qu'il se colore jusqu'au centre de
-     la pastille courante et pas au-dela. Masques aux extremites. */
-  .v2-step::before,
-  .v2-step::after {
-    content: "";
-    position: absolute;
-    top: 24px;
-    height: 2px;
-    width: 50%;
-    inset-inline-start: 0;
-    background: var(--border-flat);
-  }
-
-  .v2-step::after { inset-inline-start: 50%; }
-  .v2-step:first-child::before,
-  .v2-step:last-child::after { display: none; }
-  .v2-step.done::before,
-  .v2-step.done::after,
-  .v2-step.cur::before { background: var(--success); }
-
-  .v2-step-dot {
-    position: relative;
-    z-index: 1;
-    width: 36px;
-    height: 36px;
-    display: grid;
-    place-items: center;
+  .v2-step-track {
+    height: 4px;
     border-radius: 999px;
-    border: 1.5px solid var(--border-flat);
-    background: var(--surface-input);
-    color: var(--text-meta);
-    font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 13px;
-    font-weight: 700;
-    transition: background .18s, color .18s, border-color .18s;
+    background: var(--border-flat);
+    overflow: hidden;
   }
 
-  .v2-step.done .v2-step-dot {
-    background: color-mix(in srgb, var(--success) 14%, transparent);
-    border-color: color-mix(in srgb, var(--success) 50%, transparent);
-    color: var(--success);
-  }
-
-  /* « commencee mais incomplete » — l'ambre de l'app pour « il te reste a
-     faire ». Le numero reste lisible : la coche est reservee au fini. */
-  .v2-step.doing .v2-step-dot {
-    border-color: color-mix(in srgb, var(--warning) 55%, transparent);
-    color: var(--warning);
-  }
-
-  .v2-step.cur .v2-step-dot {
+  /* Hauteur IDENTIQUE a toutes les etapes : epaissir celle de l'etape ouverte
+     decalerait son libelle d'un pixel et casserait l'alignement de la rangee.
+     L'opacite et la lueur suffisent a la distinguer. */
+  .v2-step-fill {
+    height: 100%;
+    border-radius: 999px;
     background: var(--grad-accent);
-    border-color: transparent;
-    color: #fff;
+    opacity: .5;
+    transition: width .25s ease, opacity .18s;
+  }
+
+  .v2-step.cur .v2-step-fill {
+    opacity: 1;
     box-shadow: var(--shadow-glow-accent);
   }
 
   .v2-step-label {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .v2-step-num {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-meta);
+    opacity: .7;
+  }
+
+  .v2-step-name {
     font-size: 12.5px;
     font-weight: 600;
-    line-height: 1.25;
-    text-align: center;
     color: var(--text-meta);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .v2-step.done .v2-step-label { color: var(--text-secondary); }
-  .v2-step.cur .v2-step-label { color: var(--text-primary); font-weight: 700; }
-  .v2-step:hover .v2-step-label { color: var(--text-primary); }
+  .v2-step.done .v2-step-name { color: var(--text-secondary); }
+  .v2-step.cur .v2-step-name { color: var(--text-primary); font-weight: 700; }
+  .v2-step.cur .v2-step-num { color: var(--focus-ring); opacity: 1; }
+  .v2-step:hover .v2-step-name { color: var(--text-primary); }
 
-  /* 360 px : 4 libelles tiennent encore, a condition de resserrer. Pas de scroll
-     horizontal (regle responsiveness.md), donc on reduit plutot qu'on ne deborde. */
+  /* 360 px : 4 colonnes d'environ 80 px. Le plus long libelle des 10 locales
+     fait 11 caracteres, il tient — l'ellipse n'est qu'un filet de securite. */
   @media (max-width: 420px) {
-    .v2-step-label { font-size: 11px; }
-    .v2-step-dot { width: 32px; height: 32px; }
-    .v2-step::before,
-    .v2-step::after { top: 22px; }
+    .v2-step-name { font-size: 11.5px; }
   }
+
 
   /* v2 — items de navigation (sidebar & bottom nav) */
   .v2-nav-item {

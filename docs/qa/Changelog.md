@@ -1,5 +1,26 @@
 # QA Changelog
 
+## v2.56 - 2026-10-23 — Stepper : la longueur remplace la couleur
+
+Revue du stepper livré quelques heures plus tôt (v2.55), sur retour du Roi : « trop de couleurs et de formes disparates ». Le reproche était juste — quatre teintes (émeraude fait / ambre commencé / indigo ici / gris à faire) et trois formes (pastille, rail, libellé) pour exprimer **une seule** information, l'avancement.
+
+### Changed
+- **`.v2-step` devient une jauge par étape**, remplie au prorata des champs attendus. Un seul accent (`--grad-accent`), une seule forme, trois tons de texte déjà au catalogue. L'étape ouverte n'a plus de signe propre : elle est simplement la plus lumineuse (opacité pleine + lueur), son numéro passe en indigo.
+- **Les états ne sont plus des couleurs mais des longueurs** : pleine = complète, à moitié = commencée, vide = pas touchée. Gain au passage — la jauge montre l'avancement **réel** de l'étape, une donnée que la fiche possédait déjà et n'affichait nulle part (on ne savait que « commencé », pas « commencé à 20 % »).
+- **`blockProgress()` exporté de `mentoringSchema`** : le chiffre dont `blockState` n'était que le verdict en trois mots. `blockState` s'appuie désormais dessus, les deux ne peuvent plus diverger — un test parcourt les 5 blocs pour le verrouiller.
+- Pastilles, coches et rail supprimés : plus de connecteurs, donc plus de question de miroir RTL sur ce composant. Cible tactile de 44 px obtenue par rembourrage, sans cadre visible. Hauteur de jauge identique sur les 4 étapes — l'épaissir sur l'étape ouverte décalerait son libellé d'un pixel et casserait l'alignement de la rangée.
+- `aria-current="step"` conservé ; la jauge étant muette pour un lecteur d'écran, le bouton porte un `aria-label` « Étape — rempli / attendu », dans la même forme nue que la carte de progression au-dessus. **Aucune chaîne nouvelle dans les 10 locales.**
+- Carte de design system « Navigation » régénérée sur la nouvelle forme.
+
+### Verified
+- `npm run build` vert, classes `.v2-step*` présentes dans le CSS produit ; **64 tests unitaires** verts (dont le nouveau `blockProgress`) ; `test:render` vert ; `eslint` vert sur les 4 fichiers touchés.
+- **Toujours pas vu dans l'app qui tourne** : `/fiche` est derrière l'auth et derrière un compte principal réclamé. Contrôle visuel sur maquette reprenant les classes livrées à l'identique (desktop + 360 px).
+- **Resync claude.ai/design non fait** : demande `/design-sync`, lancé par le Roi.
+
+### Ouvert
+- La carte « Progression X/Y » juste au-dessus du stepper fait désormais partiellement doublon avec les jauges (elle garde le total chiffré). À trancher : la conserver, ou la fondre dans le stepper.
+
+
 ## v2.55 - 2026-10-23 — Stepper de la fiche de compte (BUG-017)
 
 ### Fixed
