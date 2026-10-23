@@ -1,5 +1,22 @@
 # QA Changelog
 
+## v2.59 - 2026-10-23 — BUG-020 : le brouillon échoué est rendu au serveur
+
+Troisième retour de staging, dans la foulée de BUG-019 : le formulaire affiche 23/23, et `/me` annonce « 13 % rempli ».
+
+### Fixed
+- **BUG-020 — les deux chiffres disaient vrai.** `MySheetCard` lit le **document Firestore** ; le formulaire affichait le **miroir `localStorage`**. Le serveur était resté à ce que BUG-019 y avait laissé — le seul premier autosave, c'est-à-dire le pré-remplissage — pendant que la saisie complète ne vivait qu'en local.
+- **Le correctif de BUG-019 était incomplet** : il rendait la sauvegarde possible, mais rien ne rejouait le brouillon échoué. Le hook reprenait bien le brouillon local au montage sans jamais le rendre au serveur ; `dirty` restait faux, `flush()` ne faisait rien, et le rattrapage attendait une frappe **suivante** qui pouvait ne jamais venir. Une fiche complète à l'écran pouvait donc rester invisible du suivi du Conseil indéfiniment.
+- Correctif : quand le chargement retient le brouillon local (strictement plus récent que le serveur), `useMentoringSheet` déclenche immédiatement un `persist()`. Sans effet quand le brouillon n'est pas plus récent — après une sauvegarde normale, `updatedAt` est postérieur au miroir, rien ne se redéclenche.
+
+### Verified
+- **Dans le navigateur sur l'émulateur**, en reproduisant l'état exact que BUG-019 laissait derrière lui : document serveur réduit au pré-remplissage (`updatedAt` daté du matin) + brouillon local complet. Ouverture de `/fiche` **sans taper une seule touche** → « Enregistré », document serveur passé de **3 à 16 champs**, `createdAt` inchangé, et la carte de `/me` de **9 % à 65 %**.
+- `eslint` vert sur le fichier touché. Build déployé sur le canal staging.
+
+### Note pour le Roi
+- **Les fiches saisies avant ces correctifs se rattrapent toutes seules** : il suffit de rouvrir `/fiche` dans **le même navigateur** que la saisie (le miroir est local à l'origine et au poste). Une saisie faite sur un autre appareil, ou après vidage des données du site, est en revanche perdue au-delà de ce que le serveur avait reçu.
+
+
 ## v2.58 - 2026-10-23 — Harnais e2e **authentifié** : `/fiche` cesse d'être livré sans filet
 
 Troisième passage sur le même écran en deux jours, et le constat ouvert en v2.57 traité à la racine : les deux bugs du lot mentorat (BUG-017, BUG-018) vivaient derrière l'authentification, et **aucun des quatre filets existants ne regarde une page connectée**. `lint`, `build`, `test:unit` (64 tests) et `test:render` (rendu statique, qui ne vérifie que l'absence de `ReferenceError`) les ont tous laissés passer. Le harnais BUG-008 savait déjà minter un jeton — il n'était simplement jamais utilisé par les specs.

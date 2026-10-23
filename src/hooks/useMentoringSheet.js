@@ -90,6 +90,21 @@ export function useMentoringSheet(governorId) {
                 if (!alive) return;
                 setBlocks(next);
                 setPrefilledFrom(sources);
+
+                // Le brouillon local repris est plus récent que le serveur : il faut
+                // le LUI RENDRE tout de suite. Sans ça la fiche s'affiche complète
+                // et le serveur reste à la traîne — donc `/me` annonce « 13 % »
+                // pendant que le formulaire montre 23/23, et la fiche ne compte pour
+                // rien dans le suivi du Conseil. C'est exactement l'état dans lequel
+                // BUG-019 a laissé les fiches saisies avant son correctif : le
+                // rattrapage ne partait qu'à la frappe suivante, qui pouvait ne
+                // jamais venir. Le rôle est déjà résolu ici (`RoleProvider` ne rend
+                // ses enfants qu'une fois chargé), donc `enteredByRole` est juste.
+                if (sources.includes('local')) {
+                    clearTimeout(timer.current);
+                    dirty.current = true;
+                    persist(next);
+                }
             } catch (err) {
                 console.error('[useMentoringSheet] chargement impossible', err);
                 if (alive) setError(err);
