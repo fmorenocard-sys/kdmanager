@@ -40,6 +40,15 @@ const Field = ({ block, field, value, onChange, t }) => {
     const label = field.labelKey ? t(field.labelKey) : t(`mentoring.fields.${block.id}.${field.id}`);
     const common = { label, id: `${block.id}-${field.id}` };
 
+    // Brouillon de saisie numérique : le TEXTE tapé, conservé tant que le champ
+    // a le focus. Sans lui, un champ contrôlé qui réaffiche la valeur *parsée*
+    // mange le séparateur décimal à la frappe — « 5, » redevient « 5 », donc
+    // 5,6 est impossible à saisir. Invisible tant que les ressources étaient en
+    // unités ; bloquant depuis leur passage en MILLIARDS (signalé sur le canal
+    // staging le 2026-10-23, où l'on saisit « 5.6 B » et non « 5600000000 »).
+    // On ne stocke toujours que le nombre : le brouillon ne sert qu'à l'affichage.
+    const [draft, setDraft] = useState(null);
+
     if (field.kind === 'bool') {
         return (
             <div className="w-full">
@@ -130,17 +139,27 @@ const Field = ({ block, field, value, onChange, t }) => {
             inputMode={numeric ? 'decimal' : undefined}
             readOnly={field.readOnly}
             disabled={field.readOnly}
-            value={value ?? ''}
+            value={draft ?? value ?? ''}
             // Même convention de placeholder que la déclaration : « ex. 5.2 ».
             placeholder={field.example ? t('war.example', { v: field.example }) : undefined}
             onChange={(e) => {
                 const raw = e.target.value;
                 if (!numeric) return onChange(block.id, field.id, raw || null);
-                // `parseNumeric` absorbe les séparateurs de milliers : le joueur lit
-                // « 800 000 » dans le jeu et dans le placeholder, il le tapera avec
-                // ses espaces. Un `Number()` nu rendrait NaN et viderait le champ.
+                // On affiche ce qui est tapé, on stocke ce qui est compris : « 5, »
+                // reste à l'écran alors que la valeur retenue vaut encore 5, jusqu'à
+                // ce que « 5,6 » la fasse passer à 5.6.
+                setDraft(raw);
+                // `parseNumeric` absorbe les séparateurs de milliers ET la virgule
+                // décimale : le joueur lit « 800 000 » dans le jeu et dans le
+                // placeholder, il le tapera avec ses espaces, et il tapera « 5,6 »
+                // sur un clavier français. Un `Number()` nu rendrait NaN dans les
+                // deux cas et viderait le champ en silence.
                 onChange(block.id, field.id, parseNumeric(raw));
             }}
+            // En quittant le champ, on repasse à la valeur stockée : une saisie
+            // inexploitable (« abc ») ne reste pas affichée alors que rien n'a été
+            // retenu, et « 5, » se normalise en « 5 ».
+            onBlur={numeric ? () => setDraft(null) : undefined}
         />
     );
 };

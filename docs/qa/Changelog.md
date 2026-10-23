@@ -1,5 +1,23 @@
 # QA Changelog
 
+## v2.57 - 2026-10-23 — BUG-018 : les décimales redeviennent saisissables
+
+Premier retour de la validation sur staging : dans la fiche de compte, impossible de taper « 5,6 » ni « 5.6 » dans un champ de ressource.
+
+### Fixed
+- **BUG-018 — le séparateur décimal disparaissait sous les doigts.** Le champ est **contrôlé** et réaffichait la valeur *parsée* à chaque frappe : l'état intermédiaire `"5,"` était ramené — correctement — à `5` par `parseNumeric`, donc le champ se réaffichait « 5 » et la virgule était perdue ; la frappe suivante donnait « 56 ». `parseNumeric` n'était **pas** en cause (ses tests couvrent déjà virgule et séparateurs de milliers) : le défaut était dans l'affichage.
+- **Latent depuis l'origine, rendu bloquant la veille** par le passage des ressources en MILLIARDS : tant qu'on saisissait des unités entières, personne ne tapait de virgule. Depuis, « 5.6 B » est la saisie normale — le placeholder affiche lui-même « ex. 5.2 ». Portée : les 4 ressources, les 5 accélérations, et tout champ `number` / `days`.
+- Correctif : `Field` garde un **brouillon de saisie** tant que le champ a le focus — on affiche ce qui est tapé, on stocke ce qui est compris. Au `blur` le brouillon est lâché et le champ se réaligne sur la valeur stockée, donc une saisie inexploitable ne reste pas affichée et « 5, » se normalise en « 5 ». Le stockage reste strictement numérique, `null` pour du vide (jamais `0`).
+
+### Verified
+- **Dans le navigateur, sur l'émulateur**, via le harnais BUG-008 (`emu:seed` + `test:serve` + `?testToken=`) — c'est la première fois que `/fiche` est ouvert pour de bon : frappe par frappe, `"5"` → `"5,"` → `"5,6"` à l'écran, valeur stockée **5.6** après sortie du champ ; « 3.1 » au point fonctionne aussi ; la jauge de l'étape Stocks passe de 0/11 à 2/11 et celle d'Identité affiche 3/5 à 60 %.
+- Le **stepper est confirmé en conditions réelles** du même coup : les 4 jauges se remplissent au prorata, les `aria-label` annoncent « Stocks — 2 / 11 ».
+- 64 tests unitaires verts, `test:render` vert, `eslint` vert sur le fichier touché. Build déployé sur le canal staging.
+
+### Ouvert
+- **Pas de test automatisé sur ce chemin.** Les specs Playwright tournent en **Invité** : aucun parcours authentifié n'existe, alors que le harnais d'émulateur sait mint­er un jeton. Un e2e connecté aurait attrapé ce bug **et** la jauge invisible de v2.56. C'est le vrai manque de couverture du lot mentorat.
+
+
 ## v2.56 - 2026-10-23 — Stepper : la longueur remplace la couleur
 
 Revue du stepper livré quelques heures plus tôt (v2.55), sur retour du Roi : « trop de couleurs et de formes disparates ». Le reproche était juste — quatre teintes (émeraude fait / ambre commencé / indigo ici / gris à faire) et trois formes (pastille, rail, libellé) pour exprimer **une seule** information, l'avancement.
