@@ -12,9 +12,12 @@ Revue du stepper livré quelques heures plus tôt (v2.55), sur retour du Roi : �
 - `aria-current="step"` conservé ; la jauge étant muette pour un lecteur d'écran, le bouton porte un `aria-label` « Étape — rempli / attendu », dans la même forme nue que la carte de progression au-dessus. **Aucune chaîne nouvelle dans les 10 locales.**
 - Carte de design system « Navigation » régénérée sur la nouvelle forme.
 
+### Fixed (trouvé en validant sur staging)
+- **La jauge ne se dessinait pas du tout.** `.v2-step-fill` est un `<span>`, donc **inline** par défaut — et un élément inline ignore `width` et `height`. Les trois passes précédentes ont été livrées avec un remplissage de 0 px sur 0 px : la piste s'affichait, la jauge jamais. Invisible à la relecture de code, et invisible sur la maquette qui reprenait les mêmes classes donc le même défaut. **Attrapé en mesurant le DOM sur le canal staging.** Corrigé par `display: block` sur le remplissage ; la piste, elle, est un élément de flex et se bloquait déjà toute seule. Leçon : une maquette construite avec les classes livrées reproduit fidèlement leurs bugs — seule la page réellement servie fait foi.
+
 ### Verified
 - `npm run build` vert, classes `.v2-step*` présentes dans le CSS produit ; **64 tests unitaires** verts (dont le nouveau `blockProgress`) ; `test:render` vert ; `eslint` vert sur les 4 fichiers touchés.
-- **Toujours pas vu dans l'app qui tourne** : `/fiche` est derrière l'auth et derrière un compte principal réclamé. Contrôle visuel sur maquette reprenant les classes livrées à l'identique (desktop + 360 px).
+- **Mesuré sur le canal staging de 2997** (`https://kd-97-manager--staging-kdabt6en.web.app`, expire le 2026-11-22), sur la feuille de style réellement servie : 4 boutons de **44 px** de haut (cible tactile tenue), jauges remplies à **144 / 86,4 / 36 / 0 px** pour 100 / 60 / 25 / 0 %, **libellés alignés sur la même ligne** (le pari « hauteur de jauge identique » tient), piste de l'étape active en indigo à 22 %. `/fiche` lui-même reste derrière l'auth **et** derrière un compte principal réclamé : le stepper a été mesuré en injectant son balisage dans la page servie, pas en ouvrant le formulaire — c'est la feuille de style qui est validée, pas le parcours.
 - **Resync claude.ai/design non fait** : demande `/design-sync`, lancé par le Roi.
 
 ### Ouvert

@@ -320,6 +320,11 @@
      decalerait son libelle d'un pixel et casserait l'alignement de la rangee.
      L'opacite et la lueur suffisent a la distinguer. */
   .v2-step-fill {
+    /* `display: block` est INDISPENSABLE : le remplissage est un <span>, donc
+       inline par defaut, et un element inline ignore `width`/`height` — la
+       jauge ne se dessinait pas du tout (mesure sur le canal staging le
+       2026-10-23). La piste, elle, est un element de flex et se bloque seule. */
+    display: block;
     height: 100%;
     border-radius: 999px;
     background: var(--grad-accent);
