@@ -14,6 +14,24 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  /* `tests/` abrite AUSSI des tests `node:test` (`*.test.mjs` : règles Firestore,
+     schémas, parité). Le `testMatch` par défaut de Playwright attrape `*.test.*`
+     autant que `*.spec.*` : il importait donc `firestore-rules.test.mjs`, dont les
+     appels `node:test` de premier niveau s'exécutent À L'IMPORT. Résultat mesuré :
+     zéro cas Playwright enregistré, mais la suite de règles rejouée en silence au
+     milieu du run, sur le MÊME émulateur que les specs — sa sortie mêlée à celle de
+     Playwright, et ses refus volontaires (cas « ATTAQUE ») pris pour des erreurs de
+     l'app. On ne ramasse donc que les `*.spec.js`. */
+  testMatch: '**/*.spec.js',
+  /* 60 s plutôt que les 30 s par défaut. La PREMIÈRE navigation d'un run paie la
+     compilation à froid de Vite (optimisation des dépendances + transformation à
+     la demande), et les 3 navigateurs démarrent ensemble. Ça tenait par accident
+     jusqu'ici : Playwright importait `firestore-rules.test.mjs`, dont la suite
+     `node:test` s'exécutait pendant la collecte et offrait ~20 s de chauffe au
+     serveur. En la retirant (cf. `testMatch`), le démarrage à froid est redevenu
+     visible — 4 à 6 échecs par run, tous sur la première page chargée. Le délai
+     n'était pas de la marge, c'était un masque. */
+  timeout: 60_000,
   /* Sème l'émulateur (fixtures + jeton de connexion de test) avant toute spec :
      sans ça les écrans CONNECTÉS ne sont pas testables. Cf. tests/global-setup.js. */
   globalSetup: './tests/global-setup.js',

@@ -43,7 +43,7 @@ export function testToken() {
  * @param {string} hashRoute route applicative, ex. `/fiche?gov=123`
  * @param {{ready: string, timeout?: number}} opts `ready` : sélecteur propre à l'écran connecté
  */
-export async function gotoAuthenticated(page, hashRoute, { ready, timeout = 30_000 } = {}) {
+export async function gotoAuthenticated(page, hashRoute, { ready, timeout = 45_000 } = {}) {
     if (!ready) throw new Error('gotoAuthenticated : `ready` est obligatoire — nomme un sélecteur que seul l\'écran connecté rend.');
     await page.goto(`/?testToken=${encodeURIComponent(testToken())}#${hashRoute}`);
     await expect(page.locator(ready).first()).toBeVisible({ timeout });

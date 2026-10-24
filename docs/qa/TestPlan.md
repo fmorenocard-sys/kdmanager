@@ -80,6 +80,28 @@ The harness signs in **without the real OAuth flow**, emulator only:
   "Loading Kingdom Data…" (roughly one run in three gets through). Guest screens
   stay covered on all three engines. Worth checking on a real Safari before
   concluding anything about end users: this is Playwright's build, not Safari.
+- **The e2e emulator enforces NO security rules — it runs allow-all.** `firebase.json`
+  declares `firestore` as an **array** of two database entries (`(default)` and
+  `kdmanagerdb`, the same shape that forced `scripts/deploy-rules.cjs` into
+  existence); the emulator does not read `rules` from that form and says so on
+  every start: *"Did not find a Cloud Firestore rules file specified in a
+  firebase.json config file. The emulator will default to allowing all reads and
+  writes."* **Measured, not inferred** (2026-10-24): a client write to
+  `static_data/players` — which the rules deny to *everyone*, King included —
+  **succeeds** under `npm run test:e2e`. Consequence to keep in mind before
+  trusting a green suite: **no e2e case can catch an authorization regression**.
+  BUG-019, which was precisely a rules denial, would have been invisible here.
+  Rules coverage comes from `tests/firestore-rules.test.mjs`, which loads them
+  explicitly through `@firebase/rules-unit-testing` and is unaffected. Making the
+  e2e emulator load the real rules is worth doing but is **not** a one-line change:
+  the array form is deliberate, and `deploy-rules.cjs` depends on it.
+- **Fixtures must cover LEGACY data shapes, not only the current one.** Found the
+  hard way on 2026-10-24: `hasClaimed()` reads `warGovernorIds`, a field born with
+  E-010, which existing `user_profiles` in production do not carry — and both the
+  seed and the rules-test fixture already carry it. Every test therefore passed on
+  a world that does not exist yet, while real players were refused. When a field
+  appears mid-life, a fixture that only has the new shape validates precisely the
+  case that works.
 - **Other connected screens are still uncovered**: `/me`, `/pilotage` beyond the
   Deadweight tab, published goals, the multi-account declaration state. TC-011 and
   TC-017 (King/Officer assertions, per `tests/rbac.spec.js`'s own inline note) are

@@ -148,6 +148,41 @@ Deux pièges déjà payés, encapsulés par le helper :
   connexion ne part jamais.
 - **asynchronisme** — attendre la fin de la navigation ne prouve rien.
 
+### Ce que la suite e2e ne couvre PAS : les règles Firestore
+
+L'émulateur de `npm run test:e2e` tourne **sans règles**, en tout-permis. Il le dit
+à chaque démarrage : « Did not find a Cloud Firestore rules file specified in a
+firebase.json config file — the emulator will default to allowing all reads and
+writes ». La cause est la forme **tableau** de la clé `firestore` dans
+`firebase.json` (deux bases, `(default)` et `kdmanagerdb` — la même particularité
+qui a imposé `scripts/deploy-rules.cjs`) : l'émulateur n'y lit pas `rules`.
+
+**Mesuré, pas supposé** (2026-10-24) : une écriture cliente sur
+`static_data/players`, que les règles refusent à **tout le monde** (`allow write:
+if false`), **passe** sous `npm run test:e2e`.
+
+À retenir avant de faire confiance à une suite verte : **aucun cas e2e ne peut
+attraper une régression d'autorisation**. BUG-019, qui était justement un refus de
+règle, y serait resté invisible. La couverture des règles vient de
+`tests/firestore-rules.test.mjs` (`npm run test:rules`), qui les charge lui-même
+via `@firebase/rules-unit-testing` et n'est pas concerné.
+
+---
+
+### Deux familles de tests dans `tests/`, à ne pas mélanger
+
+`tests/` abrite des specs **Playwright** (`*.spec.js`) et des tests **`node:test`**
+(`*.test.mjs` : règles, schémas, parité). Le `testMatch` par défaut de Playwright
+attrape `*.test.*` autant que `*.spec.*` — il **importait** donc
+`firestore-rules.test.mjs`, dont les appels `node:test` de premier niveau
+s'exécutent à l'import : zéro cas Playwright enregistré, mais la suite de règles
+rejouée en silence au milieu du run, sur le **même émulateur** que les specs, sa
+sortie mêlée à celle de Playwright et ses refus volontaires (cas « ATTAQUE ») très
+faciles à prendre pour des erreurs de l'app. D'où le `testMatch: '**/*.spec.js'`
+explicite dans `playwright.config.js` — **ne pas le retirer**.
+
+---
+
 ### WebKit : écarté des écrans connectés
 
 Dans la build WebKit de Playwright sous Windows, le flux Firestore ne repart pas

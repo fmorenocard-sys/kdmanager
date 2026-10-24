@@ -50,10 +50,6 @@ async function openEconomyStep(page, testInfo) {
 }
 
 test.describe('Fiche de compte — /fiche (connecté)', () => {
-    // Un écran CONNECTÉ enchaîne plus d'étapes qu'un écran Invité : démarrage de
-    // l'app, `signInWithCustomToken`, chargement du roster, puis de la fiche.
-    test.describe.configure({ timeout: 60_000 });
-
     // WebKit est écarté des écrans CONNECTÉS, pas par confort : dans la build
     // WebKit de Playwright sous Windows, le flux Firestore ne repart pas après la
     // connexion — `[testLogin] connecté` est bien journalisé, puis `onSnapshot`

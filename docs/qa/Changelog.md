@@ -1,5 +1,58 @@
 # QA Changelog
 
+## v2.60 - 2026-10-24 — Le harnais e2e disait vrai sur moins de choses qu'il n'y paraîssait
+
+Deux défauts du harnais livré en v2.58, trouvés en enquêtant sur des
+`PERMISSION_DENIED` qui polluaient mes propres runs. Le premier est de moi, le
+second préexistait — mais il change ce qu'une suite verte autorise à conclure.
+
+### Fixed
+- **Playwright exécutait `tests/firestore-rules.test.mjs` à chaque run e2e.** Son
+  `testMatch` par défaut attrape `*.test.*` autant que `*.spec.*` : avec
+  `testDir: './tests'`, il **importait** le fichier de règles, dont les appels
+  `node:test` de premier niveau partent **à l'import**. Résultat mesuré : **zéro
+  cas Playwright enregistré** (27 cas annoncés, 27 venant des specs), mais la
+  suite de règles rejouée en silence au milieu du run, **sur le même émulateur
+  que les specs**, sa sortie mêlée à celle de Playwright. Ses refus VOLONTAIRES
+  (cas « ATTAQUE ») ressemblaient alors trait pour trait à des erreurs de l'app —
+  j'y ai moi-même cru une demi-heure, en pleine enquête sur un « Could not save »
+  remonté du terrain. Corrigé par un `testMatch: '**/*.spec.js'` explicite :
+  0 ligne de la suite de règles et 0 `PERMISSION_DENIED` dans le run suivant.
+
+### Ouvert — et à savoir avant de faire confiance à un e2e vert
+- **L'émulateur de `npm run test:e2e` tourne SANS AUCUNE RÈGLE, en tout-permis.**
+  `firebase.json` déclare `firestore` en **tableau** de deux bases (`(default)` et
+  `kdmanagerdb` — la même particularité qui a imposé `scripts/deploy-rules.cjs`) :
+  l'émulateur n'y lit pas `rules` et le dit à chaque démarrage, « will default to
+  allowing all reads and writes ». **Mesuré, pas supposé** : une écriture cliente
+  sur `static_data/players`, que les règles refusent à **tout le monde** (`allow
+  write: if false`), **passe** sous `npm run test:e2e`.
+  Conséquence à retenir : **aucun cas e2e ne peut attraper une régression
+  d'autorisation**. BUG-019, qui était précisément un refus de règle, y serait
+  resté invisible — le parcours authentifié de v2.58 couvre le rendu et la saisie,
+  pas le grillage. La couverture des règles vient de `tests/firestore-rules.test.mjs`
+  (`npm run test:rules`), qui les charge lui-même via `@firebase/rules-unit-testing`
+  et n'est pas concerné. **Non corrigé ici** : la forme tableau est délibérée et
+  `deploy-rules.cjs` en dépend, donc faire charger les vraies règles à l'émulateur
+  e2e demande une vraie passe, pas un one-liner.
+### Leçon du jour, sur les fixtures elles-mêmes
+En enquêtant sur un « Could not save » remonté du terrain, la cause s'est avérée être
+une **fixture plus moderne que la production** : `hasClaimed()` lit
+`warGovernorIds`, né avec E-010, que les `user_profiles` existants n'ont pas — et
+la fixture Warrior des tests de règles le porte déjà. Les tests disaient donc vrai
+sur un monde qui n'existe pas encore. J'ai moi-même ajouté ce champ au seed en
+v2.58, au nom de la fidélité à ce qu'écrit `AuthContext` — c'était juste pour la
+donnée NEUVE, et aveugle à la donnée HÉRITÉE. **Une fixture doit couvrir les deux
+formes** quand un champ est apparu en cours de route ; sinon elle valide
+exactement le cas qui ne pose pas problème. Diagnostic et reproduction :
+`scratch/diag-hasclaimed.mjs`. Le défaut applicatif lui-même appartient au lot
+mentorat et est traité à part.
+
+- Toujours **aucune spec n'assure que la sauvegarde de la fiche RÉUSSIT** (cf.
+  v2.58). Avec la limite ci-dessus, c'est doublement vrai : même écrite, elle
+  passerait sous un grillage désarmé.
+
+
 ## v2.59 - 2026-10-23 — BUG-020 : le brouillon échoué est rendu au serveur
 
 Troisième retour de staging, dans la foulée de BUG-019 : le formulaire affiche 23/23, et `/me` annonce « 13 % rempli ».
