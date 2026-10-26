@@ -35,6 +35,8 @@ const ADMIN = 'uid_admin';
 const KING = 'uid_king';
 const OFFICER = 'uid_officer';
 const WARRIOR = 'uid_warrior';
+// Guerrier dont le profil date d'AVANT le miroir `warGovernorIds` (BUG-021).
+const WARRIOR_LEGACY = 'uid_warrior_legacy';
 const INTRUDER = 'uid_intruder';
 
 const as = (uid) => env.authenticatedContext(uid).firestore();
@@ -72,6 +74,17 @@ before(async () => {
         });
         await setDoc(doc(db, 'war_availabilities', 'soc4_' + WARRIOR), {
             userId: WARRIOR, kvkId: 'soc4', governorId: '111'
+        });
+        // Profil « D'AVANT E-010 » : le gouverneur est bel et bien réclamé, mais le
+        // miroir plat n'existe pas — le champ est né APRÈS ces profils, et seul
+        // `applyProfile` l'écrit. C'est l'état réel de tous les joueurs qui avaient
+        // réclamé avant BR-027, et la raison d'être de l'auto-réparation ajoutée
+        // dans `AuthContext` (BUG-021). La fixture WARRIOR ci-dessus porte la forme
+        // NOUVELLE : elle valide un monde que la production n'avait pas encore.
+        await setDoc(doc(db, 'roles', WARRIOR_LEGACY), { role: 'Warrior' });
+        await setDoc(doc(db, 'user_profiles', WARRIOR_LEGACY), {
+            governorId: '222',
+            accounts: [{ governorId: '222', type: 'war', name: 'Avant E-010' }]
         });
         // Fiche d'un compte principal ORPHELIN (aucun utilisateur ne l'a réclamé) :
         // c'est le cas des 23 comptes de 2997 mesurés le 2026-10-21.
@@ -383,6 +396,30 @@ describe(`Règles Firestore — ${RULES_FILE}`, () => {
                 status: 'draft', enteredBy: OFFICER, enteredByRole: 'Officer',
                 createdAt: new Date(), updatedAt: new Date()
             }));
+        });
+
+        it('BUG-021 — un profil SANS le miroir plat est refusé, même réclamé', async () => {
+            // Le cas qui a bloqué tout le royaume : `hasClaimed()` lit
+            // `warGovernorIds`, et son défaut `[]` fait lire l'absence du champ
+            // comme « n'a rien réclamé ». Le joueur voyait « Could not save » dès
+            // la création. La règle n'est pas en cause — elle ne sait pas parcourir
+            // `accounts[]`, c'est toute la raison du miroir — donc ce test fige la
+            // frontière, et le correctif vit côté client (auto-réparation).
+            await assertFails(setDoc(doc(as(WARRIOR_LEGACY), 'mentoring_sheets', '222'),
+                sheetWritePayload({ governorId: '222', blocks: emptySheet(), uid: WARRIOR_LEGACY, role: 'Warrior', isNew: true, at: '2026-10-26T10:00:00.000Z' }),
+                { merge: true }));
+        });
+
+        it('BUG-021 — le même profil passe dès que le miroir est posé', async () => {
+            // Ce que fait l'auto-réparation d'`AuthContext` à la connexion : écrire
+            // `warGovernorIds` depuis `accounts[]`. Le propriétaire en a le droit
+            // (`changesOnly` l'autorise), donc le correctif ne demande aucune
+            // élévation de privilège — il rend seulement la réclamation lisible.
+            await assertSucceeds(setDoc(doc(as(WARRIOR_LEGACY), 'user_profiles', WARRIOR_LEGACY),
+                { warGovernorIds: ['222'] }, { merge: true }));
+            await assertSucceeds(setDoc(doc(as(WARRIOR_LEGACY), 'mentoring_sheets', '222'),
+                sheetWritePayload({ governorId: '222', blocks: emptySheet(), uid: WARRIOR_LEGACY, role: 'Warrior', isNew: true, at: '2026-10-26T10:00:01.000Z' }),
+                { merge: true }));
         });
 
         it('USAGE — la DEUXIÈME sauvegarde passe aussi (BUG-019)', async () => {

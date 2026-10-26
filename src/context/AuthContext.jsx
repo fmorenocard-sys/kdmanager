@@ -223,6 +223,43 @@ export const AuthProvider = ({ children }) => {
                     const primaryId = storedGovId || profile.governorId;
                     setAccounts(primaryId ? [{ governorId: String(primaryId), type: 'war', name: null }] : []);
                 }
+
+                // E-010/BR-027 — AUTO-RÉPARATION du miroir plat `warGovernorIds`.
+                //
+                // Ce champ est lu par les RÈGLES (`hasClaimed`) pour autoriser
+                // l'écriture d'une fiche de mentorat. Il est né après `accounts[]`,
+                // et seul `applyProfile` l'écrit — c'est-à-dire au moment où
+                // l'utilisateur réclame ou retire un compte. Tout profil réclamé
+                // AVANT E-010 en est donc dépourvu, et son propriétaire se voyait
+                // refuser TOUTE sauvegarde de fiche, création comprise (BUG-021).
+                //
+                // Se connecter ne suffisait pas à réparer : ce bloc lit le profil
+                // sans le réécrire, et la migration paresseuse d'`accounts[]`
+                // attend « la prochaine mutation ». Un champ migré paresseusement
+                // était devenu une condition d'accès — d'où la réparation ici.
+                //
+                // Même forme que la synchro de `governorId` ci-dessus : on écrit
+                // seulement en cas d'écart réel, donc une fois par joueur touché.
+                // `!== 'filler'` reproduit le filtre d'`applyProfile`, qui trie des
+                // comptes DÉJÀ normalisés (tout ce qui n'est pas filler est war).
+                const effectiveAccounts = (Array.isArray(profile.accounts) && profile.accounts.length)
+                    ? profile.accounts
+                    : ((storedGovId || profile.governorId)
+                        ? [{ governorId: String(storedGovId || profile.governorId), type: 'war' }]
+                        : []);
+                const expectedMirror = effectiveAccounts
+                    .filter((a) => a.type !== 'filler')
+                    .map((a) => String(a.governorId));
+                const storedMirror = Array.isArray(profile.warGovernorIds)
+                    ? profile.warGovernorIds.map(String)
+                    : null;
+                const mirrorMatches = storedMirror
+                    && storedMirror.length === expectedMirror.length
+                    && [...storedMirror].sort().join('|') === [...expectedMirror].sort().join('|');
+                if (expectedMirror.length && !mirrorMatches) {
+                    setDoc(doc(db, "user_profiles", user.uid), { warGovernorIds: expectedMirror }, { merge: true })
+                        .catch(err => console.warn("Could not self-heal warGovernorIds:", err));
+                }
             } else {
                 setGovernorId(null);
                 setAccounts([]);

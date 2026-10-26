@@ -1,5 +1,24 @@
 # QA Changelog
 
+## v2.61 - 2026-10-26 — BUG-021 : les joueurs peuvent enfin enregistrer leur fiche
+
+Le vrai « Could not save » du terrain, remonté par un joueur le 24/10 et resté ouvert depuis : **aucun joueur ordinaire ne pouvait enregistrer sa fiche**, dès la création.
+
+### Fixed
+- **BUG-021 (moitié a) — `AuthContext` répare le miroir plat à la connexion.** `hasClaimed()` lit `warGovernorIds` avec un défaut `[]`, donc l'absence du champ se lit comme « n'a rien réclamé ». Le miroir est né avec E-010 et n'est écrit que par `applyProfile`, au moment d'une réclamation : tout profil réclamé **avant** E-010 en était dépourvu. Se reconnecter n'y changeait rien — `onAuthStateChanged` lit le profil sans le réécrire.
+- **Un champ migré paresseusement était devenu une condition d'accès.** `accounts[]` a une migration paresseuse assumée depuis A-024 (« réécrit à la prochaine mutation ») ; `warGovernorIds` en a hérité le comportement, sauf qu'une **règle de sécurité** en dépend. C'est la leçon à retenir de ce bug.
+- Le correctif recalcule le miroir depuis `accounts[]` et ne l'écrit **qu'en cas d'écart**, sur le modèle exact de la synchro de `governorId` trois lignes plus haut. Aucune élévation de privilège : `changesOnly` autorise déjà le propriétaire à écrire ce champ.
+- **Pourquoi personne ne l'avait vu** : `canAccessSheet()` est `isKingOrOfficer() || hasClaimed()`. Le Roi passe par la gauche sans jamais toucher `hasClaimed`. La fiche a été validée sur staging par le Roi — le seul chemin qu'empruntent les joueurs n'avait jamais été emprunté.
+
+### Verified
+- **Dans le navigateur, sur l'émulateur, en rôle GUERRIER** — le vrai chemin, pas celui du Roi — avec un profil reconstitué « d'avant E-010 » (gouverneur réclamé, miroir retiré). Après connexion : `warGovernorIds = ["2463403"]`, le compte de guerre seul, **le filler correctement exclu**. Puis saisie dans la fiche → **« Enregistré »**.
+- **61 tests de règles verts** (+2) : un profil sans miroir est refusé même s'il a bien réclamé ; le même profil passe dès que le miroir est posé. Le premier cas comble le trou de la fixture `WARRIOR` existante, qui portait la forme **nouvelle** et validait donc un monde que la production n'avait pas.
+- 64 tests unitaires verts, `test:render` vert, build vert. `eslint` : les 2 problèmes de `AuthContext.jsx` sont **antérieurs**, vérifié en comparant avec `HEAD`.
+
+### Reste à faire
+- **(b) Rattrapage des profils existants** sur les 4 instances, pour que le suivi du Conseil soit juste sans attendre que chaque joueur repasse. Bloqué sur l'absence d'identifiants Admin SDK (ADC non configuré) : soit `gcloud auth application-default login`, soit le script livré au Roi.
+
+
 ## v2.60 - 2026-10-26 — Vue « Accès & rôles » dans /admin
 
 ### Added
