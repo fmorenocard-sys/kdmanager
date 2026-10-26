@@ -2,6 +2,11 @@
 
 ## v2.61 - 2026-10-26 — BUG-021 : les joueurs peuvent enfin enregistrer leur fiche
 
+### Done — rattrapage exécuté sur 2997 (2026-10-26)
+- **53 profils lus, 49 pourvus du miroir, 4 sans compte réclamé.** Seconde simulation revenue à **0 à écrire** : l'idempotence du script sert de preuve d'aboutissement, sans avoir à relire la base.
+- **Reste les 3 autres instances** (pilote 3341, arcelia 2293, mimoso 1362), chacune avec sa propre clé de projet.
+- **Le script prend désormais `--key <chemin>` en argument.** Première livraison : l'aide ne proposait que `gcloud auth application-default login`, or le SDK gcloud n'est pas installé sur la machine du Roi. Deuxième : `GOOGLE_APPLICATION_CREDENTIALS` exporté dans un terminal ne survit pas au lancement dans un autre. Un argument voyage avec la commande. Le script vérifie aussi que la clé appartient **au projet visé**, sinon l'échec serait un `permission-denied` opaque.
+
 Le vrai « Could not save » du terrain, remonté par un joueur le 24/10 et resté ouvert depuis : **aucun joueur ordinaire ne pouvait enregistrer sa fiche**, dès la création.
 
 ### Fixed
