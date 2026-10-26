@@ -68,6 +68,42 @@ if (!projectId) {
     process.exit(1);
 }
 
+/**
+ * Message d'aide sur l'absence d'identifiants. Il vit ici parce que l'échec
+ * n'arrive PAS dans la chaîne de promesses du script : google-gax résout les
+ * identifiants dans un client interne, sur un timer, et la rejection remonte
+ * hors de tout `await` — Node la traite en rejection non gérée et tue le
+ * processus sur une trace illisible, sans passer par le `.catch` final.
+ * Constaté par le Roi le 2026-10-26. D'où les deux crochets ci-dessous.
+ */
+function expliquerIdentifiants(message) {
+    console.error('\n❌ Identifiants Google introuvables — le script n\'a RIEN écrit.\n');
+    console.error('   Deux façons d\'en fournir, au choix :\n');
+    console.error('   1) Une clé de compte de service déjà présente sur cette machine :');
+    console.error('        PowerShell :  $env:GOOGLE_APPLICATION_CREDENTIALS = "functions\\serviceAccountKey.json"');
+    console.error('        bash       :  export GOOGLE_APPLICATION_CREDENTIALS=functions/serviceAccountKey.json');
+    console.error('      puis relancer. La clé doit appartenir AU PROJET visé et pouvoir écrire dans Firestore.\n');
+    console.error('   2) Des identifiants utilisateur, si le SDK gcloud est installé :');
+    console.error('        gcloud auth application-default login\n');
+    console.error('   (Lancer d\'abord SANS --apply : la simulation suffit à valider les identifiants.)\n');
+    if (message) console.error(`   Détail : ${message}\n`);
+    process.exit(1);
+}
+
+const estProblemeIdentifiants = (e) => /default credentials|could not load|unable to detect|invalid_grant|ADC/i
+    .test(String((e && e.message) || e));
+
+process.on('unhandledRejection', (e) => {
+    if (estProblemeIdentifiants(e)) expliquerIdentifiants(e && e.message);
+    console.error('\n❌ Échec inattendu :', (e && e.stack) || e);
+    process.exit(1);
+});
+process.on('uncaughtException', (e) => {
+    if (estProblemeIdentifiants(e)) expliquerIdentifiants(e && e.message);
+    console.error('\n❌ Échec inattendu :', (e && e.stack) || e);
+    process.exit(1);
+});
+
 const onEmulator = !!process.env.FIRESTORE_EMULATOR_HOST;
 const app = initializeApp(
     onEmulator ? { projectId } : { credential: applicationDefault(), projectId },
@@ -131,9 +167,7 @@ const sameSet = (a, b) => a.length === b.length
     if (!APPLY && stats.aEcrire) console.log('\n  Relancer avec --apply pour écrire.');
     console.log('');
 })().catch((e) => {
+    if (estProblemeIdentifiants(e)) expliquerIdentifiants(e.message);
     console.error('\n❌ Échec :', e.message);
-    if (/default credentials/i.test(e.message)) {
-        console.error('   Identifiants manquants : lancer une fois « gcloud auth application-default login ».');
-    }
     process.exit(1);
 });
