@@ -114,6 +114,24 @@ Le dénominateur du « qui doit avoir une fiche » est la **liste de suivi du Ro
 `static_data/kvk` est réécrite à chaque ouverture de KvK, et le périmètre du
 programme changerait tout seul.
 
+**Précision du 2026-10-26.** Cette copie est un POINT DE DÉPART, pas la
+définition du périmètre. Le programme réel est celui des **9 escouades**
+(9 mentors, 30 joueurs) présentées au Conseil, et il ne coïncide pas avec la
+liste KvK : un joueur qui n'a pas fait la dernière campagne n'y figure pas,
+alors qu'on veut l'accompagner — c'est le cas des comptes marqués « new »
+dans la présentation. Le périmètre se **curate** donc à la main après
+l'amorçage, chaque mouvement étant une décision du Conseil, avec
+`scripts/mentoring-scope.cjs`. Première curation : +4 (ᵁᴺMaka, TheCrow001,
+Kagegi本, ๛Ðrenɑlɑ), −2 (Ngacai et ᵁᴺGreb, qui quittent le royaume), soit
+**41 → 43**.
+
+**Piège de nommage, mesuré le même jour.** Le périmètre ne stocke que des ids,
+et les pseudos du jeu ne sont pas des clés : ils changent (`ᴱˣᵒWuKong`,
+55421671, s'appelle « Emperor Jerik » dans le scan du 26/10), ils se répètent
+(deux comptes « H ム I D E R », 169672885 et 170728362) et ils se ressemblent
+à une capitale près (`R7R7`/`R7r7`, `ᵁᴺ乄Bツ`/`ᵁᴺ乄Bツツ`). Toute reprise
+d'une liste écrite en pseudos doit être recoupée sur les ids avant écriture.
+
 ---
 
 ## 3. Modèle de données

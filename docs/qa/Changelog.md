@@ -1,5 +1,16 @@
 # QA Changelog
 
+## v2.62 - 2026-10-26 — Périmètre de mentorat : 41 → 43, et il se curate
+
+### Changed
+- **Le périmètre suit désormais les 9 escouades, plus seulement la liste KvK.** +4 (`ᵁᴺMaka`, `TheCrow001`, `Kagegi本`, `๛Ðrenɑlɑ`) et −2 (`Ngacai`, `ᵁᴺGreb`, qui quittent le royaume) : **41 → 43**. Trois des quatre ajouts sont les comptes marqués « new » dans la présentation du Conseil — ils n'ont pas fait SoC 5, donc une liste dérivée du KvK ne pouvait pas les contenir.
+- **BR-031 précisée** : la copie de `static_data/kvk` est un point de départ, pas la définition. Le périmètre se curate à la main, chaque mouvement étant une décision du Conseil.
+- **Outil livré** : `scripts/mentoring-scope.cjs` — lecture avec pseudos résolus, `--add` / `--remove`, simulation par défaut, projet obligatoire, `--key` en argument. Il **refuse un id inconnu du roster** avant d'écrire : une coquille créerait une ligne fantôme que personne ne pourrait remplir, et qui fausserait le compteur du Conseil pour toujours.
+
+### Observed — les pseudos ne sont pas des clés
+- L'appariement de la présentation (39 noms, **aucun id**) au roster a donné 35 correspondances et 4 pièges, tous réels : `ᴱˣᵒWuKong` (55421671) **s'appelle « Emperor Jerik »** dans le scan du 26/10 ; `亗 DONJAN 亗` est introuvable par son nom mais présent par son id ; `R7R7`/`R7r7` et `ᵁᴺ乄Bツ`/`ᵁᴺ乄Bツツ` sont deux comptes distincts chacun ; et **deux comptes portent « H ム I D E R »** (169672885 dans le périmètre, 170728362 dans le roster — arbitrage en attente).
+- Sans ce recoupement, WuKong et DONJAN auraient été ajoutés en doublon alors qu'ils étaient déjà dans le périmètre. **Toute reprise d'une liste écrite en pseudos doit passer par les ids.**
+
 ## v2.61 - 2026-10-26 — BUG-021 : les joueurs peuvent enfin enregistrer leur fiche
 
 ### Done — rattrapage exécuté sur 2997 (2026-10-26)
