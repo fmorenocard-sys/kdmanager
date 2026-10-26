@@ -1,5 +1,23 @@
 # QA Changelog
 
+## v2.60 - 2026-10-26 — Vue « Accès & rôles » dans /admin
+
+### Added
+- **`AccessMatrix` — qui détient les droits Admin / Roi / Officier**, nouvelle section de `/admin` (P-009), entre Maintenance et « Voir en tant que ». Lecture seule : la source est la collection `roles`, écrite par `discordAuth` à chaque connexion, et les règles l'autorisent déjà au leadership (`isOwner || isKingOrOfficer`).
+- Trois compteurs en tête, recherche par nom / ID de gouverneur / compte, tableau desktop et cartes mobiles. Tri par **hiérarchie** (Admin 5 > Roi 4 > Officier 3), pas alphabétique : la page sert à voir qui est au-dessus.
+- Colonnes : membre (pseudo in-game résolu depuis le roster + ID de gouverneur), rôle, compte (ID Discord déduit de l'uid `discord:…`, ou uid brut pour une connexion Google), dernière synchro, source.
+- **Les limites sont écrites sur la page**, parce qu'elles changent la lecture du tableau : seuls les comptes déjà connectés y figurent ; le rôle est figé à la connexion ; les épinglages `ROLE_ADMIN_USER_IDS` / `ROLE_KING_USER_IDS` (BR-023) sont invisibles depuis Firestore ; l'échelle d'attribution est rappelée. Les Guerriers et Invités ne sont pas listés mais comptés.
+- Deux variantes de design system : `.v2-pill.role-admin` (indigo) et `.v2-pill.role-king` (ambre). **Famille distincte des pastilles de notation KvK** — réutiliser `good` ou `improve` pour un rôle ferait lire une hiérarchie de mérite là où il n'y a qu'une hiérarchie de droits ; l'Officier reste `neutral`. Carte DS « Badges » régénérée.
+- i18n : bloc `admin.access` + `admin.rail_access` + `profile.role_admin` dans les **10 locales**, FR/EN/ES rédigés, les 7 autres en repli EN assumé (même parti pris que le lot mentorat).
+
+### Verified
+- **Dans le navigateur, sur l'émulateur**, avec des fixtures de rôles dédiées (`scratch/seed-roles-emulator.cjs`) couvrant les cas que la vue doit savoir rendre : Admin, Roi, trois Officiers dont un **sans compte réclamé**, un **uid Google** sans préfixe `discord:`, un rôle **jamais synchronisé**, plus un Guerrier et un Invité à compter sans les lister. Résultat : 5 lignes, compteurs 1 / 1 / 3, ordre hiérarchique respecté, pastilles correctes.
+- Build vert, 64 tests unitaires verts, `test:render` vert, `eslint` vert sur les fichiers touchés.
+
+### Observed (pré-existant, NON corrigé — UXA11Y-014)
+- **`/admin` défile horizontalement à 375 px**, ce qui viole la règle stricte de `.agent/rules/responsiveness.md`. Mesuré : `scrollWidth` 490 pour un `clientWidth` de 375. **La nouvelle section n'y est pour rien** — vérifié en la masquant, le débordement est identique. Les coupables sont `admin-campaign` (474 px) et `admin-calendar` (464 px). À traiter à part.
+
+
 ## v2.60 - 2026-10-24 — Le harnais e2e disait vrai sur moins de choses qu'il n'y paraîssait
 
 Deux défauts du harnais livré en v2.58, trouvés en enquêtant sur des

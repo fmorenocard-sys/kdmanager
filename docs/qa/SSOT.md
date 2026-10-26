@@ -20,6 +20,7 @@
 | **F-014** | **Multi-Language (i18n)** | UI localized in 9 languages (EN, FR, ES, DE, PL, TR, UK, AR, VI). | All Users |
 | **F-015** | **KvK History** | Archive of past KvK campaigns (`kvk_history` collection). Campaign selector on the Performance page, per-player progression view across campaigns, manual closure by the King. Discord: `/mykvk campaign:<archived>` (US-014) with dynamic autocomplete from `kvk_history` (5-min in-memory cache); the embed shows campaign title, dates, official outcome, filler flag, and an "Archived" data footer. | All Users (read), King (closure) |
 | **F-016** | **Kingdom Progression Timeline** | "Progression du Royaume" tab on the KvK Performance page (PM ID: F-022 / US-023). Chronological timeline of all campaigns (current + archived) with kingdom aggregates (KP gained, total dead, accounts, avg % goal — null-safe for old formats) and the official outcome badge (victory with star / victory / defeat). | King, Officers (view) · King (set outcome) |
+| **F-042** | **Vue « Accès & rôles » (livrée 2026-10-26)** | Section de `/admin` (P-009) qui répond « qui détient les droits Admin / Roi / Officier, précisément ». Lecture seule de la collection `roles` (écrite par `discordAuth` à chaque connexion), jointe aux `user_profiles` du seul leadership et au roster pour résoudre les pseudos. Tri par **hiérarchie** (Admin 5 > Roi 4 > Officier 3), recherche, compteurs, tableau desktop + cartes mobiles. **Les limites sont affichées sur la page**, parce qu'elles changent la lecture du tableau : (a) seuls les comptes s'étant connectés au moins une fois ont un document, donc un Officier Discord qui n'a jamais ouvert l'app n'a pas de ligne ; (b) le rôle est figé à la connexion — un changement Discord n'arrive qu'à la synchro suivante, d'où la colonne « Dernière synchro » ; (c) les épinglages `ROLE_ADMIN_USER_IDS` / `ROLE_KING_USER_IDS` (BR-023) décident du rôle mais ne laissent **aucune trace** dans Firestore : un Roi épinglé est indistinguable d'un Roi Discord. Guerriers et Invités comptés, pas listés. Aucune écriture : les rôles ne s'attribuent pas ici. | King, Officer, Admin |
 
 ## 2. Business Rules (BR)
 
@@ -62,7 +63,7 @@
 | **P-008** | **KvK Race** *(legacy)* | `/kvk-race` | `KvKRacePage.jsx` → `RaceView` — **route de compatibilité** (leadership, `AccessGate`) ; la Course vit désormais dans le Hub KvK (P-003, onglet Course), **plus aucune entrée de nav** vers `/kvk-race`. |
 | **P-006** | **Bank** | `/bank` | `BankPage.jsx` |
 | **P-007** | **User Profile** | `/profile` | `ProfilePage.jsx` |
-| **P-009** | **Administration** | `/admin` | `AdminPage.jsx` — **King only** (`AccessGate`). Rail interne : `DataRefreshControl` (ingestion, King), `KvKConfigForm` + `CampaignArchiveControl` (config/clôture), `RaceConfigForm` (config course), `MaintenanceTools` (fusion, danger zone). Refonte M3. |
+| **P-009** | **Administration** | `/admin` | `AdminPage.jsx` — **King only** (`AccessGate`). Rail interne : `DataRefreshControl` (ingestion, King), `KvKConfigForm` + `CampaignArchiveControl` (config/clôture), `RaceConfigForm` (config course), `MaintenanceTools` (fusion, danger zone), **`AccessMatrix` (vue « Accès & rôles », F-042)**, `ViewAsControl` (F-033). Refonte M3. |
 
 ## 4. Roles (R)
 

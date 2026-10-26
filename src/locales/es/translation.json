@@ -278,7 +278,8 @@
     "type_war": "Cuenta de guerra",
     "type_filler": "Filler",
     "primary_badge": "Principal",
-    "set_primary": "Definir como principal"
+    "set_primary": "Definir como principal",
+    "role_admin": "Admin"
   },
   "datarefresh": {
     "title": "Sincronización de datos",
@@ -388,7 +389,27 @@
     "cal_paste_desc": "Pega tus filas desde Google Sheets (una por línea: nombre + fecha/hora UTC). Reemplaza la lista actual.",
     "cal_paste_year": "Año (si falta en las fechas)",
     "cal_paste_apply": "Reemplazar con lo pegado",
-    "cal_paste_result": "{{ok}} eventos importados, {{skipped}} línea(s) omitida(s)."
+    "cal_paste_result": "{{ok}} eventos importados, {{skipped}} línea(s) omitida(s).",
+    "rail_access": "Accesos y roles",
+    "access": {
+      "desc": "Quién tiene hoy derechos de Admin, Rey u Oficial en este reino. Solo lectura — los roles vienen de Discord, no de aquí.",
+      "search_ph": "Nombre, ID de gobernador o cuenta…",
+      "col_member": "Miembro",
+      "col_role": "Rol",
+      "col_identity": "Cuenta",
+      "col_synced": "Última sincronización",
+      "col_source": "Origen",
+      "unknown_member": "Sin cuenta reclamada",
+      "never_synced": "Nunca",
+      "none": "Nadie coincide.",
+      "error": "No se pudo leer la colección de roles — se requieren derechos de liderazgo.",
+      "limits_title": "Lo que esta lista no muestra",
+      "note_signin": "Solo aparecen quienes han iniciado sesión al menos una vez. Quien tiene el rol en Discord pero nunca ha abierto la app no tiene línea.",
+      "note_sync": "El rol se fija al iniciar sesión. Un cambio en Discord se aplica en la siguiente sincronización de esa persona — mira «Última sincronización» antes de preocuparte por una línea.",
+      "note_env": "Admin y Rey también pueden fijarse por variable de entorno. Nada registra el motivo: un Rey fijado se ve igual que un Rey de Discord.",
+      "note_ladder": "La escala, de mayor a menor: Admin fijado, Rey fijado, Rey de Discord, Oficial de Discord, Guerrero de Discord. Gana la primera coincidencia.",
+      "others_summary": "No listados: {{warriors}} Guerrero(s) y {{guests}} Invitado(s)."
+    }
   },
   "kvk_race": {
     "page_subtitle": "Carrera por la estrella — duelo de campos, reinos y evolución",

@@ -250,6 +250,13 @@
   .v2-pill.dead      { color: var(--rating-dead);      background: var(--rating-dead-bg);      border-color: color-mix(in srgb, var(--rating-dead) 30%, transparent); }
   .v2-pill.neutral   { color: var(--text-secondary);   background: var(--border-flat);         border-color: color-mix(in srgb, var(--text-meta) 30%, transparent); }
 
+  /* Pastilles de RÔLE (vue des droits, /admin). Famille distincte des pastilles
+     de notation KvK ci-dessus : « Officier » n'est pas un verdict, et réutiliser
+     `good` ou `improve` pour un rôle ferait lire une hiérarchie de mérite là où
+     il n'y a qu'une hiérarchie de droits. L'Officier reste `neutral`. */
+  .v2-pill.role-admin { color: var(--indigo);  background: color-mix(in srgb, var(--indigo) 14%, transparent);  border-color: color-mix(in srgb, var(--indigo) 35%, transparent); }
+  .v2-pill.role-king  { color: var(--warning); background: color-mix(in srgb, var(--warning) 14%, transparent); border-color: color-mix(in srgb, var(--warning) 35%, transparent); }
+
   /* v2 — onglets (actif = gradient accent) */
   .v2-tab {
     display: inline-flex;

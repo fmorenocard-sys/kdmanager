@@ -278,7 +278,8 @@
     "type_war": "Konto wojenne",
     "type_filler": "Filler",
     "primary_badge": "Główne",
-    "set_primary": "Ustaw jako główne"
+    "set_primary": "Ustaw jako główne",
+    "role_admin": "Admin"
   },
   "datarefresh": {
     "title": "Synchronizacja danych",
@@ -388,7 +389,27 @@
     "cal_paste_desc": "Wklej wiersze z Google Sheets (po jednym: nazwa + data/godzina UTC). Zastępuje bieżącą listę.",
     "cal_paste_year": "Rok (jeśli brak w datach)",
     "cal_paste_apply": "Zastąp wklejonym",
-    "cal_paste_result": "Zaimportowano {{ok}} wydarzeń, pominięto {{skipped}} wiersz(y)."
+    "cal_paste_result": "Zaimportowano {{ok}} wydarzeń, pominięto {{skipped}} wiersz(y).",
+    "rail_access": "Access & roles",
+    "access": {
+      "desc": "Who currently holds Admin, King or Officer rights in this kingdom. Read-only — roles are assigned from Discord, not here.",
+      "search_ph": "Name, governor ID or account…",
+      "col_member": "Member",
+      "col_role": "Role",
+      "col_identity": "Account",
+      "col_synced": "Last sync",
+      "col_source": "Source",
+      "unknown_member": "No account claimed",
+      "never_synced": "Never",
+      "none": "Nobody matches.",
+      "error": "Could not read the roles collection — leadership rights are required.",
+      "limits_title": "What this list does not show",
+      "note_signin": "Only people who have signed in at least once appear here. Someone who holds the Discord role but has never opened the app has no entry.",
+      "note_sync": "The role is frozen at sign-in. A change made on Discord applies at that person’s next sync — read the Last sync column before worrying about a line.",
+      "note_env": "Admin and King can also be pinned by environment variable. Nothing records why a role was granted, so a pinned King looks exactly like a Discord King.",
+      "note_ladder": "The ladder, strongest first: pinned Admin, pinned King, Discord King, Discord Officer, Discord Warrior. The first match wins.",
+      "others_summary": "Not listed: {{warriors}} Warrior(s) and {{guests}} Guest(s)."
+    }
   },
   "kvk_race": {
     "page_subtitle": "Wyścig o gwiazdę — pojedynek obozów, królestwa i przebieg",

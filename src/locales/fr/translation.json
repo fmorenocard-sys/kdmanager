@@ -278,7 +278,8 @@
     "type_war": "Compte de guerre",
     "type_filler": "Filler",
     "primary_badge": "Principal",
-    "set_primary": "Définir principal"
+    "set_primary": "Définir principal",
+    "role_admin": "Admin"
   },
   "datarefresh": {
     "title": "Synchro Données",
@@ -388,7 +389,27 @@
     "cal_paste_desc": "Colle tes lignes depuis Google Sheets (une par ligne : nom + date/heure UTC). Remplace la liste actuelle.",
     "cal_paste_year": "Année (si absente des dates)",
     "cal_paste_apply": "Remplacer par le collage",
-    "cal_paste_result": "{{ok}} événements importés, {{skipped}} ligne(s) ignorée(s)."
+    "cal_paste_result": "{{ok}} événements importés, {{skipped}} ligne(s) ignorée(s).",
+    "rail_access": "Accès & rôles",
+    "access": {
+      "desc": "Qui détient aujourd’hui les droits Admin, Roi ou Officier sur ce royaume. Lecture seule — les rôles viennent de Discord, pas d’ici.",
+      "search_ph": "Nom, ID de gouverneur ou compte…",
+      "col_member": "Membre",
+      "col_role": "Rôle",
+      "col_identity": "Compte",
+      "col_synced": "Dernière synchro",
+      "col_source": "Source",
+      "unknown_member": "Aucun compte réclamé",
+      "never_synced": "Jamais",
+      "none": "Personne ne correspond.",
+      "error": "Lecture de la collection des rôles refusée — droits du leadership requis.",
+      "limits_title": "Ce que cette liste ne montre pas",
+      "note_signin": "Seules les personnes connectées au moins une fois figurent ici. Qui porte le rôle sur Discord sans avoir jamais ouvert l’app n’a pas de ligne.",
+      "note_sync": "Le rôle est figé à la connexion. Un changement côté Discord ne s’applique qu’à la prochaine synchro de l’intéressé — regardez « Dernière synchro » avant de vous inquiéter d’une ligne.",
+      "note_env": "Admin et Roi peuvent aussi être épinglés par variable d’environnement. Rien n’enregistre le motif : un Roi épinglé ressemble exactement à un Roi Discord.",
+      "note_ladder": "L’échelle, du plus fort au plus faible : Admin épinglé, Roi épinglé, Roi Discord, Officier Discord, Guerrier Discord. La première correspondance l’emporte.",
+      "others_summary": "Non listés : {{warriors}} Guerrier(s) et {{guests}} Invité(s)."
+    }
   },
   "kvk_race": {
     "page_subtitle": "Course à l'étoile — duel de camps, royaumes et évolution",
