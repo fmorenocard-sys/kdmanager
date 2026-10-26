@@ -15,8 +15,9 @@ Le vrai « Could not save » du terrain, remonté par un joueur le 24/10 et rest
 - **61 tests de règles verts** (+2) : un profil sans miroir est refusé même s'il a bien réclamé ; le même profil passe dès que le miroir est posé. Le premier cas comble le trou de la fixture `WARRIOR` existante, qui portait la forme **nouvelle** et validait donc un monde que la production n'avait pas.
 - 64 tests unitaires verts, `test:render` vert, build vert. `eslint` : les 2 problèmes de `AuthContext.jsx` sont **antérieurs**, vérifié en comparant avec `HEAD`.
 
-### Reste à faire
-- **(b) Rattrapage des profils existants** sur les 4 instances, pour que le suivi du Conseil soit juste sans attendre que chaque joueur repasse. Bloqué sur l'absence d'identifiants Admin SDK (ADC non configuré) : soit `gcloud auth application-default login`, soit le script livré au Roi.
+### Added
+- **(b) Script de rattrapage livré** : `scripts/backfill-war-governor-ids.cjs`, à lancer par le Roi. **Simulation par défaut** — sans `--apply` il lit, compte et montre les changements sans rien écrire ; le projet est obligatoire, sans défaut, comme `deploy-rules.cjs` (ne jamais toucher la prod par accident). Il n'écrit que `warGovernorIds`, et seulement là où il diverge : ni `accounts`, ni `governorId`, ni `updatedAt` — le rattrapage doit rester invisible dans l'historique du joueur. La règle de calcul est recopiée à l'identique d'`applyProfile`, profils hérités compris (`governorId` seul traité comme compte de guerre).
+- **Prouvé contre l'émulateur** sur cinq profils couvrant les cas à distinguer : hérité sans `accounts[]` → `["111"]` ; multi-comptes war + filler → `["222"]`, **filler exclu** ; déjà correct → non réécrit ; miroir périmé → complété ; sans compte → ignoré. Après écriture : `accounts` intacts, `updatedAt` **jamais touché**, et un second passage écrit **0** (idempotent).
 
 
 ## v2.60 - 2026-10-26 — Vue « Accès & rôles » dans /admin
