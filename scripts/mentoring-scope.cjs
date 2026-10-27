@@ -142,9 +142,30 @@ const db = getFirestore(app, DB_NAME);
         return p ? p.name : null;
     };
 
+    // BR-031 exclut les FILLERS du périmètre, mais rien ne l'appliquait : ni
+    // `static_data/kvk` ni `static_data/kvk_filler` ne le disent (mesuré le
+    // 2026-10-27 — aucun recoupement entre les deux, alors qu'un filler était
+    // bien dans le périmètre). La seule source qui connaisse le type d'un compte
+    // est la réclamation du joueur lui-même, `user_profiles.accounts[].type`.
+    // On s'en sert pour AVERTIR, jamais pour décider : un compte non réclamé n'y
+    // figure pas, et c'est le Conseil qui tranche.
+    const fillers = new Map();
+    for (const d of (await db.collection('user_profiles').get()).docs) {
+        for (const a of (d.data().accounts || [])) {
+            if (a && a.type === 'filler' && a.governorId != null) {
+                fillers.set(String(a.governorId), d.id);
+            }
+        }
+    }
+    const fillerNote = (id) => (fillers.has(id) ? '  ⚠️  réclamé comme FILLER (BR-031 les exclut)' : '');
+
     console.log(`\n  périmètre actuel : ${actuel.length} compte(s)`);
     if (!toAdd.length && !toRemove.length) {
-        actuel.forEach((id) => console.log(`    ${id}  ${nameOf(id) || '⚠️  absent du roster'}`));
+        actuel.forEach((id) => console.log(`    ${id}  ${nameOf(id) || '⚠️  absent du roster'}${fillerNote(id)}`));
+        const dedans = actuel.filter((id) => fillers.has(id));
+        if (dedans.length) {
+            console.log(`\n  ⚠️  ${dedans.length} filler(s) dans le périmètre — BR-031 les exclut : ${dedans.join(', ')}`);
+        }
         console.log('\n  (lecture seule — utiliser --add / --remove pour modifier)\n');
         return;
     }
@@ -157,7 +178,7 @@ const db = getFirestore(app, DB_NAME);
 
     if (ajouts.length) {
         console.log('\n  à AJOUTER :');
-        ajouts.forEach((id) => console.log(`    + ${id}  ${nameOf(id) || '⚠️  INCONNU DU ROSTER'}`));
+        ajouts.forEach((id) => console.log(`    + ${id}  ${nameOf(id) || '⚠️  INCONNU DU ROSTER'}${fillerNote(id)}`));
     }
     if (retraits.length) {
         console.log('\n  à RETIRER :');

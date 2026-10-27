@@ -132,6 +132,16 @@ et les pseudos du jeu ne sont pas des clés : ils changent (`ᴱˣᵒWuKong`,
 à une capitale près (`R7R7`/`R7r7`, `ᵁᴺ乄Bツ`/`ᵁᴺ乄Bツツ`). Toute reprise
 d'une liste écrite en pseudos doit être recoupée sur les ids avant écriture.
 
+**« Fillers exclus » n'était appliqué par rien (2026-10-27).** La règle le dit
+depuis le début, mais aucune donnée ne portait le type au moment de la copie :
+ et  ne se recoupent pas du tout
+(0 compte commun), et un filler figurait pourtant dans le périmètre amorcé —
+ (169672885), que la liste principale portait sous son ancien nom.
+La seule source qui connaisse le type d'un compte est la réclamation du joueur
+(, F-025).  la lit
+désormais pour AVERTIR — jamais pour décider : un compte non réclamé n'y
+figure pas, et le Conseil reste juge.
+
 ---
 
 ## 3. Modèle de données
