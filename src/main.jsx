@@ -17,6 +17,21 @@ document.title = pageTitle
   if (favicon && BRANDING.faviconUrl) favicon.href = BRANDING.faviconUrl
 }
 
+// PWA : enregistrement du service worker, uniquement en PRODUCTION. Son rôle
+// unique est de rendre l'app installable — Chrome ne propose « Installer
+// l'application » qu'aux sites qui en déclarent un. Il ne met rien en cache
+// (voir public/sw.js), donc aucun risque de servir un build périmé.
+// Hors production on ne l'enregistre pas : un worker actif en dev masquerait le
+// rechargement à chaud et ferait perdre un temps fou à diagnostiquer.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+      // Pas bloquant : sans worker l'app marche, elle n'est juste pas installable.
+      console.warn('Service worker non enregistré (app installable indisponible) :', err)
+    })
+  })
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />

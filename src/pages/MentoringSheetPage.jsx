@@ -29,7 +29,7 @@ import { ScrollText, Users } from '../components/ui/icons';
  */
 const MentoringSheetPage = () => {
     const { t } = useTranslation();
-    const { currentUser, accounts, governorId } = useAuth();
+    const { currentUser, accounts, governorId, loading: authLoading } = useAuth();
     const { isAuthorized } = useRole();
     const { players } = useData();
     const [params, setParams] = useSearchParams();
@@ -58,15 +58,40 @@ const MentoringSheetPage = () => {
     const target = requested || governorId || myWarAccounts[0]?.governorId || null;
     const onBehalf = !!target && !myWarAccounts.some((a) => String(a.governorId) === String(target));
 
+    // Peut-il RÉELLEMENT enregistrer ? Même condition que la règle Firestore
+    // (BR-027) : le leadership, ou celui qui a réclamé ce gouverneur.
+    //
+    // Sans ce garde-fou, le formulaire s'ouvrait pour tout le monde et ne se
+    // plaignait qu'au moment d'écrire, par un « Enregistrement impossible » en
+    // bas de page. Un joueur a ainsi rempli ses 23 champs avant de l'apprendre
+    // (2026-10-27) : il avait suivi un lien `?gov=` — précisément celui que
+    // produit le bouton « Ouvrir » du suivi du Conseil, qu'un mentor lui avait
+    // transmis. Le lien est utile, il ne doit juste pas promettre une écriture
+    // que les règles refuseront.
+    const canWrite = isLeadership
+        || myWarAccounts.some((a) => String(a.governorId) === String(target));
+
     const sheet = useMentoringSheet(target);
 
     const nameOf = (gid) => (players || []).find((p) => String(p.id) === String(gid))?.name || gid;
+
+    // ⚠️ Attendre que l'authentification ait fini de charger AVANT de conclure
+    // quoi que ce soit. `onAuthStateChanged` pose `currentUser` puis va lire le
+    // profil : entre les deux, `accounts` est encore vide. Sans cette garde, un
+    // joueur parfaitement en règle verrait « réclame ton compte » le temps d'un
+    // aller-retour Firestore — et refuserait de croire le message suivant.
+    if (authLoading) {
+        return <div className="p-8 text-center text-[var(--text-meta)]">{t('common.loading')}</div>;
+    }
 
     if (!currentUser) {
         return <EmptyState icon={ScrollText} title={t('mentoring.login_required')} />;
     }
 
-    if (!target) {
+    // Aucun compte visé, ou un compte que cet utilisateur ne pourra pas écrire :
+    // même écran, même message — « réclame ton compte principal d'abord ». Dire
+    // non AVANT la saisie plutôt qu'après.
+    if (!target || !canWrite) {
         return (
             <div className="space-y-6">
                 <PageHeader icon={ScrollText} title={t('mentoring.title')} subtitle={t('mentoring.subtitle')} />

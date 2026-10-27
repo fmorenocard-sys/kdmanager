@@ -1,5 +1,20 @@
 # QA Changelog
 
+## v2.64 - 2026-10-27 — La fiche dit non AVANT la saisie, et l'app devient installable
+
+### Fixed
+- **BUG-022 — un joueur pouvait remplir 23 champs avant d'apprendre qu'il n'avait pas le droit d'écrire.** Signalé par TheCrow001, capture à l'appui : formulaire complet, puis « Enregistrement impossible » en bas de page. Le diagnostic (voir plus bas) a tranché en une commande — **personne n'avait réclamé ce gouverneur**, donc `hasClaimed` était faux et la règle refusait l'écriture.
+- **Le chemin d'entrée était un lien `?gov=`** — précisément celui que produit le bouton « Ouvrir » du suivi du Conseil, qu'un mentor avait transmis au joueur. Le lien est utile ; il ne doit simplement pas promettre une écriture que les règles refuseront.
+- `MentoringSheetPage` calcule désormais `canWrite` avec **la même condition que la règle** (BR-027 : leadership, ou avoir réclamé ce gouverneur) et affiche l'écran « réclame ton compte principal d'abord » au lieu du formulaire. Aucune chaîne nouvelle : la clé existait déjà dans les 10 locales.
+- **Course de chargement attrapée avant livraison.** `onAuthStateChanged` pose `currentUser` puis va lire le profil : entre les deux, `accounts` est vide et le garde-fou aurait affiché « réclame ton compte » à un joueur parfaitement en règle. La page attend donc `loading` de `AuthContext`. Vérifié dans l'émulateur sur les deux cas : son propre compte → formulaire ; un `?gov=` non réclamé → blocage.
+
+### Added
+- **Service worker minimal, pour rendre l'app installable.** Le manifeste de v2.63 ne suffisait pas : Chrome ne propose « Installer l'application » qu'aux sites déclarant un service worker avec un gestionnaire `fetch`. **Mesuré** : `beforeinstallprompt` ne se déclenchait pas, aucun worker enregistré — ce qui explique l'absence d'option dans le menu du Roi.
+- **Il ne met RIEN en cache, délibérément.** Ce projet s'est déjà fait avoir deux fois par des assets périmés pendant les validations ; un worker qui cacherait transformerait ce désagrément en panne durable, les joueurs restant sur une version figée y compris après un correctif urgent. Seule exception : une navigation qui échoue faute de réseau reçoit une page lisible, écrite en dur dans le worker — rien n'est stocké pour autant. Enregistré en **production uniquement** (un worker actif en dev masque le rechargement à chaud).
+- **`scripts/diag-sheet-access.cjs`** — « pourquoi ce joueur ne peut-il pas enregistrer ? », répondu en mesurant. Lecture seule, il distingue les trois façons d'échouer : gouverneur non réclamé, réclamé en **filler** (le miroir ne contient que les comptes de guerre, donc l'écran s'affiche et l'écriture est refusée), ou miroir absent. Il donne aussi le rôle du compte — un Officier écrit **par son rôle**, ce qui masque le problème quand c'est le leadership qui teste.
+
+### Ouvert
+- **L'installation n'est pas confirmée sur un vrai téléphone.** Le worker est actif et tous les critères documentés sont réunis, mais `beforeinstallprompt` ne se déclenche pas dans le navigateur intégré de l'outil — qui n'est pas un juge fiable sur ce point. À vérifier sur l'appareil du Roi, **ainsi que la connexion depuis l'app installée** (cf. v2.63).
 ## v2.63 - 2026-10-27 — L'app s'installe sur l'écran d'accueil
 
 Demandé par un joueur sur Discord : « on n'a pas un moyen plus rapide que de toujours taper l'URL ? ». La réponse était non, et c'était un manque réel.
