@@ -1,5 +1,22 @@
 # QA Changelog
 
+## v2.63 - 2026-10-27 — L'app s'installe sur l'écran d'accueil
+
+Demandé par un joueur sur Discord : « on n'a pas un moyen plus rapide que de toujours taper l'URL ? ». La réponse était non, et c'était un manque réel.
+
+### Added
+- **Manifeste PWA par instance.** Un tap sur l'icône, lancement plein écran, plus de barre d'adresse ni d'URL à retaper. Avant, « Ajouter à l'écran d'accueil » existait déjà mais donnait une icône générique et rouvrait dans le navigateur — d'où l'impression que ça ne servait à rien.
+- **Construit au build, jamais figé dans `public/`.** Le titre et le favicon sont déjà par instance ; un manifeste en dur aurait affiché « Unitas 2997 » sur l'écran d'accueil d'un joueur du pilote ou de Mimoso. Il passe donc par le plugin `html-branding-meta`, qui l'émet avec le nom, le nom court et l'icône de l'instance. Vérifié sur les trois configurations : 2997 (PNG), pilote (JPEG), Mimoso (SVG, branche `sizes: "any"`).
+- **Balises iOS** (`apple-touch-icon`, `apple-mobile-web-app-capable`, titre court) : iOS n'implémente pas le manifeste pour l'écran d'accueil et aurait rouvert dans Safari sans elles. Plus `theme-color` au Slate-900 de la charte, pour que la barre système se fonde dans l'app au lancement.
+- **Icônes aux bonnes tailles, par convention.** `/logo.png` → `/logo-192.png` et `/logo-512.png` s'ils existent à côté, sinon repli sur le favicon. `public/` étant partagé par les 4 instances, le nom **dérive du logo** : chacune a donc les siennes sans configuration. Générées pour 2997 (37 Ko et 193 Ko, dimensions réelles conformes aux tailles déclarées) au lieu des **465 Ko** du logo d'origine servi tel quel pour un rendu en 192 px.
+- `VITE_PWA_ICON_URL` et `VITE_APP_SHORT_NAME` documentés dans `.env.example`, avec l'avertissement qui compte : **iOS ignore le SVG** pour l'icône d'accueil, donc une instance au logo SVG (arcelia, mimoso) doit fournir un PNG carré sous peine d'afficher une capture de page.
+
+### Verified
+- Build des 3 variantes, manifeste émis et servi en `application/manifest+json`, `start_url` résolu à la racine, balises présentes dans le `<head>`.
+- Icônes contrôlées **dans le navigateur, pixel près** : 192×192 pour 37 Ko et 512×512 pour 193 Ko, les tailles déclarées correspondant aux dimensions réelles. Le repli du pilote (pas d'icônes dédiées) pointe bien sur son propre logo.
+
+### Ouvert — à tester avant toute annonce
+- **La connexion depuis l'app installée, sur iPhone, n'est pas vérifiée.** En mode `standalone`, une authentification qui sort du domaine (Discord OAuth, Google) s'ouvre dans Safari, et la session peut atterrir dans un stockage différent de celui de l'app installée. Android passe par un onglet personnalisé et ne pose normalement pas ce problème. **À essayer sur un iPhone avant de dire au royaume d'installer l'app** ; si ça coince, la bascule vers `display: "minimal-ui"` est une ligne.
 ## v2.62 - 2026-10-26 — Périmètre de mentorat : 41 → 43, et il se curate
 
 ### Changed

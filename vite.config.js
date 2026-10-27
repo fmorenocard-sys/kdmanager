@@ -1,6 +1,8 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { execSync } from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
 
 // Métadonnées de build (branche / commit / date), résolues au BUILD via git, pour
 // pouvoir lire « quelle version est déployée » directement dans l'app (footer).
@@ -50,17 +52,103 @@ export default defineConfig(({ mode }) => {
     `<meta name="twitter:image" content="${ogImage}" />`,
   ].join('\n    ')
 
+  // ── Manifeste PWA (« Ajouter à l'écran d'accueil ») ────────────────────────
+  // Demandé par un joueur : « on n'a pas plus rapide que de taper l'URL ? ».
+  // Sans manifeste, l'ajout à l'écran d'accueil donne une icône générique et
+  // rouvre dans le navigateur, barre d'adresse comprise — d'où l'impression que
+  // ça ne sert à rien. Avec, c'est une icône du royaume et un lancement plein
+  // écran.
+  //
+  // Il est construit ICI, au build, et PAS posé en dur dans `public/` : le titre
+  // et le favicon sont déjà par instance (voir plus haut), et un manifeste figé
+  // afficherait « Unitas 2997 » sur l'écran d'accueil d'un joueur du pilote ou
+  // de Mimoso. Même famille d'erreur que l'incident cross-tenant d'août.
+  //
+  // L'icône suit `VITE_PWA_ICON_URL`, sinon le favicon de l'instance. Les
+  // tailles déclarées sont indicatives : les navigateurs redimensionnent une
+  // source plus grande. Une instance au logo SVG gagne à fournir un PNG carré
+  // (iOS ignore le SVG pour l'icône d'accueil — voir .env.example).
+  // Convention avant configuration : si l'instance a déposé des icônes aux bonnes
+  // tailles à côté de son logo (`/logo.png` -> `/logo-192.png`, `/logo-512.png`),
+  // on les prend. Sinon on retombe sur le favicon, qui marche mais fait souvent
+  // plusieurs centaines de Ko pour un rendu en 192 px. `public/` étant partagé
+  // par les 4 instances, le nom DÉRIVE du logo : chacune a donc les siennes.
+  const sizedIcon = (size) => {
+    const m = /^(.*)\.(png|jpe?g|svg|webp)(\?.*)?$/i.exec(faviconUrl)
+    if (!m) return null
+    const candidate = `${m[1]}-${size}.png`
+    return fs.existsSync(path.join(process.cwd(), 'public', candidate.replace(/^\//, ''))) ? candidate : null
+  }
+  const icon192 = sizedIcon(192)
+  const icon512 = sizedIcon(512)
+  const pwaIcon = env.VITE_PWA_ICON_URL || icon512 || icon192 || faviconUrl
+  const isSvgIcon = /\.svg(\?|$)/i.test(pwaIcon)
+  const iconType = isSvgIcon ? 'image/svg+xml' : (/\.jpe?g(\?|$)/i.test(pwaIcon) ? 'image/jpeg' : 'image/png')
+  const manifest = {
+    name: title,
+    short_name: env.VITE_APP_SHORT_NAME || kingdomName,
+    description,
+    // Relatifs : l'app est servie à la racine de chaque instance, et `base: './'`
+    // suppose déjà des chemins relatifs. HashRouter met sa route après le `#`,
+    // donc la racine suffit comme point d'entrée.
+    start_url: '.',
+    scope: './',
+    display: 'standalone',
+    orientation: 'portrait-primary',
+    // Slate-900 : la couleur de fond réelle de l'app (--background), pour que la
+    // barre système se fonde dedans au lancement au lieu de clignoter en blanc.
+    theme_color: '#0f172a',
+    background_color: '#0f172a',
+    icons: isSvgIcon
+      ? [{ src: pwaIcon, sizes: 'any', type: iconType, purpose: 'any' }]
+      : [
+        { src: icon192 || pwaIcon, sizes: '192x192', type: 'image/png', purpose: 'any' },
+        { src: icon512 || pwaIcon, sizes: '512x512', type: iconType, purpose: 'any' },
+      ],
+  }
+  const manifestJson = JSON.stringify(manifest, null, 2)
+
+  // iOS n'implémente pas le manifeste pour l'écran d'accueil : il lui faut ses
+  // propres balises, sous peine de rouvrir dans Safari avec la barre d'adresse.
+  const pwaTags = [
+    `<link rel="manifest" href="manifest.webmanifest" />`,
+    `<meta name="theme-color" content="#0f172a" />`,
+    `<link rel="apple-touch-icon" href="${pwaIcon}" />`,
+    `<meta name="apple-mobile-web-app-capable" content="yes" />`,
+    `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />`,
+    `<meta name="apple-mobile-web-app-title" content="${manifest.short_name}" />`,
+  ].join('\n    ')
+
   return {
     plugins: [
       react(),
       {
-        // Pose titre + favicon + Open Graph par instance, au build, dans le HTML statique.
+        // Pose titre + favicon + Open Graph + PWA par instance, au build, dans le
+        // HTML statique.
         name: 'html-branding-meta',
         transformIndexHtml(html) {
           return html
             .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
             .replace(/(<link rel="icon"[^>]*href=")[^"]*(")/, `$1${faviconUrl}$2`)
-            .replace('</head>', `    ${metaTags}\n  </head>`)
+            .replace('</head>', `    ${metaTags}\n    ${pwaTags}\n  </head>`)
+        },
+        // Le manifeste est ÉMIS, pas posé dans `public/` : son contenu dépend de
+        // l'instance (cf. sa construction plus haut).
+        generateBundle() {
+          this.emitFile({ type: 'asset', fileName: 'manifest.webmanifest', source: manifestJson })
+        },
+        // `generateBundle` ne tourne qu'au build : sans ça, `npm run dev` servirait
+        // un 404 sur le manifeste et on ne pourrait pas tester l'installation en
+        // local.
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url && req.url.split('?')[0].endsWith('/manifest.webmanifest')) {
+              res.setHeader('Content-Type', 'application/manifest+json')
+              res.end(manifestJson)
+              return
+            }
+            next()
+          })
         },
       },
     ],
