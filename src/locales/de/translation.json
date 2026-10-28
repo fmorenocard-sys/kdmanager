@@ -798,8 +798,6 @@
     "col_updated": "Aktualisiert",
     "open_sheet": "Öffnen",
     "out_of_scope": "nicht im Programm",
-    "saved_title": "Steckbrief gespeichert",
-    "saved_continue": "Weiter",
-    "saved_back_to_sheet": "Zurück zum Steckbrief"
+    "saved_title": "Steckbrief gespeichert"
   }
 }

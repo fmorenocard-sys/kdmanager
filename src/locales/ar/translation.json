@@ -798,8 +798,6 @@
     "col_updated": "آخر تحديث",
     "open_sheet": "فتح",
     "out_of_scope": "خارج البرنامج",
-    "saved_title": "تم حفظ البطاقة",
-    "saved_continue": "متابعة",
-    "saved_back_to_sheet": "العودة إلى البطاقة"
+    "saved_title": "تم حفظ البطاقة"
   }
 }

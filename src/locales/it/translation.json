@@ -798,8 +798,6 @@
     "col_updated": "Aggiornata",
     "open_sheet": "Apri",
     "out_of_scope": "fuori programma",
-    "saved_title": "Scheda salvata",
-    "saved_continue": "Continua",
-    "saved_back_to_sheet": "Torna alla scheda"
+    "saved_title": "Scheda salvata"
   }
 }

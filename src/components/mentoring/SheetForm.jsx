@@ -30,10 +30,6 @@ const STEPS = [
     { id: 'commanders', blocks: ['commanders', 'goal'] },
 ];
 
-/** Nombre d'étapes, pour qu'un appelant puisse rouvrir le formulaire sur la
- *  dernière sans recopier la liste — ni se désynchroniser quand elle bouge. */
-export const SHEET_STEP_COUNT = STEPS.length;
-
 // Icônes des blocs, nommées dans le schéma (qui reste pur et sans import React).
 const BLOCK_ICONS = { User, Database, Swords, Shield, Target };
 

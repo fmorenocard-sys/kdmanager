@@ -798,8 +798,6 @@
     "col_updated": "Оновлено",
     "open_sheet": "Відкрити",
     "out_of_scope": "поза програмою",
-    "saved_title": "Картку збережено",
-    "saved_continue": "Продовжити",
-    "saved_back_to_sheet": "Повернутися до картки"
+    "saved_title": "Картку збережено"
   }
 }

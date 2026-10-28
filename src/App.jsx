@@ -24,6 +24,7 @@ import MentoringSheetPage from './pages/MentoringSheetPage';
 import AdminPage from './pages/AdminPage';
 import BottomNav from './components/BottomNav';
 import ImpersonationBanner from './components/admin/ImpersonationBanner';
+import { ToastProvider } from './components/ui/Toast';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
 import ThemeToggle from './components/ui/ThemeToggle';
 
@@ -362,7 +363,12 @@ function App() {
         <RoleProvider>
           <DataProvider>
             <LangProvider>
-              <MainContent />
+              {/* Le plus intérieur : un toast doit pouvoir dire « enregistré »
+                  dans la langue courante, et survivre aux changements de route
+                  — il est monté au-dessus des `Routes`, pas dedans. */}
+              <ToastProvider>
+                <MainContent />
+              </ToastProvider>
             </LangProvider>
           </DataProvider>
         </RoleProvider>

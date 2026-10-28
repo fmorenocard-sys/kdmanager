@@ -7,11 +7,11 @@ import { useAuth } from '../context/AuthContext';
 import { useRole, ROLES } from '../context/RoleContext';
 import { useData } from '../context/DataContext';
 import { useMentoringSheet } from '../hooks/useMentoringSheet';
-import SheetForm, { SHEET_STEP_COUNT } from '../components/mentoring/SheetForm';
+import SheetForm from '../components/mentoring/SheetForm';
 import PageHeader from '../components/ui/PageHeader';
 import EmptyState from '../components/ui/EmptyState';
-import Button from '../components/ui/Button';
-import { ScrollText, Users, CheckCircle2 } from '../components/ui/icons';
+import { useToast } from '../components/ui/Toast';
+import { ScrollText, Users } from '../components/ui/icons';
 
 /**
  * MentoringSheetPage — E-010 / F-039, route `/fiche`.
@@ -35,6 +35,7 @@ const MentoringSheetPage = () => {
     const { players } = useData();
     const [params, setParams] = useSearchParams();
     const navigate = useNavigate();
+    const toast = useToast();
     const [scope, setScope] = useState([]);
 
     const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
@@ -87,28 +88,25 @@ const MentoringSheetPage = () => {
     // le changement de page EST la confirmation, et la destination affiche
     // l'état réel de la fiche (« Complète. Merci ! » sur /me). En cas d'échec on
     // reste, et le message d'erreur sous les boutons garde la main.
-    // On CONFIRME avant de partir, au lieu de compter sur le changement de page.
-    // Première version : « Terminer » naviguait directement, en se disant que
-    // changer d'écran valait confirmation. Le Roi l'a essayé et a tranché —
-    // « il manque un feedback visuel comme quoi son action a bien été menée ».
-    // C'est aussi, mot pour mot, ce que demandait la joueuse à l'origine du
-    // signalement : « I should get notification like submitted or sth, no? ».
-    // Un changement de page est ambigu : on ne sait pas s'il confirme ou s'il
-    // abandonne. Un écran qui dit « enregistrée », et qu'on quitte soi-même, ne
-    // l'est pas — et il ne peut pas passer inaperçu sur un téléphone lent.
-    const [done, setDone] = useState(null); // null | { percent }
-    // Quitter l'écran de confirmation démonte le formulaire, qui rouvrirait donc
-    // à l'étape 1 — alors qu'on vient de la dernière, et qu'on y revient
-    // justement pour corriger quelque chose.
-    const [backToLastStep, setBackToLastStep] = useState(false);
-
+    // « Terminer » : on enregistre, on CONFIRME, et on part — les trois d'un
+    // seul geste. Deux versions ont précédé celle-ci :
+    //   1. naviguer sans rien dire, en pariant que le changement de page valait
+    //      confirmation. Trop ambigu : rien n'y distingue une réussite d'un
+    //      abandon, et sur un téléphone lent ça passe inaperçu.
+    //   2. un écran de confirmation pleine page. Explicite, mais une page
+    //      entière pour quatre mots et aucune décision à prendre — et une
+    //      CINQUIÈME façon de dire « c'est fait » dans une app qui en avait
+    //      déjà quatre (`designer.md` §2.4).
+    // Le toast tient les deux bouts : il se voit, il ne coûte pas un écran, et
+    // il survit à la navigation puisqu'il est monté au-dessus des routes.
     const handleDone = async () => {
         const ok = await sheet.flush();
+        // En cas d'échec on NE navigue pas et on ne « toaste » pas : le message
+        // d'erreur sous les boutons reste à l'écran, là où on peut le relire.
         if (!ok) return;
-        setDone({ percent: sheet.progress.percent });
+        toast(t('mentoring.saved_title'));
+        navigate(isLeadership && onBehalf ? '/pilotage?tab=mentoring' : '/me');
     };
-
-    const leaveSheet = () => navigate(isLeadership && onBehalf ? '/pilotage?tab=mentoring' : '/me');
 
     const nameOf = (gid) => (players || []).find((p) => String(p.id) === String(gid))?.name || gid;
 
@@ -133,35 +131,6 @@ const MentoringSheetPage = () => {
             <div className="space-y-6">
                 <PageHeader icon={ScrollText} title={t('mentoring.title')} subtitle={t('mentoring.subtitle')} />
                 <EmptyState icon={Users} title={t('mentoring.no_account_claimed')} />
-            </div>
-        );
-    }
-
-    // Écran de confirmation. Il reprend le motif déjà employé ailleurs dans
-    // l'app (coche émeraude + `role="status"`, cf. CampaignArchiveControl) plutôt
-    // que d'introduire une quatrième façon d'annoncer un succès.
-    // Il dit l'état RÉEL : une fiche incomplète est enregistrée quand même, et
-    // on le dit, au lieu de laisser croire qu'elle est terminée.
-    if (done) {
-        const complete = done.percent === 1;
-        return (
-            <div className="space-y-6">
-                <PageHeader icon={ScrollText} title={t('mentoring.title')} subtitle={t('mentoring.subtitle')} />
-                <section className="v2-glass p-6 md:p-8 flex flex-col items-center text-center gap-4" role="status">
-                    <CheckCircle2 size={44} className="text-emerald-400" weight="duotone" />
-                    <h2 className="text-xl font-bold text-[var(--text-primary)]">{t('mentoring.saved_title')}</h2>
-                    <p className="text-sm text-[var(--text-secondary)] max-w-md">
-                        {complete
-                            ? `${t('mentoring.card_complete')} ${t('mentoring.card_done_hint')}`
-                            : t('mentoring.card_in_progress', { percent: Math.round(done.percent * 100) })}
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-3 mt-1">
-                        <Button onClick={leaveSheet}>{t('mentoring.saved_continue')}</Button>
-                        <Button variant="outline" onClick={() => { setDone(null); setBackToLastStep(true); }}>
-                            {t('mentoring.saved_back_to_sheet')}
-                        </Button>
-                    </div>
-                </section>
             </div>
         );
     }
@@ -221,7 +190,6 @@ const MentoringSheetPage = () => {
                     error={sheet.error}
                     meta={sheet.meta}
                     onDone={handleDone}
-                    initialStep={backToLastStep ? SHEET_STEP_COUNT - 1 : 0}
                 />
             )}
         </div>

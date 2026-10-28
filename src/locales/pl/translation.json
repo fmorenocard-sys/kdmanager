@@ -798,8 +798,6 @@
     "col_updated": "Zaktualizowano",
     "open_sheet": "Otwórz",
     "out_of_scope": "poza programem",
-    "saved_title": "Karta zapisana",
-    "saved_continue": "Kontynuuj",
-    "saved_back_to_sheet": "Wróć do karty"
+    "saved_title": "Karta zapisana"
   }
 }

@@ -798,8 +798,6 @@
     "col_updated": "Mise à jour",
     "open_sheet": "Ouvrir",
     "out_of_scope": "hors périmètre",
-    "saved_title": "Fiche enregistrée",
-    "saved_continue": "Continuer",
-    "saved_back_to_sheet": "Revenir à la fiche"
+    "saved_title": "Fiche enregistrée"
   }
 }

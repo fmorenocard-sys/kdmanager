@@ -1,5 +1,25 @@
 # QA Changelog
 
+## v2.67 - 2026-10-28 — Un toast, et une façon de moins de dire « c'est fait »
+
+Troisième forme en deux jours pour la confirmation de la fiche, et la bonne. Le Roi a essayé l'écran pleine page et a demandé « un composant plus adapté — peut-être un toaster au lieu d'une page quasiment vide ». L'inventaire lui a donné raison deux fois.
+
+### Added
+- **`Toast` — composant global, motif UNIQUE pour « c'est fait ».** L'app disait « ça a marché » de **quatre** façons : `alert()` natif (7 appels dans `MaintenanceTools`), ligne `message` émeraude/rouge (3 composants), texte `role="status"` discret, et l'écran de confirmation ajouté la veille. Soit exactement la prolifération que `.agent/rules/designer.md` §2.4 proscrit — et mon écran en était la cinquième.
+- Monté dans `App.jsx` **au-dessus des routes**, sur le modèle d'`ImpersonationBanner` : c'est ce qui lui permet de confirmer une action **et** de changer de page du même geste, là où la première version perdait son message en chemin.
+- Accessibilité et charte : `role="status"` + `aria-live="polite"`, disparition automatique à 4 s, **fermeture manuelle**, `inset-inline` pour que la pile bascule en arabe, dégagement des encoches par `env(safe-area-inset-*)`, animation sous `motion-safe`.
+
+### Changed
+- **L'écran de confirmation pleine page est retiré.** Une page entière pour quatre mots et aucune décision à prendre. « Terminer » enregistre, affiche le toast, et emmène sur `/me` — ou sur le suivi du Conseil pour un mentor qui saisissait au nom d'un autre.
+- Les deux boutons disparaissent avec lui : « Continuer » devient implicite, et « Revenir à la fiche » n'a plus d'objet puisqu'on ne quitte plus l'écran par une impasse. Leurs libellés sont **supprimés des 10 locales** plutôt que laissés en texte mort, et l'export `SHEET_STEP_COUNT`, qui n'existait que pour eux, est retiré.
+- **En cas d'échec, pas de toast et pas de navigation** : le message d'erreur reste sous les boutons. Un toast convient à ce qui est jetable, jamais à ce qui doit être lu et compris.
+
+### Verified
+- **Dans le navigateur, sur l'émulateur, en rôle Guerrier** : « Terminer » → toast « Fiche enregistrée » **affiché par-dessus `/me`**, donc il a bien survécu à la navigation. Mesuré sur la page d'arrivée — 56 px de haut, 88 px au-dessus du bas (dégagé de la barre de navigation mobile), entièrement dans l'écran, `aria-live="polite"`, bouton de fermeture fonctionnel, disparition automatique constatée.
+- 64 tests unitaires verts, `test:render` vert, build vert, `eslint` vert sur les 5 fichiers touchés.
+
+### Ouvert
+- **Les 7 `alert()` de `MaintenanceTools` restent.** Ils bloquent la page et ne distinguent pas un succès d'un échec ; le toast est maintenant là pour les absorber. Hors périmètre de ce lot, à faire quand le Roi le voudra.
 ## v2.66 - 2026-10-28 — Le lot mentorat parle enfin les 10 langues
 
 ### Changed
