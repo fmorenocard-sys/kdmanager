@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
@@ -33,6 +33,7 @@ const MentoringSheetPage = () => {
     const { isAuthorized } = useRole();
     const { players } = useData();
     const [params, setParams] = useSearchParams();
+    const navigate = useNavigate();
     const [scope, setScope] = useState([]);
 
     const isLeadership = isAuthorized([ROLES.KING, ROLES.OFFICER]);
@@ -72,6 +73,24 @@ const MentoringSheetPage = () => {
         || myWarAccounts.some((a) => String(a.governorId) === String(target));
 
     const sheet = useMentoringSheet(target);
+
+    // « Terminer » doit CHANGER QUELQUE CHOSE. Il appelait `flush()`, qui ne fait
+    // rien quand tout est déjà enregistré — c'est-à-dire presque toujours, la
+    // fiche s'autosauvegardant 1,5 s après la frappe. Une joueuse a cliqué
+    // quatre fois puis rechargé la page avant de demander sur Discord si elle
+    // aurait dû recevoir une confirmation (2026-10-28). Elle avait raison : un
+    // bouton ambre, portant une icône de disquette et le mot « Terminer »,
+    // promet une fin d'action ; il doit en produire une.
+    //
+    // On enregistre, on vérifie que c'est bien parti, PUIS on quitte l'écran :
+    // le changement de page EST la confirmation, et la destination affiche
+    // l'état réel de la fiche (« Complète. Merci ! » sur /me). En cas d'échec on
+    // reste, et le message d'erreur sous les boutons garde la main.
+    const handleDone = async () => {
+        const ok = await sheet.flush();
+        if (!ok) return;
+        navigate(isLeadership && onBehalf ? '/pilotage?tab=mentoring' : '/me');
+    };
 
     const nameOf = (gid) => (players || []).find((p) => String(p.id) === String(gid))?.name || gid;
 
@@ -154,7 +173,7 @@ const MentoringSheetPage = () => {
                     saving={sheet.saving}
                     error={sheet.error}
                     meta={sheet.meta}
-                    onDone={sheet.flush}
+                    onDone={handleDone}
                 />
             )}
         </div>

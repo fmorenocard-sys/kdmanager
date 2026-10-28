@@ -311,9 +311,12 @@ const SheetForm = ({ blocks, setField, progress, saving, error, meta, onDone, in
                         {t('common.next')}
                     </Button>
                 ) : (
-                    <Button onClick={onDone}>
+                    /* `disabled` pendant l'écriture : sans lui, un clic sans effet
+                       visible invite à recliquer — c'est exactement ce qui s'est
+                       passé (quatre fois, puis un rechargement de page). */
+                    <Button onClick={onDone} disabled={saving}>
                         <Save size={16} className="me-2" />
-                        {t('mentoring.finish')}
+                        {saving ? t('mentoring.saving') : t('mentoring.finish')}
                     </Button>
                 )}
                 <span className="text-xs text-[var(--text-meta)]" role="status">

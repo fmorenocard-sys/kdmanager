@@ -142,9 +142,15 @@ export function useMentoringSheet(governorId) {
             isNew.current = false;
             dirty.current = false;
             setError(null);
+            return true;
         } catch (err) {
             console.error('[useMentoringSheet] sauvegarde refusée', err);
             setError(err);
+            // Le VERDICT est RENVOYÉ, pas seulement posé dans l'état : l'appelant
+            // qui `await` une sauvegarde ne peut pas lire `error` juste après,
+            // un setState n'étant pas visible dans la même closure. Sans ça, un
+            // « Terminer » naviguerait allègrement alors que rien n'est parti.
+            return false;
         } finally {
             setSaving(false);
         }
@@ -176,11 +182,14 @@ export function useMentoringSheet(governorId) {
 
     const progress = useMemo(() => completeness(blocks), [blocks]);
 
-    // Sauvegarde immédiate à la sortie : l'autosave différé perdrait la dernière frappe.
+    // Sauvegarde immédiate à la sortie : l'autosave différé perdrait la dernière
+    // frappe. Renvoie TOUJOURS un booléen « c'est bien enregistré », y compris
+    // quand il n'y avait rien à écrire — sinon l'appelant ne peut pas distinguer
+    // « rien à faire » de « échec ».
     const flush = useCallback(() => {
         clearTimeout(timer.current);
         if (dirty.current) return persist(blocks);
-        return Promise.resolve();
+        return Promise.resolve(true);
     }, [blocks, persist]);
 
     useEffect(() => () => clearTimeout(timer.current), []);

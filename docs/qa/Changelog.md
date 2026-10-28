@@ -1,5 +1,21 @@
 # QA Changelog
 
+## v2.65 - 2026-10-28 — BUG-023 : « Terminer » fait enfin quelque chose
+
+### Fixed
+- **BUG-023 — le bouton principal de la fiche n'avait aucun effet observable.** `onDone` appelait `flush()`, qui ne fait rien quand il n'y a rien de sale — c'est-à-dire presque toujours, la fiche s'autosauvegardant 1,5 s après la frappe. Signalé par une joueuse sur Discord : « Finish button doesn't work, tried 4 times, refreshing site etc etc », puis « I should get notification like submitted or sth, no? ». Elle avait raison.
+- Le bouton promettait pourtant une fin d'action sur trois registres : **CTA ambre**, **icône de disquette**, libellé **« Terminer »**. Le seul retour était un « Enregistré » de 12 px dans le gris le plus pâle de la charte, collé à côté — un autre joueur a dû l'entourer en rouge sur une capture pour le lui expliquer.
+- Désormais : enregistrement, **vérification que l'écriture est bien partie**, puis **sortie de l'écran** — `/me` pour un joueur, le suivi du Conseil pour un mentor qui saisissait au nom d'un autre. Le changement de page EST la confirmation, et la destination affiche l'état réel de la fiche. En cas d'échec on reste sur place et le message d'erreur garde la main.
+- `persist()` et `flush()` **renvoient** désormais un booléen au lieu de seulement poser l'état : un appelant qui `await` une sauvegarde ne peut pas lire `error` juste après, un `setState` n'étant pas visible dans la même closure. Sans ça, « Terminer » aurait navigué alors que rien n'était parti.
+- Bouton **désactivé pendant l'écriture**, libellé « Enregistrement… ». Un clic sans effet visible invite à recliquer : c'est exactement ce qui s'est produit.
+
+### Verified
+- **Dans le navigateur, sur l'émulateur, en rôle Guerrier** : depuis la dernière étape, un clic sur « Terminer » mène à `#/me`, qui affiche la carte « Ma fiche de compte » avec son état. Avant, l'URL ne bougeait pas.
+
+### Ouvert — relevé dans le même audit, non traité
+- L'état d'enregistrement reste illisible (12 px, `--text-meta`) : il mériterait une vraie pastille avec icône.
+- « Terminer » reste un mot inexact puisqu'il n'y a rien à soumettre, alors que la donnée connaît déjà la complétude (`status: 'complete'`) sans jamais la célébrer.
+- Le champ « Ce que je veux améliorer » est un champ d'une ligne alors que son voisin « Ce qu'il me manque » est une zone de trois lignes — même `kind: 'text'`, la différence tenant à un `field.id === 'missing'` codé en dur. L'objectif du joueur, le champ le plus important de la fiche, s'affiche tronqué.
 ## v2.64 - 2026-10-27 — La fiche dit non AVANT la saisie, et l'app devient installable
 
 ### Fixed
