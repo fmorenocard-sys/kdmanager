@@ -1,5 +1,33 @@
 # QA Changelog
 
+## v2.70 - 2026-10-28 — UXA11Y-015 : le toast se confondait avec la page
+
+Deuxième retour du Roi sur le même composant, et le bon reproche : « the contrast of the toaster is not high enough, it doesn't stand out ». Replacé en haut à la version précédente, il restait invisible — pour une raison mesurable.
+
+### Fixed
+- **UXA11Y-015 — la surface du toast valait EXACTEMENT la couleur de la page.** `.v2-glass` pose `--surface`, soit `rgba(15,23,42,.45)` : du slate-900 à 45 % sur une page slate-900. Le mélange redonne #0f172a. **Contraste surface / page : 1,00:1.** Le composant n'était tenu que par une bordure blanche à 22 %, à **2,01:1**, sous le seuil de **3:1** que WCAG 1.4.11 exige pour la limite d'un composant d'interface.
+- **Le critère n'était pas celui que je surveillais.** Le texte était à 17,06:1 et l'est resté : il n'a jamais été en cause. Ce qui manquait, c'est la séparation figure/fond — un critère distinct, que je n'avais pas vérifié en livrant le composant.
+- **En clair, le même défaut** : surface blanche à **1,06:1** de la page. Corrigé dans le même geste.
+
+### Changed
+- **Nouveau composant `.v2-toast`**, qui remplace `.v2-glass` sur le toast : surface opaque (`--surface-solid`) et **barre sémantique de 4 px** au bord. C'est la règle que le projet applique déjà à ses StatCards (`designer.md` §5.5) — aucune invention, une convention étendue. Le verre reste ce qu'il est : bon pour une carte DANS la page, où l'œil sait déjà où regarder.
+- `border-inline-start` et non `border-left` : en arabe la barre doit passer de l'autre côté.
+- **Token `--danger` ajouté** aux deux thèmes (#f87171 / #dc2626). `designer.md` §5.1 attend une palette Primary / Neutral / Success / Warning / **Danger** ; Danger manquait, et les rouges étaient codés en dur. L'icône du toast passe de `text-red-400` / `text-emerald-400` aux tokens : ces classes Tailwind ne changent pas entre les thèmes, alors que le vert et le rouge doivent foncer en clair.
+- Token `--shadow-toast` : ombre plus profonde que celle d'une carte, puisque le toast flotte au-dessus de la page au lieu d'y être posé.
+
+### Verified
+- **Mesuré dans l'application elle-même** (émulateur, rôle Guerrier, après un vrai « Terminer »), styles calculés lus sur le nœud du toast — pas sur une maquette :
+
+  | | Sombre | Clair |
+  |---|---|---|
+  | Barre succès / page | **9,29:1** | **3,44:1** |
+  | Barre erreur / page | 6,45:1 | **4,41:1** |
+  | Surface / page | 1,22:1 | 1,10:1 |
+  | Texte / surface | 13,98:1 | 17,85:1 |
+
+  La barre franchit le seuil de 3:1 dans les deux thèmes ; c'est elle qui porte la limite du composant. La surface reste proche de la page en clair — c'est le rapport qu'ont déjà toutes les cartes du thème clair, et le composant resterait incohérent si je le traitais à part.
+- Variante erreur mesurée sur un clone hors écran, sans avoir à provoquer un échec.
+- `eslint` vert sur les fichiers touchés ; le générateur du design system rejoué, **aucune carte affectée** (elles lisent les hex du bloc `@theme`, pas les tokens `:root`).
 ## v2.69 - 2026-10-28 — Le toast remonte en haut de l'écran
 
 Un toast qu'on ne voit pas ne confirme rien. Le Roi, qui venait de valider une fiche : « this is a weird placement, I hardly was able to see it ».

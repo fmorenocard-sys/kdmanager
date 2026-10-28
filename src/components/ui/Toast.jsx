@@ -17,6 +17,9 @@ import { CheckCircle2, AlertTriangle, X } from './icons';
  * bloquante reste affichée sur la page, là où l'utilisateur peut y revenir.
  * La variante `error` sert aux échecs qu'on peut simplement retenter.
  *
+ * Son châssis n'est PAS `.v2-glass` mais `.v2-toast` (cf. `src/index.css`) :
+ * le verre se confondait avec la page, à 1,00:1 — mesuré le 2026-10-28.
+ *
  * Il survit à la navigation, puisqu'il est monté au-dessus des routes : c'est
  * ce qui permet de confirmer une action ET de changer de page du même geste.
  */
@@ -32,9 +35,12 @@ const ToastContext = createContext(() => {});
 // eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => useContext(ToastContext);
 
+// La teinte passe par les tokens et non par `text-emerald-400` /
+// `text-red-400` : ces deux-là ne changent pas entre les thèmes, alors que
+// le vert et le rouge doivent foncer en clair pour rester lisibles.
 const VARIANTES = {
-    success: { Icone: CheckCircle2, couleur: 'text-emerald-400' },
-    error: { Icone: AlertTriangle, couleur: 'text-red-400' },
+    success: { Icone: CheckCircle2, classe: 'ok', teinte: 'var(--success)' },
+    error: { Icone: AlertTriangle, classe: 'ko', teinte: 'var(--danger)' },
 };
 
 export const ToastProvider = ({ children }) => {
@@ -91,15 +97,15 @@ export const ToastProvider = ({ children }) => {
                 }}
             >
                 {toasts.map((t) => {
-                    const { Icone, couleur } = VARIANTES[t.variant] || VARIANTES.success;
+                    const { Icone, classe, teinte } = VARIANTES[t.variant] || VARIANTES.success;
                     return (
                         <div
                             key={t.id}
                             role="status"
                             aria-live="polite"
-                            className="v2-glass pointer-events-auto flex items-center gap-3 ps-4 pe-2 py-3 max-w-sm w-full md:w-auto motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2"
+                            className={`v2-toast ${classe} pointer-events-auto flex items-center gap-3 ps-4 pe-2 py-3 max-w-sm w-full md:w-auto motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2`}
                         >
-                            <Icone size={18} className={`${couleur} shrink-0`} aria-hidden="true" />
+                            <Icone size={18} className="shrink-0" style={{ color: teinte }} aria-hidden="true" />
                             <span className="text-sm font-semibold text-[var(--text-primary)] min-w-0">{t.texte}</span>
                             {/* Fermeture manuelle : un toast qui s'en va tout seul
                                 ne doit pas pour autant retenir quelqu'un qui a lu. */}

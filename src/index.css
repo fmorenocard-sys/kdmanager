@@ -80,12 +80,14 @@
   --focus-ring: #a5b4fc; /* UXA11Y-002 : contraste AA sur les fonds sombres */
   --glass-blur: 14px;
   --shadow-card: 0 20px 40px -12px rgba(0, 0, 0, .4);
+  --shadow-toast: 0 20px 40px -12px rgba(0, 0, 0, .55);
   --shadow-glow-accent: 0 4px 16px rgba(139, 92, 246, .35);
   --shadow-glow-primary: 0 4px 16px rgba(194, 65, 12, .4);
   --radius-card: 14px;
   --grad-title-neutral: linear-gradient(90deg, #fff, #94a3b8);
   --action-danger: #ef4444;
   --success: #34d399;
+  --danger: #f87171;
   --warning: #fb923c;
   --info: #22d3ee;
   --indigo: #818cf8;
@@ -117,11 +119,13 @@
   --grad-primary-hover: linear-gradient(135deg, #b45309, #9a3412);
   --grad-title: linear-gradient(90deg, #d97706, #ea580c);
   --shadow-card: 0 12px 28px -8px rgba(15, 23, 42, .12);
+  --shadow-toast: 0 12px 28px -8px rgba(15, 23, 42, .18);
   --shadow-glow-accent: 0 4px 14px rgba(139, 92, 246, .3);
   --shadow-glow-primary: 0 4px 14px rgba(194, 65, 12, .3);
   --grad-title-neutral: linear-gradient(90deg, #334155, #64748b);
   --action-danger: #dc2626;
   --success: #059669;
+  --danger: #dc2626;
   --warning: #ea580c;
   --info: #0891b2;
   --indigo: #4f46e5;
@@ -205,6 +209,34 @@
   .v2-glass.v2-amber::before {
     background: linear-gradient(160deg, rgba(251, 191, 36, .55), rgba(245, 158, 11, .16) 45%, rgba(194, 65, 12, .35));
   }
+
+  /* v2 — toast : accusé de réception éphémère.
+
+     Il n'utilise délibérément PAS `.v2-glass`. Mesuré le 2026-10-28 :
+     `--surface` vaut slate-900 à 45 %, et la page est slate-900 — le mélange
+     redonne la couleur EXACTE de la page, soit 1,00:1. Seule une bordure
+     blanche à 22 % tenait le composant, à 2,01:1, sous le seuil de 3:1 que
+     WCAG 1.4.11 demande pour la limite d'un composant d'interface. Le Roi
+     est passé à côté d'un toast qu'il attendait pourtant.
+
+     Le verre convient à une carte DANS la page, où l'œil sait déjà où
+     regarder ; un toast doit s'en détacher. D'où une surface opaque et une
+     barre sémantique de 4 px — la règle que le projet applique déjà à ses
+     StatCards (`designer.md` §5.5). La barre porte la limite (9,29:1 en
+     sombre, 3,44:1 en clair) et dit le statut sans que le fond ait à crier.
+
+     `border-inline-start` et non `border-left` : en arabe, la barre doit
+     passer de l'autre côté. */
+  .v2-toast {
+    background: var(--surface-solid);
+    border: 1px solid var(--border-flat);
+    border-inline-start: 4px solid var(--text-meta);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-toast);
+  }
+
+  .v2-toast.ok { border-inline-start-color: var(--success); }
+  .v2-toast.ko { border-inline-start-color: var(--danger); }
 
   /* v2 — boutons gradient */
   .btn-grad-primary {
