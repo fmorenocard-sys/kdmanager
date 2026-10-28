@@ -797,6 +797,9 @@
     "col_entered_by": "Rellenada por",
     "col_updated": "Actualizada",
     "open_sheet": "Abrir",
-    "out_of_scope": "fuera de ámbito"
+    "out_of_scope": "fuera de ámbito",
+    "saved_title": "Ficha guardada",
+    "saved_continue": "Continuar",
+    "saved_back_to_sheet": "Volver a la ficha"
   }
 }

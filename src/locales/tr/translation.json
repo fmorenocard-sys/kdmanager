@@ -797,6 +797,9 @@
     "col_entered_by": "Filled in by",
     "col_updated": "Updated",
     "open_sheet": "Open",
-    "out_of_scope": "out of scope"
+    "out_of_scope": "out of scope",
+    "saved_title": "Sheet saved",
+    "saved_continue": "Continue",
+    "saved_back_to_sheet": "Back to the sheet"
   }
 }

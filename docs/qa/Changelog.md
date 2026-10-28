@@ -9,8 +9,15 @@
 - `persist()` et `flush()` **renvoient** désormais un booléen au lieu de seulement poser l'état : un appelant qui `await` une sauvegarde ne peut pas lire `error` juste après, un `setState` n'étant pas visible dans la même closure. Sans ça, « Terminer » aurait navigué alors que rien n'était parti.
 - Bouton **désactivé pendant l'écriture**, libellé « Enregistrement… ». Un clic sans effet visible invite à recliquer : c'est exactement ce qui s'est produit.
 
+### Changed — après essai du Roi sur staging
+- **Le changement de page ne suffisait pas comme confirmation.** Première version : « Terminer » enregistrait puis quittait l'écran, en pariant que la nouvelle page valait accusé de réception. Essayé, puis tranché : « il manque un feedback visuel comme quoi son action a bien été menée ». C'est aussi, mot pour mot, ce que demandait la joueuse — « I should get notification like submitted or sth, no? ». Une navigation est ambiguë : rien n'y distingue une réussite d'un abandon, et sur un téléphone lent elle peut passer inaperçue.
+- **Écran de confirmation explicite** : coche émeraude, « Fiche enregistrée », et l'état RÉEL en dessous — « Complète. Merci ! » à 23/23, sinon le pourcentage, parce qu'une fiche incomplète est enregistrée quand même et qu'il ne faut pas laisser croire qu'elle est terminée. Deux sorties : **Continuer** (vers `/me`, ou le suivi du Conseil pour un mentor) et **Revenir à la fiche**.
+- Il **réemploie le motif déjà présent** dans l'app (coche émeraude + `role="status"`, cf. `CampaignArchiveControl`) au lieu d'introduire une quatrième façon d'annoncer un succès — `designer.md` §2.4.
+- **Retour à la bonne étape.** Quitter la confirmation démonte le formulaire, qui rouvrait donc à l'étape 1 alors qu'on revient de la dernière, justement pour corriger quelque chose. `SHEET_STEP_COUNT` est exporté pour que la page rouvre sur la dernière sans recopier la liste des étapes.
+- 3 clés nouvelles dans les **10 locales** (FR/EN/ES rédigés, 7 en repli EN) ; le corps du message réutilise des libellés existants.
+
 ### Verified
-- **Dans le navigateur, sur l'émulateur, en rôle Guerrier** : depuis la dernière étape, un clic sur « Terminer » mène à `#/me`, qui affiche la carte « Ma fiche de compte » avec son état. Avant, l'URL ne bougeait pas.
+- **Dans le navigateur, sur l'émulateur, en rôle Guerrier**, les trois chemins : « Terminer » → écran de confirmation (coche, titre, état) ; **Continuer** → `#/me` ; **Revenir à la fiche** → formulaire rouvert **sur l'étape 4**, bouton « Terminer » présent. Avant tout ça, l'URL ne bougeait pas d'un caractère.
 
 ### Ouvert — relevé dans le même audit, non traité
 - L'état d'enregistrement reste illisible (12 px, `--text-meta`) : il mériterait une vraie pastille avec icône.
