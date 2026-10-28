@@ -66,17 +66,28 @@ export const ToastProvider = ({ children }) => {
     return (
         <ToastContext.Provider value={valeur}>
             {children}
-            {/* Bas de l'écran, centré en mobile et aligné à la fin en desktop.
+            {/* EN HAUT, CENTRÉ. La première version était en bas à droite — la
+                convention des notifications de bureau — et le Roi est passé à
+                côté : « this is a weird placement, I hardly was able to see it »
+                (2026-10-28). L'erreur était d'avoir raisonné en notification
+                alors que ce toast confirme une action qui CHANGE DE PAGE : au
+                moment où il s'affiche, le regard est en haut de l'écran
+                d'arrivée, pas dans le coin opposé d'un écran de 1535 px.
+
+                Centré plutôt qu’aligné à la fin, pour que la distance au regard
+                ne dépende pas de la largeur de l'écran. Sous l'en-tête collant
+                (`h-16`, 64 px) pour ne pas le masquer, et au-dessus de la barre
+                de navigation mobile, qu’un placement bas venait frôler.
+
                 `inset-inline` plutôt que left/right : en arabe, la pile doit
                 basculer de l'autre côté. Les encoches sont dégagées par
-                `env(safe-area-inset-*)`, sinon la pile passe sous la barre
-                système d'un téléphone. */}
+                `env(safe-area-inset-*)`. */}
             <div
-                className="fixed z-[60] flex flex-col gap-2 items-center md:items-end pointer-events-none"
+                className="fixed z-[60] flex flex-col gap-2 items-center pointer-events-none"
                 style={{
                     insetInlineStart: 'max(16px, env(safe-area-inset-left, 0px))',
                     insetInlineEnd: 'max(16px, env(safe-area-inset-right, 0px))',
-                    bottom: 'calc(88px + env(safe-area-inset-bottom, 0px))',
+                    top: 'calc(64px + 12px + env(safe-area-inset-top, 0px))',
                 }}
             >
                 {toasts.map((t) => {
@@ -86,7 +97,7 @@ export const ToastProvider = ({ children }) => {
                             key={t.id}
                             role="status"
                             aria-live="polite"
-                            className="v2-glass pointer-events-auto flex items-center gap-3 ps-4 pe-2 py-3 max-w-sm w-full md:w-auto motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2"
+                            className="v2-glass pointer-events-auto flex items-center gap-3 ps-4 pe-2 py-3 max-w-sm w-full md:w-auto motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2"
                         >
                             <Icone size={18} className={`${couleur} shrink-0`} aria-hidden="true" />
                             <span className="text-sm font-semibold text-[var(--text-primary)] min-w-0">{t.texte}</span>

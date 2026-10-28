@@ -1,5 +1,19 @@
 # QA Changelog
 
+## v2.69 - 2026-10-28 — Le toast remonte en haut de l'écran
+
+Un toast qu'on ne voit pas ne confirme rien. Le Roi, qui venait de valider une fiche : « this is a weird placement, I hardly was able to see it ».
+
+### Changed
+- **La pile de toasts passe du coin bas-droite au HAUT, centrée.** J'avais appliqué la convention des notifications de bureau sans voir qu'elle ne s'appliquait pas ici : ce toast confirme une action qui **change de page**. Au moment où il apparaît, le regard est en haut de l'écran d'arrivée — sur un écran de 1535 px, le coin opposé est à peu près le pire endroit possible.
+- **Centré plutôt qu'aligné à la fin**, pour que la distance au regard ne dépende pas de la largeur de l'écran — c'est exactement ce qui avait fait rater le message.
+- Position : `top: 64px (hauteur de l'en-tête collant) + 12px`, plus `env(safe-area-inset-top)`. L'en-tête reste lisible, et la pile ne frôle plus la barre de navigation mobile comme le faisait l'ancrage bas. `inset-inline` et le dégagement des encoches sont conservés ; l'animation entre désormais par le haut (`slide-in-from-top-2`).
+
+### Verified
+- **Mesuré dans le navigateur, sur l'émulateur, en rôle Guerrier** (`SEED_ROLE=Warrior`), après un vrai « Terminer » :
+  - **1440 × 900** — toast à 76 px du haut, sous un en-tête qui finit à 64 px, centré sur la zone de contenu, entièrement dans l'écran.
+  - **375 × 812** — toast à 76 px du haut, 343 px de large, entièrement dans l'écran, **aucun débordement horizontal** (`scrollWidth` = 375). Il recouvre le titre « Moi » pendant ses 4 s : un titre, aucune commande.
+- `test:render` vert, 64 tests unitaires verts, build vert, `eslint` vert sur `Toast.jsx`.
 ## v2.68 - 2026-10-28 — BUG-024 : un déploiement mettait jusqu'à une heure à atteindre les joueurs
 
 ### Fixed
