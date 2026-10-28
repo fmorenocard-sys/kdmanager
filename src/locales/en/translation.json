@@ -775,7 +775,7 @@
       "commanders": {
         "equipmentLegendary": "Legendary pieces",
         "equipmentFullSets": "Complete sets",
-        "equipmentInProgress": "Pieces in progress",
+        "equipmentInProgress": "Equipment being upgraded",
         "missing": "What I am missing",
         "equipmentSpecialTalents": "Special-talent pieces"
       },

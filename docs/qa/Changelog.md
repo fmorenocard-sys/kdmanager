@@ -1,5 +1,18 @@
 # QA Changelog
 
+## v2.66 - 2026-10-28 — Le lot mentorat parle enfin les 10 langues
+
+### Changed
+- **Fin du repli anglais assumé.** Le lot mentorat et la vue « Accès & rôles » étaient livrés en anglais pour 7 des 10 locales, par choix explicite au moment de les écrire. **95 clés × 7 langues = 665 chaînes traduites** (de, tr, uk, ar, pl, vi, it), plus l'étiquette d'équipement ci-dessous dans les 3 autres : **668 au total**.
+- **« Pieces in progress » devient « Équipements en cours d'amélioration »** (EN : *Equipment being upgraded*). Demandé par le Roi après un retour de terrain : le libellé d'origine ne disait pas de quoi il parlait — des équipements sur lesquels le joueur travaille. Option retenue parmi trois propositions.
+
+### Verified
+- **Contrôle automatique sur les 95 clés × 10 locales** : aucune clé manquante, et **aucun placeholder cassé** (`{{percent}}`, `{{count}}`, `{{role}}`, `{{name}}`, `{{done}}`, `{{total}}`, `{{warriors}}`, `{{guests}}` comparés un à un entre l'anglais et chaque traduction). C'est le risque principal d'une traduction en masse : une accolade perdue affiche la variable brute au joueur.
+- Les quelques chaînes restées identiques à l'anglais sont des mots communs, vérifiés un par un : « Mentoring » (de, pl, it), « Admin », « Source », « Stocks », « Governor ID ».
+- 64 tests unitaires verts, dont les trois qui contrôlent la couverture i18n du schéma ; `test:render` vert ; build vert.
+
+### Ouvert
+- **Ces traductions sont les miennes, pas celles de locuteurs natifs.** Elles respectent le vocabulaire du jeu là où je le connais (Macht, lực chiến, قوة), mais l'arabe et le vietnamien mériteraient une relecture par quelqu'un du royaume. Le fichier à corriger est `src/locales/<langue>/translation.json`, bloc `mentoring`.
 ## v2.65 - 2026-10-28 — BUG-023 : « Terminer » fait enfin quelque chose
 
 ### Fixed
