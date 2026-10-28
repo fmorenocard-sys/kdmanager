@@ -1,5 +1,31 @@
 # QA Changelog
 
+## v2.72 - 2026-10-28 — PWA : l'icône iOS était transparente, et l'app ne proposait rien
+
+Le Roi, après le déploiement : « j'ai toujours rien pour télécharger la page ou l'icône ni sur Brave ni sur Safari sur mon iPhone ».
+
+### Vérifié d’abord
+- **L'installation n'était pas cassée.** Mesuré sur la prod : manifeste valide servi en `application/manifest+json`, `start_url`, `scope`, `display: standalone`, icônes 192 et 512 en 200, service worker **activé et contrôlant la page**, HTTPS. Un Chromium installe l'app sans rien changer.
+- Le problème n'était donc pas technique mais **de parcours**, plus un vrai défaut d'icône.
+
+### Fixed
+- **`logo-192.png` et `logo-512.png` sont en RVB + ALPHA.** iOS peint en **noir** toute zone transparente d'un `apple-touch-icon` : même réussi, l'ajout à l'écran d'accueil donnait une icône sur fond noir. La balise pointait en plus un 512×512 là où iOS attend 180×180.
+- Nouveau `scripts/make-apple-icon.cjs` : aplatit un logo sur le fond de marque et sort un PNG **180×180, type couleur 2 (opaque)**. Sans dépendance nouvelle — `zlib` suffit pour un PNG 8 bits non entrelacé ; couleurs prémultipliées par l'alpha, sinon les bords du logo dessinent un halo.
+- `vite.config.js` sert `sizedIcon(180)` pour `apple-touch-icon`, avec `sizes="180x180"`. Le nom DÉRIVE du logo (`logo.png` → `logo-180.png`), comme les tailles 192/512 : **chaque instance a la sienne**, et une instance qui n'a pas généré la sienne retombe sur l'ancien comportement.
+
+### Added
+- **`InstallCard` sur `/me`** — l'app ne proposait rien, nulle part. Or **iOS n'affiche jamais de bouton d'installation** : le seul chemin est Partager → « Sur l'écran d'accueil », et seul Safari le propose de façon fiable (la demande traîne sur le forum de Brave depuis 2023). Sur Chromium, le bouton existe mais dans un menu que personne n'ouvre.
+- La carte capte `beforeinstallprompt` et offre un **vrai bouton** là où c'est possible ; ailleurs elle donne les **trois étapes exactes**, avec le glyphe Partager dessiné. Elle se cache si l'app tourne déjà en installé (`display-mode: standalone` **et** `navigator.standalone`, la variante iOS), et peut être écartée.
+- `ios_step3` cite le libellé RÉEL du menu iOS dans chacune des 10 langues : un joueur cherche les mots qu'il a sous les yeux, pas une traduction du concept.
+
+### Verified
+- Icône servie sur staging : **180×180, type couleur 2 (opaque)**, balise `sizes="180x180"` présente.
+- Carte mesurée **dans l'application, en 375 px, en se faisant passer pour un iPhone** (UA substituée avant rendu) : affichée, 343 px de large, **aucun débordement horizontal**, les trois étapes lisibles. Espaces insécables dans les guillemets français — sans elles le chevron fermant partait seul à la ligne.
+- `eslint` vert sur les fichiers touchés, `test:render` vert, build vert.
+
+### Ouvert
+- **Les 3 autres instances n'ont pas d'icône 180.** Leur logo n'est pas toujours un PNG (`logo-default.svg`, `logo-3341.jpg`) ; il leur faut une source carrée en PNG avant de lancer le script. Elles gardent l'ancien comportement en attendant.
+- Libellés iOS en ukrainien, vietnamien et arabe : traduits au mieux, à faire relire par un locuteur natif.
 ## v2.71 - 2026-10-28 — BUG-024 (suite) : la règle ne couvrait pas la racine
 
 ### Fixed

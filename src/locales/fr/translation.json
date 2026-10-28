@@ -690,6 +690,15 @@
     "declare": {
       "edit": "Modifier ma déclaration",
       "collapse": "Réduire"
+    },
+    "install": {
+      "title": "Installer l'application",
+      "subtitle": "Pour l'ouvrir depuis l'écran d'accueil, en plein écran, sans retaper l'adresse.",
+      "button": "Installer",
+      "ios_step1": "Ouvre cette page dans Safari.",
+      "ios_step2": "Touche le bouton Partager",
+      "ios_step3": "Choisis « Sur l’écran d’accueil », puis Ajouter.",
+      "dismiss": "Plus tard"
     }
   },
   "pilotage": {

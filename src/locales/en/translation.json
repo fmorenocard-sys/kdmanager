@@ -690,6 +690,15 @@
     "declare": {
       "edit": "Edit my declaration",
       "collapse": "Collapse"
+    },
+    "install": {
+      "title": "Install the app",
+      "subtitle": "Open it from your home screen, full screen, without typing the address again.",
+      "button": "Install",
+      "ios_step1": "Open this page in Safari.",
+      "ios_step2": "Tap the Share button",
+      "ios_step3": "Choose “Add to Home Screen”, then Add.",
+      "dismiss": "Later"
     }
   },
   "pilotage": {

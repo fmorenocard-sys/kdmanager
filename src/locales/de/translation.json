@@ -690,6 +690,15 @@
     "declare": {
       "edit": "Meine Meldung bearbeiten",
       "collapse": "Einklappen"
+    },
+    "install": {
+      "title": "App installieren",
+      "subtitle": "Vom Home-Bildschirm aus öffnen, im Vollbild, ohne die Adresse erneut einzugeben.",
+      "button": "Installieren",
+      "ios_step1": "Öffne diese Seite in Safari.",
+      "ios_step2": "Tippe auf die Teilen-Taste",
+      "ios_step3": "Wähle „Zum Home-Bildschirm“, dann Hinzufügen.",
+      "dismiss": "Später"
     }
   },
   "pilotage": {

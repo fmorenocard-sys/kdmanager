@@ -690,6 +690,15 @@
     "declare": {
       "edit": "Modifica la mia dichiarazione",
       "collapse": "Comprimi"
+    },
+    "install": {
+      "title": "Installa l'app",
+      "subtitle": "Aprila dalla schermata Home, a tutto schermo, senza riscrivere l'indirizzo.",
+      "button": "Installa",
+      "ios_step1": "Apri questa pagina in Safari.",
+      "ios_step2": "Tocca il pulsante Condividi",
+      "ios_step3": "Scegli «Aggiungi a Home», poi Aggiungi.",
+      "dismiss": "Più tardi"
     }
   },
   "pilotage": {

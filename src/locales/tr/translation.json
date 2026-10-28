@@ -690,6 +690,15 @@
     "declare": {
       "edit": "Bildirimimi düzenle",
       "collapse": "Daralt"
+    },
+    "install": {
+      "title": "Uygulamayı yükle",
+      "subtitle": "Ana ekrandan, tam ekran olarak aç; adresi yeniden yazmana gerek kalmaz.",
+      "button": "Yükle",
+      "ios_step1": "Bu sayfayı Safari'de aç.",
+      "ios_step2": "Paylaş düğmesine dokun",
+      "ios_step3": "“Ana Ekrana Ekle”’yi seç, sonra Ekle.",
+      "dismiss": "Daha sonra"
     }
   },
   "pilotage": {

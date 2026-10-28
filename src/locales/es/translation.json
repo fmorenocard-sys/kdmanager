@@ -690,6 +690,15 @@
     "declare": {
       "edit": "Editar mi declaración",
       "collapse": "Contraer"
+    },
+    "install": {
+      "title": "Instalar la aplicación",
+      "subtitle": "Ábrela desde la pantalla de inicio, a pantalla completa, sin volver a escribir la dirección.",
+      "button": "Instalar",
+      "ios_step1": "Abre esta página en Safari.",
+      "ios_step2": "Toca el botón Compartir",
+      "ios_step3": "Elige «Añadir a pantalla de inicio» y luego Añadir.",
+      "dismiss": "Más tarde"
     }
   },
   "pilotage": {

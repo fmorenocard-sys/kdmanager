@@ -17,6 +17,7 @@ import ErrorCard from '../components/me/ErrorCard';
 import OffCampaignCard from '../components/me/OffCampaignCard';
 import MyGoalCard from '../components/me/MyGoalCard';
 import MySheetCard from '../components/me/MySheetCard';
+import InstallCard from '../components/me/InstallCard';
 import NoGoalPublishedCard from '../components/me/NoGoalPublishedCard';
 import MyStatsCard from '../components/me/MyStatsCard';
 import MyAccountsSummary from '../components/me/MyAccountsSummary';
@@ -243,6 +244,11 @@ const MeLandingPage = () => {
                     campagne — elle se remplit entre deux KvK, pas pendant. Invisible
                     pour qui n'a pas réclamé de compte principal. */}
                 <MySheetCard />
+
+                {/* « Mets l'app sur ton écran d'accueil ». Ne s'affiche que là où
+                    il y a vraiment quelque chose à faire, et jamais une fois
+                    l'app installée — elle s'efface d'elle-même. */}
+                <InstallCard />
 
                 {configLoading ? (
                     <LoadingSkeleton />

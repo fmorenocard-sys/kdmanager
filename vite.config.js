@@ -81,6 +81,12 @@ export default defineConfig(({ mode }) => {
   }
   const icon192 = sizedIcon(192)
   const icon512 = sizedIcon(512)
+  // 180 px, et OPAQUE : c'est la taille qu'iOS attend pour l'écran d'accueil, et
+  // il peint en NOIR toute zone transparente d'un `apple-touch-icon`. Nos logos
+  // sont en RVB + alpha (constaté le 2026-10-28 sur la prod de 2997), donc on
+  // sert un aplat de marque, produit par `node scripts/make-apple-icon.cjs`.
+  // Une instance qui n'a pas généré la sienne retombe sur `pwaIcon` comme avant.
+  const icon180 = sizedIcon(180)
   const pwaIcon = env.VITE_PWA_ICON_URL || icon512 || icon192 || faviconUrl
   const isSvgIcon = /\.svg(\?|$)/i.test(pwaIcon)
   const iconType = isSvgIcon ? 'image/svg+xml' : (/\.jpe?g(\?|$)/i.test(pwaIcon) ? 'image/jpeg' : 'image/png')
@@ -113,7 +119,7 @@ export default defineConfig(({ mode }) => {
   const pwaTags = [
     `<link rel="manifest" href="manifest.webmanifest" />`,
     `<meta name="theme-color" content="#0f172a" />`,
-    `<link rel="apple-touch-icon" href="${pwaIcon}" />`,
+    `<link rel="apple-touch-icon" sizes="180x180" href="${env.VITE_PWA_ICON_URL || icon180 || pwaIcon}" />`,
     `<meta name="apple-mobile-web-app-capable" content="yes" />`,
     `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />`,
     `<meta name="apple-mobile-web-app-title" content="${manifest.short_name}" />`,
