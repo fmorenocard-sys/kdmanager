@@ -1,5 +1,20 @@
 # QA Changelog
 
+## v2.68 - 2026-10-28 — BUG-024 : un déploiement mettait jusqu'à une heure à atteindre les joueurs
+
+### Fixed
+- **BUG-024 — `index.html` était servi avec `Cache-Control: max-age=3600`.** Aucun en-tête n'était configuré dans `firebase.json`, donc Firebase appliquait son défaut d'une heure **à tout**, y compris au fichier d'entrée. Un joueur ayant ouvert l'app dans l'heure gardait l'ancien `index.html`, qui pointe vers l'ancien bundle hashé : **il voyait la version précédente, et un rechargement normal n'y changeait rien.**
+- **Découvert en cherchant pourquoi le toast n'apparaissait pas** sur staging. Le bundle déployé le contenait bel et bien — vérifié en téléchargeant le fichier servi et en y cherchant `aria-live`, « Fiche enregistrée », les traductions allemande et arabe, et l'absence de l'ancien écran. Le déploiement était bon ; c'est la livraison qui ne l'était pas.
+- **C'est l'explication rétrospective des trois « force le rechargement » de la semaine.** Je les avais traités comme une fatalité du navigateur, à coups de `Ctrl+Shift+R` dans mes consignes, au lieu de mesurer l'en-tête. La vraie portée est plus grave : **un correctif urgent mettait jusqu'à une heure à atteindre le royaume**, sans que personne ne puisse s'en apercevoir.
+
+### Changed
+- `firebase.json` configure désormais trois familles d'en-têtes, pour les **4 instances** à la fois :
+  - `**/*.@(html|webmanifest)` → `no-cache`. Le fichier est minuscule et son `ETag` fait de la revalidation un 304 : le coût est nul, le gain est un déploiement visible immédiatement.
+  - `/sw.js` → `no-cache`. Un service worker périmé est le pire cas : il survit aux rechargements et contrôle toutes les navigations.
+  - `/assets/**` → `public, max-age=31536000, immutable`. Ces fichiers portent un hash dans leur nom, leur contenu ne change jamais. On passe d'une heure à un an — **plus rapide** pour les joueurs qui reviennent, et sans aucun risque de péremption.
+
+### Verified
+- En-têtes **mesurés sur le canal servi** après déploiement : `index.html`, `sw.js` et `manifest.webmanifest` en `no-cache`, `/assets/**` en `max-age=31536000, immutable`.
 ## v2.67 - 2026-10-28 — Un toast, et une façon de moins de dire « c'est fait »
 
 Troisième forme en deux jours pour la confirmation de la fiche, et la bonne. Le Roi a essayé l'écran pleine page et a demandé « un composant plus adapté — peut-être un toaster au lieu d'une page quasiment vide ». L'inventaire lui a donné raison deux fois.
