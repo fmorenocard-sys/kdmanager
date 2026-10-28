@@ -1,5 +1,17 @@
 # QA Changelog
 
+## v2.71 - 2026-10-28 — BUG-024 (suite) : la règle ne couvrait pas la racine
+
+### Fixed
+- **`**/*.@(html|webmanifest)` ne matche pas `/`.** Firebase compare le motif au **chemin demandé**, pas au fichier servi : la racine n'a pas d'extension, donc elle retombait sur le défaut `max-age=3600`. Or l'application est en HashRouter — **tout vit sous `/#/…`, et l'URL réellement demandée est toujours `/`**. Autrement dit le correctif de v2.68 ne protégeait aucune des pages que chargent les joueurs.
+- **Ma vérification était complaisante.** J'avais mesuré `/index.html`, qui matche le motif, au lieu de `/`, que personne ne tape mais que tout le monde charge. Mesurer le chemin qui arrange, c'est ne pas mesurer.
+- Règle `/` ajoutée en tête de `hosting.headers`.
+
+### Verified
+- **Mesuré sur la production de 2997, après déploiement** : `/` → `no-cache`, `/index.html` → `no-cache`, `/sw.js` → `no-cache`, `/manifest.webmanifest` → `no-cache`, `/assets/index-*.js` → `public, max-age=31536000, immutable`.
+
+### Ouvert
+- Les **3 autres instances** (pilote 41, arcelia 2293, mimoso 1362) partagent ce `firebase.json` mais gardent leurs anciens en-têtes **tant qu'elles ne sont pas redéployées**. Rien d'urgent — mais un correctif poussé sur l'une d'elles mettra jusqu'à une heure à arriver.
 ## v2.70 - 2026-10-28 — UXA11Y-015 : le toast se confondait avec la page
 
 Deuxième retour du Roi sur le même composant, et le bon reproche : « the contrast of the toaster is not high enough, it doesn't stand out ». Replacé en haut à la version précédente, il restait invisible — pour une raison mesurable.
