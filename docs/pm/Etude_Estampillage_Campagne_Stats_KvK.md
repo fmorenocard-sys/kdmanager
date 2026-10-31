@@ -113,6 +113,29 @@ Le second est une **inférence**, pas une preuve. Deux limites :
 - **Opt-in silencieux.** Rien n'empêche une septième vue de lire `kvkStats` sans appeler
   la règle. C'est très exactement ce qui s'est produit deux fois.
 
+- **Angle mort total : l'état HYBRIDE.** C'est le cas qui a été mesuré sur le pilote 41
+  le 2026-10-31, et c'est le plus grave. `static_data/kvk` y contenait un **mélange** :
+  le roster et la référence figée de la saison passée, recouverts des gains de la
+  nouvelle. Mesuré sur les 421 lignes :
+
+  | | Résultat |
+  |---|---|
+  | Roster | **421 joueurs, 0 absent de l'archive `001_troy`** — c'est le roster de SoC 2 |
+  | `initialPower` identique à l'archive | **421 / 421** — la référence figée n'a jamais été remise à zéro |
+  | `totalDead` remis à 0 | 373 / 421 |
+  | `totalKpGained` à 0 | 340 / 421 |
+
+  `statsMatchArchive` s'arrête **au premier joueur qui diffère** : ici `gecast`,
+  `totalDead` 0 en live contre 1 040 538 dans l'archive. Elle conclut « fraîches »,
+  et le bandeau de BUG-025 ne s'affiche jamais. **Un hybride n'est ni identique à
+  l'archive, ni propre à la campagne courante — l'heuristique ne sait pas le voir,
+  et aucun réglage de seuil ne l'y aiderait.**
+
+- **La cause de l'hybride est elle-même de la même famille.** `perfExport` refuse
+  d'écrire s'il n'existe **aucune** référence figée, mais ne vérifie pas que celle
+  qui existe appartient à la **bonne campagne** : il a donc écrit les gains de SoC 3
+  par-dessus la référence de SoC 2. Il connaissait pourtant l'identité de la campagne
+  — il écrit `lastScanCampaign` dans le même `set()`.
 Un identifiant rend le test **exact** (`stats.campaignId === config.id`) et surtout permet
 de le poser **une fois**, au point d'entrée.
 
