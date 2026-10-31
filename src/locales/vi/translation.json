@@ -612,7 +612,8 @@
     "formula_thresholds_note": "Trạng thái = KP đạt được ÷ mục tiêu KP.",
     "formula_validated_note": "Thang điểm được kiểm chứng theo bảng SoC 4 cho sức mạnh từ {{min}} đến {{max}} M; ngoài khoảng này các con số là ngoại suy, và dưới {{floor}} M phép tính bị giữ nguyên.",
     "formula_intro": "Mọi thứ dựa trên sức mạnh ban đầu: sức mạnh càng cao thì mục tiêu càng cao.",
-    "formula_math_toggle": "Công thức chính xác"
+    "formula_math_toggle": "Công thức chính xác",
+    "live_stats_stale": "Số liệu của chiến dịch này chưa có: chưa có bản quét nào được nhập kể từ khi nó mở. Mục tiêu vẫn được tính theo sức mạnh; KP kiếm được và bảng xếp hạng vương quốc sẽ hiện sau bản quét đầu tiên."
   },
   "calendar": {
     "campaign_progress": "Tiến trình KvK",

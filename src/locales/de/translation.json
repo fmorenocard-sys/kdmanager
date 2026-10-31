@@ -612,7 +612,8 @@
     "formula_thresholds_note": "Status = erzielte KP ÷ KP-Ziel.",
     "formula_validated_note": "Skala anhand der SoC-4-Tabelle für Machtwerte von {{min}} bis {{max}} Mio. validiert; außerhalb dieses Bereichs sind die Werte extrapoliert, unter {{floor}} Mio. wird die Berechnung eingefroren.",
     "formula_intro": "Alles hängt von der Anfangsmacht ab: je höher sie ist, desto höher das Ziel.",
-    "formula_math_toggle": "Genaue Formel"
+    "formula_math_toggle": "Genaue Formel",
+    "live_stats_stale": "Die Zahlen dieser Kampagne liegen noch nicht vor: Seit ihrem Start wurde kein Scan eingelesen. Die Ziele werden weiterhin aus der Macht berechnet; erzielte Kill Points und die Königreichsrangliste erscheinen nach dem ersten Scan."
   },
   "calendar": {
     "campaign_progress": "KvK-Fortschritt",

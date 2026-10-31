@@ -612,7 +612,8 @@
     "formula_thresholds_note": "Status = KP gained ÷ KP goal.",
     "formula_validated_note": "Scale validated against the SoC 4 workbook for powers from {{min}} to {{max}} M; outside that range the figures are extrapolated, and below {{floor}} M the calculation is frozen.",
     "formula_intro": "Everything follows from starting power: the higher it is, the higher the goal.",
-    "formula_math_toggle": "Exact formula"
+    "formula_math_toggle": "Exact formula",
+    "live_stats_stale": "This campaign's figures haven't arrived yet: no scan has been ingested since it opened. Targets are still computed from power; kill points gained and the kingdom ranking will appear after the first scan."
   },
   "calendar": {
     "campaign_progress": "KvK progress",

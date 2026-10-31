@@ -612,7 +612,8 @@
     "formula_thresholds_note": "Statut = KP gagnés ÷ objectif KP.",
     "formula_validated_note": "Barème validé sur le classeur SoC 4 pour des puissances de {{min}} à {{max}} M ; hors de cette plage les chiffres sont extrapolés, et sous {{floor}} M le calcul est gelé.",
     "formula_intro": "Tout part de la puissance de départ : plus elle est haute, plus l'objectif l'est.",
-    "formula_math_toggle": "Formule exacte"
+    "formula_math_toggle": "Formule exacte",
+    "live_stats_stale": "Les chiffres de cette campagne ne sont pas encore arrivés : aucun scan n'a été ingéré depuis son ouverture. Les objectifs restent calculés sur la puissance ; les KP gagnés et le classement du royaume s'afficheront après le premier scan."
   },
   "calendar": {
     "campaign_progress": "Progression du KvK",

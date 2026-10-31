@@ -612,7 +612,8 @@
     "formula_thresholds_note": "Stato = KP guadagnati ÷ obiettivo KP.",
     "formula_validated_note": "Scala validata sul foglio SoC 4 per potenze da {{min}} a {{max}} M; fuori da questo intervallo i valori sono estrapolati e sotto {{floor}} M il calcolo viene congelato.",
     "formula_intro": "Tutto parte dalla potenza iniziale: più è alta, più alto è l'obiettivo.",
-    "formula_math_toggle": "Formula esatta"
+    "formula_math_toggle": "Formula esatta",
+    "live_stats_stale": "I dati di questa campagna non sono ancora arrivati: nessuna scansione è stata importata dalla sua apertura. Gli obiettivi restano calcolati sulla potenza; i KP guadagnati e la classifica del regno compariranno dopo la prima scansione."
   },
   "calendar": {
     "campaign_progress": "Avanzamento KvK",

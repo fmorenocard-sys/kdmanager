@@ -612,7 +612,8 @@
     "formula_thresholds_note": "Durum = kazanılan KP ÷ KP hedefi.",
     "formula_validated_note": "Ölçek, {{min}}–{{max}} M güç aralığı için SoC 4 çalışma kitabına göre doğrulandı; bu aralığın dışında değerler tahminidir ve {{floor}} M altında hesap dondurulur.",
     "formula_intro": "Her şey başlangıç gücüne bağlıdır: güç arttıkça hedef de artar.",
-    "formula_math_toggle": "Kesin formül"
+    "formula_math_toggle": "Kesin formül",
+    "live_stats_stale": "Bu kampanyanın rakamları henüz gelmedi: açılışından bu yana hiçbir tarama aktarılmadı. Hedefler güce göre hesaplanmaya devam ediyor; kazanılan KP ve krallık sıralaması ilk taramadan sonra görünecek."
   },
   "calendar": {
     "campaign_progress": "KvK ilerlemesi",

@@ -10,6 +10,7 @@ import { computeKvkGoals, computeFillerGoal, DEAD_POINTS_PER_T5 } from '../../li
 import { rateFromGoalPct, RATES } from '../../lib/kvkScoring';
 import { sortRows, nextSort } from '../../lib/sortRows';
 import { resolveCampaignName, resolveCampaignArchive } from '../../lib/campaignLabel';
+import { liveStatsAreCurrent, indexArchive } from '../../lib/campaignFreshness';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/Table';
 import SortHead from '../ui/SortHead';
 import Card from '../ui/Card';
@@ -147,6 +148,27 @@ const KvkGoalsPanel = () => {
     // F-032 — stats de la campagne SÉLECTIONNÉE : courante → scan live ; passée →
     // copie FIGÉE de l'archive kvk_history. Sans ça, toutes les campagnes affichaient
     // les chiffres du DERNIER scan (le sélecteur ne changeait que les déclarations).
+    // `static_data/kvk` est un singleton « dernier scan » SANS id de campagne
+    // (dette A-041 / UXA11Y-010) : entre la clôture d'un KvK et le premier scan du
+    // suivant, il contient encore la saison PRÉCÉDENTE.
+    //
+    // La règle qui détecte ce cas existe depuis le 2026-10-14 — écrite après que la
+    // frise du pilote 3341 eut affiché les 421 comptes de « 001_Troy » sous
+    // « 002_MightyAssembly ». Son en-tête promet qu'elle est partagée, « une vue ne
+    // doit plus pouvoir en bénéficier pendant qu'une autre les ignore ». Elle n'avait
+    // en réalité été câblée que dans `/me` et la page Performance. Ce panneau lisait
+    // les stats brutes : le Roi a vu le 2026-10-31 son « Top du royaume » lister les
+    // joueurs et les chiffres du KvK passé. Troisième porte, fermée.
+    const latestArchiveById = useMemo(
+        () => indexArchive([...history].sort((a, b) => (b.order || 0) - (a.order || 0))[0] || null),
+        [history]
+    );
+    const liveStatsCurrent = useMemo(() => liveStatsAreCurrent({
+        startDate: config?.startDate || null,
+        liveRows: [...(kvkStats || []), ...(kvkFillerStats || [])],
+        archiveById: latestArchiveById,
+    }), [config, kvkStats, kvkFillerStats, latestArchiveById]);
+
     const selectedIsCurrent = !kvkId || kvkId === (config?.id || '');
     const selectedArchive = useMemo(() => {
         if (selectedIsCurrent) return null;
@@ -154,11 +176,15 @@ const KvkGoalsPanel = () => {
         return resolveCampaignArchive(kvkId, kvkName, history);
     }, [selectedIsCurrent, kvkId, declarations, config, history]);
     const activeStatsById = useMemo(() => {
-        if (!selectedArchive) return statsById;
+        // Campagne courante : les stats live ne servent que si elles LUI appartiennent.
+        // Sinon on rend une table vide — les objectifs restent calculés sur la
+        // puissance, seuls les KP gagnés deviennent inconnus. Un « — » franc vaut
+        // mieux que le chiffre d'une autre saison.
+        if (!selectedArchive) return liveStatsCurrent ? statsById : new Map();
         const m = new Map();
         [...(selectedArchive.list || []), ...(selectedArchive.fillerList || [])].forEach((k) => m.set(String(k.id), k));
         return m;
-    }, [selectedArchive, statsById]);
+    }, [selectedArchive, statsById, liveStatsCurrent]);
 
     const rows = useMemo(() => {
         // Le lien déclaration → joueur se fait par ID de gouverneur, pas par userId :
@@ -273,8 +299,11 @@ const KvkGoalsPanel = () => {
     // Aucune dépendance aux déclarations — un joueur non inscrit a quand même sa cible.
     const topRows = useMemo(() => {
         if (!isLeadership || viewMode !== 'top') return [];
-        // Campagne passée → roster figé de l'archive ; courante → scan live.
-        const source = selectedArchive ? selectedArchive.list : (kvkStats || []);
+        // Campagne passée → roster figé de l'archive ; courante → scan live, et
+        // SEULEMENT s'il appartient à cette campagne. Ici le scan ne fournit pas que
+        // les chiffres, il fournit la LISTE : sans garde-fou, le Top du royaume
+        // classait les joueurs de la saison précédente.
+        const source = selectedArchive ? selectedArchive.list : (liveStatsCurrent ? (kvkStats || []) : []);
         const built = source
             .filter((k) => (k.initialPower || 0) > 0)
             .sort((a, b) => (b.initialPower || 0) - (a.initialPower || 0))
@@ -298,7 +327,7 @@ const KvkGoalsPanel = () => {
         const q = search.trim().toLowerCase();
         const filtered = q ? built.filter((r) => r.name.toLowerCase().includes(q) || r.governorId.includes(q)) : built;
         return sortRows(filtered, sort);
-    }, [kvkStats, selectedArchive, viewMode, topN, isLeadership, governorId, search, sort]);
+    }, [kvkStats, liveStatsCurrent, selectedArchive, viewMode, topN, isLeadership, governorId, search, sort]);
 
     const displayRows = viewMode === 'top' ? topRows : rows;
 
@@ -419,6 +448,15 @@ const KvkGoalsPanel = () => {
                     </button>
                 )}
             </div>
+
+            {/* Sans ce mot, un tableau vide passe pour une panne. On dit la vraie
+                raison : le scan de la campagne n'est pas encore arrivé. */}
+            {selectedIsCurrent && !liveStatsCurrent && (
+                <div className="flex items-start gap-2.5 text-xs text-amber-200 bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
+                    <AlertTriangle size={16} className="shrink-0 mt-0.5 text-amber-400" />
+                    <p>{t('goals.live_stats_stale')}</p>
+                </div>
+            )}
 
             {displayRows.length === 0 && (viewMode === 'top' || fillerRows.length === 0) && (
                 <Card className="p-6 text-center">

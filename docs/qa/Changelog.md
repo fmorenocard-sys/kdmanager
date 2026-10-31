@@ -1,5 +1,27 @@
 # QA Changelog
 
+## v2.73 - 2026-10-31 — BUG-025 : le Top du royaume listait les joueurs du KvK passé
+
+Le Roi, sur le pilote 3341 : « le top du royaume que je vois sont des chiffres et des joueurs du KvK passé ».
+
+### Fixed
+- **BUG-025 — le panneau Objectifs lisait `static_data/kvk` sans vérifier à quelle campagne il appartient.** Ce document est un singleton « dernier scan » **sans identifiant de campagne** (dette A-041 / UXA11Y-010) : entre la clôture d'un KvK et le premier scan du suivant, il contient encore la saison précédente. Sur 3341, SoC 3 était configuré mais aucun scan n'avait été ingéré — le panneau affichait donc SoC 2 sous le nom de SoC 3.
+- **La règle qui détecte ce cas existait déjà.** `lib/campaignFreshness.js` a été écrit le 2026-10-14, après ce même symptôme sur ce même pilote (la frise affichait les 421 comptes de « 001_Troy » sous « 002_MightyAssembly »). Son en-tête promet qu'elle est partagée — « une vue ne doit plus pouvoir en bénéficier pendant qu'une autre les ignore ». Elle n'avait été câblée que dans **deux** vues sur trois : `useMyKvkGoals` (`/me`) et `KvKPerformancePage`. **`KvkGoalsPanel` lisait les stats brutes.** La correction d'octobre a fermé deux portes et laissé la troisième ouverte.
+- **Le détail du signalement confirmait le diagnostic avant même de lire le code** : « des chiffres **et des joueurs** ». Dans la vue « Top du royaume », le scan ne fournit pas que les chiffres, il fournit la **liste** — d'où des noms de la saison précédente. Dans la vue « Déclarants », la liste vient des déclarations et restait juste ; seuls les chiffres étaient périmés.
+
+### Changed
+- `KvkGoalsPanel` appelle désormais `liveStatsAreCurrent` sur la campagne courante, avec la dernière archive de `kvk_history` comme référence. Quand les stats live ne lui appartiennent pas : la source du Top devient vide, `activeStatsById` rend une table vide, et un bandeau ambre dit **pourquoi**.
+- Les objectifs restent calculés sur la puissance — seuls les KP gagnés et le classement disparaissent. Un « — » franc vaut mieux que le chiffre d'une autre saison.
+- Le bandeau est traduit dans les **10 langues** (`goals.live_stats_stale`). Sans lui, un tableau vide passe pour une panne.
+
+### Verified
+- **Les deux branches mesurées dans l'application, sur l'émulateur, en rôle Roi** :
+  - **données fraîches** (seed tel quel) → aucun bandeau, tableau peuplé, comportement inchangé ;
+  - **données périmées** — archive alignée au chiffre près sur `static_data/kvk`, ce qui reproduit la situation réelle de 3341 → bandeau **affiché**, tableau à **0 ligne**, état vide existant en dessous, **aucun débordement horizontal**.
+- 64 tests unitaires verts (dont `campaignFreshness.test.mjs`, qui couvrait déjà la règle), `test:render` vert, `eslint` vert sur le fichier touché.
+
+### Ouvert
+- **La dette de fond reste** : `static_data/kvk` n'a toujours pas d'identifiant de campagne (A-041). Tant qu'il n'en a pas, chaque nouvelle vue qui le lit devra se souvenir d'appeler le garde-fou — et c'est la deuxième fois qu'on oublie. Estampiller le document au moment de l'ingestion supprimerait la classe entière de bugs.
 ## v2.72 - 2026-10-28 — PWA : l'icône iOS était transparente, et l'app ne proposait rien
 
 Le Roi, après le déploiement : « j'ai toujours rien pour télécharger la page ou l'icône ni sur Brave ni sur Safari sur mon iPhone ».

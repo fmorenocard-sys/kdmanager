@@ -612,7 +612,8 @@
     "formula_thresholds_note": "Status = zdobyte KP ÷ cel KP.",
     "formula_validated_note": "Skalę zweryfikowano na arkuszu SoC 4 dla mocy od {{min}} do {{max}} mln; poza tym zakresem wartości są ekstrapolowane, a poniżej {{floor}} mln obliczenia są zamrożone.",
     "formula_intro": "Wszystko zależy od mocy początkowej: im wyższa, tym wyższy cel.",
-    "formula_math_toggle": "Dokładny wzór"
+    "formula_math_toggle": "Dokładny wzór",
+    "live_stats_stale": "Dane tej kampanii jeszcze nie dotarły: od jej otwarcia nie wczytano żadnego skanu. Cele są nadal liczone na podstawie mocy; zdobyte KP i ranking królestwa pojawią się po pierwszym skanie."
   },
   "calendar": {
     "campaign_progress": "Postęp KvK",
