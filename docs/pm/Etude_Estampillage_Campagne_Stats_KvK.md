@@ -14,7 +14,7 @@ et quatre fois en deux mois, une vue a oublié de deviner.
 
 ---
 
-## 2. Quatre épisodes, une seule cause
+## 2. Cinq épisodes, une seule cause
 
 | Date | Où | Ce que le Roi a vu | Remède posé |
 |---|---|---|---|
@@ -22,9 +22,22 @@ et quatre fois en deux mois, une vue a oublié de deviner.
 | avant le 2026-10-14 | `/me` | Objectifs personnels calculés sur la saison précédente | Garde-fou local dans `useMyKvkGoals` (UXA11Y-010) |
 | 2026-10-14 | Frise du royaume, pilote 3341 | **421 comptes de « 001_Troy » affichés sous « 002_MightyAssembly »** | Règle extraite dans `lib/campaignFreshness.js`, câblée dans `KvKPerformancePage` |
 | 2026-10-31 | Pilotage → Objectifs, pilote 3341 | « des chiffres **et des joueurs** du KvK passé » dans le Top du royaume (BUG-025) | Même règle, câblée dans `KvkGoalsPanel` |
+| 2026-11-01 | Pilotage → Objectifs, pilote 3341 | **Tous les avancements à zéro** et 227 joueurs sortis du périmètre de la Performance (solde net −146), après une repose manuelle de la référence SoC 3 (`--kvk-base`) | Aucun : il a fallu réécrire au bon périmètre (`--roster all`, 581 lignes) puis relancer « Recalculer les agrégats » |
 
-Quatre épisodes, trois remèdes, **aucun à la source**. À chaque fois le correctif a consisté
+Cinq épisodes, trois remèdes, **aucun à la source**. À chaque fois le correctif a consisté
 à apprendre à une vue de plus à se méfier de la donnée.
+
+Le cinquième épisode ajoute une contrainte que l'étude doit porter : sur les instances en
+`PERFORMANCE_SOURCE=scan`, `static_data/kvk` cumule **trois rôles** dans un seul document —
+la référence figée (`initialPower`/`initialKp`), les résultats courants (`totalKpGained`,
+`totalDead`, `goalPercent`, `rate`) et **la définition de la population visible** en
+Performance, puisque `refreshPerformanceList` ne rafraîchit que les lignes déjà présentes.
+Reposer la référence à la main écrase donc les deux autres rôles au passage : mesuré sur le
+pilote 41 le 2026-11-01, 421 lignes remplacées par 275, tous les gains à plat et
+`perfSource`/`lastScanSeq`/`lastScanCampaign` effacés jusqu'au recalcul suivant. Estamper le
+document ne suffira pas si l'opération « reposer la base » reste un écrasement total : il
+faut soit séparer la référence des résultats, soit faire de la repose une écriture
+partielle. À trancher dans le §9.
 
 L'en-tête de `campaignFreshness.js`, écrit le 2026-10-14, promettait pourtant :
 
@@ -235,11 +248,17 @@ du lot 2, le test est exact là où il est posé.
 ## 9. Décisions demandées
 
 1. **Fait-on le chantier ?** Le symptôme est corrigé partout aujourd'hui ; c'est un
-   investissement contre la cinquième occurrence, pas un correctif urgent.
+   investissement contre la **sixième** occurrence, pas un correctif urgent. La cinquième
+   est arrivée le 2026-11-01, pendant que cette étude attendait un arbitrage.
 2. **`campaignId: null` = inconnu (repli) ou périmé (strict) ?** Recommandation : inconnu.
 3. **Le bot Discord est-il dans le lot** ou traité à part ? Recommandation : dedans — c'est
    le seul lecteur non gardé, et personne ne surveille ce qu'il répond.
 4. **Garde-t-on `campaignFreshness.js` ?** Recommandation : oui, comme repli documenté.
+5. **Sépare-t-on la référence des résultats**, ou fait-on de « reposer la base » une
+   écriture partielle (ne touchant que `initialPower`/`initialKp`, sur l'union de la
+   population existante et du scan) ? Recommandation : l'écriture partielle — elle coûte
+   quelques lignes dans `ingest-soc-scan.mjs`, là où séparer les documents touche les six
+   lecteurs du §3.2. Motif : épisode du 2026-11-01.
 
 ---
 

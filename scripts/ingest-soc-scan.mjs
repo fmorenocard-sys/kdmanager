@@ -27,7 +27,21 @@
  * Write requires pilot credentials for kd-41-manager: either
  *   --credentials <serviceAccountKey.json>   (a kd-41-manager service-account key), or
  *   ADC for kd-41-manager (e.g. `gcloud auth application-default login` on that project).
- * The local functions/*.json keys are for kd-97-manager and will be REFUSED for the pilot.
+ * functions/kd-41-manager.json est la clé du pilote ; functions/service-account.json et
+ * functions/serviceAccountKey.json sont celles de kd-97-manager et seront REFUSÉES ici.
+ *
+ *   --skip-roster   n'écrit PAS static_data/players (utile avec --kvk-base seul).
+ *
+ * ATTENTION, instances en PERFORMANCE_SOURCE=scan (41, 2293, 1362, 2997) : `static_data/kvk`
+ * y est À LA FOIS la référence figée ET le porteur des résultats courants. F-036
+ * (functions/kvkRace/perfExport.js) ne rafraîchit QUE les lignes déjà présentes dans ce
+ * document — sa liste définit donc la population visible en Performance. Un `--kvk-base`
+ * ÉCRASE le document : les gains, morts et pourcentages d'objectif retombent à zéro, et
+ * les joueurs hors du périmètre choisi deviennent invisibles. Mesuré sur le pilote 41 le
+ * 2026-11-01 : 421 lignes remplacées par 275, tous les résultats à plat.
+ * Donc : prendre `--roster all` (le périmètre du royaume, pas celui de Full Data), puis
+ * lancer « Recalculer les agrégats » dans la config de course — c'est ce recalcul qui
+ * repeuple les résultats et repose perfSource / lastScanSeq / lastScanCampaign.
  */
 
 /* global process */
@@ -62,6 +76,9 @@ const TOP = Number(arg('top', 0)) || 0;
 // que ce scan devienne la RÉFÉRENCE FIGÉE des objectifs (F-027, KvkGoalsPanel préfère
 // kvk.initialPower). À lancer sur le scan de base au début du KvK (ex. 5 août).
 const KVK_BASE = process.argv.includes('--kvk-base');
+// Ne pas toucher static_data/players : reposer la seule référence KvK sans
+// remanier la vitrine du royaume (les deux n'ont rien à voir).
+const SKIP_ROSTER = process.argv.includes('--skip-roster');
 // --kvk-progress : scan de progression. MAJ totalKpGained (= max_points courant - initialKp
 // figé) et finalPower dans static_data/kvk, SANS toucher initialPower/initialKp (référence gelée).
 // Nécessite un --kvk-base préalable. Ignoré si --kvk-base est aussi passé (le base prime).
@@ -262,23 +279,28 @@ if (!WRITE) {
 
 // ---- write path (pilot credentials required) ----
 const db = await initDb();
-const ref = db.collection('static_data').doc('players');
-
-// --- backup existing doc before overwrite (revert safety) ---
-const existing = await ref.get();
 const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-const backupFile = path.join(OUT_DIR, `backup_players_${PROJECT}_${stamp}.json`);
-if (existing.exists) {
-    fs.writeFileSync(backupFile, JSON.stringify(existing.data(), null, 2), 'utf8');
-    console.log(`\nBackup of current static_data/players -> ${backupFile}`);
-    console.log(`  (revert with: node scripts/ingest-soc-scan.mjs --restore "${backupFile}" --credentials <key>)`);
-} else {
-    console.log('\nNo existing static_data/players doc (nothing to back up; revert = delete the doc).');
-}
 
-console.log(`\nWriting static_data/players to project ${PROJECT} (kdmanagerdb)...`);
-await ref.set(doc);
-console.log(`WROTE static_data/players — ${list.length} governors.`);
+if (SKIP_ROSTER) {
+    console.log('\n--skip-roster : static_data/players laissé intact.');
+} else {
+    const ref = db.collection('static_data').doc('players');
+
+    // --- backup existing doc before overwrite (revert safety) ---
+    const existing = await ref.get();
+    const backupFile = path.join(OUT_DIR, `backup_players_${PROJECT}_${stamp}.json`);
+    if (existing.exists) {
+        fs.writeFileSync(backupFile, JSON.stringify(existing.data(), null, 2), 'utf8');
+        console.log(`\nBackup of current static_data/players -> ${backupFile}`);
+        console.log(`  (revert with: node scripts/ingest-soc-scan.mjs --restore "${backupFile}" --credentials <key>)`);
+    } else {
+        console.log('\nNo existing static_data/players doc (nothing to back up; revert = delete the doc).');
+    }
+
+    console.log(`\nWriting static_data/players to project ${PROJECT} (kdmanagerdb)...`);
+    await ref.set(doc);
+    console.log(`WROTE static_data/players — ${list.length} governors.`);
+}
 
 // --- static_data/kvk (scan de base) : référence figée des objectifs ---
 if (kvkDoc) {
