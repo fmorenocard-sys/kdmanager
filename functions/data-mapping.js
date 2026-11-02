@@ -56,8 +56,26 @@ export const DATA_CONFIG = {
         KP: 3 // Column D
     },
 
-    // Bank Dashboard Rows (Fixed format)
+    // Soldes de la banque, lus dans l'onglet Dashboard du classeur « Bank Ledger ».
+    // Plusieurs tableaux « Resource | Total In | Total Out | Current Balance » peuvent
+    // y cohabiter : le 2997 a changé de banque le 2026-11-02 et la nouvelle (Bank97)
+    // a été ajoutée SOUS l'ancienne (celle d'Aurion), lignes 9-13. Le repérage ne peut
+    // donc plus être une plage figée.
     BANK_DASHBOARD: {
+        // 1) Tableau nommé Google Sheets, lu en priorité côté Cloud Functions
+        //    (l'API Sheets expose `sheets[].tables`). SheetJS ne les voit pas :
+        //    l'import XLSX côté client retombe sur le repérage par en-tête.
+        TABLE_NAME: 'Bank97 Balance Sheet',
+        // 2) Repérage par en-tête, indépendant du nombre de lignes des tableaux
+        //    précédents : on retient le DERNIER bloc de la feuille, la banque en
+        //    cours étant toujours ajoutée sous les anciennes. Un classeur qui n'a
+        //    qu'un seul bloc (les autres instances) est lu comme avant.
+        HEADER_FIRST_CELL: 'resource',
+        BALANCE_HEADER: 'current balance',
+        TOTAL_IN_HEADER: 'total in',
+        TOTAL_OUT_HEADER: 'total out',
+        RESOURCES: { food: 'food', wood: 'wood', stone: 'stone', gold: 'gold' },
+        // 3) Repli historique (plages figées) si aucun en-tête n'est reconnu.
         ROWS: {
             FOOD: 1,
             WOOD: 2,

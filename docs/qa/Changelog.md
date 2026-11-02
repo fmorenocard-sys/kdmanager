@@ -1,5 +1,27 @@
 # QA Changelog
 
+## v2.74 - 2026-11-02 — La banque du 2997 change de source : « Bank97 Balance Sheet »
+
+Le Roi : le royaume a changé de banque. Les soldes ne doivent plus venir de l'ancienne banque (tenue par le joueur *Aurion*) mais du tableau **`Bank97 Balance Sheet`**, ajouté plus bas dans le **même** onglet `Dashboard` du classeur « KD 97 Bank Ledger ».
+
+### Changed
+- **`static_data/bank.total` est désormais lu dans le DERNIER tableau de soldes de l'onglet `Dashboard`, plus dans une plage figée (BR-025).** Les deux banques cohabitent dans la même feuille (l'ancienne lignes 1-5, Bank97 lignes 9-13) : une plage figée lirait toujours la première, et se décalerait si l'ancienne gagnait ou perdait une ligne. Le repérage se fait par en-tête, dans l'esprit de `syncPlayers` (colonnes retrouvées par leur libellé) et du parseur hebdomadaire (blocs repérés par leur ligne « ID »).
+- **Côté Cloud Function, le tableau nommé est lu en priorité.** L'API Sheets expose les tableaux nommés (`sheets[].tables`) : `Bank97 Balance Sheet` y est déclaré en lignes 9-13. C'est le repère le plus exact, et c'est le nom que le Roi emploie. Le balayage d'en-tête reste le repli, puis les plages figées historiques.
+- **Les colonnes sont retrouvées par libellé** (`Current Balance`, `Total IN`, `Total Out`), plus par position.
+- Logique isolée dans **`functions/bankBalances.js`** (nouveau) pour être exécutable hors Cloud Function — c'est ce qui a permis de la mesurer sur la donnée vivante avant tout déploiement. Jumelle dans `src/utils/data-parser.js`, configuration commune aux deux jumeaux `data-mapping.js` (dette §5).
+
+### Fixed
+- **Cellule vide → 0, et jamais de solde négatif.** La colonne `Total Out` de Bank97 est vide tant qu'aucun retrait n'a eu lieu. L'ancien `Number(x) || 0` traitait déjà `""` en 0 par accident ; la nouvelle lecture le fait **explicitement** (`bankNumber`), recalcule `Current Balance` depuis `Total IN − Total Out` quand il est absent, et borne le résultat à 0.
+
+### Measured
+- **Le classeur réel, lu en lecture seule avant d'écrire une ligne de code** (`scratch/mesure-bank97-source.mjs`). Les formules du `Dashboard` sont décisives : les deux tableaux sont chacun un `SUMIFS` sur **leur** onglet de transactions (`Transactions` pour l'ancien, `'Bank97 Transactions'` pour le nouveau). **L'application n'a jamais lu d'onglet de transactions** — aucune occurrence de « Transactions » dans `src/` ni `functions/`. « Changer d'onglet de transactions » et « lire l'autre tableau » sont donc, pour le code, la même et unique bascule ; le reste a déjà été fait par le Roi dans la feuille.
+- **Les helpers réels exécutés sur la donnée vivante** (`scratch/verif-bank97-lecture.mjs`) : tableau nommé et balayage d'en-tête tombent tous deux sur l'index 8, et rendent **Food 3 681 084 985 / Wood 3 097 391 115 / Stone 2 306 575 393 / Gold 3 125 484 153** — au chiffre près la capture du Roi. Avant correction, `static_data/bank.total` portait les soldes de l'ancienne banque (Food 8 339 981 496), écrits par le cron du 2026-11-02 05:00 UTC.
+- **Cas limites exercés et figés en test unitaire** — `tests/bankBalances.test.mjs`, 11 cas sur l'extrait réel du `Dashboard` du 2997, branché dans `npm run test:unit` (75/75 au vert) : `Total Out` vide → pas de `NaN` ; `Current Balance` vide → recalculé ; `Total IN` < `Total Out` → borné à 0 ; l'ancien tableau gagne une ligne → l'en-tête suit ; la lecture ne déborde pas sur le tableau « Total Contribution » en dessous ; colonnes permutées → retrouvées par libellé ; classeur à **bloc unique** → lu comme avant ; feuille **sans en-tête** → repli sur les plages figées.
+- **Isolation des trois autres instances vérifiée, pas supposée** (`scratch/verif-bank-autres-instances.mjs`) : `runFullSync` est déjà coupé en dur sur tout projet ≠ `kd-97-manager` (garde-fou de l'incident cross-tenant du 2026-08-07), donc `syncBank` n'y tourne pas ; et leurs documents le confirment — `static_data/bank` **absent** sur 2293 et 1362, `total: {}` figé au 2026-08-18 sur 3341. Le seul code partagé touché est l'aperçu d'import xlsx côté client, qui n'écrit rien dans Firestore et reste à l'identique pour un classeur à tableau unique.
+
+### Not done
+- **Rien n'est déployé ni poussé** : `main` = prod et le 2997 est vivant. Les soldes affichés ne basculeront qu'au prochain déploiement des Cloud Functions du projet `kd-97-manager` (puis au prochain `syncData`, manuel ou au cron de 05:00 UTC).
+
 ## v2.73 - 2026-10-31 — BUG-025 : le Top du royaume listait les joueurs du KvK passé
 
 Le Roi, sur le pilote 3341 : « le top du royaume que je vois sont des chiffres et des joueurs du KvK passé ».

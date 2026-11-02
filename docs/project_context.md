@@ -28,7 +28,7 @@
 | **Tableaux de Performance** | Analyse des joueurs pour le KvK en cours (Objectifs, KP, Deads). | `KvKPerformancePage.jsx` | 🟢 Fonctionnelle |
 | **Trophées** | Historique événementiel du royaume hebdomadaire. | `KingdomTrophiesPage.jsx` | 🟢 Fonctionnelle |
 | **Deadweight (Poids Mort)** | Suivi des joueurs inactifs ou non performants. | `DeadweightPage.jsx` | 🟢 Fonctionnelle |
-| **Banque** | Tracking des dons (Ressources) par joueur par semaine. | `BankPage.jsx` | 🟢 Fonctionnelle |
+| **Banque** | Tracking des dons (Ressources) par joueur par semaine. Soldes lus dans le **dernier** tableau de l'onglet `Dashboard` du classeur Bank Ledger — plusieurs banques y cohabitent depuis le changement de banque du 2997 le 2026-11-02 (BR-025, `functions/bankBalances.js`). | `BankPage.jsx` | 🟢 Fonctionnelle |
 | **War Tracker** | Formulaire de déclaration de présence pour les guerres de garnison/ralliement (incluant engins de siège) et Dashboard Officiers pour suivre les présences globales. | `WarTrackerPage.jsx` | 🟢 Fonctionnelle |
 | **Upload de Données** | Composant pour uploader les fichiers Excel (Top 300, etc) qui synchronise automatiquement vers la DB. | `DataRefreshControl.jsx` | 🟢 Fonctionnelle |
 | **Multi-Langues (i18n)** | Traduction complète de l'application en 8 langues. | `LanguageSwitcher.jsx` | 🟢 Fonctionnelle |

@@ -76,6 +76,61 @@ export const parseHistory = (workbook) => {
     }).filter(h => h && h.power > 0);
 };
 
+// --- Soldes de la banque : repérage du bon tableau dans l'onglet Dashboard ---
+// Jumeau de `functions/index.js` (même règle, même config BANK_DASHBOARD). L'onglet
+// Dashboard peut empiler plusieurs tableaux « Resource | … | Current Balance » :
+// depuis le changement de banque du 2997 (2026-11-02), « Bank97 Balance Sheet » est
+// ajouté SOUS l'ancienne banque. On retient donc le dernier bloc, pas une plage figée.
+// SheetJS n'expose pas les tableaux nommés Google Sheets : le repérage par en-tête
+// est ici le seul disponible (la Cloud Function, elle, lit d'abord TABLE_NAME).
+
+// "" / null / libellé non numérique → 0 : la colonne « Total Out » de Bank97 est vide
+// tant qu'aucun retrait n'a eu lieu — il n'en sort ni NaN ni solde négatif.
+const bankNumber = (v) => {
+    if (v === null || v === undefined || v === '') return 0;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+};
+
+const lowerCells = (row) => (Array.isArray(row) ? row : []).map(c => (typeof c === 'string' ? c.toLowerCase().trim() : ''));
+
+// Dernier bloc de soldes de la feuille. -1 si la feuille n'en contient aucun.
+const findBalanceHeaderRow = (rows) => {
+    const cfg = DATA_CONFIG.BANK_DASHBOARD;
+    let found = -1;
+    rows.forEach((row, i) => {
+        const cells = lowerCells(row);
+        if (cells[0] === cfg.HEADER_FIRST_CELL && cells.includes(cfg.BALANCE_HEADER)) found = i;
+    });
+    return found;
+};
+
+// Lit les 4 ressources sous la ligne d'en-tête, colonnes retrouvées par libellé.
+const readBalanceBlock = (rows, headerRowIdx) => {
+    const cfg = DATA_CONFIG.BANK_DASHBOARD;
+    const header = lowerCells(rows[headerRowIdx]);
+    const balanceCol = header.indexOf(cfg.BALANCE_HEADER);
+    const inCol = header.indexOf(cfg.TOTAL_IN_HEADER);
+    const outCol = header.indexOf(cfg.TOTAL_OUT_HEADER);
+
+    const totals = { food: 0, wood: 0, stone: 0, gold: 0 };
+    for (let i = headerRowIdx + 1; i < rows.length; i++) {
+        const row = Array.isArray(rows[i]) ? rows[i] : [];
+        const label = typeof row[0] === 'string' ? row[0].toLowerCase().trim() : '';
+        if (!label) break; // ligne vide = fin du tableau
+        const key = Object.keys(cfg.RESOURCES).find(k => cfg.RESOURCES[k] === label);
+        if (!key) continue;
+
+        const raw = balanceCol !== -1 ? row[balanceCol] : undefined;
+        // « Current Balance » absent → recalculé depuis Total IN − Total Out.
+        const value = (raw !== undefined && raw !== null && raw !== '')
+            ? bankNumber(raw)
+            : bankNumber(row[inCol]) - bankNumber(row[outCol]);
+        totals[key] = Math.max(0, value); // un solde de banque ne descend pas sous 0
+    }
+    return totals;
+};
+
 export const parseBank = (workbook) => {
     const dbSheet = workbook.Sheets[DATA_CONFIG.SHEETS.BANK_DASHBOARD];
     const weeklySheet = workbook.Sheets[DATA_CONFIG.SHEETS.BANK_WEEKLY];
@@ -86,13 +141,19 @@ export const parseBank = (workbook) => {
     // Parse Totals
     if (dbSheet) {
         const jsonData = XLSX.utils.sheet_to_json(dbSheet, { header: 1 });
-        const colIdx = DATA_CONFIG.BANK_DASHBOARD.COL_INDEX;
-        total = {
-            food: Number(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.FOOD]?.[colIdx]) || 0,
-            wood: Number(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.WOOD]?.[colIdx]) || 0,
-            stone: Number(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.STONE]?.[colIdx]) || 0,
-            gold: Number(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.GOLD]?.[colIdx]) || 0
-        };
+        const headerRowIdx = findBalanceHeaderRow(jsonData);
+        if (headerRowIdx !== -1) {
+            total = readBalanceBlock(jsonData, headerRowIdx);
+        } else {
+            // Aucun en-tête reconnu : comportement historique (lignes 2-5, colonne D).
+            const colIdx = DATA_CONFIG.BANK_DASHBOARD.COL_INDEX;
+            total = {
+                food: bankNumber(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.FOOD]?.[colIdx]),
+                wood: bankNumber(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.WOOD]?.[colIdx]),
+                stone: bankNumber(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.STONE]?.[colIdx]),
+                gold: bankNumber(jsonData[DATA_CONFIG.BANK_DASHBOARD.ROWS.GOLD]?.[colIdx])
+            };
+        }
     }
 
     // Parse Weekly

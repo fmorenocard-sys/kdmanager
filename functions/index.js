@@ -5,6 +5,8 @@ import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import fs from "fs";
 import { DATA_CONFIG } from "./data-mapping.js";
+// Repérage du tableau de soldes dans l'onglet Dashboard (plusieurs banques y cohabitent).
+import { bankNumber, findBalanceHeaderRow, readBalanceBlock, findNamedTableHeaderRow } from "./bankBalances.js";
 // Même commutateur que le pipeline de course : la Performance vient de la feuille
 // OU du scan, jamais des deux (BUG-013).
 import { performanceFromScanEnabled } from "./kvkRace/perfExport.js";
@@ -195,22 +197,29 @@ async function syncBank(sheets) {
 
     if (dbSheetName) {
         const dbRows = await getSheetData(sheets, SPREADSHEET_ID, dbSheetName);
-        const colIdx = DATA_CONFIG.BANK_DASHBOARD.COL_INDEX;
-        // Rows are 0-indexed in array, but 1-indexed in config. ROWS.FOOD=1 means index 0?
-        // digest-data.js used: dbJson[DATA_CONFIG.BANK_DASHBOARD.ROWS.FOOD]?.[colIdx]
-        // Let's assume Config Row Indices are 0-based for json array? 
-        // In digest-data: `const dbJson = XLSX.utils.sheet_to_json(dbSheet, { header: 1 });` 
-        // header:1 means array of arrays.
-        // Row 1 in Excel is index 0.
-        // If config says 1, it probably means index 1 (Row 2).
-        // Let's stick to the config indices.
 
-        bankData.total = {
-            food: Number(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.FOOD]?.[colIdx]) || 0,
-            wood: Number(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.WOOD]?.[colIdx]) || 0,
-            stone: Number(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.STONE]?.[colIdx]) || 0,
-            gold: Number(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.GOLD]?.[colIdx]) || 0
-        };
+        // 1) tableau nommé, 2) dernier bloc repéré par son en-tête, 3) plages figées.
+        let headerRowIdx = await findNamedTableHeaderRow(sheets, SPREADSHEET_ID, dbSheetName);
+        let source = "table";
+        if (headerRowIdx === -1) {
+            headerRowIdx = findBalanceHeaderRow(dbRows);
+            source = "header";
+        }
+
+        if (headerRowIdx !== -1) {
+            bankData.total = readBalanceBlock(dbRows, headerRowIdx);
+            logger.info(`Bank balances read from ${source} (row ${headerRowIdx + 1} of ${dbSheetName})`);
+        } else {
+            // Aucun en-tête reconnu : on garde le comportement historique (lignes 2-5, colonne D).
+            const colIdx = DATA_CONFIG.BANK_DASHBOARD.COL_INDEX;
+            bankData.total = {
+                food: bankNumber(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.FOOD]?.[colIdx]),
+                wood: bankNumber(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.WOOD]?.[colIdx]),
+                stone: bankNumber(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.STONE]?.[colIdx]),
+                gold: bankNumber(dbRows[DATA_CONFIG.BANK_DASHBOARD.ROWS.GOLD]?.[colIdx])
+            };
+            logger.warn(`Bank balances: no header found in ${dbSheetName}, fell back to fixed rows`);
+        }
     }
 
     // Weekly Sheet

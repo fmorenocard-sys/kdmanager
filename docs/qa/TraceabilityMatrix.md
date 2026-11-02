@@ -20,6 +20,7 @@
 | **F-039** (Account Sheet / Mentoring) | Feature | TC-023, TC-024, TC-025 |
 | **BR-003** (Discord Role Priority) | Rule | TC-009 |
 | **BR-006** (KvK Archive Immutability) | Rule | TC-021, TC-022 |
+| **BR-025** (Bank balances — last Dashboard table) | Rule | TC-004, `tests/bankBalances.test.mjs` |
 | **R-002** (Warrior) | Role | TC-012 |
 | **R-003** (Officer) | Role | TC-013 |
 | **R-004** (King) | Role | TC-011 |

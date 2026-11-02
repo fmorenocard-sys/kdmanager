@@ -34,13 +34,14 @@
 ## Test Suite TS-002: Bank (F-003)
 
 ### TC-004: Bank Monitoring Load
-- **Requirements**: F-003, BR-003
+- **Requirements**: F-003, BR-003, BR-025
 - **Priority**: P1 (Regression)
 - **Steps**:
   1. Navigate to "Bank" page (`/bank`).
   2. Verify "Current Stock" cards are displayed.
   3. Check if resource values (Food, Wood, Stone, Gold) are populated.
-- **Expected Result**: Resource values are displayed. No "undefined" or errors.
+  4. **(BR-025)** Compare the four cards with the **last** balance table of the Bank Ledger's `Dashboard` tab — on 2997, « Bank97 Balance Sheet », *not* the legacy table at the top of the sheet.
+- **Expected Result**: Resource values are displayed, equal to that last table's `Current Balance` column. No "undefined", no `NaN`, no negative balance even while the new bank's `Total Out` column is still empty.
 
 ## Test Suite TS-003: Data Ingestion Cloud Sync (F-005)
 
